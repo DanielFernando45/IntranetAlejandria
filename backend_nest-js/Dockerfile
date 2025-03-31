@@ -1,7 +1,7 @@
-FROM NODE:22.14.0
+FROM node:22.14.0-bullseye
 
 WORKDIR /myapp
-COPY package.json .
+COPY package*.json ./
 RUN npm install
 
 COPY . .
