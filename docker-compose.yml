@@ -1,33 +1,31 @@
-version: '3.8'
-
 services:
   mysqldb:
     image: mysql:8
     container_name: mysql-db
     environment:
-      - MYSQL_USER: ${MYSQL_USER}
-      - MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE: ${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     ports:
-      - ${MYSQLDB_LOCAL_PORT}:${MYSQLDB_DOCKER_PORT}
+      - "${MYSQLDB_LOCAL_PORT}:${MYSQLDB_DOCKER_PORT}"
 
   backend:
     build: 
       context: ./backend_nest-js
     container_name: nest-backend
     ports:
-      - "${LOCAL_API_PORT}:${DOCKER_API_PORT}" #falta configurar con env,ya esta
+      - "${LOCAL_API_PORT}:${DOCKER_API_PORT}"
     environment:
       - DB_HOST=mysqldb
-      - DB_PORT:{$DB_PORT}
-      - DB_NAME:${MYSQL_DATABASE}
-      - DB_USER:${MYSQL_USER}
-      - DB_PASSWORD:${MYSQL_PASSWORD}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
     depends_on:
       - mysqldb
 
-  frontend:  #Primero crear el frontend con Vite luego asignar
+  frontend:
     build:
       context: ./frontend
     container_name: vite-frontend
