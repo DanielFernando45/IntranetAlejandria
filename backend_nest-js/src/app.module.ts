@@ -5,33 +5,40 @@ import { AppService } from './app.service';
 import { UsuarioModule } from './usuario/usuario.module';
 import { AdminModule } from './admin/admin.module';
 import { ClienteModule } from './cliente/cliente.module';
-import { AsesorModule } from './asesor/asesor.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Admin } from './admin/admin.entity';
 import { Usuario } from './usuario/usuario.entity';
 import { Cliente } from './cliente/cliente.entity';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule,ConfigService } from '@nestjs/config';
+import { AsesorModule } from './asesor/asesor.module';
 
 let puerto:number
 
 if(process.env.DB_PORT){
   puerto=parseInt(process.env.DB_PORT)
 }else{
-  puerto=3000
+  puerto=3306
 }
 
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',               // Tipo de base de datos (mysql, postgres, etc.)
-      host: process.env.DB_HOST,           // Host de la base de datos
-      port: puerto,                  // Puerto (3306 para MySQL)
-      username: process.env.DB_USERNAME,            // Usuario de la base de datos
-      password: process.env.DB_PASSWORD,        // Contraseña de la base de datos
-      database: process.env.DB_DATABASE,            // Nombre de la base de datos
-      entities: [Admin, Usuario,Cliente],  // Entidades que TypeORM debe usar
-      synchronize: true,           // Sincroniza las tablas automáticamente (solo en desarrollo)
+    ConfigModule.forRoot({
+      isGlobal:true,
+    }),
+
+    TypeOrmModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [Admin, Usuario,Cliente],  // Aquí debes pasar todas tus entidades
+        synchronize: true,  // Cambiar a `false` en producción
+      }),
+      inject: [ConfigService],
     }),
     //AuthModule, 
     UsuarioModule, 

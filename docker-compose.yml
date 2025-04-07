@@ -3,33 +3,59 @@ services:
     image: mysql:8
     container_name: mysql-db
     environment:
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER_ENV}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD_ENV}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD_ENV}
+      - MYSQL_DATABASE=${MYSQL_DATABASE_ENV}
     ports:
-      - "${MYSQLDB_LOCAL_PORT}:${MYSQLDB_DOCKER_PORT}"
+      - "${MYSQLDB_LOCAL_PORT_ENV}:${MYSQLDB_DOCKER_PORT_ENV}"
+    volumes:
+      - base_datos_volume:/var/lib/mysql
+    networks:
+      - app-network
 
   backend:
     build: 
       context: ./backend_nest-js
     container_name: nest-backend
     ports:
-      - "${LOCAL_API_PORT}:${DOCKER_API_PORT}"
+      - "${LOCAL_API_PORT_ENV}:${DOCKER_API_PORT_ENV}"
     environment:
       - DB_HOST=mysqldb
-      - DB_PORT=${DB_PORT}
-      - DB_NAME=${MYSQL_DATABASE}
-      - DB_USER=${MYSQL_USER}
-      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_PORT=${DB_PORT_ENV}
+      - DB_NAME=${MYSQL_DATABASE_ENV}
+      - DB_USER=${MYSQL_USER_ENV}
+      - DB_PASSWORD=${MYSQL_PASSWORD_ENV}
     depends_on:
       - mysqldb
-
+    command: >
+      /bin/bash -c "/usr/local/bin/wait-for-it.sh mysql-db:3306 -- npm run start:dev"
+    volumes:
+      - backend_volume:/myapp
+    networks:
+      - app-network
+    
   frontend:
     build:
-      context: ./frontend
+      context: ./FrontIntranet
     container_name: vite-frontend
     ports:
-      - "5173:5173"
+      - "${LOCAL_FRONT_PORT_ENV}:${DOCKER_FRONT_PORT_ENV}"
+    environment:
+      - REACT_API_URL=${URL_DESARROLLO_ENV}
     depends_on:
       - backend
+    command: >
+      /bin/bash -c "/usr/local/bin/wait-for-it.sh backend:3000 -- npm run dev"
+    volumes:
+      - frontend_volume:/app
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  base_datos_volume:
+  backend_volume:
+  frontend_volume:
