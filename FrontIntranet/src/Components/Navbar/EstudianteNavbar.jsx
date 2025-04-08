@@ -13,7 +13,7 @@ const EstudianteNavbar=() => {
 
             <div className="flex gap-2 ">
               <div className="flex flex-col">   
-                  <span>Luis Muñoz</span>        
+                  <span>Sebastian</span>        
                   <span>Estudiante</span>
               </div>
                   <img  src={flecha} alt="" />

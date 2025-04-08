@@ -8,5 +8,10 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',  // Esto permite acceder desde fuera del contenedor
     port: 5174,        // El puerto que has mapeado en Docker
+    watch: {
+      usePolling: true,          // 👈 NECESARIO para Docker en Mac/Windows
+      interval: 100,             // 👈 Opcional: reduce la latencia
+    },
+    strictPort: true,
   },
 })
