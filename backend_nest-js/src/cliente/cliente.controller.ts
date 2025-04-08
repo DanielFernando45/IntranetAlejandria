@@ -6,7 +6,7 @@ import { CreateClienteDto } from './dto/crear-cliente.dto';
 export class ClienteController {
     constructor(private readonly clienteService:ClienteService){}
 
-    @Post("/addCliente")
+    @Post("/add")
     @UsePipes(new ValidationPipe({transform:true}))
     async crearCliente(@Body() createClienteDto:CreateClienteDto){
         return this.clienteService.crearCliente(createClienteDto)

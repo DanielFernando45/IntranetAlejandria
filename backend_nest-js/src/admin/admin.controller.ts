@@ -1,4 +1,4 @@
-import { Controller ,Post,Body} from '@nestjs/common';
+import { Controller ,Post,Body,Get} from '@nestjs/common';
 import { AdminService } from './admin.service';
 
 
@@ -6,9 +6,16 @@ import { AdminService } from './admin.service';
 export class AdminController {
     constructor(private readonly adminService:AdminService){}
 
-    @Post()
+    @Get('')
+    async list(){
+        return this.adminService.listAdmin()
+    }
+
+    @Post('/add')
     async create(@Body() body){
         return this.adminService.create(body)
     }
+    
 
+    
 }
