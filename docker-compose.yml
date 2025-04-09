@@ -26,13 +26,19 @@ services:
       - DB_NAME=${MYSQL_DATABASE_ENV}
       - DB_USER=${MYSQL_USER_ENV}
       - DB_PASSWORD=${MYSQL_PASSWORD_ENV}
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - mysqldb
     command: >
       /bin/bash -c "/usr/local/bin/wait-for-it.sh mysql-db:3306 -- npm run start:dev"
     volumes:
-      - ./backend_nest-js:/myapp
-      - /myapp/node_modules
+      - type: bind
+        source: ./backend_nest-js
+        target: /myapp
+        consistency: cached
+      - type: volume
+        source: backend_node_modules
+        target: /myapp/node_modules
     networks:
       - app-network
     
@@ -59,6 +65,7 @@ networks:
     driver: bridge
 
 volumes:
+  backend_node_modules:
   base_datos_volume:
   backend_volume:
   frontend_volume:

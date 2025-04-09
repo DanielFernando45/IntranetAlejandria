@@ -6,7 +6,7 @@ export class Asesor{
     @PrimaryGeneratedColumn()
     id:number;
     
-    @Column()Is
+    @Column()
     dni:string;
     
     @Column()

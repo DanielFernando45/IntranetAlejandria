@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-//import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { AdminModule } from './admin/admin.module';
 import { ClienteModule } from './cliente/cliente.module';
@@ -36,11 +36,11 @@ if(process.env.DB_PORT){
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [Admin, Usuario,Cliente],  // Aquí debes pasar todas tus entidades
-        synchronize: true,  // Cambiar a `false` en producción
+        synchronize: false,  // Cambiar a `false` en producción
       }),
       inject: [ConfigService],
     }),
-    //AuthModule, 
+    AuthModule, 
     UsuarioModule, 
     AdminModule,
     ClienteModule, 
