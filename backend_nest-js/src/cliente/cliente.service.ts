@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Usuario,UserRole } from 'src/usuario/usuario.entity';
 import { CreateClienteDto } from './dto/crear-cliente.dto';
 import * as bcrypt from 'bcrypt'
+import { listarClienteDto } from './dto/listar-cliente.dto';
 
 @Injectable()
 export class ClienteService {
@@ -16,13 +17,39 @@ export class ClienteService {
         private usuarioRepo: Repository<Usuario>
     ){}
 
+    async listAdmin (): Promise<listarClienteDto[]>{
+        const listofCliente=await this.clienteRepo.find()
+        const mapedCliente:listarClienteDto[]=listofCliente.map(cliente=>({
+            dni:cliente.dni,
+            nombre:cliente.nombre,
+            apellido:cliente.apellido,
+            telefono:cliente.telefono,
+            email:cliente.email,
+            url_imagen:cliente.url_imagen,
+            tipo_trabajo:cliente.tipo_trabajo,
+            pais:cliente.pais,
+            id_grado_academico:cliente.id_grado_academico,
+            universidad:cliente.universidad,
+            id_contrato:cliente.id_contrato,
+            }))
+        return mapedCliente
+    }
+    
+    async listOneAdmin(id:number):Promise<listarClienteDto>{
+        const oneCliente=await this.clienteRepo.findOne({where:{id}})
+        if(oneCliente===null){
+            throw new Error("No hay un administrador con ese ID")
+        }
+        return oneCliente           
+    }
+
     async crearCliente(data: CreateClienteDto){
         const hashedPassword = await bcrypt.hash(data.dni, 10); // Encriptar el dni
         
         const usuario=this.usuarioRepo.create({
             username:data.email,
             password:hashedPassword,
-            role:UserRole.CLIENTE,
+            role:UserRole.ESTUDIANTE,
             estado:true 
         })
 
@@ -39,7 +66,8 @@ export class ClienteService {
             pais:data.pais,
             id_grado_academico:data.id_grado_academico,
             universidad:data.universidad,
-            id_contrato:data.id_contrato
+            id_contrato:data.id_contrato,
+            usuario:savedUsuario
         })
 
         return this.clienteRepo.save(cliente);

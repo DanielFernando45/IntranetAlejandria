@@ -11,6 +11,7 @@ import { Usuario } from './usuario/usuario.entity';
 import { Cliente } from './cliente/cliente.entity';
 import { ConfigModule,ConfigService } from '@nestjs/config';
 import { AsesorModule } from './asesor/asesor.module';
+import { Asesor } from './asesor/asesor.entity';
 
 let puerto:number
 
@@ -35,7 +36,7 @@ if(process.env.DB_PORT){
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Admin, Usuario,Cliente],  // Aquí debes pasar todas tus entidades
+        entities: [Admin, Usuario,Cliente,Asesor],  // Aquí debes pasar todas tus entidades
         synchronize: false,  // Cambiar a `false` en producción
       }),
       inject: [ConfigService],

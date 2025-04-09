@@ -10,7 +10,7 @@ export class Admin{
     nombre:string;
 
     @Column()
-    correo:string;
+    email:string;
 
     @Column()
     dni:string;
