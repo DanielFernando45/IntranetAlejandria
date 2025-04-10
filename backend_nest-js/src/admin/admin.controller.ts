@@ -1,4 +1,4 @@
-import { Controller ,Post,Body,Get, Param, Patch, ParseIntPipe} from '@nestjs/common';
+import { Controller ,Post,Body,Get, Param, Patch, ParseIntPipe, Delete} from '@nestjs/common';
 import { AdminService } from './admin.service';
 
 import { CrearlienteDto } from './dto/crear-cliente.dto';
@@ -28,7 +28,15 @@ export class AdminController {
     async patchAdmin(@Body() body:CrearlienteDto,@Param('id',ParseIntPipe) id:number){
         return this.adminService.patchAdmin(body,id)
     }
-    
 
+    @Delete('/delete/:id')
+    async byeAdmin(@Param('id',ParseIntPipe) id:number){
+        try {
+            return this.adminService.deleteAdmin(id);
+          } catch (err) {
+            console.error(err);
+            throw err;
+          }
+    }
     
 }

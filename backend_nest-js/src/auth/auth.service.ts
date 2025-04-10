@@ -3,7 +3,7 @@
 // @Injectable()
 // export class AuthService {}
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Usuario } from '../usuario/usuario.entity';
 import { Repository } from 'typeorm';
@@ -30,7 +30,8 @@ export class AuthService {
 
   async validateUser(username: string, password: string) {
     const user = await this.usuarioRepo.findOneBy({ username });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    const passwordValid = user ? await bcrypt.compare(password, user.password) : false;
+    if (!user || !passwordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
     return user;
@@ -40,6 +41,7 @@ export class AuthService {
     let datos:{id:number,nombre:string}={id:0,nombre:""};
     const payload = { sub: user.id, username: user.username, role: user.role };
 
+
     if(user.role==="admin"){
     const getInfoAdmin=await this.adminRepo.findOne({
       where:{usuario: {id:user.id}},
@@ -47,7 +49,7 @@ export class AuthService {
       select:['id','nombre']
     })
       if(getInfoAdmin===null){
-        throw new Error("No hay un admin con ese ID")
+        throw new NotFoundException("No se encontró un administrador con ese ID");
       }
     datos=getInfoAdmin
     }
@@ -60,7 +62,7 @@ export class AuthService {
         select:['id','nombre']
       })
         if(getInfoAsesor===null){
-          throw new Error("No hay un Asesor con ese ID")
+          throw new NotFoundException("No se encontró un asesor con ese ID");
         }
       datos=getInfoAsesor
     }
@@ -71,7 +73,7 @@ export class AuthService {
         select:['id','nombre']
       })
         if(getInfoCliente===null){
-          throw new Error("No hay un Asesor con ese ID")
+          throw new NotFoundException("No se encontró un estudiante con ese ID");
         }
       datos=getInfoCliente
     }
