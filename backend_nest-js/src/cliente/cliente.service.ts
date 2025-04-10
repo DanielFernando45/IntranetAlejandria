@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './cliente.entity';
 import { Repository } from 'typeorm';
@@ -19,6 +19,7 @@ export class ClienteService {
 
     async listAdmin (): Promise<listarClienteDto[]>{
         const listofCliente=await this.clienteRepo.find()
+        if(!listofCliente) throw new NotFoundException("No se encontro ningun cliente")
         const mapedCliente:listarClienteDto[]=listofCliente.map(cliente=>({
             dni:cliente.dni,
             nombre:cliente.nombre,
@@ -32,14 +33,13 @@ export class ClienteService {
             universidad:cliente.universidad,
             id_contrato:cliente.id_contrato,
             }))
+        
         return mapedCliente
     }
     
     async listOneAdmin(id:number):Promise<listarClienteDto>{
         const oneCliente=await this.clienteRepo.findOne({where:{id}})
-        if(oneCliente===null){
-            throw new Error("No hay un administrador con ese ID")
-        }
+        if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
         return oneCliente           
     }
 

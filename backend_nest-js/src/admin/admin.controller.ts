@@ -1,4 +1,4 @@
-import { Controller ,Post,Body,Get, Param} from '@nestjs/common';
+import { Controller ,Post,Body,Get, Param, Patch, ParseIntPipe} from '@nestjs/common';
 import { AdminService } from './admin.service';
 
 import { CrearlienteDto } from './dto/crear-cliente.dto';
@@ -22,6 +22,11 @@ export class AdminController {
     @Post('/add')
     async create(@Body() body:CrearlienteDto){
         return this.adminService.create(body)
+    }
+
+    @Patch('/update/:id')
+    async patchAdmin(@Body() body:CrearlienteDto,@Param('id',ParseIntPipe) id:number){
+        return this.adminService.patchAdmin(body,id)
     }
     
 

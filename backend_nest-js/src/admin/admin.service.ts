@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {Admin} from './admin.entity'
@@ -55,6 +55,22 @@ export class AdminService {
         });
 
     return this.adminRepo.save(admin)
+    }
+
+    async patchAdmin(data:CrearlienteDto,id:number){
+        const campos:object={}
+        const searchAdmin=await this.adminRepo.findOneBy({id})
+        if(!searchAdmin) throw new NotFoundException
+
+        Object.entries(data).forEach(function([key,value]){
+            campos[key]=value
+        })
+        
+        const updateAdmin=await this.adminRepo.update(
+        {id: id},
+        campos)
+        return updateAdmin
+    
     }
 
     
