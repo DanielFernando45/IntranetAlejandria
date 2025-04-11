@@ -11,27 +11,27 @@ const ReunionesEstudiante = () => {
         <div className="flex flex-col gap-[40px] ml-8  mt-32 p-[40px] w-full h-[767px] bg-white rounded-[20px]">
 
           <div className="flex flex-col gap-[12px]">
-            <h1 className="font-medium text-[20px]">
-              Reuniones
-            </h1>
-            <div className="flex w-full border-b gap-3 border-black font-normal">
-              <button
-                className={`px-3 rounded-t-[5px] w-[105px] ${
-                  vista === "proximos" ? "bg-[#17162E] text-white" : ""
-                }`}
-                onClick={() => setVista("proximos")}
-              >
-                Próximos
-              </button>
-              <button
-                className={`px-3 rounded-t-[5px] w-[105px] ${
-                  vista === "anteriores" ? "bg-[#17162E] text-white" : ""
-                }`}
-                onClick={() => setVista("anteriores")}
-              >
-                Anteriores
-              </button>
-            </div>
+                <h1 className="font-medium text-[20px]">
+                Reuniones
+                </h1>
+                <div className="flex w-full border-b gap-3 border-black font-normal">
+                    <button
+                        className={`px-3 rounded-t-[5px] w-[105px] ${
+                        vista === "proximos" ? "bg-[#17162E] text-white" : ""
+                        }`}
+                        onClick={() => setVista("proximos")}
+                    >
+                        Próximos
+                    </button>
+                <button
+                    className={`px-3 rounded-t-[5px] w-[105px] ${
+                    vista === "anteriores" ? "bg-[#17162E] text-white" : ""
+                    }`}
+                    onClick={() => setVista("anteriores")}
+                >
+                    Anteriores
+                </button>
+                </div>
           </div>
 
           {/* Contenido según la vista seleccionada */}

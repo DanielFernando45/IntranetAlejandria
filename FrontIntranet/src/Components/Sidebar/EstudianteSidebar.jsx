@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import Menu from "../../assets/icons/IconEstudiante/BotonMenu.svg";
 import LogoAleja from "../../assets/icons/IconEstudiante/LogoOscuro.svg";
 import MenuRetraido from "../../assets/icons/menuRetra.svg";
+//Logos
 import HomeEstu from "../../assets/icons/IconEstudiante/HomeEstudent.svg";
 import Reuniones from "../../assets/icons/IconEstudiante/ReunionEstudiante.svg";
 import EntreRev from "../../assets/icons/IconEstudiante/EnvioEstudiante.svg";
