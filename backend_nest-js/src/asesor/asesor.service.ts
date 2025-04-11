@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Asesor } from './asesor.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { Usuario ,UserRole} from '../usuario/usuario.entity';
 import { createAsesorDto } from './dto/crear-asesor.dto';
 import * as bcrypt from "bcrypt"
 import { listarAsesorDto } from './dto/listar-asesor.dto';
+import { UpdateAsesorDto } from './dto/update-asesor.dto';
 
 @Injectable()
 export class AsesorService {
@@ -37,21 +38,24 @@ export class AsesorService {
     async listOneAdmin(id:number):Promise<listarAsesorDto>{
         const oneAsesor=await this.asesorRepo.findOne({where:{id}})
         if(oneAsesor===null){
-            throw new Error("No hay un administrador con ese ID")
+            throw new Error("No hay un asesor con ese ID")
         }
         return oneAsesor           
     }
 
     async crearAsesor(data: createAsesorDto){
+        const exits=await this.asesorRepo.findOneBy({email:data.email})
+        if(exits){
+            throw new ConflictException("Ya existe un asesor registrado con ese corrreo")
+        }
         const hashedPassword=await bcrypt.hash(data.dni, 10);
-        
         const usuario=this.usuarioRepo.create({
             username:data.email,
             password:hashedPassword,
             role:UserRole.ASESOR,
             estado:true
         })
-
+        try{
         const savedUsuario=await this.usuarioRepo.save(usuario)
 
         const asesor=this.asesorRepo.create({
@@ -68,5 +72,26 @@ export class AsesorService {
             usuario:savedUsuario
         })
         return this.asesorRepo.save(asesor)
+        }catch(err){
+            throw new Error(err.message)
+        }
+    }
+
+    async patchAsesor(id:number,data:UpdateAsesorDto){
+        if(!Object.keys(data).length){
+            throw new BadRequestException("No hay contenido a actualizar")
+        }
+        const updatedAsesor=await this.asesorRepo.update(
+        {id},
+        data)
+        if(updatedAsesor.affected===0) throw new NotFoundException("No se encuentra ese ID")
+        return updatedAsesor
+    }
+
+    async deleteAsesor(id:number){
+        const deleted=await this.asesorRepo.delete({id})
+        if(deleted.affected===0) throw new NotFoundException("No se encuentra ese ID")
+        return {message:"Asesor eliminado correctamente",cantidad:deleted.affected
+    }
     }
 }

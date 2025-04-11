@@ -1,38 +1,44 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 
-export class createAsesorDto{
+export class UpdateAsesorDto{
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     readonly dni:string
     
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     readonly nombre:string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     readonly apellido:string;
 
     @IsEmail()
-    @IsNotEmpty()
+    @IsOptional()
     readonly email:string;
 
     @IsNumber()
+    @IsOptional()
     readonly telefono:number;
 
     @IsString()
+    @IsOptional()
     readonly url_imagen:string;
 
     @IsString()
+    @IsOptional()
     readonly area:string;
 
     @IsString()
+    @IsOptional()
     readonly especialidad:string;
 
     @IsString()
+    @IsOptional()
     readonly id_grado_academico:string;
 
     @IsString()
+    @IsOptional()
     readonly universidad:string;
 }

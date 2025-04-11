@@ -3,14 +3,14 @@ import { IsString, IsEmail, IsNotEmpty ,IsNumber} from 'class-validator';
 export class ListarClienteDto {//actualizar dtos
     @IsString()
     @IsNotEmpty()
-    nombre: string;
+    readonly nombre: string;
     
     @IsEmail()
     @IsNotEmpty()
-    email: string;
+    readonly email: string;
 
     @IsString()
     @IsNotEmpty()
-    dni: string;
+    readonly dni: string;
 
 }

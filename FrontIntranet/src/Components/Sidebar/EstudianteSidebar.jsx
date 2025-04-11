@@ -68,7 +68,7 @@ const EstudianteSidebar = () => {
                   isExpanded ? "w-[266px]" : "w-[100px]"
                 } h-[77px] px-[20px] py-[25px] cursor-pointer flex-shrink-0 bg-white z-30 transition-all duration-300 
                 hover:bg-[#F0EFEF] ${
-                  isActive ? "bg-[#EFEFEE] border-l-[5px] border-[#000]" : ""
+                  isActive ? "bg-[#F0EFEE] border-l-[5px] border-[#000]" : ""
                 }`}
                 onClick={handleItemClick}
               >

@@ -4,8 +4,9 @@ import { Repository } from 'typeorm';
 import {Admin} from './admin.entity'
 import {Usuario,UserRole} from '../usuario/usuario.entity'
 import * as bcrypt from "bcrypt"
-import { ListarClienteDto } from './dto/listar-cliente.dto';
-import { CrearlienteDto } from './dto/crear-cliente.dto';
+import { ListarClienteDto } from './dto/listar-admin.dto';
+import { CrearlienteDto } from './dto/crear-admin.dto';
+import { UpdateClienteDto } from './dto/update-admin.dto';
 
 @Injectable()
 export class AdminService {
@@ -64,21 +65,15 @@ export class AdminService {
         }
     }
 
-    async patchAdmin(data:CrearlienteDto,id:number){
-        // const campos:object={}
-        // const searchAdmin=await this.adminRepo.findOneBy({id})
-        // if(!searchAdmin) throw new NotFoundException
-        // Object.entries(data).forEach(function([key,value]){
-        //     campos[key]=value
-        // })
+    async patchAdmin(data:UpdateClienteDto,id:number){
         if (!Object.keys(data).length) {
             throw new BadRequestException("No se proporcionaron campos para actualizar");
         }
         const updateAdmin=await this.adminRepo.update(
         {id: id},
         data)
+
         if(updateAdmin.affected===0) throw new NotFoundException("No se afecto ninguna columna")
-        console.log(updateAdmin.affected)
         return data
     
     }

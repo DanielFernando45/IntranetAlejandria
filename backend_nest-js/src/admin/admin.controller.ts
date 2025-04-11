@@ -1,7 +1,7 @@
 import { Controller ,Post,Body,Get, Param, Patch, ParseIntPipe, Delete} from '@nestjs/common';
 import { AdminService } from './admin.service';
 
-import { CrearlienteDto } from './dto/crear-cliente.dto';
+import { CrearlienteDto } from './dto/crear-admin.dto';
 
 
 @Controller('admin')
@@ -38,5 +38,5 @@ export class AdminController {
             throw err;
           }
     }
-    
+
 }

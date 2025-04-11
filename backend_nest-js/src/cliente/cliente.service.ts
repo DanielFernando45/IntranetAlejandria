@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './cliente.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { Usuario,UserRole } from 'src/usuario/usuario.entity';
 import { CreateClienteDto } from './dto/crear-cliente.dto';
 import * as bcrypt from 'bcrypt'
 import { listarClienteDto } from './dto/listar-cliente.dto';
+import { updateClienteDto } from './dto/update-cliente.dto';
 
 @Injectable()
 export class ClienteService {
@@ -44,6 +45,9 @@ export class ClienteService {
     }
 
     async crearCliente(data: CreateClienteDto){
+        const exist=await this.clienteRepo.findOneBy({email:data.email})
+        if(exist) throw new ConflictException("Ya existe ese cliente")
+        
         const hashedPassword = await bcrypt.hash(data.dni, 10); // Encriptar el dni
         
         const usuario=this.usuarioRepo.create({
@@ -52,7 +56,7 @@ export class ClienteService {
             role:UserRole.ESTUDIANTE,
             estado:true 
         })
-
+        try{
         const savedUsuario = await this.usuarioRepo.save(usuario);
 
         const cliente=this.clienteRepo.create({
@@ -71,5 +75,24 @@ export class ClienteService {
         })
 
         return this.clienteRepo.save(cliente);
+        }catch(err){
+        throw new InternalServerErrorException("No se pudo realizar el registro")
+        }
+    }
+
+    async patchCliente(id:number,data:updateClienteDto){
+        if(!Object.keys(data).length){
+            throw new BadRequestException("No se envio un body para actualizar")
+        }
+        const updated=await this.clienteRepo.update({id},data)
+        if(updated.affected===0) throw new NotFoundException("No hay registro a afectar")
+        
+        return updated
+    }
+
+    async deletedCliente(id:number){
+        const deleted=await this.clienteRepo.delete({id})
+        if(deleted.affected===0) throw new NotFoundException("No se encontro el registro a eliminar")
+        return {message:"Cliente eleiminado correctamente",eliminados:deleted.affected}
     }
 }

@@ -14,6 +14,7 @@ const NoticiasRecientes=[
   {imagen:NoticiaUno,texto:"Nueva guía sobre redacción de tesis disponible."},
   {imagen:NoticiaUno,texto:"Ebook para elaborar tu Marco Teorico"},
   {imagen:NoticiaUno,texto:"Ebook para elaborar tu Marco Teorico"},
+  {imagen:NoticiaUno,texto:"Ebook para elaborar tu Marco Teorico"},
 ]
 
 
@@ -51,7 +52,7 @@ return(
               <section>
                 <h2 className=" mb-5 text-2xl font-bold">Noticias Recientes</h2>
                 <div className="flex justify-between w-full">
-                  <div className="flex justify-items-center">
+                  <div className="flex items-center ">
                      <a className=" " href=""> <img src={FeclaIzqui} alt="" /></a>  
                   </div>
                     <div className="flex justify-between gap-5">
@@ -62,7 +63,7 @@ return(
                             <div className="m-4 gap-[13px]">
                               <p className="text-white  text-[12px]">{link.texto}</p>
                               <span className="flex justify-end gap-1 items-center">
-                                <a className="text-[#7373B4] text-[12px] " href="">ver</a>
+                                <a className=" text-[#7373B4] text-[12px] " href="">ver</a>
                                 <img src={flechaVer} alt="" />
                               </span>                            
                             </div>              
@@ -70,7 +71,10 @@ return(
                         );
                       })}
                     </div>
-                    <a className="w-6 h-6" href=""> <img src={FechaDerec} alt="" /></a>
+                    <div className="flex items-center">
+                      <a className=" w-6 h-6" href=""> <img src={FechaDerec} alt="" /></a>
+                    </div>
+                    
                 </div>
               </section>
 
@@ -123,7 +127,8 @@ return(
                         <div className="w-[100px] flex justify-center">May 25,2025</div>
                         <div className="w-[102px] flex justify-center">11:15 AM</div>
                         <div className="w-[85px] rounded-md px-3  flex justify-center "> <img className="w-[15px]" src={Descargas}></img> </div>
-                   </div>                                                                                         
+                   </div>                
+                                                                                            
               </div>
 
             </div>

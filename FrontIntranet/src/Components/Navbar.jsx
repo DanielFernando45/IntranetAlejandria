@@ -3,9 +3,16 @@ import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 
-import logoaleja from "../assets/images/Aleja.svg";
+import logoaleja from "../assets/images/LogoAlejandria.png";
 import perfil from "../assets/icons/PerfilIcon.svg";
 import flecha from "../assets/icons/Flecha.svg";
+
+import miperfil from "../assets/icons/miPerfil.svg";
+import micontrato from "../assets/icons/miContrato.svg";
+import miasesor from "../assets/icons/miAsesor.svg";
+import candadoblack from "../assets/icons/candadoPass.svg";
+import cerrarsesion from "../assets/icons/cerrarSesion.svg";
+
 
 const Navbar = ({ user }) => {
   const { logout } = useContext(AuthContext);
@@ -31,14 +38,20 @@ const Navbar = ({ user }) => {
           <img src={flecha} alt="Flecha menú" />
         </div>
 
-        <div className="absolute right-0 top-[60px] hidden group-hover:flex flex-col bg-white border rounded-lg shadow-md min-w-[150px] p-2 z-50">
+        <div className="text-[#575051] absolute right-0 top-[60px]  flex flex-col bg-white border rounded-lg shadow-md min-w-[230px] p-2 z-50">
           {user?.role === 'estudiante' && (
-            <button className="text-left px-2 py-1 hover:bg-gray-100">Mi perfil</button>
+            <>
+            <button className="flex justify-between text-left px-2 py-1 hover:bg-gray-100"> Mi perfil <img src={miperfil} alt="Flecha menú" /></button>
+            <button className="flex justify-between text-left px-2 py-1 hover:bg-gray-100">Mi asesor <img src={micontrato} alt="Flecha menú" /></button>
+            <button className="flex justify-between text-left px-2 py-1 hover:bg-gray-100">Mi contrato <img src={miasesor} alt="Flecha menú" /></button>
+            <button className="flex justify-between text-left px-2 py-1 hover:bg-gray-100">Cambiar contraseña <img src={candadoblack} alt="Flecha menú" /></button>
+            </>
+            
           )}
           {user?.role === 'asesor' && (
             <>
-              <button className="text-left px-2 py-1 hover:bg-gray-100">Mi perfil</button>
-              <button className="text-left px-2 py-1 hover:bg-gray-100">Agenda</button>
+              <button className="flex justify-between  text-left px-2 py-1 hover:bg-gray-100">Mi perfil <img src={miperfil} alt="Flecha menú" /></button>
+              <button className="flex justify-between  text-left px-2 py-1 hover:bg-gray-100">Cambiar Contraseña <img src={candadoblack} alt="Flecha menú" /> </button>
             </>
           )}
           {user?.role === 'admin' && (
@@ -48,8 +61,9 @@ const Navbar = ({ user }) => {
             </>
           )}
           <hr className="my-1" />
-          <button onClick={handleLogout} className="text-left px-2 py-1 hover:bg-gray-100 text-red-500">
-            Cerrar sesión
+          <button onClick={handleLogout} className="flex justify-between text-left px-2 py-1 hover:bg-gray-100 text-red-500">
+            Cerrar sesión 
+            <img src={cerrarsesion} alt="Flecha menú" />
           </button>
         </div>
       </div>

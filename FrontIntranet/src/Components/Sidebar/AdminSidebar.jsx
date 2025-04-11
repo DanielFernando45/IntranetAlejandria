@@ -9,11 +9,13 @@ import Gestion from "../../assets/icons/IconAsesor/gestionAlum.svg";
 import Asignaciones from "../../assets/icons/IconAdmin/asignar.svg";
 import ConfIntranet from "../../assets/icons/IconAdmin/configurar.svg";
 import GestionSoporte from "../../assets/icons/IconAdmin/SoporteTecnico.svg";
+import Pagos from "../../assets/icons/IconEstudiante/PagosEstudiante.svg";
 
 
 const LINKS = [
   { icono: Gestion, path: "/admin/gestionUser", title: "Gestionar Usuarios" },
   { icono: Asignaciones, path: "/admin/reuniones", title: "Asignaciones" },
+  { icono: Pagos, path: "/admin/pagos", title: "Pagos" },
   { icono: ConfIntranet, path: "/admin/entrega", title: "Configuración de Intranet" },
   { icono: GestionSoporte, path: "/admin/calendario", title: "Gestion Soporte Tecnico" },
 ];
