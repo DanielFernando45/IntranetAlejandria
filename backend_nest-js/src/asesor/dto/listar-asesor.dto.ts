@@ -4,35 +4,35 @@ import { IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
 export class listarAsesorDto{
     @IsString()
     @IsNotEmpty()
-    dni:string
+    readonly dni:string
     
     @IsString()
     @IsNotEmpty()
-    nombre:string;
+    readonly nombre:string;
 
     @IsString()
     @IsNotEmpty()
-    apellido:string;
+    readonly apellido:string;
 
     @IsEmail()
     @IsNotEmpty()
-    email:string;
+    readonly email:string;
 
     @IsNumber()
-    telefono:number;
+    readonly telefono:number;
 
     @IsString()
-    url_imagen:string;
+    readonly url_imagen:string;
 
     @IsString()
-    area:string;
+    readonly area:string;
 
     @IsString()
-    especialidad:string;
+    readonly especialidad:string;
 
     @IsString()
-    id_grado_academico:string;
+    readonly id_grado_academico:string;
 
     @IsString()
-    universidad:string;
+    readonly universidad:string;
 }

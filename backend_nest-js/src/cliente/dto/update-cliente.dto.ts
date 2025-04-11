@@ -1,41 +1,48 @@
-import { IsString, IsEmail, IsNotEmpty ,IsNumber} from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty ,IsNumber, IsOptional} from 'class-validator';
 
-export class CreateClienteDto {//actualizar dtos
+export class updateClienteDto {//actualizar dtos
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     readonly dni: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     readonly nombre: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     readonly apellido: string;
 
     @IsNumber()
+    @IsOptional()
     readonly telefono: number;
 
     @IsEmail()
-    @IsNotEmpty()
+    @IsOptional()
     readonly email: string;
 
     @IsString()
+    @IsOptional()
     readonly url_imagen:string;
 
     @IsString()
+    @IsOptional()
     readonly tipo_trabajo:string;
 
     @IsString()
+    @IsOptional()
     readonly pais:string;
 
     @IsString()
+    @IsOptional()
     readonly id_grado_academico:string;
 
     @IsString()
+    @IsOptional()
     readonly universidad:string;
 
     @IsString()
+    @IsOptional()
     readonly id_contrato:string;
 
 }

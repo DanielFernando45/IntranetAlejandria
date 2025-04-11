@@ -3,39 +3,39 @@ import { IsString, IsEmail, IsNotEmpty ,IsNumber} from 'class-validator';
 export class listarClienteDto {//actualizar dtos
     @IsString()
     @IsNotEmpty()
-    dni: string;
+    readonly dni: string;
 
     @IsString()
     @IsNotEmpty()
-    nombre: string;
+    readonly nombre: string;
 
     @IsString()
     @IsNotEmpty()
-    apellido: string;
+    readonly apellido: string;
 
     @IsNumber()
-    telefono: number;
+    readonly telefono: number;
 
     @IsEmail()
     @IsNotEmpty()
-    email: string;
+    readonly email: string;
 
     @IsString()
-    url_imagen:string;
+    readonly url_imagen:string;
 
     @IsString()
-    tipo_trabajo:string;
+    readonly tipo_trabajo:string;
 
     @IsString()
-    pais:string;
+    readonly pais:string;
 
     @IsString()
-    id_grado_academico:string;
+    readonly id_grado_academico:string;
 
     @IsString()
-    universidad:string;
+    readonly universidad:string;
 
     @IsString()
-    id_contrato:string;
+    readonly id_contrato:string;
 
 }
