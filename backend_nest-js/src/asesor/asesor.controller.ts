@@ -23,12 +23,12 @@ export class AsesorController {
             return this.asesorService.crearAsesor(body)
         }
 
-        @Patch(':id')
+        @Patch('/update/:id')
         async update(@Param('id',ParseIntPipe) id:number,@Body() body:UpdateAsesorDto){
             return this.asesorService.patchAsesor(id,body)
         }
 
-        @Delete(':id')
+        @Delete('delete/:id')
         async delete(@Param('id',ParseIntPipe) id:number){
             return this.asesorService.deleteAsesor(id)
         }

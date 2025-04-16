@@ -25,24 +25,24 @@ export class updateClienteDto {//actualizar dtos
     @IsOptional()
     readonly url_imagen:string;
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
-    readonly tipo_trabajo:string;
+    readonly tipoTrabajo:number;
 
     @IsString()
     @IsOptional()
     readonly pais:string;
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
-    readonly id_grado_academico:string;
+    readonly gradoAcademico:number;
 
     @IsString()
     @IsOptional()
     readonly universidad:string;
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
-    readonly id_contrato:string;
+    readonly tipoContrato:number;
 
 }

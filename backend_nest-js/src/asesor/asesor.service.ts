@@ -7,6 +7,9 @@ import { createAsesorDto } from './dto/crear-asesor.dto';
 import * as bcrypt from "bcrypt"
 import { listarAsesorDto } from './dto/listar-asesor.dto';
 import { UpdateAsesorDto } from './dto/update-asesor.dto';
+import { AreaAsesor } from 'src/entidades/areaAsesor.entity';
+import { GradoAcademico } from 'src/entidades/gradoAcademico.entity';
+import { ListarClienteDto } from 'src/admin/dto/listar-admin.dto';
 
 @Injectable()
 export class AsesorService {
@@ -16,10 +19,19 @@ export class AsesorService {
 
         @InjectRepository(Usuario)
         private usuarioRepo: Repository<Usuario>,
+        
+        @InjectRepository(AreaAsesor)
+        private areaRepo: Repository<AreaAsesor>,
+        
+        @InjectRepository(GradoAcademico)
+        private gradoAcademicoRepo: Repository<GradoAcademico>,
+        
     ){}
 
     async listAdmin (): Promise<listarAsesorDto[]>{
-        const listofAsesor=await this.asesorRepo.find()
+        const listofAsesor=await this.asesorRepo.find({relations:["gradoAcademico","areaAsesor"]})
+        if(!listofAsesor) throw new NotFoundException("No se encontro ningun cliente")
+
         const mapedAsesor:listarAsesorDto[]=listofAsesor.map(asesor=>({
             dni:asesor.dni,
             nombre:asesor.nombre,
@@ -27,20 +39,24 @@ export class AsesorService {
             email:asesor.email,
             telefono:asesor.telefono,
             url_imagen:asesor.url_imagen,
-            area:asesor.area,
+            areaAsesor:asesor.areaAsesor?.nombre,
             especialidad:asesor.especialidad,
-            id_grado_academico:asesor.id_grado_academico,
+            gradoAcademico:asesor.gradoAcademico?.nombre,
             universidad:asesor.universidad
             }))
         return mapedAsesor
     }
     
     async listOneAdmin(id:number):Promise<listarAsesorDto>{
-        const oneAsesor=await this.asesorRepo.findOne({where:{id}})
-        if(oneAsesor===null){
-            throw new Error("No hay un asesor con ese ID")
+        const oneAsesor=await this.asesorRepo.findOne({where:{id},relations:['areaAsesor', 'gradoAcademico']})
+        if(oneAsesor===null) throw new Error("No hay un asesor con ese ID")
+        const asesorDto:listarAsesorDto={
+            ...oneAsesor,
+            areaAsesor:oneAsesor.areaAsesor.nombre,
+            gradoAcademico:oneAsesor.gradoAcademico.nombre,
+
         }
-        return oneAsesor           
+        return asesorDto          
     }
 
     async crearAsesor(data: createAsesorDto){
@@ -57,6 +73,13 @@ export class AsesorService {
         })
         try{
         const savedUsuario=await this.usuarioRepo.save(usuario)
+        
+        const areaAsesorSearch = await this.areaRepo.findOneBy({ id: data.areaAsesor });
+        const gradoAcademicoSearch = await this.gradoAcademicoRepo.findOneBy({ id: data.gradoAcademico})
+        
+        if (!areaAsesorSearch || !gradoAcademicoSearch) {
+            throw new NotFoundException("Algunas entidades relacionadas no existen");
+        }
 
         const asesor=this.asesorRepo.create({
             dni:data.dni,
@@ -65,9 +88,9 @@ export class AsesorService {
             email:data.email,
             telefono:data.telefono,
             url_imagen:data.url_imagen,
-            area:data.area,
+            areaAsesor:areaAsesorSearch,
             especialidad:data.especialidad,
-            id_grado_academico:data.id_grado_academico,
+            gradoAcademico:gradoAcademicoSearch,
             universidad:data.universidad,
             usuario:savedUsuario
         })
@@ -81,9 +104,17 @@ export class AsesorService {
         if(!Object.keys(data).length){
             throw new BadRequestException("No hay contenido a actualizar")
         }
+        const partialEntity: any = { ...data };
+        if (data.areaAsesor) {
+            partialEntity.areaAsesor = { id: data.areaAsesor };
+        }
+        if (data.gradoAcademico) {
+            partialEntity.gradoAcademico = { id: data.gradoAcademico };
+        }
         const updatedAsesor=await this.asesorRepo.update(
         {id},
-        data)
+        partialEntity)
+    
         if(updatedAsesor.affected===0) throw new NotFoundException("No se encuentra ese ID")
         return updatedAsesor
     }

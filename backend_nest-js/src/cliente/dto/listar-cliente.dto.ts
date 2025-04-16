@@ -1,41 +1,40 @@
-import { IsString, IsEmail, IsNotEmpty ,IsNumber} from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
 
-export class listarClienteDto {//actualizar dtos
-    @IsString()
-    @IsNotEmpty()
-    readonly dni: string;
+export class ListarClienteDto {
+  @IsString()
+  @IsNotEmpty()
+  readonly dni: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly nombre: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly nombre: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly apellido: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly apellido: string;
 
-    @IsNumber()
-    readonly telefono: number;
+  @IsNumber()
+  readonly telefono: number;
 
-    @IsEmail()
-    @IsNotEmpty()
-    readonly email: string;
+  @IsEmail()
+  @IsNotEmpty()
+  readonly email: string;
 
-    @IsString()
-    readonly url_imagen:string;
+  @IsString()
+  readonly url_imagen: string;
 
-    @IsString()
-    readonly tipo_trabajo:string;
+  @IsString()
+  readonly tipoTrabajo: string;  // Cambié de tipo_trabajo a tipoTrabajo
 
-    @IsString()
-    readonly pais:string;
+  @IsString()
+  readonly pais: string;
 
-    @IsString()
-    readonly id_grado_academico:string;
+  @IsString()
+  readonly gradoAcademico: string;  // Cambié id_grado_academico a gradoAcademico
 
-    @IsString()
-    readonly universidad:string;
+  @IsString()
+  readonly universidad: string;
 
-    @IsString()
-    readonly id_contrato:string;
-
+  @IsString()
+  readonly tipoContrato: string;  // Cambié id_contrato a tipoContrato
 }

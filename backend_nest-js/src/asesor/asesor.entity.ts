@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne,JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne,JoinColumn, ManyToOne } from "typeorm";
 import { Usuario } from "src/usuario/usuario.entity";
+import { GradoAcademico } from "src/entidades/gradoAcademico.entity";
+import { AreaAsesor } from "src/entidades/areaAsesor.entity";
 
 @Entity()
 export class Asesor{
@@ -24,14 +26,17 @@ export class Asesor{
     @Column()
     url_imagen:string;
 
-    @Column()
-    area:string;
+    @ManyToOne(() => AreaAsesor)
+    @JoinColumn({ name: 'id_area' }) // nombre de la columna en la tabla Cliente
+    areaAsesor: AreaAsesor;
 
     @Column()
     especialidad:string;
 
-    @Column()
-    id_grado_academico:string;
+    @ManyToOne(() => GradoAcademico)
+    @JoinColumn({ name: 'id_grado_academico' }) // nombre de la columna en la tabla Cliente
+    gradoAcademico: GradoAcademico;
+    
 
     @Column()
     universidad:string;

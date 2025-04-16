@@ -25,13 +25,13 @@ export class createAsesorDto{
     readonly url_imagen:string;
 
     @IsString()
-    readonly area:string;
+    readonly areaAsesor:number;
 
     @IsString()
     readonly especialidad:string;
 
     @IsString()
-    readonly id_grado_academico:string;
+    readonly gradoAcademico:number;
 
     @IsString()
     readonly universidad:string;
