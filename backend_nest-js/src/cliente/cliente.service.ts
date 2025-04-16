@@ -10,10 +10,13 @@ import { updateClienteDto } from './dto/update-cliente.dto';
 import { TipoContrato } from 'src/entidades/tipoContrato.entity';
 import { GradoAcademico } from 'src/entidades/gradoAcademico.entity';
 import { TipoTrabajo } from 'src/entidades/tipoTrabajo.entity';
+import { UsuarioService } from 'src/usuario/usuario.service';
 
 @Injectable()
 export class ClienteService {
     constructor(
+        private readonly usuarioService:UsuarioService,
+
         @InjectRepository(Cliente)
         private clienteRepo: Repository<Cliente>,
 
@@ -130,5 +133,19 @@ export class ClienteService {
         const deleted=await this.clienteRepo.delete({id})
         if(deleted.affected===0) throw new NotFoundException("No se encontro el registro a eliminar")
         return {message:"Cliente eliminado correctamente",eliminados:deleted.affected}
+    }
+
+    async desactivateCliente(id:number){
+        const cliente=await this.clienteRepo.findOne({
+            where:{id},
+            relations:['usuario'],
+            select:{ usuario: { id: true }}
+        })
+        if(!cliente) return new NotFoundException("No se encontro el cliente en la bd")
+        const id_usuario=cliente?.usuario.id
+        if(!id_usuario) throw new NotFoundException("No se encontro el id")
+
+        const response=await this.usuarioService.desactivateUser(id_usuario)
+        return {message:"Usuario desactivado correctamente",affectado:response}
     }
 }

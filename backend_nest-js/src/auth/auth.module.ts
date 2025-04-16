@@ -12,7 +12,7 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { Usuario } from '../usuario/usuario.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Admin } from 'src/admin/admin.entity';
