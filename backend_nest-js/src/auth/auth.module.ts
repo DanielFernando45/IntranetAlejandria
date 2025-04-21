@@ -18,6 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Admin } from 'src/admin/admin.entity';
 import { Asesor } from 'src/asesor/asesor.entity';
 import { Cliente } from 'src/cliente/cliente.entity';
+import { UsuarioModule } from 'src/usuario/usuario.module';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { Cliente } from 'src/cliente/cliente.entity';
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'superSecret',
       signOptions: { expiresIn: '1h' },
-    }),
+    }),UsuarioModule
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

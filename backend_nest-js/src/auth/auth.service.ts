@@ -3,7 +3,7 @@
 // @Injectable()
 // export class AuthService {}
 
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Usuario } from '../usuario/usuario.entity';
 import { Repository } from 'typeorm';
@@ -12,10 +12,13 @@ import { Admin } from 'src/admin/admin.entity';
 import * as bcrypt from 'bcrypt';
 import { Asesor } from 'src/asesor/asesor.entity';
 import { Cliente } from 'src/cliente/cliente.entity';
+import { UsuarioService } from 'src/usuario/usuario.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly usuarioService:UsuarioService,
+
     @InjectRepository(Usuario)
     private usuarioRepo: Repository<Usuario>,
     @InjectRepository(Admin)
@@ -78,8 +81,6 @@ export class AuthService {
       datos=getInfoCliente
     }
 
-    
-  
     return {
       access_token: this.jwtService.sign(payload),
       id_usuario:user.id,
@@ -89,5 +90,20 @@ export class AuthService {
         role:user.role
       }
     };
+  }
+
+  async recoverPassword(email:string,oldPassword:string,newPassword:string){
+    const searchedUser=await this.usuarioRepo.findOneBy({username:email})
+    if(!searchedUser)throw new NotFoundException("No se encuentra ese user")
+    const comparationPassword=searchedUser? await bcrypt.compare(oldPassword,searchedUser.password) :false
+    if(!comparationPassword){
+      throw new BadRequestException("No es correcta la contraseña ingresada")
+    }
+    const newHashed=await bcrypt.hash(newPassword,10)
+    searchedUser.password=newHashed
+
+    const updated=await this.usuarioRepo.save(searchedUser)
+
+    return {"message":"Contraseña cambiada correctamente"}
   }
 }

@@ -6,9 +6,10 @@ import { Asesor } from './asesor.entity';
 import { Usuario } from '../usuario/usuario.entity';
 import { AreaAsesor } from 'src/entidades/areaAsesor.entity';
 import { GradoAcademico } from 'src/entidades/gradoAcademico.entity';
+import { UsuarioModule } from 'src/usuario/usuario.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Asesor,Usuario,AreaAsesor,GradoAcademico])],
+  imports:[TypeOrmModule.forFeature([Asesor,Usuario,AreaAsesor,GradoAcademico]),UsuarioModule],
   providers: [AsesorService],
   controllers: [AsesorController]
 })

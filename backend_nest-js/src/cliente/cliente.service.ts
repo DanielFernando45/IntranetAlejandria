@@ -11,6 +11,7 @@ import { TipoContrato } from 'src/entidades/tipoContrato.entity';
 import { GradoAcademico } from 'src/entidades/gradoAcademico.entity';
 import { TipoTrabajo } from 'src/entidades/tipoTrabajo.entity';
 import { UsuarioService } from 'src/usuario/usuario.service';
+import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
 
 @Injectable()
 export class ClienteService {
@@ -20,8 +21,6 @@ export class ClienteService {
         @InjectRepository(Cliente)
         private clienteRepo: Repository<Cliente>,
 
-        @InjectRepository(Usuario)
-        private usuarioRepo: Repository<Usuario>,
 
         @InjectRepository(TipoContrato)
         private tipoContratoRepo: Repository<TipoContrato>,
@@ -38,17 +37,12 @@ export class ClienteService {
         if(!listofCliente) throw new NotFoundException("No se encontro ningun cliente")
 
         const mapedCliente:ListarClienteDto[]=listofCliente.map(cliente=>({
-            dni:cliente.dni,
-            nombre:cliente.nombre,
-            apellido:cliente.apellido,
-            telefono:cliente.telefono,
-            email:cliente.email,
-            url_imagen:cliente.url_imagen,
-            tipoTrabajo:cliente.tipoTrabajo?.nombre,
-            pais:cliente.pais,
-            gradoAcademico:cliente.gradoAcademico?.nombre,
-            universidad:cliente.universidad,
-            tipoContrato:cliente.tipoContrato?.nombre,
+            ...cliente,
+            tipoTrabajo:cliente.tipoTrabajo?.nombre || '',
+            
+            gradoAcademico:cliente.gradoAcademico?.nombre || '',
+            
+            tipoContrato:cliente.tipoContrato?.nombre || '',
             }))
         
         return mapedCliente
@@ -67,19 +61,23 @@ export class ClienteService {
     }
 
     async crearCliente(data: CreateClienteDto){
+
+        let savedUser:CreateUserDto
+        try{
         const exist=await this.clienteRepo.findOneBy({email:data.email})
         if(exist) throw new ConflictException("Ya existe ese cliente")
         
-        const hashedPassword = await bcrypt.hash(data.dni, 10); // Encriptar el dni
-
-        const usuario=this.usuarioRepo.create({
+        const dataUser={
             username:data.email,
-            password:hashedPassword,
+            password:data.dni,
             role:UserRole.ESTUDIANTE,
-            estado:true 
-        })
+            estado:true
+        }
+        savedUser=await this.usuarioService.createUserDefault(dataUser)
+        }catch(err){
+            return new Error(err.message)
+        }
         try{
-        const savedUsuario = await this.usuarioRepo.save(usuario);
 
         const tipoContratoSearch = await this.tipoContratoRepo.findOneBy({ id: data.tipoContrato });
         const gradoAcademicoSearch = await this.gradoAcademicoRepo.findOneBy({ id: data.gradoAcademico });
@@ -100,13 +98,13 @@ export class ClienteService {
             gradoAcademico:gradoAcademicoSearch,
             universidad:data.universidad,
             tipoContrato:tipoContratoSearch,
-            usuario:savedUsuario
+            usuario:savedUser
         })
 
-        return this.clienteRepo.save(cliente);
+        return await this.clienteRepo.save(cliente);
         }catch(err){
-        throw new InternalServerErrorException("No se pudo realizar el registro")
-        }
+        throw new InternalServerErrorException(err.message)
+        }   
     }
 
     async patchCliente(id:number,data:updateClienteDto){

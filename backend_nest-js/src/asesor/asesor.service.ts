@@ -10,15 +10,16 @@ import { UpdateAsesorDto } from './dto/update-asesor.dto';
 import { AreaAsesor } from 'src/entidades/areaAsesor.entity';
 import { GradoAcademico } from 'src/entidades/gradoAcademico.entity';
 import { ListarClienteDto } from 'src/admin/dto/listar-admin.dto';
+import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
+import { UsuarioService } from 'src/usuario/usuario.service';
 
 @Injectable()
 export class AsesorService {
     constructor(
+        private readonly usuarioService:UsuarioService,
+
         @InjectRepository(Asesor)
         private asesorRepo: Repository<Asesor>,
-
-        @InjectRepository(Usuario)
-        private usuarioRepo: Repository<Usuario>,
         
         @InjectRepository(AreaAsesor)
         private areaRepo: Repository<AreaAsesor>,
@@ -60,41 +61,32 @@ export class AsesorService {
     }
 
     async crearAsesor(data: createAsesorDto){
-        const exits=await this.asesorRepo.findOneBy({email:data.email})
-        if(exits){
-            throw new ConflictException("Ya existe un asesor registrado con ese corrreo")
-        }
-        const hashedPassword=await bcrypt.hash(data.dni, 10);
-        const usuario=this.usuarioRepo.create({
+        let savedUser:CreateUserDto
+        
+        const exist=await this.asesorRepo.findOneBy({email:data.email})
+        if(exist) throw new ConflictException("Ya existe ese asesor")      
+        const dataUser={
             username:data.email,
-            password:hashedPassword,
+            password:data.dni,
             role:UserRole.ASESOR,
             estado:true
-        })
+        }
+        savedUser=await this.usuarioService.createUserDefault(dataUser)
+        
         try{
-        const savedUsuario=await this.usuarioRepo.save(usuario)
         
         const areaAsesorSearch = await this.areaRepo.findOneBy({ id: data.areaAsesor });
         const gradoAcademicoSearch = await this.gradoAcademicoRepo.findOneBy({ id: data.gradoAcademico})
         
-        if (!areaAsesorSearch || !gradoAcademicoSearch) {
-            throw new NotFoundException("Algunas entidades relacionadas no existen");
-        }
-
+        if (!areaAsesorSearch || !gradoAcademicoSearch) throw new NotFoundException("Algunas entidades relacionadas no existen");
+        
         const asesor=this.asesorRepo.create({
-            dni:data.dni,
-            nombre:data.nombre,
-            apellido:data.apellido,
-            email:data.email,
-            telefono:data.telefono,
-            url_imagen:data.url_imagen,
+            ...data,
             areaAsesor:areaAsesorSearch,
-            especialidad:data.especialidad,
             gradoAcademico:gradoAcademicoSearch,
-            universidad:data.universidad,
-            usuario:savedUsuario
+            usuario:savedUser
         })
-        return this.asesorRepo.save(asesor)
+        return await this.asesorRepo.save(asesor)
         }catch(err){
             throw new Error(err.message)
         }
@@ -124,5 +116,19 @@ export class AsesorService {
         if(deleted.affected===0) throw new NotFoundException("No se encuentra ese ID")
         return {message:"Asesor eliminado correctamente",cantidad:deleted.affected
     }
+    }
+
+    async desactivateAsesor(id:number){
+        const cliente=await this.asesorRepo.findOne({
+            where:{id},
+            relations:['usuario'],
+            select:{ usuario: { id: true }}
+        })
+        if(!cliente) return new NotFoundException("No se encontro el cliente en la bd")
+        const id_usuario=cliente?.usuario.id
+        if(!id_usuario) throw new NotFoundException("No se encontro el id")
+
+        const response=await this.usuarioService.desactivateUser(id_usuario)
+        return {message:"Usuario desactivado correctamente",affectado:response}
     }
 }

@@ -39,4 +39,11 @@ export class AdminController {
           }
     }
 
+    @Patch('desactivate/:id')
+    async desactivate(@Param('id',ParseIntPipe) id:number){
+        return this.adminService.desactivateAdmin(id)
+    }
+
+    
+
 }

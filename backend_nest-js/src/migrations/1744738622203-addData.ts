@@ -94,7 +94,7 @@ export class AddData1744738622203 implements MigrationInterface {
     await queryRunner.query(`
       INSERT INTO pruebaalejandria.usuarios (id, username, password, role, estado) VALUES 
         (1, '${correo_cliente}', '${hashedPassword_cliente}', 'estudiante', 1),
-        (2, '${correo_asesor}', '${hashedPassword_asesor}', 'estudiante', 1);
+        (2, '${correo_asesor}', '${hashedPassword_asesor}', 'asesor', 1);
     `);
 
     await queryRunner.query(`
