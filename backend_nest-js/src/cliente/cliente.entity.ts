@@ -3,6 +3,8 @@ import { Usuario } from "src/usuario/usuario.entity";
 import { TipoContrato } from "src/entidades/tipoContrato.entity";
 import { GradoAcademico } from "src/entidades/gradoAcademico.entity";
 import { TipoTrabajo } from "src/entidades/tipoTrabajo.entity";
+import { Asesoramiento } from "src/asesoramiento/entities/asesoramiento.entity";
+import { ProcesosAsesoria } from "src/procesos_asesoria/entities/procesos_asesoria.entity";
 
 @Entity()
 export class Cliente{
@@ -48,4 +50,7 @@ export class Cliente{
     @OneToOne(()=>Usuario,{cascade:true})
     @JoinColumn()
     usuario:Usuario;
+
+    @OneToMany(()=>ProcesosAsesoria,procesosAsesoria=>procesosAsesoria.cliente)
+    procesosAsesoria:ProcesosAsesoria[]
 }

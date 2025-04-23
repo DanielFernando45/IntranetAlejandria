@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne,JoinColumn, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne,JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Usuario } from "src/usuario/usuario.entity";
 import { GradoAcademico } from "src/entidades/gradoAcademico.entity";
 import { AreaAsesor } from "src/entidades/areaAsesor.entity";
+import { ProcesosAsesoria } from "src/procesos_asesoria/entities/procesos_asesoria.entity";
 
 @Entity()
 export class Asesor{
@@ -44,4 +45,7 @@ export class Asesor{
     @OneToOne(()=>Usuario,{cascade:true})
     @JoinColumn()
     usuario:Usuario;
+
+    @OneToMany(()=>ProcesosAsesoria,procesosAsesoria=>procesosAsesoria.asesor)
+    procesosAsesoria:ProcesosAsesoria[]
 }

@@ -11,6 +11,8 @@ import { AsesorModule } from './asesor/asesor.module';
 import { ENTITIES } from './entities';
 import { MailModule } from './mail/mail.module';
 import { Throttle,ThrottlerModule } from '@nestjs/throttler';
+import { AsesoramientoModule } from './asesoramiento/asesoramiento.module';
+import { ProcesosAsesoriaModule } from './procesos_asesoria/procesos_asesoria.module';
 
 let puerto:number
 
@@ -43,7 +45,7 @@ if(process.env.DB_PORT){
     UsuarioModule, 
     AdminModule,
     ClienteModule, 
-    AsesorModule, MailModule],
+    AsesorModule, MailModule, AsesoramientoModule, ProcesosAsesoriaModule],
   controllers: [AppController],
   providers: [AppService],
 })
