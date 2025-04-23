@@ -13,11 +13,13 @@ import * as bcrypt from 'bcrypt';
 import { Asesor } from 'src/asesor/asesor.entity';
 import { Cliente } from 'src/cliente/cliente.entity';
 import { UsuarioService } from 'src/usuario/usuario.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usuarioService:UsuarioService,
+    private readonly mailService:MailService,
 
     @InjectRepository(Usuario)
     private usuarioRepo: Repository<Usuario>,
@@ -92,18 +94,45 @@ export class AuthService {
     };
   }
 
-  async recoverPassword(email:string,oldPassword:string,newPassword:string){
-    const searchedUser=await this.usuarioRepo.findOneBy({username:email})
-    if(!searchedUser)throw new NotFoundException("No se encuentra ese user")
-    const comparationPassword=searchedUser? await bcrypt.compare(oldPassword,searchedUser.password) :false
-    if(!comparationPassword){
-      throw new BadRequestException("No es correcta la contraseña ingresada")
+  async sendMailPassword(email:string){
+    const url_codified=this.jwtService.sign({email},{expiresIn:'15min'})
+    const url=`https://localhost:3000/api/auth/recover-password/${url_codified}`
+
+    await this.mailService.sendResetPasswordEmail(email,url)
+
+    return {message:"Si el correo está registrado, se ha enviado un enlace"}
+  }
+
+  // async changePassword(token_email:string,oldPassword:string,newPassword:string){
+  //   const {email}=this.jwtService.decode(token_email)
+  //   const searchedUser=await this.usuarioRepo.findOneBy({username:email})
+  //   if(!searchedUser)throw new NotFoundException("No se encuentra ese user")
+  //   const comparationPassword=searchedUser? await bcrypt.compare(oldPassword,searchedUser.password) :false
+  //   if(!comparationPassword){
+  //     throw new BadRequestException("No es correcta la contraseña ingresada")
+  //   }
+  //   const newHashed=await bcrypt.hash(newPassword,10)
+  //   searchedUser.password=newHashed
+
+  //   const updated=await this.usuarioRepo.save(searchedUser)
+
+  //     return {"message":"Contraseña cambiada correctamente"}
+  // }
+
+  async recoverPassword(token:string,newPassword:string){
+    let payload:any;
+    try{
+      payload=this.jwtService.verify(token)
+    }catch(err){
+      throw new BadRequestException("Token invalido o expirado")
     }
-    const newHashed=await bcrypt.hash(newPassword,10)
-    searchedUser.password=newHashed
 
-    const updated=await this.usuarioRepo.save(searchedUser)
+    const user=await this.usuarioRepo.findOneBy({username:payload.email});
+    if(!user) throw new NotFoundException("Usuario no encontrado");
 
-    return {"message":"Contraseña cambiada correctamente"}
+    user.password=await bcrypt.hash(newPassword,10);
+    await this.usuarioRepo.save(user);
+
+    return {message:"Contraseña cambiada correctamente"}
   }
 }

@@ -6,13 +6,11 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { AdminModule } from './admin/admin.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Admin } from './admin/admin.entity';
-import { Usuario } from './usuario/usuario.entity';
-import { Cliente } from './cliente/cliente.entity';
 import { ConfigModule,ConfigService } from '@nestjs/config';
 import { AsesorModule } from './asesor/asesor.module';
-import { Asesor } from './asesor/asesor.entity';
 import { ENTITIES } from './entities';
+import { MailModule } from './mail/mail.module';
+import { Throttle,ThrottlerModule } from '@nestjs/throttler';
 
 let puerto:number
 
@@ -28,7 +26,6 @@ if(process.env.DB_PORT){
     ConfigModule.forRoot({
       isGlobal:true,
     }),
-
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
@@ -46,7 +43,7 @@ if(process.env.DB_PORT){
     UsuarioModule, 
     AdminModule,
     ClienteModule, 
-    AsesorModule],
+    AsesorModule, MailModule],
   controllers: [AppController],
   providers: [AppService],
 })
