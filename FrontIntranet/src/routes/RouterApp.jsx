@@ -7,6 +7,12 @@ import ProtectedRoutes from './ProtectedRoutes';
 import HomeEstudiante from '../pages/Estudiante/HomeEstudiante';
 import ReunionesEstudiante from '../pages/Estudiante/ReunionesEstudiante';
 import EntregaRevisionEst from '../pages/Estudiante/EntregaRevisionEst';
+import CalendarioEstudiante from '../pages/Estudiante/CalendarioEstudiante';
+import MiPerfil from '../pages/Estudiante/MiPerfil';
+import MiAsesor from '../pages/Estudiante/MiAsesor';
+import MiContrato from '../pages/Estudiante/MiContrato';
+import CambiarContraseña from '../pages/Estudiante/CambiarContraseña';
+import MiPerfilEdit from '../pages/Estudiante/MiPerfilEdit';
 
 import HomeAsesor from '../pages/Asesor/HomeAsesor';
 
@@ -26,6 +32,13 @@ const RouterApp = () => {
         <Route path="/estudiante/home" element={<HomeEstudiante />} />
         <Route path="/estudiante/reuniones" element={<ReunionesEstudiante />} />
         <Route path="/estudiante/entrega" element={<EntregaRevisionEst />} />
+        <Route path="/estudiante/calendario" element={<CalendarioEstudiante/>}/>
+        <Route path="/estudiante/miperfil" element={<MiPerfil/>}/>
+        <Route path="/estudiante/miperfiledit" element={<MiPerfilEdit/>}/>
+        <Route path="/estudiante/miasesor" element={<MiAsesor/>}/>
+        <Route path="/estudiante/micontrato" element={<MiContrato/>}/>
+        <Route path="/estudiante/cambiarcontraseña" element={<CambiarContraseña/>}/>
+        
       </Route>
 
       {/* RUTAS ASESOR */}
