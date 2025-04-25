@@ -13,8 +13,8 @@ import Pagos from "../../assets/icons/IconEstudiante/PagosEstudiante.svg";
 
 
 const LINKS = [
-  { icono: Gestion, path: "/admin/gestionUser", title: "Gestionar Usuarios" },
-  { icono: Asignaciones, path: "/admin/reuniones", title: "Asignaciones" },
+  { icono: Gestion, path: "/admin/gestionar-usuarios", title: "Gestionar Usuarios" },
+  { icono: Asignaciones, path: "/admin/asignaciones", title: "Asignaciones" },
   { icono: Pagos, path: "/admin/pagos", title: "Pagos" },
   { icono: ConfIntranet, path: "/admin/entrega", title: "Configuración de Intranet" },
   { icono: GestionSoporte, path: "/admin/calendario", title: "Gestion Soporte Tecnico" },
@@ -66,7 +66,7 @@ const AdminSidebar = () =>{
                       isExpanded ? "w-[266px]" : "w-[100px]"
                     } h-[77px] px-[20px] py-[25px] cursor-pointer flex-shrink-0 bg-white z-30 transition-all duration-300 
                     hover:bg-[#F0EFEF] ${
-                      isActive ? "bg-[#EFEFEF] border-l-[5px] border-[#000]" : ""
+                      isActive ? "bg-[#EFEFEE] border-l-[5px] border-[#000]" : ""
                     }`}
                     onClick={handleItemClick}
                   >

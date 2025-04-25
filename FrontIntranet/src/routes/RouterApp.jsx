@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoutes from './ProtectedRoutes';
 
-// Páginas por rol
+// Páginas Estudiante
 import HomeEstudiante from '../pages/Estudiante/HomeEstudiante';
 import ReunionesEstudiante from '../pages/Estudiante/ReunionesEstudiante';
 import EntregaRevisionEst from '../pages/Estudiante/EntregaRevisionEst';
@@ -14,10 +14,15 @@ import MiContrato from '../pages/Estudiante/MiContrato';
 import CambiarContraseña from '../pages/Estudiante/CambiarContraseña';
 import MiPerfilEdit from '../pages/Estudiante/MiPerfilEdit';
 
+//Paginas Asesor
 import HomeAsesor from '../pages/Asesor/HomeAsesor';
 
+//Paginas Admin
 import GestionarUsuarios from '../pages/Administrador/GestionUser';
+import Asignaciones from '../pages/Administrador/Asignaciones';
+import Pagos from '../pages/Administrador/Pagos';
 
+//Paginas Errores
 import Unauthorized from '../pages/Unauthorized';
 import ErrorScreen from '../pages/ErrorScreen';
 import ResetPassword from '../pages/ResetPassword';
@@ -49,6 +54,8 @@ const RouterApp = () => {
       {/* RUTAS ADMIN */}
       <Route element={<ProtectedRoutes allowedRoles={['admin']} />}>
         <Route path="/admin/gestionar-usuarios" element={<GestionarUsuarios />} />
+        <Route path="/admin/asignaciones" element={<Asignaciones/>}/>
+        <Route path="/admin/pagos" element={<Pagos/>}/>
       </Route>
 
       {/* RUTA NO AUTORIZADA */}
