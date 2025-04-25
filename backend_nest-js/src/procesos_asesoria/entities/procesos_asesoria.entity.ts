@@ -1,6 +1,7 @@
 import { Asesor } from "src/asesor/asesor.entity";
+import { Asesoramiento } from "src/asesoramiento/entities/asesoramiento.entity";
 import { Cliente } from "src/cliente/cliente.entity";
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class ProcesosAsesoria {
@@ -14,4 +15,8 @@ export class ProcesosAsesoria {
     @ManyToOne(()=>Asesor)
     @JoinColumn({name:"id_asesor"})
     asesor:Asesor;
+
+    @ManyToOne(() => Asesoramiento)
+    @JoinColumn({ name: 'id_asesoramiento' }) // nombre de la columna en la tabla Cliente
+    asesoramiento: Asesoramiento;
 }

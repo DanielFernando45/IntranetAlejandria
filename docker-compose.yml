@@ -24,7 +24,7 @@ services:
       - DB_HOST=mysqldb
       - DB_PORT=${DB_PORT_ENV}
       - DB_NAME=${MYSQL_DATABASE_ENV}
-      - DB_USER=${MYSQL_USER_ENV}
+      - DB_USER=${MYSQL_ROOT_ENV}
       - DB_PASSWORD=${MYSQL_PASSWORD_ENV}
       - CHOKIDAR_USEPOLLING=true
     depends_on:

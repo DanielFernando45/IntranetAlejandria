@@ -6,11 +6,11 @@ config({ path: path.resolve(__dirname, '../../.env') }); // Ajusta la ruta si es
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || '3306'),
   username: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '12345',
-  database: process.env.DB_NAME || 'pruebaAlejandria',
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   entities: ENTITIES,
   migrations: ['src/migrations/*.ts'],
   synchronize: false, // muy importante en producción

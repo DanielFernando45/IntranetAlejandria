@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ProcesosAsesoria } from "src/procesos_asesoria/entities/procesos_asesoria.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Estado_Asesoria{
     ACTIVO="activo",
@@ -20,4 +21,6 @@ export class Asesoramiento {
     @Column()
     fecha_fin:Date;
 
+    @OneToMany(() => ProcesosAsesoria, procesosasesoria => procesosasesoria.asesoramiento)
+    procesosasesoria: ProcesosAsesoria[];
 }
