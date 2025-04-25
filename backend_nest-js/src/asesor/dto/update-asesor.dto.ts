@@ -26,17 +26,17 @@ export class UpdateAsesorDto{
     @IsOptional()
     readonly url_imagen:string;
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
-    readonly area:string;
+    readonly areaAsesor:number;
 
     @IsString()
     @IsOptional()
     readonly especialidad:string;
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
-    readonly id_grado_academico:string;
+    readonly gradoAcademico:string;
 
     @IsString()
     @IsOptional()

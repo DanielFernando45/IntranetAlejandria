@@ -1,6 +1,10 @@
-import { Body, Controller, UsePipes, ValidationPipe,Post, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, UsePipes, ValidationPipe,Post, Get, Param, ParseIntPipe, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
 import { CreateClienteDto } from './dto/crear-cliente.dto';
+import { updateClienteDto } from './dto/update-cliente.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('cliente')
 export class ClienteController {
@@ -23,4 +27,20 @@ export class ClienteController {
         return this.clienteService.crearCliente(createClienteDto)
     }
 
+    @Patch('/update/:id')
+    async update(@Param('id',ParseIntPipe) id:number,@Body() body:updateClienteDto){
+        return this.clienteService.patchCliente(id,body)
+    }
+    
+    @Delete('delete/:id')
+    async delete(@Param('id',ParseIntPipe) id:number){
+        return this.clienteService.deletedCliente(id)
+    }
+
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles("admin")
+    @Patch("desactivate/:id")
+    async desactivate(@Param('id',ParseIntPipe) id:number){
+        return this.clienteService.desactivateCliente(id)
+    }
 }

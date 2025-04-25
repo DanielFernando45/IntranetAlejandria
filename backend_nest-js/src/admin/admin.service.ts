@@ -7,10 +7,14 @@ import * as bcrypt from "bcrypt"
 import { ListarClienteDto } from './dto/listar-admin.dto';
 import { CrearlienteDto } from './dto/crear-admin.dto';
 import { UpdateClienteDto } from './dto/update-admin.dto';
+import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
+import { UsuarioService } from 'src/usuario/usuario.service';
 
 @Injectable()
 export class AdminService {
     constructor(
+        private readonly usuarioService:UsuarioService, 
+
         @InjectRepository(Admin)
         private adminRepo: Repository<Admin>,
         @InjectRepository(Usuario)
@@ -41,19 +45,18 @@ export class AdminService {
     }
 
     async create (data:CrearlienteDto){
-        const hashedPassword = await bcrypt.hash(data.dni, 10); // Encriptar el dni
-        const exists = await this.usuarioRepo.findOneBy({ username: data.email });
-        if (exists) {
-            throw new ConflictException("Ya existe un usuario con ese correo electrónico");
-        }
-        const user=this.usuarioRepo.create({
+        let savedUser:CreateUserDto
+        
+        const exist=await this.adminRepo.findOneBy({email:data.email})
+        if(exist) throw new ConflictException("Ya existe ese asesor")      
+        const dataUser={
             username:data.email,
-            password:hashedPassword,
+            password:data.dni,
             role:UserRole.ADMIN,
-            estado:true,
-        })
+            estado:true
+        }
+        savedUser=await this.usuarioService.createUserDefault(dataUser)
         try{
-        const savedUser=await this.usuarioRepo.save(user);
 
         const admin=this.adminRepo.create({
             ...data,
@@ -82,5 +85,19 @@ export class AdminService {
         const deleted=await this.adminRepo.delete({id})
         if(deleted.affected===0) throw new NotFoundException("No se encontro un Admin con ese id")
         return { message:"Admin eliminado correctamente",affected:deleted.affected}
+    }
+
+    async desactivateAdmin(id:number){
+        const admin=await this.adminRepo.findOne({
+            where:{id},
+            relations:['usuario'],
+            select:{ usuario: { id: true }}
+        })
+        if(!admin) return new NotFoundException("No se encontro el cliente en la bd")
+        const id_usuario=admin?.usuario.id
+        if(!id_usuario) throw new NotFoundException("No se encontro el id")
+
+        const response=await this.usuarioService.desactivateUser(id_usuario)
+        return {message:"Usuario desactivado correctamente",affectado:response}
     }
 }

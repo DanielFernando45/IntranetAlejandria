@@ -6,7 +6,6 @@ export enum UserRole {
   ESTUDIANTE = 'estudiante',
 }
 
-
 @Entity('usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn()

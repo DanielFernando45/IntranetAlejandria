@@ -5,13 +5,14 @@ import { AuthModule } from './auth/auth.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { AdminModule } from './admin/admin.module';
 import { ClienteModule } from './cliente/cliente.module';
- import { TypeOrmModule } from '@nestjs/typeorm';
-import { Admin } from './admin/admin.entity';
-import { Usuario } from './usuario/usuario.entity';
-import { Cliente } from './cliente/cliente.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule,ConfigService } from '@nestjs/config';
 import { AsesorModule } from './asesor/asesor.module';
-import { Asesor } from './asesor/asesor.entity';
+import { ENTITIES } from './entities';
+import { MailModule } from './mail/mail.module';
+import { Throttle,ThrottlerModule } from '@nestjs/throttler';
+import { AsesoramientoModule } from './asesoramiento/asesoramiento.module';
+import { ProcesosAsesoriaModule } from './procesos_asesoria/procesos_asesoria.module';
 
 let puerto:number
 
@@ -27,16 +28,15 @@ if(process.env.DB_PORT){
     ConfigModule.forRoot({
       isGlobal:true,
     }),
-
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USER'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        entities: [Admin, Usuario,Cliente,Asesor],  // Aquí debes pasar todas tus entidades
+        host: configService.get<string>('DB_HOST') || "localhost",
+        port: configService.get<number>('DB_PORT') || 3306,
+        username: configService.get<string>('DB_USER') || "root",
+        password: configService.get<string>('DB_PASSWORD')|| "12345",
+        database: configService.get<string>('DB_NAME')||"pruebaAlejandria",
+        entities: ENTITIES,  // Aquí debes pasar todas tus entidades
         synchronize: false,  // Cambiar a `false` en producción
       }),
       inject: [ConfigService],
@@ -45,7 +45,7 @@ if(process.env.DB_PORT){
     UsuarioModule, 
     AdminModule,
     ClienteModule, 
-    AsesorModule],
+    AsesorModule, MailModule, AsesoramientoModule, ProcesosAsesoriaModule],
   controllers: [AppController],
   providers: [AppService],
 })
