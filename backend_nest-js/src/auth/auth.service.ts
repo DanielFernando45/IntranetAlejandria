@@ -103,22 +103,7 @@ export class AuthService {
     return {message:"Si el correo está registrado, se ha enviado un enlace"}
   }
 
-  // async changePassword(token_email:string,oldPassword:string,newPassword:string){
-  //   const {email}=this.jwtService.decode(token_email)
-  //   const searchedUser=await this.usuarioRepo.findOneBy({username:email})
-  //   if(!searchedUser)throw new NotFoundException("No se encuentra ese user")
-  //   const comparationPassword=searchedUser? await bcrypt.compare(oldPassword,searchedUser.password) :false
-  //   if(!comparationPassword){
-  //     throw new BadRequestException("No es correcta la contraseña ingresada")
-  //   }
-  //   const newHashed=await bcrypt.hash(newPassword,10)
-  //   searchedUser.password=newHashed
-
-  //   const updated=await this.usuarioRepo.save(searchedUser)
-
-  //     return {"message":"Contraseña cambiada correctamente"}
-  // }
-
+  
   async recoverPassword(token:string,newPassword:string){
     let payload:any;
     try{
@@ -126,13 +111,27 @@ export class AuthService {
     }catch(err){
       throw new BadRequestException("Token invalido o expirado")
     }
-
+    
     const user=await this.usuarioRepo.findOneBy({username:payload.email});
     if(!user) throw new NotFoundException("Usuario no encontrado");
-
+    
     user.password=await bcrypt.hash(newPassword,10);
     await this.usuarioRepo.save(user);
-
+    
     return {message:"Contraseña cambiada correctamente"}
+  }
+  async changePassword(oldPassword:string,newPassword:string){
+    // const searchedUser=await 1
+    // if(!searchedUser)throw new NotFoundException("No se encuentra ese user")
+    // const comparationPassword=searchedUser? await bcrypt.compare(oldPassword,searchedUser.password) :false
+    // if(!comparationPassword){
+    //   throw new BadRequestException("No es correcta la contraseña ingresada")
+    // }
+    // const newHashed=await bcrypt.hash(newPassword,10)
+    // searchedUser.password=newHashed
+  
+    // const updated=await this.usuarioRepo.save(searchedUser)
+  
+      return {"message":"Contraseña cambiada correctamente"}
   }
 }

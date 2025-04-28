@@ -7,7 +7,7 @@ import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
 export class AsesoramientoController {
   constructor(private readonly asesoramientoService: AsesoramientoService) {}
 
-  @Post()
+  @Post("asignacion")
   create(@Body() createAsesoramientoDto: CreateAsesoramientoDto) {
     return this.asesoramientoService.create(createAsesoramientoDto);
   }

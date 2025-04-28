@@ -100,4 +100,12 @@ export class AdminService {
         const response=await this.usuarioService.desactivateUser(id_usuario)
         return {message:"Usuario desactivado correctamente",affectado:response}
     }
+
+    async changePassword(oldPassword,newPassword,repeatPassword){
+        if(newPassword!==repeatPassword){
+            return new BadRequestException("No son las mismas contraseñas")
+        }
+        //const response=await this.usuarioService
+        return 1
+    }
 }
