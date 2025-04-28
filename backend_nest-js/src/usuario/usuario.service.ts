@@ -27,7 +27,7 @@ export class UsuarioService{
         return savedUsuario
     }
 
-
+    
     async desactivateUser(id:number){
         const user=await this.usuarioRepo.update({id},{estado:false})
         if(!user) throw new NotFoundException("No se encuentro registrado ese usuario")
