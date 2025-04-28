@@ -7,14 +7,17 @@ export class AddRegisters1745431588127 implements MigrationInterface {
     const dni_cliente = 12345678;
     const dni_cliente2=4567890
     const dni_asesor = 87654321;
+    const dni_admin=45475734
 
     const hashedPassword_cliente = await bcrypt.hash(`${dni_cliente}`, 10);
     const hashedPassword_cliente2 = await bcrypt.hash(`${dni_cliente2}`, 10);
     const hashedPassword_asesor = await bcrypt.hash(`${dni_asesor}`, 10);
+    const hashedPassword_admin=await bcrypt.hash(`${dni_admin}`,10)
 
     const correo_cliente = "juantinoco23@gmail.com";
     const correo_cliente2 = "gabrielv45@gmail.com";
     const correo_asesor = "alonso12bernal@gmail.com";
+    const correo_admin= "antonioborges24@gmail.com"
 
     // Insert datos básicos
     await queryRunner.query(`
@@ -50,7 +53,8 @@ export class AddRegisters1745431588127 implements MigrationInterface {
       INSERT INTO Alejandria.usuarios (id, username, password, role, estado) VALUES 
         (1, '${correo_cliente}', '${hashedPassword_cliente}', 'estudiante', 1),
         (2, '${correo_asesor}', '${hashedPassword_asesor}', 'asesor', 1),
-        (3, '${correo_cliente2}', '${hashedPassword_cliente2}', 'estudiante', 1)
+        (3, '${correo_cliente2}', '${hashedPassword_cliente2}', 'estudiante', 1),
+        (4, '${correo_admin}','${hashedPassword_admin}','admin',1)
     `);
 
     await queryRunner.query(`
@@ -84,6 +88,9 @@ export class AddRegisters1745431588127 implements MigrationInterface {
           'Universidad Nacional Agraria La Molina', 1, 3, 2
         );
       `);
+      await queryRunner.query(`
+        INSERT INTO Alejandria.admin (nombre,email,dni,usuarioId) VALUES ('Antonio Borges','${correo_admin}','${dni_admin}',4)
+        `)
 
         // Insertar asesoramiento
         await queryRunner.query(`
@@ -115,6 +122,9 @@ export class AddRegisters1745431588127 implements MigrationInterface {
         await queryRunner.query(`
             DELETE FROM Alejandria.asesor WHERE dni = 87654321;
         `);
+        await queryRunner.query(`
+          DELETE FROM Alejandria.admin WHERE dni = 45475734;
+      `);
       
         // Eliminar usuarios por correo electrónico
         await queryRunner.query(`
@@ -126,7 +136,9 @@ export class AddRegisters1745431588127 implements MigrationInterface {
           await queryRunner.query(`
             DELETE FROM Alejandria.usuarios WHERE username = 'gabrielv45@gmail.com';
           `);
-       
+          await queryRunner.query(`
+            DELETE FROM Alejandria.usuarios WHERE username = 'antonioborges24@gmail.com';
+          `);
           // Eliminar tipo de contrato
           await queryRunner.query(`
             DELETE FROM Alejandria.tipo_contrato WHERE id = 1;

@@ -25,6 +25,8 @@ import Pagos from '../pages/Administrador/Pagos';
 //Paginas Errores
 import Unauthorized from '../pages/Unauthorized';
 import ErrorScreen from '../pages/ErrorScreen';
+
+//Pagina Recuperar Contraseña
 import ResetPassword from '../pages/ResetPassword';
 import NuevaContraseña from '../pages/NuevaContraseña';
 
