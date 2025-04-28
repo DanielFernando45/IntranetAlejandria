@@ -31,11 +31,11 @@ if(process.env.DB_PORT){
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get<string>('DB_HOST') || "localhost",
-        port: configService.get<number>('DB_PORT') || 3306,
-        username: configService.get<string>('DB_USER') || "root",
-        password: configService.get<string>('DB_PASSWORD')|| "12345",
-        database: configService.get<string>('DB_NAME')||"pruebaAlejandria",
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
         entities: ENTITIES,  // Aquí debes pasar todas tus entidades
         synchronize: false,  // Cambiar a `false` en producción
       }),
