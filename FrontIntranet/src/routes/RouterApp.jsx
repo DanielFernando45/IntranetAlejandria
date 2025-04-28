@@ -21,6 +21,8 @@ import HomeAsesor from '../pages/Asesor/HomeAsesor';
 import GestionarUsuarios from '../pages/Administrador/GestionUser';
 import Asignaciones from '../pages/Administrador/Asignaciones';
 import Pagos from '../pages/Administrador/Pagos';
+import AgregarEstudiante from '../pages/Administrador/AgregarEstudiante';
+import AgregarAsesor from '../pages/Administrador/AgregarAsesor';
 
 //Paginas Errores
 import Unauthorized from '../pages/Unauthorized';
@@ -29,6 +31,7 @@ import ErrorScreen from '../pages/ErrorScreen';
 //Pagina Recuperar Contraseña
 import ResetPassword from '../pages/ResetPassword';
 import NuevaContraseña from '../pages/NuevaContraseña';
+
 
 const RouterApp = () => {
   return (
@@ -56,8 +59,11 @@ const RouterApp = () => {
       {/* RUTAS ADMIN */}
       <Route element={<ProtectedRoutes allowedRoles={['admin']} />}>
         <Route path="/admin/gestionar-usuarios" element={<GestionarUsuarios />} />
+        <Route path="/admin/gestionar-usuarios/agregar-estudiante" element={<AgregarEstudiante/>} />
+        <Route path="/admin/gestionar-usuarios/agregar-asesor" element={<AgregarAsesor/>} />
         <Route path="/admin/asignaciones" element={<Asignaciones/>}/>
         <Route path="/admin/pagos" element={<Pagos/>}/>
+
       </Route>
 
       {/* RUTA NO AUTORIZADA */}

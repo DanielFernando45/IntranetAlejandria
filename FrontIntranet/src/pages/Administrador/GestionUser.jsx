@@ -2,15 +2,24 @@ import LayoutApp from "../../layout/LayoutApp";
 import { useState } from "react";
 import flechaAzul from "../../assets/icons/arrowAzul.svg";
 import busqueda from "../../assets/icons/busqueda.svg"
-import plus from "../../assets/icons/IconEstudiante/add.svg"
+import { useNavigate } from "react-router-dom";
+
 
 const GestionarUsuarios =() =>{
      const [vista, setVista] = useState("Clientes");
-    
+     const navigate = useNavigate();
+
+     const handlerAgregarEstudiante = () =>{
+       navigate('/admin/gestionar-usuarios/agregar-estudiante')
+     }
+
+     const handlerAgregarAsesor = () =>{
+       navigate('/admin/gestionar-usuarios/agregar-asesor')
+     }
 
     return (
         <LayoutApp>
-          <main className="flex flex-col  mx-32 my-24 items-start">
+          <main className="flex flex-col  mx-32  items-start">
 
           <div className="ml-8  flex w-full border-b-2 gap-3 border-black font-normal">
                             <button
@@ -58,7 +67,8 @@ const GestionarUsuarios =() =>{
                         
                         <div>
                           {vista === "Clientes" ?(
-                              <div className="flex flex-col  ">
+                            <>
+                            <div className="flex flex-col  ">
                                    
                                    <div className="flex justify-between text-[#495D72] font-medium   p-[6px] rounded-md">
                                                       <div className="w-[40px] flex justify-center">ID</div>
@@ -210,26 +220,70 @@ const GestionarUsuarios =() =>{
                                                       <div className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34]  flex justify-center text-white"> Editar </div>
                                                       <div className="w-[110px] rounded-md px-3 py-1 bg-[#8F1313]  flex justify-center text-white"> Eliminar </div>
                                    </div>  
-                                   
-                                   
-                                                              
+                                                                 
                               </div>
-                          ):(
-                            <div>
-            
-                            </div>
-                          )}
-                        </div>
-            
-                        <div className="flex justify-between text-white w-[230px] h-8 rounded font-semibold  bg-[#1B435D] px-6 py-1">
-                                        <p>Agregar Estudiante</p>
+
+                              <button onClick={handlerAgregarEstudiante} className="flex justify-between text-white w-[230px] h-8 rounded font-semibold  bg-[#1B435D] px-6 py-1 mt-5">
+                                        <p>Agregar Cliente</p>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="white">
                                         <path d="M12 22.5C17.5 22.5 22 18 22 12.5C22 7 17.5 2.5 12 2.5C6.5 2.5 2 7 2 12.5C2 18 6.5 22.5 12 22.5Z" stroke="#054755" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M8 12.5H16" stroke="#054755" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                         <path d="M12 16.5V8.5" stroke="#054755" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                         </svg> 
 
+                             </button>
+
+                            </>
+                              
+                              
+                          ):(
+                            <>
+                            <div className="flex flex-col">
+                                  <div className="flex justify-between text-[#495D72] font-medium   p-[6px] rounded-md">
+                                                      <div className="w-[40px] flex justify-center">ID</div>
+                                                      <div className="w-[250px] flex justify-center">Asesor</div>
+                                                      <div className="w-[250px] flex justify-center">Area</div>
+                                                      <div className="w-[250px] flex justify-center">Especialidad</div>
+                                                      <div className="w-[360px] flex justify-center">Universidad</div>
+                                                      <div className="w-[110px] flex justify-center">Editar</div>
+                                                      <div className="w-[110px] flex justify-center">Eliminar</div>
+                                   </div>
+                                   <div className="flex justify-between items-center text-[#2B2829] font-normal  p-[6px] rounded-md">
+                                                      <div className="w-[40px] flex justify-center">0125</div>
+                                                      <div className="w-[250px] flex justify-start">Antonio Jorge Cueva Lopez</div>
+                                                      <div className="w-[250px] flex justify-center">Ingeneria</div>
+                                                      <div className="w-[360px] flex justify-start">Ing. Civil</div>
+                                                      <div className="w-[250px] flex justify-start">U.San Ignacion de Oyola</div>
+                                                      <div className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34]  flex justify-center text-white"> Editar </div>
+                                                      <div className="w-[110px] rounded-md px-3 py-1 bg-[#8F1313]  flex justify-center text-white"> Eliminar </div>
+                                   </div> 
+                                   <div className="flex justify-between items-center text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md mt-5">
+                                                      <div className="w-[40px] flex justify-center">0125</div>
+                                                      <div className="w-[250px] flex justify-start">Antonio Jorge Cueva Lopez</div>
+                                                      <div className="w-[250px] flex justify-center">Ingeneria</div>
+                                                      <div className="w-[360px] flex justify-start">Administacion</div>
+                                                      <div className="w-[250px] flex justify-start">U.San Ignacion de Oyola</div>
+                                                      <div className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34]  flex justify-center text-white"> Editar </div>
+                                                      <div className="w-[110px] rounded-md px-3 py-1 bg-[#8F1313]  flex justify-center text-white"> Eliminar </div>
+                                   </div> 
+                                   
+
+                            </div>
+                            <button onClick={handlerAgregarAsesor} className="flex justify-between text-white w-[230px] h-8 rounded font-semibold  bg-[#1B435D] px-6 py-1 mt-5">
+                                        <p>Agregar Asesor</p>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="white">
+                                        <path d="M12 22.5C17.5 22.5 22 18 22 12.5C22 7 17.5 2.5 12 2.5C6.5 2.5 2 7 2 12.5C2 18 6.5 22.5 12 22.5Z" stroke="#054755" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M8 12.5H16" stroke="#054755" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 16.5V8.5" stroke="#054755" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg> 
+
+                            </button>
+                            </>
+                            
+                          )}
                         </div>
+            
+                        
             </div>
         </main>  
         </LayoutApp>
