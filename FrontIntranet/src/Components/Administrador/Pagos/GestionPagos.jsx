@@ -11,7 +11,6 @@ import React from 'react'
                 <div className="w-[160px] flex justify-center">Fecha de Creacion</div>
                 <div className="w-[370px] flex justify-center">Carrera</div>
                 <div className="w-[280px] flex justify-center ml-5">Accion</div>
-
             </div>
             <div className="flex justify-between items-center text-[#2B2829] font-normal   p-[6px] pr-10 rounded-md">
                 <div className="w-[40px] flex justify-center">0125</div>

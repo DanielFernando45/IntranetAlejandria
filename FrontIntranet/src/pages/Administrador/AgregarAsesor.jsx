@@ -6,6 +6,7 @@ const AgregarAsesor = () => {
   const navigate = useNavigate();
   const handlerAtras = () =>{
     navigate('/admin/gestionar-usuarios')
+    
   }
 
   return (

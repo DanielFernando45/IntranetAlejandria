@@ -23,6 +23,8 @@ import Asignaciones from '../pages/Administrador/Asignaciones';
 import Pagos from '../pages/Administrador/Pagos';
 import AgregarEstudiante from '../pages/Administrador/AgregarEstudiante';
 import AgregarAsesor from '../pages/Administrador/AgregarAsesor';
+import EditarEstudiante from '../pages/Administrador/EditarEstudiante';
+import EditarAsesor from '../pages/Administrador/EditarAsesor';
 
 //Paginas Errores
 import Unauthorized from '../pages/Unauthorized';
@@ -61,6 +63,8 @@ const RouterApp = () => {
         <Route path="/admin/gestionar-usuarios" element={<GestionarUsuarios />} />
         <Route path="/admin/gestionar-usuarios/agregar-estudiante" element={<AgregarEstudiante/>} />
         <Route path="/admin/gestionar-usuarios/agregar-asesor" element={<AgregarAsesor/>} />
+        <Route path="/admin/gestionar-usuarios/editar-estudiante/:id" element={<EditarEstudiante/>} />
+        <Route path="/admin/gestionar-usuarios/editar-asesor" element={<EditarAsesor/>} />
         <Route path="/admin/asignaciones" element={<Asignaciones/>}/>
         <Route path="/admin/pagos" element={<Pagos/>}/>
 
