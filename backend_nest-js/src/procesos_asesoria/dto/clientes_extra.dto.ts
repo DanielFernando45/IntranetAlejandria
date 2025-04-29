@@ -18,4 +18,8 @@ export class clientesExtraDTO{
     @IsOptional()
     id_cliente4:number;
 
+    @IsNumber()
+    @IsOptional()
+    id_cliente5:number;
+
 }
