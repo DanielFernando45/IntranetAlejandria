@@ -1,0 +1,21 @@
+import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+
+export class clientesExtraDTO{
+
+    @IsNumber()
+    @IsNotEmpty()
+    id_cliente1:number;
+
+    @IsNumber()
+    @IsOptional()
+    id_cliente2:number;
+
+    @IsNumber()
+    @IsOptional()
+    id_cliente3:number;
+
+    @IsNumber()
+    @IsOptional()
+    id_cliente4:number;
+
+}

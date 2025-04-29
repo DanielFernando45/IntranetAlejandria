@@ -1,0 +1,14 @@
+import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
+import { CreateAsesoramientoDto } from './create-asesoramiento.dto';
+import { ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class AsesoramientoWrpDTO{
+    @ValidateNested()
+    @Type(()=>CreateAsesoramientoDto)
+    createAsesoramiento:CreateAsesoramientoDto;
+
+    @ValidateNested()
+    @Type(()=>clientesExtraDTO)
+    clientes:clientesExtraDTO;
+}

@@ -2,14 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from 
 import { AsesoramientoService } from './asesoramiento.service';
 import { CreateAsesoramientoDto } from './dto/create-asesoramiento.dto';
 import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
+import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
+import { AsesoramientoWrpDTO } from './dto/asesoramientoadd.wrpdto';
 
 @Controller('asesoramiento')
 export class AsesoramientoController {
   constructor(private readonly asesoramientoService: AsesoramientoService) {}
 
   @Post("asignacion")
-  create(@Body() createAsesoramientoDto: CreateAsesoramientoDto) {
-    return this.asesoramientoService.create(createAsesoramientoDto);
+  create(@Body() body:AsesoramientoWrpDTO) {
+    return this.asesoramientoService.create(body.createAsesoramiento,body.clientes);
   }
 
   @Get()
