@@ -38,10 +38,11 @@ export class AddRegisters1745431588127 implements MigrationInterface {
       
       await queryRunner.query(`
         INSERT INTO Alejandria.area_asesor (id, nombre) VALUES 
-          (1, 'Negocio/Legal'),
+          (1, 'Negocio'),
           (2, 'Social'),
           (3, 'Salud'),
-          (4, 'Ingenieria');
+          (4, 'Ingenieria'),
+          (5, 'Legal');
       `);
       
       await queryRunner.query(`
@@ -59,21 +60,21 @@ export class AddRegisters1745431588127 implements MigrationInterface {
 
     await queryRunner.query(`
         INSERT INTO Alejandria.cliente (
-          dni, nombre, apellido, telefono, email, url_imagen, pais, universidad,
+          dni, nombre, apellido, telefono, email, url_imagen, pais,carrera, universidad,
           id_tipo_trabajo, id_grado_academico, id_contrato, usuarioId
         ) VALUES (
           ${dni_cliente}, 'Juan', 'Tinoco', 12345678, '${correo_cliente}', 
-          'http://downloader/api/users/photos', 'Peru', 'UNMSM', 
+          'http://downloader/api/users/photos', 'Peru','Derecho', 'UNMSM', 
           2, 1, 1, 1
         );
       `);
       await queryRunner.query(`
         INSERT INTO Alejandria.cliente (
-          dni, nombre, apellido, telefono, email, url_imagen, pais, universidad,
+          dni, nombre, apellido, telefono, email, url_imagen, pais,carrera, universidad,
           id_tipo_trabajo, id_grado_academico, id_contrato, usuarioId
         ) VALUES (
           ${dni_cliente2}, 'Gabriel', 'Vargas', 98982131, '${correo_cliente2}', 
-          'http://downloader/api/users/photos', 'Peru', 'UNI', 
+          'http://downloader/api/users/photos', 'Peru','Administracion', 'UNI', 
           3, 2, 1, 3
         );
     `);
@@ -111,6 +112,13 @@ export class AddRegisters1745431588127 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+      // Eliminar proceso de asesoría
+        await queryRunner.query(`
+        DELETE FROM Alejandria.procesos_asesoria WHERE id_cliente = 12345678;
+        `);
+        await queryRunner.query(`
+          DELETE FROM Alejandria.procesos_asesoria WHERE id_cliente = 4567890;
+          `);
         await queryRunner.query(`
             DELETE FROM Alejandria.cliente WHERE dni = 12345678;
         `);
@@ -157,6 +165,9 @@ export class AddRegisters1745431588127 implements MigrationInterface {
           await queryRunner.query(`
             DELETE FROM Alejandria.area_asesor WHERE id = 4;
           `);
+          await queryRunner.query(`
+            DELETE FROM Alejandria.area_asesor WHERE id = 5;
+          `);
       
           // Eliminar grados académicos
           await queryRunner.query(`
@@ -186,10 +197,7 @@ export class AddRegisters1745431588127 implements MigrationInterface {
             DELETE FROM Alejandria.tipo_trabajo WHERE id = 3;
           `);
 
-        // Eliminar proceso de asesoría
-        await queryRunner.query(`
-            DELETE FROM Alejandria.procesos_asesoria WHERE id = 1;
-        `);
+
   
         // Eliminar asesoramiento
         await queryRunner.query(`

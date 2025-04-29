@@ -12,12 +12,12 @@ export class ClienteController {
 
     @Get(':id')
     async listOne(@Param('id',ParseIntPipe) id:number){
-        return this.clienteService.listOneAdmin(id)
+        return this.clienteService.listOneClient(id)
     }
 
     @Get()
     async listAll(){
-        return this.clienteService.listAdmin();
+        return this.clienteService.listClients();
     }
 
 

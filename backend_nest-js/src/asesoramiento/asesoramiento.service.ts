@@ -51,7 +51,7 @@ export class AsesoramientoService {
     const creacion=await this.procesosAsesoriaService.addProceso_to_Asesoramiento(clientes,id_asesor,id_asesoramiento,queryRunner.manager)
     // console.log(id_asesoramiento)
     // console.log(creacion)
-
+    
     await queryRunner.commitTransaction()
     return "Agregado satisfactoriamente"
     }catch(err){

@@ -4,9 +4,6 @@ import { UpdateProcesosAsesoriaDto } from './dto/update-procesos_asesoria.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { ProcesosAsesoria } from './entities/procesos_asesoria.entity';
 import { Repository, DataSource, EntityManager } from 'typeorm';
-import { Cliente } from '../cliente/cliente.entity';
-import { Asesor } from 'src/asesor/asesor.entity';
-import { Asesoramiento } from 'src/asesoramiento/entities/asesoramiento.entity';
 import { clientesExtraDTO } from './dto/clientes_extra.dto';
 
 @Injectable()
@@ -34,7 +31,7 @@ export class ProcesosAsesoriaService {
         await manager.insert(ProcesosAsesoria,nuevoProceso)
       }
       return true
-    }
+  }
 
   findAll() {
     return `This action returns all procesosAsesoria`;

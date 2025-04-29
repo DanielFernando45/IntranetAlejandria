@@ -36,5 +36,8 @@ export class ListarClienteDto {
   readonly universidad: string;
 
   @IsString()
+  readonly carrera:string;
+
+  @IsString()
   readonly tipoContrato: string;  // Cambié id_contrato a tipoContrato
 }

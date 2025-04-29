@@ -32,14 +32,14 @@ export class ClienteService {
         private tipoTrabajoRepo: Repository<TipoTrabajo>
     ){}
 
-    async listAdmin (): Promise<ListarClienteDto[]>{
-        const listofCliente=await this.clienteRepo.find({relations:["tipoTrabajo","gradoAcademico","tipoTrabajo"]})
+    async listClients (): Promise<ListarClienteDto[]>{
+        const listofCliente=await this.clienteRepo.find({relations:["tipoTrabajo","gradoAcademico","tipoContrato"]})
         if(!listofCliente) throw new NotFoundException("No se encontro ningun cliente")
 
         const mapedCliente:ListarClienteDto[]=listofCliente.map(cliente=>({
             ...cliente,
             tipoTrabajo:cliente.tipoTrabajo?.nombre || '',
-            
+
             gradoAcademico:cliente.gradoAcademico?.nombre || '',
             
             tipoContrato:cliente.tipoContrato?.nombre || '',
@@ -48,7 +48,7 @@ export class ClienteService {
         return mapedCliente
     }
     
-    async listOneAdmin(id:number):Promise<ListarClienteDto>{
+    async listOneClient(id:number):Promise<ListarClienteDto>{
         const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['tipoTrabajo', 'gradoAcademico', 'tipoContrato']})
         if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
             const clienteDto: ListarClienteDto = {
@@ -96,6 +96,7 @@ export class ClienteService {
             tipoTrabajo:tipoTrabajoSearch,
             pais:data.pais,
             gradoAcademico:gradoAcademicoSearch,
+            carrera:data.carrera,
             universidad:data.universidad,
             tipoContrato:tipoContratoSearch,
             usuario:savedUser
@@ -103,7 +104,7 @@ export class ClienteService {
 
         return await this.clienteRepo.save(cliente);
         }catch(err){
-        throw new InternalServerErrorException(err.message)
+        throw new InternalServerErrorException(err)
         }   
     }
 
