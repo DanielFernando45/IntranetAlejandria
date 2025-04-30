@@ -1,12 +1,3 @@
-// import { Module } from '@nestjs/common';
-// import { AuthService } from './auth.service';
-// import { AuthController } from './auth.controller';
-
-// @Module({
-//   providers: [AuthService],
-//   controllers: [AuthController]
-// })
-// export class AuthModule {}
 
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -22,6 +13,7 @@ import { UsuarioModule } from 'src/usuario/usuario.module';
 import { MailModule } from 'src/mail/mail.module';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -37,7 +29,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'superSecret',
       signOptions: { expiresIn: '1h' },
-    }),UsuarioModule,MailModule
+    }),UsuarioModule,MailModule,PassportModule
   ],
 
   providers: [AuthService, JwtStrategy,{

@@ -1,34 +1,47 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, ParseDatePipe } from '@nestjs/common';
 import { AsesoramientoService } from './asesoramiento.service';
-import { CreateAsesoramientoDto } from './dto/create-asesoramiento.dto';
 import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
+import { AsesoramientoWrpDTO } from './dto/asesoramientoadd.wrpdto';
 
 @Controller('asesoramiento')
 export class AsesoramientoController {
   constructor(private readonly asesoramientoService: AsesoramientoService) {}
 
-  @Post()
-  create(@Body() createAsesoramientoDto: CreateAsesoramientoDto) {
-    return this.asesoramientoService.create(createAsesoramientoDto);
+  @Get("/listar")
+  listar(){
+    this.asesoramientoService.findAll()
   }
 
-  @Get()
-  findAll() {
-    return this.asesoramientoService.findAll();
+  @Post("asignacion")
+  create(@Body() body:AsesoramientoWrpDTO) {
+    return this.asesoramientoService.create(body.createAsesoramiento,body.clientes);
   }
 
-  @Get(':id')
-  findOne(@Param('id',ParseIntPipe) id: number) {
-    return this.asesoramientoService.findOne(id);
+  @Get("listar/:fecha")
+  buscar_por_fecha(@Param("fecha") fecha:string){
+      if(fecha){
+        
+      }
   }
+
+  @Patch("editar_asesor/id")
+  editar_asesor(@Param("id",ParseIntPipe) id:number){
+    this.asesoramientoService.changeAsesor(id)
+  }
+
 
   @Patch(':id')
   updateAsesor(@Param('id',ParseIntPipe) id: number, @Body() updateAsesoramientoDto: UpdateAsesoramientoDto) {
     return this.asesoramientoService.update(id, updateAsesoramientoDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Patch("desactivate/:id")
+  desactivateAsesoria(@Param('id',ParseIntPipe) id:number){
+    return this.asesoramientoService.desactivate(id)
+  }
+
+  @Patch('finalized/:id')
+  finalizado(@Param('id') id: string) {
     return this.asesoramientoService.remove(+id);
   }
 }

@@ -7,8 +7,8 @@ import { createAsesorDto } from './dto/crear-asesor.dto';
 import * as bcrypt from "bcrypt"
 import { listarAsesorDto } from './dto/listar-asesor.dto';
 import { UpdateAsesorDto } from './dto/update-asesor.dto';
-import { AreaAsesor } from 'src/entidades/areaAsesor.entity';
-import { GradoAcademico } from 'src/entidades/gradoAcademico.entity';
+import { AreaAsesor } from 'src/common/entidades/areaAsesor.entity';
+import { GradoAcademico } from 'src/common/entidades/gradoAcademico.entity';
 import { ListarClienteDto } from 'src/admin/dto/listar-admin.dto';
 import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
 import { UsuarioService } from 'src/usuario/usuario.service';

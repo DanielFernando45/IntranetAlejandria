@@ -10,7 +10,7 @@ export class AsesoramientoInit1745431028826 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`tipo_trabajo\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         //await queryRunner.query(`CREATE TABLE \`procesos_asesoria\` (\`id\` int NOT NULL AUTO_INCREMENT, \`id_cliente\` int NULL, \`id_asesor\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`procesos_asesoria\` (\`id\` int NOT NULL AUTO_INCREMENT, \`id_cliente\` int NULL, \`id_asesor\` int NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`cliente\` (\`id\` int NOT NULL AUTO_INCREMENT, \`dni\` varchar(255) NOT NULL, \`nombre\` varchar(255) NOT NULL, \`apellido\` varchar(255) NOT NULL, \`telefono\` int NOT NULL, \`email\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`pais\` varchar(255) NOT NULL, \`universidad\` varchar(255) NOT NULL, \`id_tipo_trabajo\` int NULL, \`id_grado_academico\` int NULL, \`id_contrato\` int NULL, \`usuarioId\` int NULL, UNIQUE INDEX \`REL_26eb6132b607fd16d904df0367\` (\`usuarioId\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`cliente\` (\`id\` int NOT NULL AUTO_INCREMENT, \`dni\` varchar(255) NOT NULL, \`nombre\` varchar(255) NOT NULL, \`apellido\` varchar(255) NOT NULL, \`telefono\` int NOT NULL, \`email\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`carrera\` varchar(255) NOT NULL, \`pais\` varchar(255) NOT NULL, \`universidad\` varchar(255) NOT NULL, \`id_tipo_trabajo\` int NULL, \`id_grado_academico\` int NULL, \`id_contrato\` int NULL, \`usuarioId\` int NULL, UNIQUE INDEX \`REL_26eb6132b607fd16d904df0367\` (\`usuarioId\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`grado_academico\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`area_asesor\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`asesor\` (\`id\` int NOT NULL AUTO_INCREMENT, \`dni\` varchar(255) NOT NULL, \`nombre\` varchar(255) NOT NULL, \`apellido\` varchar(255) NOT NULL, \`email\` varchar(255) NOT NULL, \`telefono\` int NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`especialidad\` varchar(255) NOT NULL, \`universidad\` varchar(255) NOT NULL, \`id_area\` int NULL, \`id_grado_academico\` int NULL, \`usuarioId\` int NULL, UNIQUE INDEX \`REL_285f003441aa6855dc95f4c7b8\` (\`usuarioId\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -32,32 +32,30 @@ export class AsesoramientoInit1745431028826 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_285f003441aa6855dc95f4c7b83\``);
-        await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_cc2a52d979ab00d8b94b3a8d9ed\``);
-        await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_31c3d36ed1fd055597ab389da36\``);
-        await queryRunner.query(`ALTER TABLE \`cliente\` DROP FOREIGN KEY \`FK_26eb6132b607fd16d904df0367d\``);
-        await queryRunner.query(`ALTER TABLE \`cliente\` DROP FOREIGN KEY \`FK_d9dc549ba4376674665ac88bdaa\``);
-        await queryRunner.query(`ALTER TABLE \`cliente\` DROP FOREIGN KEY \`FK_3fdf25081e2ee383721afc625d2\``);
-        await queryRunner.query(`ALTER TABLE \`cliente\` DROP FOREIGN KEY \`FK_510f9c429b02ed90cdb646d3dbf\``);
-        // await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_51cbc8ccb27cc92c4e568ab0b1e\``);
-        // await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_94f8df2aa71583b6dfc0e744872\``);
-        await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_asesoramiento_proceso\``);
-        await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_51cbc8ccb27cc92c4e568ab0b1e\``);
-        await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_94f8df2aa71583b6dfc0e744872\``);
-        await queryRunner.query(`ALTER TABLE \`admin\` DROP FOREIGN KEY \`FK_d6655cf5853701ab8ac2d7d4d35\``);
-        await queryRunner.query(`DROP TABLE \`asesoramiento\``);
-        await queryRunner.query(`DROP INDEX \`REL_285f003441aa6855dc95f4c7b8\` ON \`asesor\``);
-        await queryRunner.query(`DROP TABLE \`asesor\``);
-        await queryRunner.query(`DROP TABLE \`area_asesor\``);
-        await queryRunner.query(`DROP TABLE \`grado_academico\``);
-        await queryRunner.query(`DROP INDEX \`REL_26eb6132b607fd16d904df0367\` ON \`cliente\``);
-        await queryRunner.query(`DROP TABLE \`cliente\``);
-        await queryRunner.query(`DROP TABLE \`procesos_asesoria\``);
-        await queryRunner.query(`DROP TABLE \`tipo_trabajo\``);
-        await queryRunner.query(`DROP TABLE \`tipo_contrato\``);
-        await queryRunner.query(`DROP INDEX \`REL_d6655cf5853701ab8ac2d7d4d3\` ON \`admin\``);
-        await queryRunner.query(`DROP TABLE \`admin\``);
-        await queryRunner.query(`DROP TABLE \`usuarios\``);
-    }
+    await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_285f003441aa6855dc95f4c7b83\``);
+    await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_cc2a52d979ab00d8b94b3a8d9ed\``);
+    await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_31c3d36ed1fd055597ab389da36\``);
+    await queryRunner.query(`ALTER TABLE \`cliente\` DROP FOREIGN KEY \`FK_26eb6132b607fd16d904df0367d\``);
+    await queryRunner.query(`ALTER TABLE \`cliente\` DROP FOREIGN KEY \`FK_d9dc549ba4376674665ac88bdaa\``);
+    await queryRunner.query(`ALTER TABLE \`cliente\` DROP FOREIGN KEY \`FK_3fdf25081e2ee383721afc625d2\``);
+    await queryRunner.query(`ALTER TABLE \`cliente\` DROP FOREIGN KEY \`FK_510f9c429b02ed90cdb646d3dbf\``);
+    await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_asesoramiento_proceso\``);
+    await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_51cbc8ccb27cc92c4e568ab0b1e\``);
+    await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_94f8df2aa71583b6dfc0e744872\``);
+    await queryRunner.query(`ALTER TABLE \`admin\` DROP FOREIGN KEY \`FK_d6655cf5853701ab8ac2d7d4d35\``);
 
+    await queryRunner.query(`DROP TABLE \`asesoramiento\``);
+    await queryRunner.query(`DROP INDEX \`REL_285f003441aa6855dc95f4c7b8\` ON \`asesor\``);
+    await queryRunner.query(`DROP TABLE \`asesor\``);
+    await queryRunner.query(`DROP TABLE \`area_asesor\``);
+    await queryRunner.query(`DROP TABLE \`grado_academico\``);
+    await queryRunner.query(`DROP INDEX \`REL_26eb6132b607fd16d904df0367\` ON \`cliente\``);
+    await queryRunner.query(`DROP TABLE \`cliente\``);
+    await queryRunner.query(`DROP TABLE \`procesos_asesoria\``);
+    await queryRunner.query(`DROP TABLE \`tipo_trabajo\``);
+    await queryRunner.query(`DROP TABLE \`tipo_contrato\``);
+    await queryRunner.query(`DROP INDEX \`REL_d6655cf5853701ab8ac2d7d4d3\` ON \`admin\``);
+    await queryRunner.query(`DROP TABLE \`admin\``);
+    await queryRunner.query(`DROP TABLE \`usuarios\``);
+    }
 }

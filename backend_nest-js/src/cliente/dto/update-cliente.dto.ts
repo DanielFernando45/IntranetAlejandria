@@ -41,6 +41,10 @@ export class updateClienteDto {//actualizar dtos
     @IsOptional()
     readonly universidad:string;
 
+    @IsString()
+    @IsOptional()
+    readonly carrera:string;
+
     @IsNumber()
     @IsOptional()
     readonly tipoContrato:number;

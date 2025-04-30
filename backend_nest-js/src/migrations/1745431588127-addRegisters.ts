@@ -4,20 +4,31 @@ import * as bcrypt from 'bcrypt';
 export class AddRegisters1745431588127 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-    const dni_cliente = 12345678;
-    const dni_cliente2=4567890
-    const dni_asesor = 87654321;
-    const dni_admin=45475734
-
-    const hashedPassword_cliente = await bcrypt.hash(`${dni_cliente}`, 10);
-    const hashedPassword_cliente2 = await bcrypt.hash(`${dni_cliente2}`, 10);
-    const hashedPassword_asesor = await bcrypt.hash(`${dni_asesor}`, 10);
-    const hashedPassword_admin=await bcrypt.hash(`${dni_admin}`,10)
-
-    const correo_cliente = "juantinoco23@gmail.com";
-    const correo_cliente2 = "gabrielv45@gmail.com";
-    const correo_asesor = "alonso12bernal@gmail.com";
-    const correo_admin= "antonioborges24@gmail.com"
+      const usuarios = [
+        { id: 1, dni: 12345678, correo: "juantinoco23@gmail.com", role: "estudiante", nombre: "Juan", apellido: "Tinoco", telefono: 12345678, carrera: "Derecho", universidad: "UNMSM", tipo_trabajo: 2, grado: 1 },
+        { id: 3, dni: 4567890, correo: "gabrielv45@gmail.com", role: "estudiante", nombre: "Gabriel", apellido: "Vargas", telefono: 98982131, carrera: "Administracion", universidad: "UNI", tipo_trabajo: 3, grado: 2 },
+        { id: 5, dni: 11223344, correo: "lauraq92@gmail.com", role: "estudiante", nombre: "Laura", apellido: "Quispe", telefono: 99887766, carrera: "Psicología", universidad: "PUCP", tipo_trabajo: 1, grado: 2 },
+        { id: 6, dni: 22334455, correo: "carlosmendez90@gmail.com", role: "estudiante", nombre: "Carlos", apellido: "Mendez", telefono: 98765432, carrera: "Ingeniería Civil", universidad: "UNI", tipo_trabajo: 3, grado: 3 },
+        { id: 7, dni: 33445566, correo: "vanesalopez@gmail.com", role: "estudiante", nombre: "Vanesa", apellido: "Lopez", telefono: 97654321, carrera: "Educación", universidad: "UNFV", tipo_trabajo: 2, grado: 1 },
+        { id: 8, dni: 44556677, correo: "martinruiz@gmail.com", role: "estudiante", nombre: "Martín", apellido: "Ruiz", telefono: 96543210, carrera: "Enfermería", universidad: "UNMSM", tipo_trabajo: 1, grado: 2 },
+        { id: 9, dni: 55667788, correo: "elizabethc@gmail.com", role: "estudiante", nombre: "Elizabeth", apellido: "Castro", telefono: 95432109, carrera: "Marketing", universidad: "ULima", tipo_trabajo: 2, grado: 3 },
+        { id: 10, dni: 66778899, correo: "franklinb@gmail.com", role: "estudiante", nombre: "Franklin", apellido: "Bravo", telefono: 94321098, carrera: "Contabilidad", universidad: "USMP", tipo_trabajo: 3, grado: 2 }
+      ];
+  
+      const asesores = [
+        { id: 2, dni: 87654321, correo: "alonso12bernal@gmail.com",role:"asesor", nombre: "Alonso", apellido: "Bernal", telefono: 87654321, area: 1, grado: 3, especialidad: "Finanzas empresariales", universidad: "UNALM" },
+        { id: 11, dni: 77889900, correo: "marianaz@gmail.com",role:"asesor",nombre: "Mariana", apellido: "Zapata", telefono: 91234567, area: 2, grado: 4, especialidad: "Investigación social", universidad: "PUCP" },
+        { id: 12, dni: 88990011, correo: "pedrog@gmail.com", role:"asesor",nombre: "Pedro", apellido: "García", telefono: 92345678, area: 3, grado: 4, especialidad: "Salud pública", universidad: "UNMSM" },
+        { id: 13, dni: 99001122, correo: "lucianac@gmail.com", role:"asesor",nombre: "Luciana", apellido: "Cueva", telefono: 93456789, area: 4, grado: 3, especialidad: "Ingeniería de sistemas", universidad: "UNI" },
+        { id: 14, dni: 10111213, correo: "ricardop@gmail.com", role:"asesor",nombre: "Ricardo", apellido: "Pérez", telefono: 94567890, area: 5, grado: 5, especialidad: "Derecho penal", universidad: "UNMSM" }
+      ];
+  
+      const admins = [
+        { id: 4, dni: 45475734, correo: "antonioborges24@gmail.com",role:"admin", nombre: "Antonio Borges" },
+        { id: 15, dni: 12131415, correo: "sofiaram@gmail.com",role:"admin", nombre: "Sofía Ramírez" },
+        { id: 16, dni: 13141516, correo: "ernestou@gmail.com",role:"admin", nombre: "Ernesto Ulloa" }
+      ];
+  
 
     // Insert datos básicos
     await queryRunner.query(`
@@ -38,10 +49,11 @@ export class AddRegisters1745431588127 implements MigrationInterface {
       
       await queryRunner.query(`
         INSERT INTO Alejandria.area_asesor (id, nombre) VALUES 
-          (1, 'Negocio/Legal'),
+          (1, 'Negocio'),
           (2, 'Social'),
           (3, 'Salud'),
-          (4, 'Ingenieria');
+          (4, 'Ingenieria'),
+          (5, 'Legal');
       `);
       
       await queryRunner.query(`
@@ -49,48 +61,47 @@ export class AddRegisters1745431588127 implements MigrationInterface {
           (1, 'Contado/Avance/Individual', 'contado', 'avance', 'individual');
       `);
 
-    await queryRunner.query(`
-      INSERT INTO Alejandria.usuarios (id, username, password, role, estado) VALUES 
-        (1, '${correo_cliente}', '${hashedPassword_cliente}', 'estudiante', 1),
-        (2, '${correo_asesor}', '${hashedPassword_asesor}', 'asesor', 1),
-        (3, '${correo_cliente2}', '${hashedPassword_cliente2}', 'estudiante', 1),
-        (4, '${correo_admin}','${hashedPassword_admin}','admin',1)
-    `);
+      for (const u of [...usuarios, ...asesores, ...admins]) {
+        const hashed = await bcrypt.hash(`${u.dni}`, 10);
+        await queryRunner.query(`
+          INSERT INTO Alejandria.usuarios (id, username, password, role, estado)
+          VALUES (${u.id}, '${u.correo}', '${hashed}', '${u.role || (u.nombre.includes("Ramírez") ? 'admin' : 'asesor')}', 1);
+        `);
+      }
 
-    await queryRunner.query(`
-        INSERT INTO Alejandria.cliente (
-          dni, nombre, apellido, telefono, email, url_imagen, pais, universidad,
-          id_tipo_trabajo, id_grado_academico, id_contrato, usuarioId
-        ) VALUES (
-          ${dni_cliente}, 'Juan', 'Tinoco', 12345678, '${correo_cliente}', 
-          'http://downloader/api/users/photos', 'Peru', 'UNMSM', 
-          2, 1, 1, 1
-        );
-      `);
+     // Insertar clientes
+     for (const c of usuarios) {
       await queryRunner.query(`
         INSERT INTO Alejandria.cliente (
-          dni, nombre, apellido, telefono, email, url_imagen, pais, universidad,
+          dni, nombre, apellido, telefono, email, url_imagen, pais, carrera, universidad,
           id_tipo_trabajo, id_grado_academico, id_contrato, usuarioId
         ) VALUES (
-          ${dni_cliente2}, 'Gabriel', 'Vargas', 98982131, '${correo_cliente2}', 
-          'http://downloader/api/users/photos', 'Peru', 'UNI', 
-          3, 2, 1, 3
+          ${c.dni}, '${c.nombre}', '${c.apellido}', ${c.telefono}, '${c.correo}',
+          'http://downloader/api/users/photos', 'Peru', '${c.carrera}', '${c.universidad}',
+          ${c.tipo_trabajo}, ${c.grado}, 1, ${c.id}
         );
-    `);
+      `);
+    }
       
+    // Insertar asesores
+    for (const a of asesores) {
       await queryRunner.query(`
         INSERT INTO Alejandria.asesor (
-          dni, nombre, apellido, email, telefono, url_imagen, especialidad, 
+          dni, nombre, apellido, email, telefono, url_imagen, especialidad,
           universidad, id_area, id_grado_academico, usuarioId
         ) VALUES (
-          ${dni_asesor}, 'Alonso', 'Bernal', '${correo_asesor}', 87654321, 
-          'http://worlwide/images/person2', 'Financias empresariales', 
-          'Universidad Nacional Agraria La Molina', 1, 3, 2
+          ${a.dni}, '${a.nombre}', '${a.apellido}', '${a.correo}', ${a.telefono},
+          'http://worlwide/images/person${a.id}', '${a.especialidad}',
+          '${a.universidad}', ${a.area}, ${a.grado}, ${a.id}
         );
       `);
+    }
+    for (const a of admins) {
       await queryRunner.query(`
-        INSERT INTO Alejandria.admin (nombre,email,dni,usuarioId) VALUES ('Antonio Borges','${correo_admin}','${dni_admin}',4)
-        `)
+        INSERT INTO Alejandria.admin (nombre, email, dni, usuarioId)
+        VALUES ('${a.nombre}', '${a.correo}', '${a.dni}', ${a.id});
+      `);
+    }
 
         // Insertar asesoramiento
         await queryRunner.query(`
@@ -111,90 +122,34 @@ export class AddRegisters1745431588127 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            DELETE FROM Alejandria.cliente WHERE dni = 12345678;
-        `);
-        await queryRunner.query(`
-          DELETE FROM Alejandria.cliente WHERE dni = 4567890;
-        `);
-      
-        // Eliminar datos relacionados con asesor
-        await queryRunner.query(`
-            DELETE FROM Alejandria.asesor WHERE dni = 87654321;
-        `);
-        await queryRunner.query(`
-          DELETE FROM Alejandria.admin WHERE dni = 45475734;
-      `);
-      
-        // Eliminar usuarios por correo electrónico
-        await queryRunner.query(`
-            DELETE FROM Alejandria.usuarios WHERE username = 'juantinoco23@gmail.com';
-        `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.usuarios WHERE username = 'alonso12bernal@gmail.com';
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.usuarios WHERE username = 'gabrielv45@gmail.com';
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.usuarios WHERE username = 'antonioborges24@gmail.com';
-          `);
-          // Eliminar tipo de contrato
-          await queryRunner.query(`
-            DELETE FROM Alejandria.tipo_contrato WHERE id = 1;
-          `);
-      
-          // Eliminar área de asesor
-          await queryRunner.query(`
-            DELETE FROM Alejandria.area_asesor WHERE id = 1;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.area_asesor WHERE id = 2;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.area_asesor WHERE id = 3;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.area_asesor WHERE id = 4;
-          `);
-      
-          // Eliminar grados académicos
-          await queryRunner.query(`
-            DELETE FROM Alejandria.grado_academico WHERE id = 1;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.grado_academico WHERE id = 2;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.grado_academico WHERE id = 3;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.grado_academico WHERE id = 4;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.grado_academico WHERE id = 5;
-          `);
-      
-          // Eliminar tipos de trabajo
-          await queryRunner.query(`
-            DELETE FROM Alejandria.tipo_trabajo WHERE id = 1;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.tipo_trabajo WHERE id = 2;
-          `);
-          await queryRunner.query(`
-            DELETE FROM Alejandria.tipo_trabajo WHERE id = 3;
-          `);
+      await queryRunner.query(`DELETE FROM Alejandria.procesos_asesoria WHERE id IN (1,2)`);
 
-        // Eliminar proceso de asesoría
-        await queryRunner.query(`
-            DELETE FROM Alejandria.procesos_asesoria WHERE id = 1;
-        `);
-  
-        // Eliminar asesoramiento
-        await queryRunner.query(`
-            DELETE FROM Alejandria.asesoramiento WHERE id = 1;
-        `);
+      // Eliminar asesoramientos
+      await queryRunner.query(`DELETE FROM Alejandria.asesoramiento WHERE id = 1`);
+    
+      // Eliminar registros de admin
+      await queryRunner.query(`DELETE FROM Alejandria.admin WHERE usuarioId IN (4, 15, 16)`);
+    
+      // Eliminar registros de asesor
+      await queryRunner.query(`DELETE FROM Alejandria.asesor WHERE usuarioId IN (2, 11, 12, 13, 14)`);
+    
+      // Eliminar registros de cliente
+      await queryRunner.query(`DELETE FROM Alejandria.cliente WHERE usuarioId IN (1, 3, 5, 6, 7, 8, 9, 10)`);
+    
+      // Eliminar usuarios
+      await queryRunner.query(`DELETE FROM Alejandria.usuarios WHERE id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)`);
+    
+      // Eliminar tipo_contrato
+      await queryRunner.query(`DELETE FROM Alejandria.tipo_contrato WHERE id = 1`);
+    
+      // Eliminar area_asesor
+      await queryRunner.query(`DELETE FROM Alejandria.area_asesor WHERE id IN (1, 2, 3, 4, 5)`);
+    
+      // Eliminar grado_academico
+      await queryRunner.query(`DELETE FROM Alejandria.grado_academico WHERE id IN (1, 2, 3, 4, 5)`);
+    
+      // Eliminar tipo_trabajo
+      await queryRunner.query(`DELETE FROM Alejandria.tipo_trabajo WHERE id IN (1, 2, 3)`);
     }
 
 }

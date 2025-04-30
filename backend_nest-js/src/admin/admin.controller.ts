@@ -1,7 +1,10 @@
-import { Controller ,Post,Body,Get, Param, Patch, ParseIntPipe, Delete} from '@nestjs/common';
+import { Controller ,Post,Body,Get, Param, Patch, ParseIntPipe, Delete, UseGuards, BadRequestException, Req} from '@nestjs/common';
 import { AdminService } from './admin.service';
-
 import { CrearlienteDto } from './dto/crear-admin.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { ChangePasswordDto } from 'src/auth/dto/changue-password.dto';
 
 
 @Controller('admin')
@@ -38,12 +41,23 @@ export class AdminController {
             throw err;
           }
     }
-
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles('admin')
     @Patch('desactivate/:id')
     async desactivate(@Param('id',ParseIntPipe) id:number){
         return this.adminService.desactivateAdmin(id)
     }
 
-    
+    @UseGuards(JwtAuthGuard)
+    @Patch('change-password')
+    async change(@Body() contraseñas:ChangePasswordDto ,@Req() req:Request){
+    const {oldPassword,newPassword,repeatPassword}=contraseñas
+    console.log()
+    if(oldPassword || newPassword || repeatPassword){
+      return new BadRequestException("No estan todos los campos necesarios")
+    }
+    return this.adminService.changePassword(oldPassword,newPassword,repeatPassword)
+
+  }
 
 }

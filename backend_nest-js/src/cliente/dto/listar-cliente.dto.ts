@@ -1,8 +1,8 @@
-import { IsString, IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, IsNumber, IsDateString, IsOptional } from 'class-validator';
 
 export class ListarClienteDto {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   readonly dni: string;
 
   @IsString()
@@ -14,26 +14,35 @@ export class ListarClienteDto {
   readonly apellido: string;
 
   @IsNumber()
+  @IsOptional()
   readonly telefono: number;
 
   @IsEmail()
-  @IsNotEmpty()
+  @IsOptional()
   readonly email: string;
 
   @IsString()
+  @IsOptional()
   readonly url_imagen: string;
 
   @IsString()
+  @IsOptional()
   readonly tipoTrabajo: string;  // Cambié de tipo_trabajo a tipoTrabajo
 
   @IsString()
+  @IsOptional()
   readonly pais: string;
 
   @IsString()
+  @IsOptional()
   readonly gradoAcademico: string;  // Cambié id_grado_academico a gradoAcademico
 
   @IsString()
+  @IsOptional()
   readonly universidad: string;
+
+  @IsString()
+  readonly carrera:string;
 
   @IsString()
   readonly tipoContrato: string;  // Cambié id_contrato a tipoContrato

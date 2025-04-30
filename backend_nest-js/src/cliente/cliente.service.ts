@@ -7,16 +7,20 @@ import { CreateClienteDto } from './dto/crear-cliente.dto';
 import * as bcrypt from 'bcrypt'
 import { ListarClienteDto } from './dto/listar-cliente.dto';
 import { updateClienteDto } from './dto/update-cliente.dto';
-import { TipoContrato } from 'src/entidades/tipoContrato.entity';
-import { GradoAcademico } from 'src/entidades/gradoAcademico.entity';
-import { TipoTrabajo } from 'src/entidades/tipoTrabajo.entity';
+import { TipoContrato } from 'src/common/entidades/tipoContrato.entity';
+import { GradoAcademico } from 'src/common/entidades/gradoAcademico.entity';
+import { TipoTrabajo } from 'src/common/entidades/tipoTrabajo.entity';
 import { UsuarioService } from 'src/usuario/usuario.service';
 import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
+import { FechasDto, ListarClientesDto } from './dto/listar-clientes.dto';
+import { AsesoramientoService } from 'src/asesoramiento/asesoramiento.service';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class ClienteService {
     constructor(
         private readonly usuarioService:UsuarioService,
+        private readonly asesoramientoService:AsesoramientoService,
 
         @InjectRepository(Cliente)
         private clienteRepo: Repository<Cliente>,
@@ -32,23 +36,42 @@ export class ClienteService {
         private tipoTrabajoRepo: Repository<TipoTrabajo>
     ){}
 
-    async listAdmin (): Promise<ListarClienteDto[]>{
-        const listofCliente=await this.clienteRepo.find({relations:["tipoTrabajo","gradoAcademico","tipoTrabajo"]})
-        if(!listofCliente) throw new NotFoundException("No se encontro ningun cliente")
-
-        const mapedCliente:ListarClienteDto[]=listofCliente.map(cliente=>({
-            ...cliente,
-            tipoTrabajo:cliente.tipoTrabajo?.nombre || '',
-            
-            gradoAcademico:cliente.gradoAcademico?.nombre || '',
-            
-            tipoContrato:cliente.tipoContrato?.nombre || '',
-            }))
+    async listClients (): Promise<ListarClientesDto[]>{
+        const listofCliente=await this.clienteRepo.find({
+            relations:['tipoContrato'],
+            select:['id','nombre','apellido','carrera','tipoContrato']})
         
-        return mapedCliente
+        if(!listofCliente||listofCliente.length===0) throw new NotFoundException("No se encontro ningun cliente")
+
+        const mapedCliente = await Promise.all(
+            listofCliente.map(async (cliente) => {
+            const id_cliente = cliente.id;
+            console.log(id_cliente)
+            const fechas = await this.asesoramientoService.findDatesByCliente(id_cliente);
+            
+            return {
+            ...cliente,
+            tipoContrato: cliente.tipoContrato?.nombre || '',
+            fechas_asesoramiento:fechas
+            };
+        }));
+        
+        const validatedClients = await Promise.all(
+            mapedCliente.map(async (client) => {
+              const errors = await validate(client);
+              if (errors.length > 0) {
+                throw new Error('El cliente no es válido');
+              }
+              return client;
+            })
+          );
+
+        return validatedClients
     }
+
     
-    async listOneAdmin(id:number):Promise<ListarClienteDto>{
+    
+    async listOneClient(id:number):Promise<ListarClienteDto>{
         const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['tipoTrabajo', 'gradoAcademico', 'tipoContrato']})
         if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
             const clienteDto: ListarClienteDto = {
@@ -96,6 +119,7 @@ export class ClienteService {
             tipoTrabajo:tipoTrabajoSearch,
             pais:data.pais,
             gradoAcademico:gradoAcademicoSearch,
+            carrera:data.carrera,
             universidad:data.universidad,
             tipoContrato:tipoContratoSearch,
             usuario:savedUser
@@ -103,7 +127,7 @@ export class ClienteService {
 
         return await this.clienteRepo.save(cliente);
         }catch(err){
-        throw new InternalServerErrorException(err.message)
+        throw new InternalServerErrorException(err)
         }   
     }
 

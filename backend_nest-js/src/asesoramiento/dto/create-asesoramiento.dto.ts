@@ -1,11 +1,19 @@
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { Type } from "class-transformer";
+import { IsDate, IsNotEmpty, IsNumber } from "class-validator";
+
 
 export class CreateAsesoramientoDto {
     @IsNumber()
     @IsNotEmpty()
     id_asesor:number;
 
-    @IsNumber()
+    @IsDate()
     @IsNotEmpty()
-    id_cliente:number;
+    @Type(() => Date)
+    fecha_inicio:Date;
+
+    @IsDate()
+    @IsNotEmpty()
+    @Type(() => Date)
+    fecha_fin:Date
 }

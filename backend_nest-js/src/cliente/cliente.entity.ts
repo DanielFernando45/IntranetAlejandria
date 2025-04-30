@@ -1,10 +1,11 @@
 import { Entity,PrimaryGeneratedColumn, Column, OneToOne,JoinColumn, OneToMany, ManyToOne} from "typeorm";
 import { Usuario } from "src/usuario/usuario.entity";
-import { TipoContrato } from "src/entidades/tipoContrato.entity";
-import { GradoAcademico } from "src/entidades/gradoAcademico.entity";
-import { TipoTrabajo } from "src/entidades/tipoTrabajo.entity";
+import { TipoContrato } from "src/common/entidades/tipoContrato.entity";
+import { GradoAcademico } from "src/common/entidades/gradoAcademico.entity";
+import { TipoTrabajo } from "src/common/entidades/tipoTrabajo.entity";
 import { Asesoramiento } from "src/asesoramiento/entities/asesoramiento.entity";
 import { ProcesosAsesoria } from "src/procesos_asesoria/entities/procesos_asesoria.entity";
+import { IsNotEmpty } from "class-validator";
 
 @Entity()
 export class Cliente{
@@ -42,6 +43,9 @@ export class Cliente{
 
     @Column()
     universidad:string;
+
+    @Column()
+    carrera:string;
 
     @ManyToOne(() => TipoContrato)
     @JoinColumn({ name: 'id_contrato' }) // nombre de la columna en la tabla Cliente

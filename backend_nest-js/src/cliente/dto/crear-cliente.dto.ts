@@ -40,6 +40,10 @@ export class CreateClienteDto {
     @IsNotEmpty()
     readonly universidad: string;
 
+    @IsString()
+    @IsNotEmpty()
+    readonly carrera:string;
+
     @IsInt()
     @IsNotEmpty()
     readonly tipoContrato: number;

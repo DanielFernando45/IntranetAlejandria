@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne,JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Usuario } from "src/usuario/usuario.entity";
-import { GradoAcademico } from "src/entidades/gradoAcademico.entity";
-import { AreaAsesor } from "src/entidades/areaAsesor.entity";
+import { GradoAcademico } from "src/common/entidades/gradoAcademico.entity";
+import { AreaAsesor } from "src/common/entidades/areaAsesor.entity";
 import { ProcesosAsesoria } from "src/procesos_asesoria/entities/procesos_asesoria.entity";
 
 @Entity()
