@@ -1,17 +1,48 @@
-import React from 'react'
-import busqueda from "../../../assets/icons/busqueda.svg"
+import React, { useState, useEffect } from 'react';
+import busqueda from "../../../assets/icons/busqueda.svg";
 
-const Buscar = () => {
+const Buscar = ({ onBuscar, onReset }) => {
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    if (query.trim() === "") {
+      onReset();
+    } else {
+      onBuscar(query);
+    }
+  }, [query]);
+
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const handleReset = () => {
+    setQuery("");
+    onReset();
+  };
+
   return (
-    <div className="flex gap-5">
-      <div className="w-full h-8 rounded-md px-[10px] py-[6px] bg-[#E4E2E2]">
-        <img src={busqueda} alt="" />
+    <div className="flex gap-3 items-center">
+      <div className="flex w-full h-8 rounded-md px-[10px] py-[6px] justify-between bg-[#E4E2E2]">
+        <input
+          className="bg-transparent w-full focus:outline-none text-black placeholder:text-[#888]"
+          type="text"
+          placeholder="Buscar por ID, DNI o nombre..."
+          value={query}
+          onChange={handleInputChange}
+        />
+        {query === "" && <img src={busqueda} alt="Buscar" />}
       </div>
-      <div className="flex justify-center text-white w-[113px] h-8 rounded font-semibold  bg-[#1B435D] px-6 py-1">
-        Buscar
-      </div>
+      {query.trim() !== "" && (
+        <button
+          onClick={handleReset}
+          className="flex justify-center text-white w-[90px] h-8 rounded font-semibold bg-[#888] px-4 py-1"
+        >
+          Atrás
+        </button>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Buscar
+export default Buscar;

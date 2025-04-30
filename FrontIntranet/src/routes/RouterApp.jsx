@@ -1,6 +1,6 @@
 // src/routes/RouterApp.jsx
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoutes from './ProtectedRoutes';
 
 // Páginas Estudiante
@@ -33,6 +33,8 @@ import ErrorScreen from '../pages/ErrorScreen';
 //Pagina Recuperar Contraseña
 import ResetPassword from '../pages/ResetPassword';
 import NuevaContraseña from '../pages/NuevaContraseña';
+import ListarEstudiante from '../pages/Administrador/ListarEstudiante';
+import ListarAsesor from '../pages/Administrador/ListarAsesor';
 
 
 const RouterApp = () => {
@@ -60,11 +62,19 @@ const RouterApp = () => {
 
       {/* RUTAS ADMIN */}
       <Route element={<ProtectedRoutes allowedRoles={['admin']} />}>
-        <Route path="/admin/gestionar-usuarios" element={<GestionarUsuarios />} />
+
+
+        <Route path="/admin/gestionar-usuarios" element={<GestionarUsuarios />}>
+              <Route index element={<Navigate to="listar-estudiantes" replace />} />
+              <Route path="listar-estudiantes" element={<ListarEstudiante/>} />
+              <Route path="listar-asesores" element={<ListarAsesor/>} />
+        </Route> 
+          
         <Route path="/admin/gestionar-usuarios/agregar-estudiante" element={<AgregarEstudiante/>} />
         <Route path="/admin/gestionar-usuarios/agregar-asesor" element={<AgregarAsesor/>} />
         <Route path="/admin/gestionar-usuarios/editar-estudiante/:id" element={<EditarEstudiante/>} />
-        <Route path="/admin/gestionar-usuarios/editar-asesor" element={<EditarAsesor/>} />
+        <Route path="/admin/gestionar-usuarios/editar-asesor/:id" element={<EditarAsesor/>} />
+
         <Route path="/admin/asignaciones" element={<Asignaciones/>}/>
         <Route path="/admin/pagos" element={<Pagos/>}/>
 

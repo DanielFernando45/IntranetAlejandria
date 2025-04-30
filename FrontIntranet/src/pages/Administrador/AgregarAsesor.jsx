@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const AgregarAsesor = () => {
   const navigate = useNavigate();
   const handlerAtras = () =>{
-    navigate('/admin/gestionar-usuarios')
+    navigate('/admin/gestionar-usuarios/listar-asesores')
     
   }
 

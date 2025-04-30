@@ -6,7 +6,7 @@ const AgregarEstudiante = () => {
 
     const navigate = useNavigate();
     const handlerAtras = () =>{
-        navigate('/admin/gestionar-usuarios')
+        navigate('/admin/gestionar-usuarios/listar-estudiantes')
     }
 
   return (
