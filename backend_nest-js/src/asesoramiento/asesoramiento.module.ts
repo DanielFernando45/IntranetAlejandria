@@ -8,6 +8,7 @@ import { Asesoramiento } from './entities/asesoramiento.entity';
 @Module({
   imports:[TypeOrmModule.forFeature([Asesoramiento]),ProcesosAsesoriaModule],
   controllers: [AsesoramientoController],
-  providers: [AsesoramientoService]
+  providers: [AsesoramientoService],
+  exports:[AsesoramientoService]
 })
 export class AsesoramientoModule {}

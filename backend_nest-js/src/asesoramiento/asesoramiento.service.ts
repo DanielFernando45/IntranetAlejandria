@@ -6,6 +6,7 @@ import { Asesoramiento, Estado_Asesoria } from './entities/asesoramiento.entity'
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, QueryRunner } from 'typeorm';
 import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
+import { FechasDto } from 'src/cliente/dto/listar-clientes.dto';
 
 
 @Injectable()
@@ -19,6 +20,10 @@ export class AsesoramientoService {
     @InjectDataSource()
     private readonly dataSource:DataSource
   ){}
+
+  async findAll(){
+    return "Todos"
+  }
 
   async create(createAsesoramientoDto: CreateAsesoramientoDto,clientes:clientesExtraDTO) {
     const {id_asesor,fecha_inicio,fecha_fin}=createAsesoramientoDto
@@ -61,17 +66,44 @@ export class AsesoramientoService {
     }finally{
       await queryRunner.release()
     }
-    
-
-    
   }
 
-  findAll() {
-    //return `This action returns all asesoramiento`;
+  async findDatesByCliente(id:number):Promise<FechasDto>{
+
+  const fechas = await this.asesoramientoRepo
+      .createQueryBuilder('a')  // Alias para la tabla asesoramiento
+      .innerJoin('a.procesosasesoria', 'p')  // Relación con la tabla procesos_asesoria
+      .innerJoin('p.cliente', 'c')  // Relación con la tabla cliente
+      .select(['a.fecha_inicio', 'a.fecha_fin'])  // Selecciona las columnas que deseas
+      .where('c.id = :id', { id })  // Filtra por el id del cliente
+      .getOne();
+  
+  console.log(fechas)
+  if(fechas===null) return { "fecha_inicio":"Por asignar", "fecha_fin":"Por asignar" }
+  if (!fechas.fecha_inicio || !fechas.fecha_fin) throw new Error('Las fechas no están asignadas correctamente');
+  
+    const solo_fechas={
+     fecha_inicio:fechas.fecha_inicio,
+     fecha_fin:fechas.fecha_fin
+   }
+   console.log(solo_fechas)
+  return solo_fechas
   }
 
-  findOne(id: number) {
-    //return `This action returns a #${id} asesoramiento`;
+  async changeAsesor(id:number){
+
+    return `Se cambio el asesor correctamente por el de ID ${id}`
+  }
+
+  async desactivate(id:number){
+    const desactAsesoria=await this.asesoramientoRepo.update(
+      id,
+      {estado:Estado_Asesoria.DESACTIVADO}
+    )
+    if(desactAsesoria.affected===0) throw new BadRequestException("No se desactivo ningun usuario con el ID dado")
+
+
+    return `Se desactico el asesoramiento con id: ${id}`
   }
 
   update(id: number, updateAsesoramientoDto: UpdateAsesoramientoDto) {
