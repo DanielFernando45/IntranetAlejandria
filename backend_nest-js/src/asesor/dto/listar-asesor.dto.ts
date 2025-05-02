@@ -1,10 +1,14 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 
 export class listarAsesorDto{
+    @IsNumber()
+    @IsNotEmpty()
+    readonly id:number;
+
     @IsString()
     @IsNotEmpty()
-    readonly dni:string
+    readonly dni:string;
     
     @IsString()
     @IsNotEmpty()
@@ -15,13 +19,15 @@ export class listarAsesorDto{
     readonly apellido:string;
 
     @IsEmail()
-    @IsNotEmpty()
+    @IsOptional()
     readonly email:string;
 
     @IsNumber()
+    @IsOptional()
     readonly telefono:number;
 
     @IsString()
+    @IsOptional()
     readonly url_imagen:string;
 
     @IsString()

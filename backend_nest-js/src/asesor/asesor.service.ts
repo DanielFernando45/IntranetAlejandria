@@ -28,12 +28,15 @@ export class AsesorService {
         private gradoAcademicoRepo: Repository<GradoAcademico>,
         
     ){}
-
-    async listAdmin (): Promise<listarAsesorDto[]>{
+    
+    async listAsesor (): Promise<listarAsesorDto[]>{
         const listofAsesor=await this.asesorRepo.find({relations:["gradoAcademico","areaAsesor"]})
         if(!listofAsesor) throw new NotFoundException("No se encontro ningun cliente")
+        
+        console.log(listofAsesor)
 
         const mapedAsesor:listarAsesorDto[]=listofAsesor.map(asesor=>({
+            id:asesor.id,
             dni:asesor.dni,
             nombre:asesor.nombre,
             apellido:asesor.apellido,
@@ -41,8 +44,8 @@ export class AsesorService {
             telefono:asesor.telefono,
             url_imagen:asesor.url_imagen,
             areaAsesor:asesor.areaAsesor?.nombre,
-            especialidad:asesor.especialidad,
             gradoAcademico:asesor.gradoAcademico?.nombre,
+            especialidad:asesor.especialidad,
             universidad:asesor.universidad
             }))
         return mapedAsesor
