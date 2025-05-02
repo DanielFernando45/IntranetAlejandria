@@ -33,9 +33,17 @@ export class AddRegisters1745431588127 implements MigrationInterface {
     // Insert datos básicos
     await queryRunner.query(`
         INSERT INTO Alejandria.tipo_trabajo (id, nombre) VALUES 
-          (1, 'Tesina'),
-          (2, 'Tesis Titulacion'),
-          (3, 'Tesis Maestria');
+          (1, 'Proyecto bachillerato'),
+          (2, 'Tesis'),
+          (3, 'Tesis Maestria'),
+          (4, 'Tesis Doctorado'),
+          (5, 'Proyecto'),
+          (6, 'Informe'),
+          (7, 'Plan de negocio'),
+          (8, 'Revision sistematica'),
+          (9, 'Articulo cientifico'),
+          (10, 'Estudio de prefactibilidad'),
+          (11, 'Suficiencia personal');
       `);
       
       await queryRunner.query(`
@@ -149,7 +157,7 @@ export class AddRegisters1745431588127 implements MigrationInterface {
       await queryRunner.query(`DELETE FROM Alejandria.grado_academico WHERE id IN (1, 2, 3, 4, 5)`);
     
       // Eliminar tipo_trabajo
-      await queryRunner.query(`DELETE FROM Alejandria.tipo_trabajo WHERE id IN (1, 2, 3)`);
+      await queryRunner.query(`DELETE FROM Alejandria.tipo_trabajo WHERE id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)`);
     }
 
 }

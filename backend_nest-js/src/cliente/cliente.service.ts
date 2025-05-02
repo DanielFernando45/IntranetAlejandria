@@ -39,7 +39,7 @@ export class ClienteService {
     async listClients (): Promise<ListarClientesDto[]>{
         const listofCliente=await this.clienteRepo.find({
             relations:['tipoContrato'],
-            select:['id','nombre','apellido','carrera','tipoContrato']})
+            select:['id','dni','nombre','apellido','carrera','tipoContrato']})
         
         if(!listofCliente||listofCliente.length===0) throw new NotFoundException("No se encontro ningun cliente")
 

@@ -18,7 +18,7 @@ export class AsesorController {
     
         @Get()
         async listAll(){
-            return this.asesorService.listAdmin();
+            return this.asesorService.listAsesor();
         }
     
         @Post('/add')
