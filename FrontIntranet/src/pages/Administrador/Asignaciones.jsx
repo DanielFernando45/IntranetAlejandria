@@ -1,4 +1,4 @@
-import React, { useState,useRef,useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import LayoutApp from '../../layout/LayoutApp';
 import check from "../../assets/icons/check.svg";
 import desactivar from "../../assets/icons/desactivar.svg";
@@ -16,10 +16,55 @@ const Asesor = [
 ];
 
 const clientesMock = [
-  { id: "0125", nombre: "Juan Mateo Pérez Vinlof", contrato: "Plazo/Al contado/Grupal", fecha: "25/07/24", carrera: "Administracion de empresas Internacionales" },
-  { id: "0126", nombre: "Juan Mateo Pérez Vinlof", contrato: "Plazo/Al contado/Grupal", fecha: "25/07/24", carrera: "Administracion de empresas Internacionales" },
-  { id: "0127", nombre: "Juan Mateo Pérez Vinlof", contrato: "Plazo/Al contado/Grupal", fecha: "25/07/24", carrera: "Administracion de empresas Internacionales" },
-  { id: "0128", nombre: "Antonio Jorge Cueva Lopez", contrato: "Avance/Al contado/Individual", fecha: "25/07/24", carrera: "Administracion de empresas Internacionales" }
+  {
+    id: "0125",
+    nombre: "Juan Mateo Pérez Vinlof",
+    contrato: "Plazo/Al contado/Grupal",
+    fecha: "25/07/24",
+    carrera: "Administracion de empresas Internacionales"
+  },
+  {
+    id: "0126",
+    nombre: "Liora Estel Marvanez Quiroga",
+    contrato: "Plazo/Al contado/Grupal",
+    fecha: "25/07/24",
+    carrera: "Administracion de empresas Internacionales"
+  },
+  {
+    id: "0127",
+    nombre: "Darian Eloi Vasquel Tironez",
+    contrato: "Plazo/Al contado/Grupal",
+    fecha: "25/07/24",
+    carrera: "Administracion de empresas Internacionales"
+  },
+  {
+    id: "0128",
+    nombre: "Selma Irien Fonbré Lurian",
+    contrato: "Avance/Al contado/Individual",
+    fecha: "25/07/24",
+    carrera: "Administracion de empresas Internacionales"
+  },
+  {
+    id: "0129",
+    nombre: "Thiago Emrik Valtrán Ormuez",
+    contrato: "Avance/Al contado/Individual",
+    fecha: "25/07/24",
+    carrera: "Administracion de empresas Internacionales"
+  },
+  {
+    id: "0130",
+    nombre: "Nayeli Auren Zevallo Quinterez",
+    contrato: "Avance/Al contado/Individual",
+    fecha: "25/07/24",
+    carrera: "Administracion de empresas Internacionales"
+  },
+  {
+    id: "0131",
+    nombre: "Cael Idris Montrel Viedan",
+    contrato: "Avance/Al contado/Individual",
+    fecha: "25/07/24",
+    carrera: "Administracion de empresas Internacionales"
+  }
 ];
 
 const Asignaciones = () => {
@@ -46,7 +91,7 @@ const Asignaciones = () => {
 
 
   const handleElegirCliente = (cliente) => {
-    if (clientesSeleccionados.length < 2 && !clientesSeleccionados.find(c => c.id === cliente.id)) {
+    if (clientesSeleccionados.length < 5 && !clientesSeleccionados.find(c => c.id === cliente.id)) {
       setClientesSeleccionados([...clientesSeleccionados, cliente]);
       setClientesOcultos([...clientesOcultos, cliente.id]);
     }
@@ -82,14 +127,34 @@ const Asignaciones = () => {
             <>
               <div className="flex flex-col gap-[12px]">
                 <h2 className="text-2xl font-semibold">Clientes Sin Asignar</h2>
-                <div className="flex flex-col gap-2">
-                  {clientesSeleccionados.map(cliente => (
-                    <div key={cliente.id} className="flex items-center border rounded px-2 py-1 w-[250px]">
-                      {cliente.nombre}
-                      <button onClick={() => handleEliminarCliente(cliente.id)} className="ml-2 text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center">×</button>
-                      
-                    </div>
-                  ))}
+                <div className="grid grid-cols-4 ">
+                  <div className="flex flex-col gap-2">
+                    {clientesSeleccionados.slice(0, 2).map(cliente => (
+                      <div key={cliente.id} className="flex items-center justify-between border rounded px-2 py-1 w-[300px]">
+                        {cliente.nombre}
+                        <button
+                          onClick={() => handleEliminarCliente(cliente.id)}
+                          className="ml-2 text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {clientesSeleccionados.slice(0, 2).map(cliente => (
+                      <div key={cliente.id} className="flex items-center justify-between border rounded px-2 py-1 w-[300px]">
+                        {cliente.nombre}
+                        <button
+                          onClick={() => handleEliminarCliente(cliente.id)}
+                          className="ml-2 text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -183,7 +248,7 @@ const Asignaciones = () => {
                   <div className="w-[60px] flex justify-center">Estado</div>
                   <div className="w-[200px] flex justify-center ml-3">Accion</div>
                 </div>
-                {[1,2,3,4,5].map((item, index) => (
+                {[1, 2, 3, 4, 5].map((item, index) => (
                   <div key={index} className={`flex justify-between text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
                     <div className="w-[40px] flex justify-center">0125</div>
                     <div className="w-[300px] flex justify-center">Antonio Jorge Cueva Lopez</div>
@@ -198,7 +263,7 @@ const Asignaciones = () => {
                       {index % 2 === 0 ? 'Activado' : 'Desactivado'}
                     </div>
                     <div className="w-[200px] text-white ml-3">
-                      <button 
+                      <button
                         onClick={() => setCambiar(!cambiar)}
                         className='bg-[#1C1C34] w-[160px] rounded-md px-3 py-1 flex justify-center'
                       >
@@ -208,56 +273,56 @@ const Asignaciones = () => {
                   </div>
                 ))}
               </div>
-              
+
               {cambiar && (
-        <div
-          ref={dropdownRef}
-          className="absolute top-12 ml-96 bg-[#F8F7F7] border border-gray-300 rounded shadow-lg p-4 w-64 pb-10"
-        >
-          <div className='w-full flex justify-center text-[20px] mb-5'>
-            <h1>Nuevo asesor</h1>
-          </div>
-          
-          <div className="mb-4">
-            <select value={areaSeleccionada} onChange={(e) => { setAreaSeleccionada(e.target.value); setAsesorSeleccionado(""); }} className="w-full  rounded px-2 py-1">
-            <option value="" disabled>Areas</option>
+                <div
+                  ref={dropdownRef}
+                  className="absolute top-12 ml-96 bg-[#F8F7F7] border border-gray-300 rounded shadow-lg p-4 w-64 pb-10"
+                >
+                  <div className='w-full flex justify-center text-[20px] mb-5'>
+                    <h1>Nuevo asesor</h1>
+                  </div>
+
+                  <div className="mb-4">
+                    <select value={areaSeleccionada} onChange={(e) => { setAreaSeleccionada(e.target.value); setAsesorSeleccionado(""); }} className="w-full  rounded px-2 py-1">
+                      <option value="" disabled>Areas</option>
                       {[...new Set(Asesor.map(a => a.area))].map(area => (
                         <option key={area} value={area}>{area}</option>
                       ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            
-            <select value={asesorSeleccionado} onChange={(e) => setAsesorSeleccionado(e.target.value)} className="w-full  rounded px-2 py-1">
-            <option value="" disabled>Asesor</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+
+                    <select value={asesorSeleccionado} onChange={(e) => setAsesorSeleccionado(e.target.value)} className="w-full  rounded px-2 py-1">
+                      <option value="" disabled>Asesor</option>
                       {asesoresFiltrados.map(asesor => (
                         <option key={asesor.id} value={asesor.asesor}>{asesor.asesor}</option>
                       ))}
-            </select>
-          </div>
-          <div className="flex justify-center gap-4 mt-7">
-            <button
-              onClick={() => setCambiar(false)}
-              className="px-3 py-1 border border-black rounded hover:bg-gray-100"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={() =>  setCambiar(false)}
-              className="px-3 py-1 bg-[#1C1C34] text-white rounded "
-            >
-              Cambiar
-            </button>
-          </div>
-        </div>
-      )} 
+                    </select>
+                  </div>
+                  <div className="flex justify-center gap-4 mt-7">
+                    <button
+                      onClick={() => setCambiar(false)}
+                      className="px-3 py-1 border border-black rounded hover:bg-gray-100"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={() => setCambiar(false)}
+                      className="px-3 py-1 bg-[#1C1C34] text-white rounded "
+                    >
+                      Cambiar
+                    </button>
+                  </div>
+                </div>
+              )}
 
 
-            </div>  
+            </div>
           )}
         </div>
-          
-           
+
+
 
       </main>
     </LayoutApp>
