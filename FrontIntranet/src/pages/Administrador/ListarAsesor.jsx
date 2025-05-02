@@ -1,81 +1,105 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import Buscar from "../../Components/Administrador/GestionarUsuario/Buscar";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const ListarAsesor = () => {
-
     const navigate = useNavigate();
+    const [asesores, setAsesores] = useState([]);
+    const [todosLosAsesores, setTodosLosAsesores] = useState([]); // Para reiniciar después de búsqueda
+
+    // Obtener todos los asesores al inicio
+    useEffect(() => {
+        const fetchAsesores = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/asesor');
+                setAsesores(response.data);
+                setTodosLosAsesores(response.data);
+            } catch (error) {
+                console.error('Error al obtener los asesores:', error);
+            }
+        };
+
+        fetchAsesores();
+    }, []);
+
+    // Buscar por id, dni o nombre
+    const handleBuscar = async (query) => {
+        try {
+            const q = query.toLowerCase();
+            const resultados = todosLosAsesores.filter(asesor =>
+                asesor.id?.toString().includes(q) ||
+                asesor.dni?.toLowerCase().includes(q) ||
+                `${asesor.nombre} ${asesor.apellido}`.toLowerCase().includes(q)
+            );
+            setAsesores(resultados);
+        } catch (error) {
+            console.error('Error durante la búsqueda:', error);
+        }
+    };
+
+    // Reset de búsqueda
+    const handleReset = () => {
+        setAsesores(todosLosAsesores);
+    };
 
     const handlerAgregarAsesor = () => {
-        navigate('/admin/gestionar-usuarios/agregar-asesor')
-    }
+        navigate('/admin/gestionar-usuarios/agregar-asesor');
+    };
 
-    const handleEditarAsesor = (id) => navigate(`/admin/gestionar-usuarios/editar-asesor/${id}`);
-
-    const asesores = [
-        {
-            id: 1,
-            nombre: "Antonio Jorge Cueva Lopez",
-            area: "Ingeniería",
-            especialidad: "Ing. Civil",
-            universidad: "U. San Ignacio de Loyola"
-        },
-        {
-            id: 2,
-            nombre: "María Elena Gómez",
-            area: "Administración",
-            especialidad: "Economía",
-            universidad: "U. Privada del Norte"
-        }
-    ];
-
+    const handleEditarAsesor = (id) => {
+        navigate(`/admin/gestionar-usuarios/editar-asesor/${id}`);
+    };
 
     return (
         <>
             <div className="flex flex-col gap-[12px]">
-
                 <div className="flex justify-start">
                     <h2 className="text-2xl font-bold">CRUD</h2>
-
                 </div>
-                <Buscar></Buscar>
-
+                <Buscar onBuscar={handleBuscar} onReset={handleReset} />
             </div>
+
             <div className="flex flex-col">
                 <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
                     <div className="w-[40px] flex justify-center">ID</div>
                     <div className="w-[250px] flex justify-center">Asesor</div>
-                    <div className="w-[250px] flex justify-center">Area</div>
+                    <div className="w-[250px] flex justify-center">Área</div>
                     <div className="w-[250px] flex justify-center">Especialidad</div>
                     <div className="w-[250px] flex justify-center">Universidad</div>
                     <div className="w-[110px] flex justify-center">Editar</div>
                     <div className="w-[110px] flex justify-center">Eliminar</div>
                 </div>
+
                 {asesores.map((asesor, index) => (
                     <div
                         key={asesor.id}
-                        className={`flex justify-between items-center text-[#2B2829] font-normal p-[6px] rounded-md ${index % 2 === 0 ? "bg-white" : "bg-[#E9E7E7]"
-                            }`}
+                        className={`flex justify-between items-center text-[#2B2829] font-normal p-[6px] rounded-md ${index % 2 === 0 ? "bg-white" : "bg-[#E9E7E7]"}`}
                     >
                         <div className="w-[40px] flex justify-center">{asesor.id}</div>
-                        <div className="w-[250px] flex justify-start">{asesor.nombre}</div>
-                        <div className="w-[250px] flex justify-center">{asesor.area}</div>
+                        <div className="w-[250px] flex justify-start">{asesor.nombre} {asesor.apellido}</div>
+                        <div className="w-[250px] flex justify-center">{asesor.areaAsesor}</div>
                         <div className="w-[250px] flex justify-start">{asesor.especialidad}</div>
                         <div className="w-[250px] flex justify-start">{asesor.universidad}</div>
-                        <button onClick={() => handleEditarAsesor(asesor.id)} className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34] flex justify-center text-white">Editar</button>
+                        <button
+                            onClick={() => handleEditarAsesor(asesor.id)}
+                            className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34] flex justify-center text-white"
+                        >
+                            Editar
+                        </button>
                         <button className="w-[110px] rounded-md px-3 py-1 bg-[#8F1313] flex justify-center text-white">Eliminar</button>
                     </div>
                 ))}
             </div>
 
-            <button onClick={handlerAgregarAsesor} className="flex justify-between text-white w-[230px] h-8 rounded font-semibold  bg-[#1B435D] px-6 py-1 mt-5">
+            <button
+                onClick={handlerAgregarAsesor}
+                className="flex justify-between text-white w-[230px] h-8 rounded font-semibold bg-[#1B435D] px-6 py-1 mt-5"
+            >
                 <p>Agregar Asesor</p>
             </button>
-
-
         </>
+    );
+};
 
-    )
-}
-
-export default ListarAsesor
+export default ListarAsesor;
