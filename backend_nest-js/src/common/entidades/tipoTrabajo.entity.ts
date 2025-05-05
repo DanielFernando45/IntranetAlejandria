@@ -1,3 +1,4 @@
+import { Asesoramiento } from "src/asesoramiento/entities/asesoramiento.entity";
 import { Cliente } from "src/cliente/cliente.entity";
 import { Column, Entity,OneToMany,PrimaryGeneratedColumn } from "typeorm";
 
@@ -10,6 +11,6 @@ export class TipoTrabajo{
     @Column()
     nombre:string
 
-    @OneToMany(() => Cliente, cliente => cliente.tipoTrabajo)
-    clientes: Cliente[];
+    @OneToMany(() => Asesoramiento, asesoramiento => asesoramiento.tipoTrabajo)
+    asesoramientos: Asesoramiento[];
 }

@@ -11,10 +11,10 @@ import { TipoContrato } from 'src/common/entidades/tipoContrato.entity';
 import { GradoAcademico } from 'src/common/entidades/gradoAcademico.entity';
 import { TipoTrabajo } from 'src/common/entidades/tipoTrabajo.entity';
 import { UsuarioService } from 'src/usuario/usuario.service';
-import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
-import { FechasDto, ListarClientesDto } from './dto/listar-clientes.dto';
+import { ListarClientesDto } from './dto/listar-clientes.dto';
 import { AsesoramientoService } from 'src/asesoramiento/asesoramiento.service';
 import { validate } from 'class-validator';
+import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
 
 @Injectable()
 export class ClienteService {
@@ -25,21 +25,14 @@ export class ClienteService {
         @InjectRepository(Cliente)
         private clienteRepo: Repository<Cliente>,
 
-
-        @InjectRepository(TipoContrato)
-        private tipoContratoRepo: Repository<TipoContrato>,
-
         @InjectRepository(GradoAcademico)
         private gradoAcademicoRepo: Repository<GradoAcademico>,
-
-        @InjectRepository(TipoTrabajo)
-        private tipoTrabajoRepo: Repository<TipoTrabajo>
     ){}
 
     async listClients (): Promise<ListarClientesDto[]>{
         const listofCliente=await this.clienteRepo.find({
             relations:['tipoContrato'],
-            select:['id','dni','nombre','apellido','carrera','tipoContrato']})
+            select:['id','dni','nombre','apellido','fecha_creacion']})
         
         if(!listofCliente||listofCliente.length===0) throw new NotFoundException("No se encontro ningun cliente")
 
@@ -47,12 +40,11 @@ export class ClienteService {
             listofCliente.map(async (cliente) => {
             const id_cliente = cliente.id;
             console.log(id_cliente)
-            const fechas = await this.asesoramientoService.findDatesByCliente(id_cliente);
+            const datos_asesoramiento = await this.asesoramientoService.findDatesByCliente(id_cliente);
             
             return {
             ...cliente,
-            tipoContrato: cliente.tipoContrato?.nombre || '',
-            fechas_asesoramiento:fechas
+            datos_asesoramiento:datos_asesoramiento
             };
         }));
         
@@ -76,9 +68,7 @@ export class ClienteService {
         if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
             const clienteDto: ListarClienteDto = {
                 ...oneCliente,
-                tipoTrabajo: oneCliente.tipoTrabajo?.nombre || '', 
                 gradoAcademico: oneCliente.gradoAcademico?.nombre || '',
-                tipoContrato: oneCliente.tipoContrato?.nombre || '',
             };
             return clienteDto
     }
@@ -102,13 +92,10 @@ export class ClienteService {
         }
         try{
 
-        const tipoContratoSearch = await this.tipoContratoRepo.findOneBy({ id: data.tipoContrato });
         const gradoAcademicoSearch = await this.gradoAcademicoRepo.findOneBy({ id: data.gradoAcademico });
-        const tipoTrabajoSearch = await this.tipoTrabajoRepo.findOneBy({ id: data.tipoTrabajo });
 
-        if (!tipoContratoSearch || !gradoAcademicoSearch || !tipoTrabajoSearch) {
-            throw new NotFoundException("Algunas entidades relacionadas no existen");
-        }
+        if (!gradoAcademicoSearch) throw new NotFoundException("Algunas entidades relacionadas no existen");
+
         const cliente=this.clienteRepo.create({
             dni:data.dni,
             nombre:data.nombre,
@@ -116,12 +103,9 @@ export class ClienteService {
             telefono:data.telefono,
             email:data.email,
             url_imagen:data.url_imagen,
-            tipoTrabajo:tipoTrabajoSearch,
             pais:data.pais,
-            gradoAcademico:gradoAcademicoSearch,
-            carrera:data.carrera,
+            gradoAcademico:{id:gradoAcademicoSearch.id,nombre:gradoAcademicoSearch.nombre},
             universidad:data.universidad,
-            tipoContrato:tipoContratoSearch,
             usuario:savedUser
         })
 
@@ -132,19 +116,14 @@ export class ClienteService {
     }
 
     async patchCliente(id:number,data:updateClienteDto){
-        if(!Object.keys(data).length){
-            throw new BadRequestException("No se envio un body para actualizar")
-        }
+        if(!Object.keys(data).length)throw new BadRequestException("No se envio un body para actualizar")
+        
         const partialEntity: any = { ...data };
-        if (data.tipoTrabajo) {
-            partialEntity.tipoTrabajo = { id: data.tipoTrabajo };
-        }
+    
         if (data.gradoAcademico) {
             partialEntity.gradoAcademico = { id: data.gradoAcademico };
         }
-        if (data.tipoContrato) {
-            partialEntity.tipoContrato = { id: data.tipoContrato };
-        }
+    
         const updated=await this.clienteRepo.update({id},partialEntity)
         if(updated.affected===0) throw new Error("No hay registro a afectar")
         

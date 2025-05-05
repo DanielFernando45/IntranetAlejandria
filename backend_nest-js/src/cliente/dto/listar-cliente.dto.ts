@@ -25,9 +25,9 @@ export class ListarClienteDto {
   @IsOptional()
   readonly url_imagen: string;
 
-  @IsString()
-  @IsOptional()
-  readonly tipoTrabajo: string;  // Cambié de tipo_trabajo a tipoTrabajo
+  // @IsString()
+  // @IsOptional()
+  // readonly tipoTrabajo: string;
 
   @IsString()
   @IsOptional()
@@ -41,9 +41,12 @@ export class ListarClienteDto {
   @IsOptional()
   readonly universidad: string;
 
-  @IsString()
-  readonly carrera:string;
+  // @IsString()
+  // readonly carrera:string;
 
-  @IsString()
-  readonly tipoContrato: string;  // Cambié id_contrato a tipoContrato
+  // @IsString()
+  // readonly tipoContrato: string;  
+  @IsDateString()
+  @IsOptional()
+  readonly fecha_creacion:Date;
 }

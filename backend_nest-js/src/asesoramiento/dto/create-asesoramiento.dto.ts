@@ -1,11 +1,27 @@
 import { Type } from "class-transformer";
-import { IsDate, IsNotEmpty, IsNumber } from "class-validator";
+import { IsDate, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 
 export class CreateAsesoramientoDto {
     @IsNumber()
     @IsNotEmpty()
     id_asesor:number;
+
+    @IsString()
+    @IsNotEmpty()
+    carrera:string;
+
+    @IsString()
+    @IsOptional()
+    especialidad:string;
+
+    @IsInt()
+    @IsNotEmpty()
+    tipoTrabajo:number;
+
+    @IsInt()
+    @IsNotEmpty()
+    tipoContrato:number;
 
     @IsDate()
     @IsNotEmpty()

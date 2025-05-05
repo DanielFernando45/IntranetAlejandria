@@ -1,5 +1,7 @@
+import { TipoContrato } from "src/common/entidades/tipoContrato.entity";
+import { TipoTrabajo } from "src/common/entidades/tipoTrabajo.entity";
 import { ProcesosAsesoria } from "src/procesos_asesoria/entities/procesos_asesoria.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Estado_Asesoria{
     ACTIVO="activo",
@@ -11,6 +13,20 @@ export enum Estado_Asesoria{
 export class Asesoramiento {
     @PrimaryGeneratedColumn()
     id:number;
+
+    @Column()
+    carrera:string;
+
+    @Column()
+    especialidad:string;
+
+    @ManyToOne(()=>TipoTrabajo)
+    @JoinColumn({name:'id_tipo_trabajo'})
+    tipoTrabajo:TipoTrabajo;
+
+    @ManyToOne(()=>TipoContrato)
+    @JoinColumn({name:'id_contrato'})
+    tipoContrato:TipoContrato;
 
     @Column({type:'enum',enum:Estado_Asesoria})
     estado:Estado_Asesoria;

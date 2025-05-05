@@ -6,7 +6,9 @@ import { Asesoramiento, Estado_Asesoria } from './entities/asesoramiento.entity'
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, QueryRunner } from 'typeorm';
 import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
-import { FechasDto } from 'src/cliente/dto/listar-clientes.dto';
+import { DatosAsesoramientoDto} from 'src/cliente/dto/listar-clientes.dto';
+import { TipoContrato } from 'src/common/entidades/tipoContrato.entity';
+import { TipoTrabajo } from 'src/common/entidades/tipoTrabajo.entity';
 
 
 @Injectable()
@@ -26,11 +28,11 @@ export class AsesoramientoService {
   }
 
   async create(createAsesoramientoDto: CreateAsesoramientoDto,clientes:clientesExtraDTO) {
-    const {id_asesor,fecha_inicio,fecha_fin}=createAsesoramientoDto
+    const {id_asesor,fecha_inicio,fecha_fin,tipoContrato,tipoTrabajo,...data}=createAsesoramientoDto
     if (!fecha_inicio || !fecha_fin || isNaN(fecha_inicio.getTime()) || isNaN(fecha_fin.getTime())) {
       throw new BadRequestException('Fechas inválidas');
     }
-    
+    if(!tipoContrato||!tipoTrabajo) throw new BadRequestException("No se encontro el tipo de trabajo y contrato")
     if (fecha_fin < fecha_inicio) {
       throw new BadRequestException('La fecha de fin no puede ser anterior a la fecha de inicio');
     }
@@ -49,7 +51,9 @@ export class AsesoramientoService {
     await queryRunner.startTransaction()
 
     try{
-    const newAsesoramiento=queryRunner.manager.create(Asesoramiento,{fecha_inicio,fecha_fin,estado:Estado_Asesoria.ACTIVO})
+    const tipo_trabajo=await queryRunner.manager.findOneBy(TipoTrabajo,{id:tipoTrabajo})
+    const tipo_contrato=await queryRunner.manager.findOneBy(TipoContrato,{id:tipoContrato})
+    const newAsesoramiento=queryRunner.manager.create(Asesoramiento,{fecha_inicio,fecha_fin,tipo_trabajo,tipo_contrato,...data,estado:Estado_Asesoria.ACTIVO})
     const addedAsesoramiento=await queryRunner.manager.save(newAsesoramiento)
     const id_asesoramiento=addedAsesoramiento.id
 
@@ -68,23 +72,24 @@ export class AsesoramientoService {
     }
   }
 
-  async findDatesByCliente(id:number):Promise<FechasDto>{
+  async findDatesByCliente(id:number):Promise<DatosAsesoramientoDto>{
 
-  const fechas = await this.asesoramientoRepo
+  const datosAsesoramiento= await this.asesoramientoRepo
       .createQueryBuilder('a')  // Alias para la tabla asesoramiento
       .innerJoin('a.procesosasesoria', 'p')  // Relación con la tabla procesos_asesoria
       .innerJoin('p.cliente', 'c')  // Relación con la tabla cliente
-      .select(['a.fecha_inicio', 'a.fecha_fin'])  // Selecciona las columnas que deseas
+      .select(['a.fecha_inicio', 'a.fecha_fin','a.id_contrato','a.carrera'])  // Selecciona las columnas que deseas
       .where('c.id = :id', { id })  // Filtra por el id del cliente
       .getOne();
   
-  console.log(fechas)
-  if(fechas===null) return { "fecha_inicio":"Por asignar", "fecha_fin":"Por asignar" }
-  if (!fechas.fecha_inicio || !fechas.fecha_fin) throw new Error('Las fechas no están asignadas correctamente');
+  //if(datosAsesoramiento===null) return { "fecha_inicio":"Por asignar", "fecha_fin":"Por asignar" }
+  if (!datosAsesoramiento?.fecha_inicio || !datosAsesoramiento?.fecha_fin) throw new Error('Las fechas no están asignadas correctamente');
   
     const solo_fechas={
-     fecha_inicio:fechas.fecha_inicio,
-     fecha_fin:fechas.fecha_fin
+     carrera:datosAsesoramiento? datosAsesoramiento.carrera:"Por asignar",
+     contrato:datosAsesoramiento? {id:datosAsesoramiento.tipoContrato.id,nombre:datosAsesoramiento.tipoContrato.nombre}:{message:"Por asignar"},
+     fecha_inicio:datosAsesoramiento? datosAsesoramiento.fecha_inicio:"Por asignar",
+     fecha_fin:datosAsesoramiento? datosAsesoramiento.fecha_fin:"Por asignar"
    }
    console.log(solo_fechas)
   return solo_fechas
@@ -103,7 +108,7 @@ export class AsesoramientoService {
     if(desactAsesoria.affected===0) throw new BadRequestException("No se desactivo ningun usuario con el ID dado")
 
 
-    return `Se desactico el asesoramiento con id: ${id}`
+    return `Se desactivo el asesoramiento con id: ${id}`
   }
 
   update(id: number, updateAsesoramientoDto: UpdateAsesoramientoDto) {
