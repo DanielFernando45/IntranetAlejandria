@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Buscar from "../../Components/Administrador/GestionarUsuario/Buscar";
+import Buscar from "../../../Components/Administrador/GestionarUsuario/Buscar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 

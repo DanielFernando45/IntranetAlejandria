@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
-import LayoutApp from '../../layout/LayoutApp'
+import LayoutApp from '../../../layout/LayoutApp'
 
 const EditarEstudiante = () => {
     const { id } = useParams();

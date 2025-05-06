@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import LayoutApp from '../../layout/LayoutApp';
+import LayoutApp from '../../../layout/LayoutApp';
 import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 
@@ -163,8 +163,7 @@ const EditarAsesor = () => {
               <div className='flex flex-col gap-3 w-full'>
                 <p className='pl-[1px]'>Teléfono</p>
                 <input
-                  name="telefono"
-                  type="number"
+                  name="telefono"           
                   value={formData.telefono || ""}
                   onChange={handleChange}
                   placeholder='Teléfono'
@@ -182,6 +181,16 @@ const EditarAsesor = () => {
                   onChange={handleChange}
                   placeholder='DNI'
                   className='bg-[#F9F9F9] w-full h-[49px] rounded-lg text-[#808080] p-4'
+                />
+              </div>
+              <div className='flex flex-col gap-3 w-full'>
+                <p className='pl-[1px]'>Perfil (URL imagen)</p>
+                <input 
+                  name="url_imagen" 
+                  value={formData.url_imagen} 
+                  onChange={handleChange} 
+                  placeholder='Ingresa Imagen Perfil' 
+                  className='bg-[#F9F9F9] w-full h-[49px] rounded-lg text-[#808080] p-4' 
                 />
               </div>
 

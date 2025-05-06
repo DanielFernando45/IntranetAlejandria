@@ -1,5 +1,5 @@
 import React from 'react';
-import LayoutApp from '../../layout/LayoutApp';
+import LayoutApp from '../../../layout/LayoutApp';
 import { useNavigate } from "react-router-dom";
 
 const AgregarEstudiante = () => {

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Buscar from "../../Components/Administrador/GestionarUsuario/Buscar";
+import Buscar from "../../../Components/Administrador/GestionarUsuario/Buscar";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 const ListarAsesor = () => {
     const navigate = useNavigate();
     const [asesores, setAsesores] = useState([]);
-    const [todosLosAsesores, setTodosLosAsesores] = useState([]); // Para reiniciar después de búsqueda
+    const [todosLosAsesores, setTodosLosAsesores] = useState([]);
 
-    // Obtener todos los asesores al inicio
     useEffect(() => {
         const fetchAsesores = async () => {
             try {
@@ -19,11 +18,9 @@ const ListarAsesor = () => {
                 console.error('Error al obtener los asesores:', error);
             }
         };
-
         fetchAsesores();
     }, []);
 
-    // Buscar por id, dni o nombre
     const handleBuscar = async (query) => {
         try {
             const q = query.toLowerCase();
@@ -38,7 +35,6 @@ const ListarAsesor = () => {
         }
     };
 
-    // Reset de búsqueda
     const handleReset = () => {
         setAsesores(todosLosAsesores);
     };
@@ -49,6 +45,20 @@ const ListarAsesor = () => {
 
     const handleEditarAsesor = (id) => {
         navigate(`/admin/gestionar-usuarios/editar-asesor/${id}`);
+    };
+
+    const handleEliminarAsesor = async (id) => {
+        if (!window.confirm("¿Estás seguro que deseas eliminar este asesor?")) return;
+
+        try {
+            await axios.delete(`http://localhost:3001/asesor/delete/${id}`);
+            const nuevosAsesores = asesores.filter(asesor => asesor.id !== id);
+            setAsesores(nuevosAsesores);
+            setTodosLosAsesores(nuevosAsesores);
+        } catch (error) {
+            console.error('Error al eliminar el asesor:', error);
+            alert('Ocurrió un error al eliminar el asesor.');
+        }
     };
 
     return (
@@ -87,7 +97,12 @@ const ListarAsesor = () => {
                         >
                             Editar
                         </button>
-                        <button className="w-[110px] rounded-md px-3 py-1 bg-[#8F1313] flex justify-center text-white">Eliminar</button>
+                        <button
+                            onClick={() => handleEliminarAsesor(asesor.id)}
+                            className="w-[110px] rounded-md px-3 py-1 bg-[#8F1313] flex justify-center text-white"
+                        >
+                            Eliminar
+                        </button>
                     </div>
                 ))}
             </div>

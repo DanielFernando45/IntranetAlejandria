@@ -21,11 +21,12 @@ import HomeAsesor from '../pages/Asesor/HomeAsesor';
 import GestionarUsuarios from '../pages/Administrador/GestionUser';
 import Asignaciones from '../pages/Administrador/Asignaciones';
 import Pagos from '../pages/Administrador/Pagos';
-import AgregarEstudiante from '../pages/Administrador/AgregarEstudiante';
-import AgregarAsesor from '../pages/Administrador/AgregarAsesor';
-import EditarEstudiante from '../pages/Administrador/EditarEstudiante';
-import EditarAsesor from '../pages/Administrador/EditarAsesor';
-
+import AgregarEstudiante from '../pages/Administrador/GestionarUsuario/AgregarEstudiante';
+import AgregarAsesor from '../pages/Administrador/GestionarUsuario/AgregarAsesor';
+import EditarEstudiante from '../pages/Administrador/GestionarUsuario/EditarEstudiante';
+import EditarAsesor from '../pages/Administrador/GestionarUsuario/EditarAsesor';
+import ListarSinAsignar from '../pages/Administrador/Asignaciones/ListarSinAsignar';
+import ListarAsignado from '../pages/Administrador/Asignaciones/ListarAsignados';
 //Paginas Errores
 import Unauthorized from '../pages/Unauthorized';
 import ErrorScreen from '../pages/ErrorScreen';
@@ -33,8 +34,8 @@ import ErrorScreen from '../pages/ErrorScreen';
 //Pagina Recuperar Contraseña
 import ResetPassword from '../pages/ResetPassword';
 import NuevaContraseña from '../pages/NuevaContraseña';
-import ListarEstudiante from '../pages/Administrador/ListarEstudiante';
-import ListarAsesor from '../pages/Administrador/ListarAsesor';
+import ListarEstudiante from '../pages/Administrador/GestionarUsuario/ListarEstudiante';
+import ListarAsesor from '../pages/Administrador/GestionarUsuario/ListarAsesor';
 
 
 const RouterApp = () => {
@@ -63,19 +64,24 @@ const RouterApp = () => {
       {/* RUTAS ADMIN */}
       <Route element={<ProtectedRoutes allowedRoles={['admin']} />}>
 
-
         <Route path="/admin/gestionar-usuarios" element={<GestionarUsuarios />}>
               <Route index element={<Navigate to="listar-estudiantes" replace />} />
               <Route path="listar-estudiantes" element={<ListarEstudiante/>} />
               <Route path="listar-asesores" element={<ListarAsesor/>} />
         </Route> 
-          
+
+        <Route path="/admin/asignaciones" element={<Asignaciones/>}>
+              <Route index element={<Navigate to="listar-asignar" replace />}/>
+              <Route path ="listar-asignar" element={<ListarSinAsignar/>}/>
+              <Route path ="listar-asignado" element={<ListarAsignado/>}/>
+        </Route>
+
         <Route path="/admin/gestionar-usuarios/agregar-estudiante" element={<AgregarEstudiante/>} />
         <Route path="/admin/gestionar-usuarios/agregar-asesor" element={<AgregarAsesor/>} />
         <Route path="/admin/gestionar-usuarios/editar-estudiante/:id" element={<EditarEstudiante/>} />
         <Route path="/admin/gestionar-usuarios/editar-asesor/:id" element={<EditarAsesor/>} />
 
-        <Route path="/admin/asignaciones" element={<Asignaciones/>}/>
+        
         <Route path="/admin/pagos" element={<Pagos/>}/>
 
       </Route>
