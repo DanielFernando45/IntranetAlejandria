@@ -9,8 +9,8 @@ export const AppDataSource = new DataSource({
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || '3306'),
   username: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD||'12345',
+  database: process.env.DB_NAME || 'Alejandria',
   entities: ENTITIES,
   migrations: ['src/migrations/*.ts'],
   synchronize: false, // muy importante en producción

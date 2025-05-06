@@ -3,9 +3,9 @@ import { IsString, IsEmail, IsNotEmpty, IsNumber, IsDateString, IsOptional, IsOb
 
 
 export class DatosAsesoramientoDto{
-    @IsString()
-    @IsNotEmpty()
-    readonly carrera:string;
+    // @IsString()
+    // @IsNotEmpty()
+    // readonly carrera:string;
 
     @IsString()
     readonly contrato:object;

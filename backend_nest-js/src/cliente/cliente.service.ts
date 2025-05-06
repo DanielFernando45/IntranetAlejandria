@@ -2,14 +2,11 @@ import { BadRequestException, ConflictException, Injectable, InternalServerError
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './cliente.entity';
 import { Repository } from 'typeorm';
-import { Usuario,UserRole } from 'src/usuario/usuario.entity';
+import { UserRole } from 'src/usuario/usuario.entity';
 import { CreateClienteDto } from './dto/crear-cliente.dto';
-import * as bcrypt from 'bcrypt'
 import { ListarClienteDto } from './dto/listar-cliente.dto';
 import { updateClienteDto } from './dto/update-cliente.dto';
-import { TipoContrato } from 'src/common/entidades/tipoContrato.entity';
 import { GradoAcademico } from 'src/common/entidades/gradoAcademico.entity';
-import { TipoTrabajo } from 'src/common/entidades/tipoTrabajo.entity';
 import { UsuarioService } from 'src/usuario/usuario.service';
 import { ListarClientesDto } from './dto/listar-clientes.dto';
 import { AsesoramientoService } from 'src/asesoramiento/asesoramiento.service';
@@ -31,7 +28,6 @@ export class ClienteService {
 
     async listClients (): Promise<ListarClientesDto[]>{
         const listofCliente=await this.clienteRepo.find({
-            relations:['tipoContrato'],
             select:['id','dni','nombre','apellido','fecha_creacion']})
         
         if(!listofCliente||listofCliente.length===0) throw new NotFoundException("No se encontro ningun cliente")

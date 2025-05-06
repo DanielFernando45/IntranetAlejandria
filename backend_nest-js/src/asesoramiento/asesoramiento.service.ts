@@ -37,7 +37,7 @@ export class AsesoramientoService {
       throw new BadRequestException('La fecha de fin no puede ser anterior a la fecha de inicio');
     }
 
-    if (!id_asesor || typeof id_asesor !== 'number') {
+    if (!id_asesor || typeof id_asesor!== 'number') {
       throw new BadRequestException('ID de asesor inválido');
     }
     const clienteIds = Object.values(clientes).filter(id => typeof id === 'number' && id > 0);
@@ -78,15 +78,16 @@ export class AsesoramientoService {
       .createQueryBuilder('a')  // Alias para la tabla asesoramiento
       .innerJoin('a.procesosasesoria', 'p')  // Relación con la tabla procesos_asesoria
       .innerJoin('p.cliente', 'c')  // Relación con la tabla cliente
-      .select(['a.fecha_inicio', 'a.fecha_fin','a.id_contrato','a.carrera'])  // Selecciona las columnas que deseas
+      .leftJoinAndSelect('a.tipoContrato', 'tc') 
+      .select(['a.fecha_inicio', 'a.fecha_fin','tc.id','tc.nombre'])  // Selecciona las columnas que deseas
       .where('c.id = :id', { id })  // Filtra por el id del cliente
       .getOne();
   
   //if(datosAsesoramiento===null) return { "fecha_inicio":"Por asignar", "fecha_fin":"Por asignar" }
-  if (!datosAsesoramiento?.fecha_inicio || !datosAsesoramiento?.fecha_fin) throw new Error('Las fechas no están asignadas correctamente');
+  //if (!datosAsesoramiento?.fecha_inicio || !datosAsesoramiento?.fecha_fin) throw new Error('Las fechas no están asignadas correctamente');
   
     const solo_fechas={
-     carrera:datosAsesoramiento? datosAsesoramiento.carrera:"Por asignar",
+     //carrera:datosAsesoramiento? datosAsesoramiento.carrera:"Por asignar",
      contrato:datosAsesoramiento? {id:datosAsesoramiento.tipoContrato.id,nombre:datosAsesoramiento.tipoContrato.nombre}:{message:"Por asignar"},
      fecha_inicio:datosAsesoramiento? datosAsesoramiento.fecha_inicio:"Por asignar",
      fecha_fin:datosAsesoramiento? datosAsesoramiento.fecha_fin:"Por asignar"
