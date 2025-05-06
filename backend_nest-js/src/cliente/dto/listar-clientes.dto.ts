@@ -2,7 +2,14 @@ import { Type } from 'class-transformer';
 import { IsString, IsEmail, IsNotEmpty, IsNumber, IsDateString, IsOptional, IsObject, ValidateNested } from 'class-validator';
 
 
-export class FechasDto{
+export class DatosAsesoramientoDto{
+    @IsString()
+    @IsNotEmpty()
+    readonly carrera:string;
+
+    @IsString()
+    readonly contrato:object;
+ 
     @IsDateString()
     @IsString()
     readonly fecha_inicio:Date|string;
@@ -25,16 +32,19 @@ export class ListarClientesDto {
   @IsString()
   readonly universidad: string;
 
-  @IsString()
-  readonly carrera:string;
+  // @IsString()
+  // readonly carrera:string;
 
-  @IsString()
-  readonly tipoContrato: string; 
+  // @IsString()
+  // readonly tipoContrato: object; 
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(()=>FechasDto)
-  fechas_asesoramiento:FechasDto
+  @Type(()=>DatosAsesoramientoDto)
+  datos_asesoramiento:DatosAsesoramientoDto
 
+  @IsDateString()
+  @IsOptional()
+  readonly fecha_creacion:Date;
 }

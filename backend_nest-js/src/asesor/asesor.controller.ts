@@ -13,7 +13,7 @@ export class AsesorController {
         @Get(':id')
         async listOne(@Param('id') id:string){
             const ID:number=parseInt(id)
-            return this.asesorService.listOneAdmin(ID)
+            return this.asesorService.listOneAsesor(ID)
         }
     
         @Get()

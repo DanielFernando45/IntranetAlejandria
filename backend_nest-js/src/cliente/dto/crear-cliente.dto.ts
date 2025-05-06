@@ -24,9 +24,9 @@ export class CreateClienteDto {
     @IsString()
     readonly url_imagen: string;
 
-    @IsInt()
-    @IsNotEmpty()
-    readonly tipoTrabajo: number;
+    // @IsInt()
+    // @IsNotEmpty()
+    // readonly tipoTrabajo: number;
 
     @IsString()
     @IsNotEmpty()
@@ -40,13 +40,13 @@ export class CreateClienteDto {
     @IsNotEmpty()
     readonly universidad: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly carrera:string;
+    // @IsString()
+    // @IsNotEmpty()
+    // readonly carrera:string;
 
-    @IsInt()
-    @IsNotEmpty()
-    readonly tipoContrato: number;
+    // @IsInt()
+    // @IsNotEmpty()
+    // readonly tipoContrato: number;
 
   // Puedes agregar también un usuario anidado si lo estás creando al mismo tiempo
   // readonly usuario: CreateUsuarioDto;

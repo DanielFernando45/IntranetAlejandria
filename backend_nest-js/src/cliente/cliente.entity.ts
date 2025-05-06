@@ -1,4 +1,4 @@
-import { Entity,PrimaryGeneratedColumn, Column, OneToOne,JoinColumn, OneToMany, ManyToOne} from "typeorm";
+import { Entity,PrimaryGeneratedColumn, Column, OneToOne,JoinColumn, OneToMany, ManyToOne, CreateDateColumn} from "typeorm";
 import { Usuario } from "src/usuario/usuario.entity";
 import { TipoContrato } from "src/common/entidades/tipoContrato.entity";
 import { GradoAcademico } from "src/common/entidades/gradoAcademico.entity";
@@ -30,26 +30,29 @@ export class Cliente{
     @Column()
     url_imagen:string;
     
-    @ManyToOne(() => TipoTrabajo)
-    @JoinColumn({ name: 'id_tipo_trabajo' }) // nombre de la columna en la tabla Cliente
-    tipoTrabajo: TipoTrabajo;
-    
     @Column()
     pais:string;
-
+    
     @ManyToOne(() => GradoAcademico)
     @JoinColumn({ name: 'id_grado_academico' }) // nombre de la columna en la tabla Cliente
     gradoAcademico: GradoAcademico;
+    
+    // @ManyToOne(() => TipoTrabajo)
+    // @JoinColumn({ name: 'id_tipo_trabajo' }) // nombre de la columna en la tabla Cliente
+    // tipoTrabajo: TipoTrabajo;
 
     @Column()
     universidad:string;
 
-    @Column()
-    carrera:string;
+    @CreateDateColumn()
+    fecha_creacion:Date;
 
-    @ManyToOne(() => TipoContrato)
-    @JoinColumn({ name: 'id_contrato' }) // nombre de la columna en la tabla Cliente
-    tipoContrato: TipoContrato;
+    // @Column()
+    // carrera:string;
+
+    // @ManyToOne(() => TipoContrato)
+    // @JoinColumn({ name: 'id_contrato' }) // nombre de la columna en la tabla Cliente
+    // tipoContrato: TipoContrato;
 
     @OneToOne(()=>Usuario,{cascade:true})
     @JoinColumn()

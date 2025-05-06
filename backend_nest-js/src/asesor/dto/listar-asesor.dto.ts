@@ -30,14 +30,14 @@ export class listarAsesorDto{
     @IsOptional()
     readonly url_imagen:string;
 
-    @IsString()
-    readonly areaAsesor:string;
+    @IsNotEmpty()
+    readonly areaAsesor:object;
 
     @IsString()
     readonly especialidad:string;
 
-    @IsString()
-    readonly gradoAcademico:string;
+    @IsNotEmpty()
+    readonly gradoAcademico:object;
 
     @IsString()
     readonly universidad:string;

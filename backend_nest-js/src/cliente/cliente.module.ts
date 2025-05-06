@@ -11,7 +11,7 @@ import { UsuarioModule } from 'src/usuario/usuario.module';
 import { AsesoramientoModule } from 'src/asesoramiento/asesoramiento.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Cliente,Usuario,TipoContrato,GradoAcademico,TipoTrabajo]),UsuarioModule,AsesoramientoModule],
+  imports:[TypeOrmModule.forFeature([Cliente,Usuario,GradoAcademico]),UsuarioModule,AsesoramientoModule],
   controllers: [ClienteController],
   providers: [ClienteService]
 })

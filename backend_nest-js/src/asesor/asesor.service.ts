@@ -43,21 +43,21 @@ export class AsesorService {
             email:asesor.email,
             telefono:asesor.telefono,
             url_imagen:asesor.url_imagen,
-            areaAsesor:asesor.areaAsesor?.nombre,
-            gradoAcademico:asesor.gradoAcademico?.nombre,
+            areaAsesor:{ id:asesor.areaAsesor?.id,nombre:asesor.areaAsesor?.nombre},
+            gradoAcademico:{id:asesor.areaAsesor?.id,nombre:asesor.gradoAcademico?.nombre},
             especialidad:asesor.especialidad,
             universidad:asesor.universidad
             }))
         return mapedAsesor
     }
     
-    async listOneAdmin(id:number):Promise<listarAsesorDto>{
+    async listOneAsesor(id:number):Promise<listarAsesorDto>{
         const oneAsesor=await this.asesorRepo.findOne({where:{id},relations:['areaAsesor', 'gradoAcademico']})
         if(oneAsesor===null) throw new Error("No hay un asesor con ese ID")
         const asesorDto:listarAsesorDto={
             ...oneAsesor,
-            areaAsesor:oneAsesor.areaAsesor.nombre,
-            gradoAcademico:oneAsesor.gradoAcademico.nombre,
+            areaAsesor:{ id:oneAsesor.areaAsesor?.id,nombre:oneAsesor.areaAsesor?.nombre},
+            gradoAcademico:{id:oneAsesor.areaAsesor?.id,nombre:oneAsesor.gradoAcademico?.nombre},
 
         }
         return asesorDto          
@@ -84,7 +84,6 @@ export class AsesorService {
         if (!areaAsesorSearch || !gradoAcademicoSearch) throw new NotFoundException("Algunas entidades relacionadas no existen");
         
         const asesor=this.asesorRepo.create({
-            ...data,
             areaAsesor:areaAsesorSearch,
             gradoAcademico:gradoAcademicoSearch,
             usuario:savedUser
@@ -100,6 +99,7 @@ export class AsesorService {
             throw new BadRequestException("No hay contenido a actualizar")
         }
         const partialEntity: any = { ...data };
+        console.log(partialEntity)
         if (data.areaAsesor) {
             partialEntity.areaAsesor = { id: data.areaAsesor };
         }
