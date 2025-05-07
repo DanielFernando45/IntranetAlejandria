@@ -6,8 +6,8 @@ import { Tipo_Servicio } from "../entities/asesoramiento.entity";
 export class CreateAsesoramientoDto {
     @IsNumber()
     @IsNotEmpty()
-    id_asesor:number;
-
+    id_asesoramiento:number;
+    
     @IsString()
     @IsOptional()
     profesionAsesoramiento:string;

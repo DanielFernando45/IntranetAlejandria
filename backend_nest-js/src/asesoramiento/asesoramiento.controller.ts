@@ -20,7 +20,7 @@ export class AsesoramientoController {
   @Get("listar/:fecha")
   buscar_por_fecha(@Param("fecha") fecha:string){
       if(fecha){
-        
+          
       }
   }
 

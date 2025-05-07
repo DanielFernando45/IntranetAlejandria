@@ -41,8 +41,8 @@ export class ListarClienteDto {
   @IsOptional()
   readonly universidad: string;
 
-  // @IsString()
-  // readonly carrera:string;
+  @IsString()
+  readonly carrera:string;
 
   // @IsString()
   // readonly tipoContrato: string;  

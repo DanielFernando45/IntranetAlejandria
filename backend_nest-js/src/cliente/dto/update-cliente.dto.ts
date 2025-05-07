@@ -25,9 +25,9 @@ export class updateClienteDto {//actualizar dtos
     @IsOptional()
     readonly url_imagen:string;
 
-    @IsNumber()
-    @IsOptional()
-    readonly tipoTrabajo:number;
+    // @IsNumber()
+    // @IsOptional()
+    // readonly tipoTrabajo:number;
 
     @IsString()
     @IsOptional()
@@ -45,8 +45,8 @@ export class updateClienteDto {//actualizar dtos
     @IsOptional()
     readonly carrera:string;
 
-    @IsNumber()
-    @IsOptional()
-    readonly tipoContrato:number;
+    // @IsNumber()
+    // @IsOptional()
+    // readonly tipoContrato:number;
 
 }

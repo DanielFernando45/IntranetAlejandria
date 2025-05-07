@@ -47,8 +47,8 @@ export class Cliente{
     @CreateDateColumn()
     fecha_creacion:Date;
 
-    // @Column()
-    // carrera:string;
+    @Column()
+    carrera:string;
 
     // @ManyToOne(() => TipoContrato)
     // @JoinColumn({ name: 'id_contrato' }) // nombre de la columna en la tabla Cliente

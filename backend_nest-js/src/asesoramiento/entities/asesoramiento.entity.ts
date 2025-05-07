@@ -9,16 +9,25 @@ export enum Estado_Asesoria{
     FINALIZADO="finalizado"
 }
 
+export enum Tipo_Servicio{
+    PROYECTO="proyecto",
+    INFORME_FINAL="informe_final",
+    COMPLETO="completo"
+}
+
 @Entity()
 export class Asesoramiento {
     @PrimaryGeneratedColumn()
     id:number;
 
     @Column()
-    carrera:string;
+    profesion_asesoria:string;
 
     @Column()
     especialidad:string;
+
+    @Column({type:'enum',enum:Tipo_Servicio})
+    tipo_servicio:Tipo_Servicio;
 
     @ManyToOne(()=>TipoTrabajo)
     @JoinColumn({name:'id_tipo_trabajo'})
