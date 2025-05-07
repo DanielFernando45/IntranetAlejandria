@@ -63,7 +63,7 @@ export class ClienteService {
     
     
     async listOneClient(id:number):Promise<ListarClienteDto>{
-        const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['tipoTrabajo', 'gradoAcademico', 'tipoContrato']})
+        const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['gradoAcademico'],select:['id','nombre','apellido','telefono','dni','carrera','gradoAcademico','universidad','pais','email']})
         if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
             const clienteDto: ListarClienteDto = {
                 ...oneCliente,
