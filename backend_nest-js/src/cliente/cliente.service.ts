@@ -12,6 +12,7 @@ import { ListarClientesDto } from './dto/listar-clientes.dto';
 import { AsesoramientoService } from 'src/asesoramiento/asesoramiento.service';
 import { validate } from 'class-validator';
 import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
+import { ClientesSinAsignar } from './dto/clientes-sin-asignar.dto';
 
 @Injectable()
 export class ClienteService {
@@ -40,7 +41,6 @@ export class ClienteService {
             const id_cliente = cliente.id;
             console.log(id_cliente)
             const datos_asesoramiento = await this.asesoramientoService.findDatesByCliente(id_cliente);
-            
             return {
             ...cliente,
             datos_asesoramiento:datos_asesoramiento
@@ -113,6 +113,30 @@ export class ClienteService {
         }catch(err){
         throw new InternalServerErrorException(err.message)
         }   
+    }
+
+    async clientesSinAsignar():Promise<ClientesSinAsignar[]>{
+        const listaClientes=await this.clienteRepo.createQueryBuilder('c')
+        .innerJoin('c.gradoAcademico','g')
+        .leftJoin('c.procesosAsesoria','p')
+        .where('p.id IS NULL')
+        .select(['c.id', 'c.nombre', 'c.apellido', 'g.nombre', 'c.fecha_creacion', 'c.carrera'])
+        .getMany()
+
+
+        const clientesFormateados:ClientesSinAsignar[]= listaClientes.map(cliente => ({
+            id:cliente.id,
+            nombre: cliente.nombre,
+            apellido: cliente.apellido,
+            gradoAcademico: cliente.gradoAcademico.nombre, 
+            fecha_creacion: cliente.fecha_creacion,
+            carrera: cliente.carrera
+          }));
+        
+    
+          console.log(clientesFormateados);
+          return clientesFormateados
+
     }
 
     async patchCliente(id:number,data:updateClienteDto){

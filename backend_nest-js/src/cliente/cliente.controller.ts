@@ -37,6 +37,11 @@ export class ClienteController {
         return this.clienteService.deletedCliente(id)
     }
 
+    @Get('cliente/sin_asignar')
+    async getClientesSinAsignar(){
+        return this.clienteService
+    }
+
     @UseGuards(JwtAuthGuard,RolesGuard)
     @Roles("admin")
     @Patch("desactivate/:id")

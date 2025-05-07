@@ -51,7 +51,7 @@ export class Registros1746554350124 implements MigrationInterface {
             INSERT INTO Alejandria.grado_academico (id, nombre) VALUES 
               (1, 'Estudiante Pregrado'),
               (2, 'Bachiller'),
-              (3, 'Titulado'),
+              (3, 'Licenciado'),
               (4, 'Maestria'),
               (5, 'Doctorado');
           `);
