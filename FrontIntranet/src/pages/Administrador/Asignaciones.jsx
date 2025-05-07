@@ -16,7 +16,7 @@ const Asignaciones = () => {
 
   return (
     <LayoutApp>
-      <main className="flex flex-col mx-32 my-10 items-start">
+      <main className="flex flex-col mx-32  items-start">
 
         <div className="ml-8 flex w-full border-b-2 gap-3 border-black font-normal">
           <button

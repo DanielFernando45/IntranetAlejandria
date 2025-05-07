@@ -88,7 +88,7 @@ const ListarAsesor = () => {
                     >
                         <div className="w-[40px] flex justify-center">{asesor.id}</div>
                         <div className="w-[250px] flex justify-start">{asesor.nombre} {asesor.apellido}</div>
-                        <div className="w-[250px] flex justify-center">{asesor.areaAsesor}</div>
+                        <div className="w-[250px] flex justify-center">{asesor.areaAsesor.nombre}</div>
                         <div className="w-[250px] flex justify-start">{asesor.especialidad}</div>
                         <div className="w-[250px] flex justify-start">{asesor.universidad}</div>
                         <button

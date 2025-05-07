@@ -34,18 +34,18 @@ const ListarAsignados = () => {
       </div>
       <div className="flex flex-col  ">
         <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
-          <div className="w-[40px] flex justify-center">ID</div>
-          <div className="w-[300px] flex justify-center">Alumno</div>
+          <div className="w-[80px] flex justify-center">IdAsesoria</div>
+          <div className="w-[300px] flex justify-center">Delegado</div>
           <div className="w-[250px] flex justify-center">Contrato</div>
           <div className="w-[160px] flex justify-center">Fecha asignación</div>
-          <div className="w-[300px] flex justify-center">Alumno 2</div>
+          <div className="w-[300px] flex justify-center">Clientes</div>
           <div className="w-[300px] flex justify-center">Asesor</div>
           <div className="w-[60px] flex justify-center">Estado</div>
           <div className="w-[200px] flex justify-center ml-3">Accion</div>
         </div>
         {[1, 2, 3, 4, 5].map((item, index) => (
           <div key={index} className={`flex justify-between text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
-            <div className="w-[40px] flex justify-center">0125</div>
+            <div className="w-[80px] flex justify-center">0125</div>
             <div className="w-[300px] flex justify-center">Antonio Jorge Cueva Lopez</div>
             <div className="w-[250px] flex justify-center">Plazo/Al contado/Grupal</div>
             <div className="w-[160px] flex justify-center">25/07/24</div>
@@ -67,6 +67,11 @@ const ListarAsignados = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div className='flex justify-end mt-4'>
+        <button className=' border-green-950 border-[3px]  rounded-lg w-[180px] text-white bg-black'>
+          Agregar Asesoria
+        </button>
       </div>
 
       {cambiar && (

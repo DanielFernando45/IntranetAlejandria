@@ -66,6 +66,37 @@ const clientesMock = [
   }
 ];
 
+const tiposDeTrabajo = [
+  "Proyecto Bachillerato",
+  "Tesis",
+  "Tesis maestría",
+  "Tesis doctorado",
+  "Plan de negocios",
+  "Revisión sistemática",
+  "Suficiencia profesional",
+  "Estudio de prefactibilidad"
+];
+
+const tiposDeServicio = [
+  "Por capítulos",
+  "Completo"
+];
+
+const capitulos = [
+  "Proyecto",
+  "Informe final"
+];
+
+const tiposDeContrato = [
+  "Plazo/Al contado/Individual",
+  "Plazo/Al contado/Grupal",
+  "Plazo/Cuotas/Individual",
+  "Plazo/Cuotas/Grupal",
+  "Avance/Al contado/Individual",
+  "Avance/Al contado/Grupal",
+  "Avance/Cuotas/Individual",
+  "Avance/Cuotas/Grupal"
+];
 
 
 const ListarSinAsignar = () => {
@@ -74,7 +105,7 @@ const ListarSinAsignar = () => {
   const [clientesOcultos, setClientesOcultos] = useState([]);
   const [areaSeleccionada, setAreaSeleccionada] = useState("");
   const [asesorSeleccionado, setAsesorSeleccionado] = useState("");
-  
+
 
   const handleElegirCliente = (cliente) => {
     if (clientesSeleccionados.length < 5 && !clientesSeleccionados.find(c => c.id === cliente.id)) {
@@ -90,6 +121,7 @@ const ListarSinAsignar = () => {
 
   const asesoresFiltrados = Asesor.filter(a => a.area === areaSeleccionada);
 
+  const [tipoServicioSeleccionado, setTipoServicioSeleccionado] = useState("");
 
   return (
     <>
@@ -151,14 +183,14 @@ const ListarSinAsignar = () => {
         <h2 className='text-[20px] font-medium'>Asesor</h2>
         {!asesorSeleccionado ? (
           <div className='flex justify-between'>
-            <select value={areaSeleccionada} onChange={(e) => { setAreaSeleccionada(e.target.value); setAsesorSeleccionado(""); }} className='border border-black rounded-md px-[14px] w-[275px]'>
+            <select value={areaSeleccionada} onChange={(e) => { setAreaSeleccionada(e.target.value); setAsesorSeleccionado(""); }} className='border border-black rounded-md px-[14px] w-[275px] h-9'>
               <option value="" disabled>Areas</option>
               {[...new Set(Asesor.map(a => a.area))].map(area => (
                 <option key={area} value={area}>{area}</option>
               ))}
             </select>
 
-            <select value={asesorSeleccionado} onChange={(e) => setAsesorSeleccionado(e.target.value)} className='border border-black rounded-md px-[14px] w-[555px]'>
+            <select value={asesorSeleccionado} onChange={(e) => setAsesorSeleccionado(e.target.value)} className='border border-black rounded-md px-[14px] w-[555px] h-9'>
               <option value="" disabled>Asesor</option>
               {asesoresFiltrados.map(asesor => (
                 <option key={asesor.id} value={asesor.asesor}>{asesor.asesor}</option>
@@ -173,21 +205,88 @@ const ListarSinAsignar = () => {
         )}
       </div>
 
-      <div className='flex flex-col gap-4 mt-4'>
+      <div className='flex flex-col gap-5'>
+        <h2 className='text-[20px] font-medium'>Datos de Trabajo</h2>
+
+        <div className='flex gap-5 text-[#575051]'>
+          <div className='flex gap-4 items-center'>
+            <p>Profesión Asesoría:</p>
+            <input type="text" className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9' />
+          </div>
+          <div className='flex gap-4 items-center'>
+            <p>Tipo de contrato:</p>
+            <select className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'>
+              <option value="">Seleccionar</option>
+              {tiposDeContrato.map(tipo => (
+                <option key={tipo} value={tipo}>{tipo}</option>
+              ))}
+            </select>
+
+          </div>
+        </div>
+
+        <div className='flex gap-4 text-[#575051] '>
+          <div className='flex gap-7 items-center'>
+            <p>Tipo de servicio:</p>
+            <select
+              className='border border-[#575051] rounded-lg px-[14px] w-[250px] h-9'
+              value={tipoServicioSeleccionado}
+              onChange={(e) => setTipoServicioSeleccionado(e.target.value)}
+            >
+              <option value="">Seleccionar</option>
+              {tiposDeServicio.map(servicio => (
+                <option key={servicio} value={servicio}>{servicio}</option>
+              ))}
+            </select>
+          </div>
+
+          {tipoServicioSeleccionado !== "Completo" && (
+            <div className='flex gap-4 items-center'>
+              <p>Capítulos:</p>
+              <select className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'>
+                <option value="">Seleccionar</option>
+                {capitulos.map(cap => (
+                  <option key={cap} value={cap}>{cap}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className='flex gap-4 items-center'>
+            <p>Tipo Trabajo:</p>
+            <select className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'>
+              <option value="">Seleccionar</option>
+              {tiposDeTrabajo.map(trabajo => (
+                <option key={trabajo} value={trabajo}>{trabajo}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+
+        <div className='flex gap-14 text-[#575051] items-center'>
+          <p>Especialidad:</p>
+          <input type="text" className='border border-[#575051] rounded-lg px-[14px] w-[350px] h-9' />
+        </div>
+
+      </div>
+
+
+      <div className='flex flex-col gap-4 mt-4 '>
         <h2 className='text-[20px] font-medium'>Fechas</h2>
         <div className='flex justify-start gap-28'>
           <div className='flex gap-4'>
             <p>Fecha inicio:</p>
-            <input type="date" className='border border-black rounded-md px-[14px] w-[275px]' />
+            <input type="date" className='border border-black rounded-md px-[14px] w-[275px] h-9' />
           </div>
           <div className='flex gap-4'>
             <p>Fecha final:</p>
-            <input type="date" className='border border-black rounded-md px-[14px] w-[275px]' />
+            <input type="date" className='border border-black rounded-md px-[14px] w-[275px] h-9' />
           </div>
         </div>
       </div>
 
-      <div className='flex gap-5 justify-end'>
+      <div className='flex gap-5 justify-end mt-14'>
         <div className="flex justify-center w-[140px] h-8 rounded font-semibold border border-black px-6 py-1">
           <p>Cancelar</p>
         </div>

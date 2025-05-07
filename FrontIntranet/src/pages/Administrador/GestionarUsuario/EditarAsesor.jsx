@@ -25,7 +25,12 @@ const EditarAsesor = () => {
     const fetchAsesor = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/asesor/${id}`);
-        setFormData(response.data);
+        const asesor = response.data;
+        setFormData({
+          ...asesor,
+          areaAsesor: asesor.areaAsesor?.id || "",
+          gradoAcademico: asesor.gradoAcademico?.id || ""
+        });
       } catch (error) {
         console.error("Error al obtener datos del asesor:", error);
       }
@@ -36,15 +41,30 @@ const EditarAsesor = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const parsedValue = ["telefono", "areaAsesor", "gradoAcademico"].includes(name)
+    const parsedValue = ["areaAsesor", "gradoAcademico", "telefono"].includes(name)
       ? parseInt(value) || ""
       : value;
+  
     setFormData(prev => ({ ...prev, [name]: parsedValue }));
   };
 
   const handleGuardar = async () => {
+    // Construir objeto para enviar al backend (sin objetos anidados)
+    const payload = {
+      dni: formData.dni,
+      nombre: formData.nombre,
+      apellido: formData.apellido,
+      email: formData.email,
+      telefono: formData.telefono,
+      url_imagen: formData.url_imagen,
+      areaAsesor: formData.areaAsesor,
+      especialidad: formData.especialidad,
+      gradoAcademico: formData.gradoAcademico,
+      universidad: formData.universidad
+    };
+  
     try {
-      await axios.patch(`http://localhost:3001/asesor/update/${id}`, formData);
+      await axios.patch(`http://localhost:3001/asesor/update/${id}`, payload);
       alert("Asesor actualizado correctamente");
       navigate('/admin/gestionar-usuarios/listar-asesores');
     } catch (error) {
@@ -52,6 +72,7 @@ const EditarAsesor = () => {
       alert("Error al actualizar asesor.");
     }
   };
+  
 
   const handlerAtras = () => {
     navigate('/admin/gestionar-usuarios/listar-asesores');
@@ -163,7 +184,7 @@ const EditarAsesor = () => {
               <div className='flex flex-col gap-3 w-full'>
                 <p className='pl-[1px]'>Teléfono</p>
                 <input
-                  name="telefono"           
+                  name="telefono"
                   value={formData.telefono || ""}
                   onChange={handleChange}
                   placeholder='Teléfono'
@@ -185,12 +206,12 @@ const EditarAsesor = () => {
               </div>
               <div className='flex flex-col gap-3 w-full'>
                 <p className='pl-[1px]'>Perfil (URL imagen)</p>
-                <input 
-                  name="url_imagen" 
-                  value={formData.url_imagen} 
-                  onChange={handleChange} 
-                  placeholder='Ingresa Imagen Perfil' 
-                  className='bg-[#F9F9F9] w-full h-[49px] rounded-lg text-[#808080] p-4' 
+                <input
+                  name="url_imagen"
+                  value={formData.url_imagen}
+                  onChange={handleChange}
+                  placeholder='Ingresa Imagen Perfil'
+                  className='bg-[#F9F9F9] w-full h-[49px] rounded-lg text-[#808080] p-4'
                 />
               </div>
 
