@@ -28,7 +28,7 @@ export class ClienteService {
 
     async listClients (): Promise<ListarClientesDto[]>{
         const listofCliente=await this.clienteRepo.find({
-            select:['id','dni','nombre','apellido','fecha_creacion']})
+            select:['id','dni','nombre','apellido','fecha_creacion','carrera']})
         
         if(!listofCliente||listofCliente.length===0) throw new NotFoundException("No se encontro ningun cliente")
 
@@ -84,7 +84,7 @@ export class ClienteService {
         }
         savedUser=await this.usuarioService.createUserDefault(dataUser)
         }catch(err){
-            return new Error(err.message)
+            throw new Error(err.message)
         }
         try{
 
@@ -98,16 +98,17 @@ export class ClienteService {
             apellido:data.apellido,
             telefono:data.telefono,
             email:data.email,
-            url_imagen:data.url_imagen,
+            url_imagen:data.url_imagen || '',
             pais:data.pais,
-            gradoAcademico:{id:gradoAcademicoSearch.id,nombre:gradoAcademicoSearch.nombre},
+            gradoAcademico:gradoAcademicoSearch,
             universidad:data.universidad,
+            carrera:data.carrera,
             usuario:savedUser
         })
 
         return await this.clienteRepo.save(cliente);
         }catch(err){
-        throw new InternalServerErrorException(err)
+        throw new InternalServerErrorException(err.message)
         }   
     }
 
@@ -120,7 +121,8 @@ export class ClienteService {
             partialEntity.gradoAcademico = { id: data.gradoAcademico };
         }
     
-        const updated=await this.clienteRepo.update({id},partialEntity)
+        const updated=await this.clienteRepo.update(id,partialEntity)
+        if (updated===null) throw new NotFoundException("No se encuentra el registro")
         if(updated.affected===0) throw new Error("No hay registro a afectar")
         
         return updated
