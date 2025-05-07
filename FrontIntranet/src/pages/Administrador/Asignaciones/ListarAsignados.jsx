@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import eliminar from "../../../assets/icons/delete.svg"
 import check from "../../../assets/icons/check.svg"
 
@@ -25,6 +25,41 @@ const ListarAsignados = () => {
 
 
   const asesoresFiltrados = Asesor.filter(a => a.area === areaSeleccionada);
+
+  const asignados = [
+    {
+      id: "0125",
+      nombre: "Antonio Jorge Cueva Lopez",
+      tipo: "Plazo/Al contado/Grupal",
+      fecha: "25/07/24",
+      referencia1: "-----------------------------",
+      referencia2: "Luis Fernando Ramirez",
+      estado: "Activado",
+      icono: check
+    },
+    {
+      id: "0126",
+      nombre: "Maria Garcia Fernandez",
+      tipo: "Plazo/Al contado/Grupal",
+      fecha: "26/07/24",
+      referencia1: "Juan Mateo Pérez Vinlof",
+      referencia2: "Luis Fernando Ramirez",
+      estado: "Desactivado",
+      icono: eliminar
+    },
+    {
+      id: "0127",
+      nombre: "Carlos Sanchez Rodriguez",
+      tipo: "Plazo/Al contado/Grupal",
+      fecha: "27/07/24",
+      referencia1: "-----------------------------",
+      referencia2: "Luis Fernando Ramirez",
+      estado: "Activado",
+      icono: check
+    }
+
+  ];
+
   return (
     <>
       <div className='flex justify-end'>
@@ -43,29 +78,29 @@ const ListarAsignados = () => {
           <div className="w-[60px] flex justify-center">Estado</div>
           <div className="w-[200px] flex justify-center ml-3">Accion</div>
         </div>
-        {[1, 2, 3, 4, 5].map((item, index) => (
-          <div key={index} className={`flex justify-between text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
-            <div className="w-[80px] flex justify-center">0125</div>
-            <div className="w-[300px] flex justify-center">Antonio Jorge Cueva Lopez</div>
-            <div className="w-[250px] flex justify-center">Plazo/Al contado/Grupal</div>
-            <div className="w-[160px] flex justify-center">25/07/24</div>
-            <div className="w-[300px] flex justify-center">{index % 2 === 0 ? '------------------------------' : 'Juan Mateo Pérez Vinlof'}</div>
-            <div className="w-[300px] flex justify-center">Luis Fernando Ramirez</div>
-            <div className="w-[60px] justify-center text-[8px] flex flex-col items-center">
-              <div className='w-[40px] font-semibold h-[20px] rounded-3xl border border-black items-center flex justify-start'>
-                <img className='h-[22px] w-[20px]' src={index % 2 === 0 ? check : eliminar} alt="" />
-              </div>
-              {index % 2 === 0 ? 'Activado' : 'Desactivado'}
+        {asignados.map((asignado, index) => (
+        <div key={asignado.id} className={`flex justify-between text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
+          <div className="w-[80px] flex justify-center">{asignado.id}</div>
+          <div className="w-[300px] flex justify-center">{asignado.nombre}</div>
+          <div className="w-[250px] flex justify-center">{asignado.tipo}</div>
+          <div className="w-[160px] flex justify-center">{asignado.fecha}</div>
+          <div className="w-[300px] flex justify-center">{asignado.referencia1}</div>
+          <div className="w-[300px] flex justify-center">{asignado.referencia2}</div>
+          <div className="w-[60px] justify-center text-[8px] flex flex-col items-center">
+            <div className='w-[40px] font-semibold h-[20px] rounded-3xl border border-black items-center flex justify-start'>
+              <img className='h-[22px] w-[20px]' src={asignado.icono} alt="" />
             </div>
-            <div className="w-[200px] text-white ml-3">
-              <button
-                onClick={() => setCambiar(!cambiar)}
-                className='bg-[#1C1C34] w-[160px] rounded-md px-3 py-1 flex justify-center'
-              >
-                Cambiar asesor
-              </button>
-            </div>
+            {asignado.estado}
           </div>
+          <div className="w-[200px] text-white ml-3">
+            <button
+              onClick={() => setCambiar(!cambiar)}
+              className='bg-[#1C1C34] w-[160px] rounded-md px-3 py-1 flex justify-center'
+            >
+              Cambiar asesor
+            </button>
+          </div>
+        </div>
         ))}
       </div>
       <div className='flex justify-end mt-4'>
