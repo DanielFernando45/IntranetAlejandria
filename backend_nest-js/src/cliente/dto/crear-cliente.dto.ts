@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsNotEmpty, IsNumber, IsUrl, IsInt } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, IsNumber, IsUrl, IsInt, IsOptional } from 'class-validator';
 
 export class CreateClienteDto {
     @IsString()
@@ -22,6 +22,7 @@ export class CreateClienteDto {
     readonly email: string;
 
     @IsString()
+    @IsOptional()
     readonly url_imagen: string;
 
     // @IsInt()
