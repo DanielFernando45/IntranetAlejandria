@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException, UseGuards } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserRole, Usuario } from "./usuario.entity";
-import { Repository } from "typeorm";
+import { EntityManager, Repository } from "typeorm";
 import * as bcrypt from 'bcrypt'
 import { CreateUserDto } from "./dto/create-user.dto";
 
@@ -33,6 +33,12 @@ export class UsuarioService{
         const user=await this.usuarioRepo.update({id},{estado:false})
         if(!user) throw new NotFoundException("No se encuentro registrado ese usuario")
         return user.affected
+    }
+
+    async deleteUserWithCliente(id:number,manager:EntityManager){
+        const deleted_user=await manager.delete(Usuario,{id})
+        if(deleted_user.affected===0) throw new NotFoundException("No hay un usuaurio con ese ID")
+        return true
     }
 
 }

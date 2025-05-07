@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './cliente.entity';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { UserRole } from 'src/usuario/usuario.entity';
 import { CreateClienteDto } from './dto/crear-cliente.dto';
 import { ListarClienteDto } from './dto/listar-cliente.dto';
@@ -24,6 +24,9 @@ export class ClienteService {
 
         @InjectRepository(GradoAcademico)
         private gradoAcademicoRepo: Repository<GradoAcademico>,
+        
+        @InjectDataSource()
+        private readonly dataSource:DataSource
     ){}
 
     async listClients (): Promise<ListarClientesDto[]>{
@@ -122,29 +125,48 @@ export class ClienteService {
         }
     
         const updated=await this.clienteRepo.update(id,partialEntity)
-        if (updated===null) throw new NotFoundException("No se encuentra el registro")
-        if(updated.affected===0) throw new Error("No hay registro a afectar")
+        if(updated.affected===0) throw new NotFoundException("No hay registro a afectar")
         
         return updated
     }
 
     async deletedCliente(id:number){
-        const deleted=await this.clienteRepo.delete({id})
-        if(deleted.affected===0) throw new NotFoundException("No se encontro el registro a eliminar")
-        return {message:"Cliente eliminado correctamente",eliminados:deleted.affected}
+        const queryRunner=this.dataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
+
+        try {
+            const usuario=await queryRunner.manager.findOne(Cliente,{where:{id},relations:["usuario"]})
+            if (!usuario || !usuario.usuario) throw new NotFoundException("No se encontró el cliente o el usuario asociado");
+            const id_usuario=usuario?.usuario?.id
+            if(id_usuario===undefined) throw new NotFoundException("No se encontro el id de usuario")
+            const deleted=await queryRunner.manager.delete(Cliente,{id})
+            if(deleted.affected===0) throw new Error("No se encontró el cliente para eliminar")
+            await this.usuarioService.deleteUserWithCliente(id_usuario,queryRunner.manager)
+            await queryRunner.commitTransaction()
+            return {message:"Cliente eliminado correctamente",eliminados:deleted.affected}
+        } catch (error) {
+            await queryRunner.rollbackTransaction()
+            throw new InternalServerErrorException("Transacción fallida: " + error.message);
+        } finally{
+            await queryRunner.release()
+        }
     }
 
     async desactivateCliente(id:number){
+        
         const cliente=await this.clienteRepo.findOne({
             where:{id},
             relations:['usuario'],
             select:{ usuario: { id: true }}
         })
+        
         if(!cliente) return new NotFoundException("No se encontro el cliente en la bd")
         const id_usuario=cliente?.usuario.id
         if(!id_usuario) throw new NotFoundException("No se encontro el id")
-
         const response=await this.usuarioService.desactivateUser(id_usuario)
         return {message:"Usuario desactivado correctamente",affectado:response}
+        }catch(err){
+            throw new BadRequestException()
     }
 }
