@@ -92,7 +92,7 @@ const ListarEstudiante = () => {
         onClick={handlerAgregarEstudiante}
         className="flex justify-between text-white w-[230px] h-8 rounded font-semibold bg-[#1B435D] px-6 py-1 mt-5"
       >
-        <p>Agregar Asesor</p>
+        <p>Agregar Estudiante</p>
       </button>
     </>
   );
