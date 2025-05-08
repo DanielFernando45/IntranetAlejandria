@@ -4,7 +4,7 @@ export class clientesExtraDTO{
 
     @IsNumber()
     @IsNotEmpty()
-    id_cliente1:number;
+    delegado:number;
 
     @IsNumber()
     @IsOptional()

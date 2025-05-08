@@ -33,9 +33,9 @@ export class ListarClienteDto {
   @IsOptional()
   readonly pais: string;
 
-  @IsString()
+  
   @IsOptional()
-  readonly gradoAcademico: string;  // Cambié id_grado_academico a gradoAcademico
+  readonly gradoAcademico: object;  // Cambié id_grado_academico a gradoAcademico
 
   @IsString()
   @IsOptional()

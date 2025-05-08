@@ -62,6 +62,15 @@ export class AsesorService {
         return asesorDto          
     }
 
+    async asesorPorArea(id_area:number){
+        const asesorArea=await this.asesorRepo.find({
+            where:{areaAsesor:{id:id_area}},
+            select:['id','nombre','apellido']
+        })
+        if(asesorArea.length===0) throw new NotFoundException("No hay asesor con esa area")
+        return asesorArea
+    }
+
     async crearAsesor(data: createAsesorDto){
         let savedUser:CreateUserDto
         
@@ -83,13 +92,14 @@ export class AsesorService {
         if (!areaAsesorSearch || !gradoAcademicoSearch) throw new NotFoundException("Algunas entidades relacionadas no existen");
         
         const asesor=this.asesorRepo.create({
+            ...data,
             areaAsesor:areaAsesorSearch,
             gradoAcademico:gradoAcademicoSearch,
             usuario:savedUser
         })
         return await this.asesorRepo.save(asesor)
         }catch(err){
-            throw new Error(err.message)
+            throw new BadRequestException()
         }
     }
 

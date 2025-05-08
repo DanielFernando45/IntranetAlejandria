@@ -10,22 +10,23 @@ export class CreateAsesoramientoDto {
 
     @IsString()
     @IsOptional()
-    profesionAsesoramiento:string;
+    profesion_asesoria:string;
 
     @IsString()
     @IsOptional()
     especialidad:string;
 
     @IsEnum(Tipo_Servicio)
+    @IsNotEmpty()
     tipo_servicio:Tipo_Servicio;
     
     @IsInt()
     @IsNotEmpty()
-    tipoContrato:number;
+    id_contrato:number;
     
     @IsInt()
     @IsNotEmpty()
-    tipoTrabajo:number;
+    id_tipo_trabajo:number;
 
     @IsDate()
     @IsNotEmpty()
