@@ -89,10 +89,11 @@ const AgregarEstudiante = () => {
                                              
                                 </div>
                                 <div className='flex flex-col gap-3 w-full'>
-                                    <p className='pl-[1px]'>Actual nivel educativo</p>
+                                    <p className='pl-[1px]'>Grado Academico</p>
                                     <select className='flex bg-[#F9F9F9] w-full h-[55px] rounded-lg text-[#808080] items-center p-4'  >
+                                            <option value="">Estudiante Pregrado</option>
                                             <option value="">Bachiller</option>
-                                            <option value="">Titulado</option>
+                                            <option value="">Licenciado</option>
                                             <option value="">Maestria</option>
                                             <option value="">Doctorado</option>
                                     </select>

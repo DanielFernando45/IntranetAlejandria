@@ -1,7 +1,9 @@
+// Código modificado sin usar estado en el arreglo para la animación
 import React, { useState, useRef } from 'react'
-import eliminar from "../../../assets/icons/delete.svg"
-import check from "../../../assets/icons/check.svg"
-
+import desactivado from "../../../assets/icons/delete.svg"
+import activado from "../../../assets/icons/check.svg"
+import flechaabajo from "../../../assets/icons/Flecha.svg";
+import flechaarriba from "../../../assets/icons/arrow-up.svg";
 
 const Asesor = [
   { id: 1, area: "Ingeneria", asesor: "Emanuel Flores" },
@@ -15,14 +17,20 @@ const Asesor = [
   { id: 9, area: "Salud", asesor: "Tony" }
 ];
 
-const ListarAsignados = () => {
+const formatFecha = (fechaStr) => {
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const [dia, mes, anio] = fechaStr.split("/");
+  return `${dia} de ${meses[parseInt(mes) - 1]}, 20${anio}`;
+};
 
+const ListarAsignados = () => {
   const [cambiar, setCambiar] = useState(false);
+  const [expandedRows, setExpandedRows] = useState({});
+  const [estadoLocal, setEstadoLocal] = useState({});
   const dropdownRef = useRef(null);
 
   const [areaSeleccionada, setAreaSeleccionada] = useState("");
   const [asesorSeleccionado, setAsesorSeleccionado] = useState("");
-
 
   const asesoresFiltrados = Asesor.filter(a => a.area === areaSeleccionada);
 
@@ -30,105 +38,127 @@ const ListarAsignados = () => {
     {
       id: "0125",
       nombre: "Antonio Jorge Cueva Lopez",
-      tipo: "Plazo/Al contado/Grupal",
-      fecha: "25/07/24",
-      referencia1: "-----------------------------",
-      referencia2: "Luis Fernando Ramirez",
-      estado: "Activado",
-      icono: check
+      tipo: "Tesis Doctorado",
+      fecha: "25/05/25",
+      clientes: { cliente1: "Juan Pérez" },
+      asesores: "Luis Fernando Ramirez"
     },
     {
       id: "0126",
       nombre: "Maria Garcia Fernandez",
-      tipo: "Plazo/Al contado/Grupal",
-      fecha: "26/07/24",
-      referencia1: "Juan Mateo Pérez Vinlof",
-      referencia2: "Luis Fernando Ramirez",
-      estado: "Desactivado",
-      icono: eliminar
+      tipo: "Maestria",
+      fecha: "26/05/25",
+      clientes: { cliente1: "Juan Mateo Pérez Vinlof" },
+      asesores: "Luis Fernando Ramirez"
     },
     {
-      id: "0127",
+      id: "0128",
       nombre: "Carlos Sanchez Rodriguez",
-      tipo: "Plazo/Al contado/Grupal",
-      fecha: "27/07/24",
-      referencia1: "-----------------------------",
-      referencia2: "Luis Fernando Ramirez",
-      estado: "Activado",
-      icono: check
+      tipo: "Licenciatura",
+      fecha: "27/05/25",
+      clientes: {
+        cliente1: "Alonso Baldeon Timana",
+        cliente2: "Yamir Juarez",
+        cliente3: "Gabriel Ferran"
+      },
+      asesores: "Luis Fernando Ramirez"
     }
-
   ];
 
+  const toggleEstadoVisual = (id) => {
+    setEstadoLocal(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleClientes = (index) => {
+    setExpandedRows(prev => ({ ...prev, [index]: !prev[index] }));
+  }
+
   return (
-    <>
-      <div className='flex justify-end'>
-        <div className=' rounded-lg border border-black px-5'>
-          Filtrar por fecha
-        </div>
+    <div>
+      <div className='flex justify-end mb-4'>
+        <div className='rounded-lg border border-black px-5'>Filtrar por fecha</div>
       </div>
-      <div className="flex flex-col  ">
+      <div className="flex flex-col">
         <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
           <div className="w-[80px] flex justify-center">IdAsesoria</div>
           <div className="w-[300px] flex justify-center">Delegado</div>
-          <div className="w-[250px] flex justify-center">Contrato</div>
-          <div className="w-[160px] flex justify-center">Fecha asignación</div>
+          <div className="w-[250px] flex justify-center">Tipo Trabajo</div>
+          <div className="w-[180px] flex justify-center">Fecha asignación</div>
           <div className="w-[300px] flex justify-center">Clientes</div>
           <div className="w-[300px] flex justify-center">Asesor</div>
           <div className="w-[60px] flex justify-center">Estado</div>
-          <div className="w-[200px] flex justify-center ml-3">Accion</div>
+          <div className="w-[200px] flex justify-center ml-3">Acción</div>
+          <div className='w-[40px]'></div>
         </div>
-        {asignados.map((asignado, index) => (
-        <div key={asignado.id} className={`flex justify-between text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
-          <div className="w-[80px] flex justify-center">{asignado.id}</div>
-          <div className="w-[300px] flex justify-center">{asignado.nombre}</div>
-          <div className="w-[250px] flex justify-center">{asignado.tipo}</div>
-          <div className="w-[160px] flex justify-center">{asignado.fecha}</div>
-          <div className="w-[300px] flex justify-center">{asignado.referencia1}</div>
-          <div className="w-[300px] flex justify-center">{asignado.referencia2}</div>
-          <div className="w-[60px] justify-center text-[8px] flex flex-col items-center">
-            <div className='w-[40px] font-semibold h-[20px] rounded-3xl border border-black items-center flex justify-start'>
-              <img className='h-[22px] w-[20px]' src={asignado.icono} alt="" />
+        {asignados.map((a, index) => {
+          const clientes = Object.values(a.clientes);
+          const mostrarFlecha = clientes.length > 1;
+          const mostrarTodos = expandedRows[index];
+          const primerCliente = clientes[0] + (clientes.length > 1 && !mostrarTodos ? '...' : '');
+          const estadoActual = estadoLocal[a.id] ?? false;
+          return (
+            <div key={index} className={`flex justify-between items-center text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
+              <div className="w-[80px] flex justify-center">{a.id}</div>
+              <div className="w-[300px] flex justify-center">{a.nombre}</div>
+              <div className="w-[250px] flex justify-center">{a.tipo}</div>
+              <div className="w-[180px] flex justify-center">{formatFecha(a.fecha)}</div>
+              <div className="w-[300px] flex flex-col justify-center items-center">
+                <div>{primerCliente}</div>
+                {mostrarTodos && clientes.slice(1).map((c, i) => (
+                  <div key={i}>{c}</div>
+                ))}
+              </div>
+              <div className="w-[300px] flex justify-center">{a.asesores}</div>
+              <div className="w-[60px] text-[8px] flex flex-col items-center">
+                <button onClick={() => toggleEstadoVisual(a.id)}
+                  className={`w-[60px] h-[25px] font-semibold rounded-3xl border border-black flex items-center transition-all duration-[700ms] ease-in-out ${estadoActual ? 'justify-end pr-1' : 'justify-start pl-1'}`}>
+                  <img 
+                    className='h-[20px] w-[20px] transition-transform duration-[700ms] ease-in-out' 
+                    src={estadoActual ? activado : desactivado} 
+                    alt="estado" 
+                  />
+                </button>
+                {estadoActual ? 'Activado' : 'Desactivado'}
+              </div>
+              <div className="w-[200px] text-white ml-3">
+                <button onClick={() => setCambiar(!cambiar)} className='bg-[#1C1C34] w-[160px] rounded-md px-3 py-1 flex justify-center'>
+                  Cambiar asesor
+                </button>
+              </div>
+              <div className='w-[40px]'>
+                {mostrarFlecha && (
+                  <img
+                    src={mostrarTodos ? flechaarriba : flechaabajo}
+                    alt="toggle"
+                    className="cursor-pointer transition-transform duration-300 transform hover:scale-110"
+                    onClick={() => toggleClientes(index)}
+                  />
+                )}
+              </div>
             </div>
-            {asignado.estado}
-          </div>
-          <div className="w-[200px] text-white ml-3">
-            <button
-              onClick={() => setCambiar(!cambiar)}
-              className='bg-[#1C1C34] w-[160px] rounded-md px-3 py-1 flex justify-center'
-            >
-              Cambiar asesor
-            </button>
-          </div>
-        </div>
-        ))}
+          );
+        })}
       </div>
+
       <div className='flex justify-end mt-4'>
-        <button className=' border-green-950 border-[3px]  rounded-lg w-[180px] text-white bg-black'>
-          Agregar Asesoria
-        </button>
+        <button className='border-green-950 border-[3px] rounded-lg w-[180px] text-white bg-black'>Agregar Asesoría</button>
       </div>
 
       {cambiar && (
-        <div
-          ref={dropdownRef}
-          className="absolute top-12 ml-96 bg-[#F8F7F7] border border-gray-300 rounded shadow-lg p-4 w-64 pb-10"
-        >
+        <div ref={dropdownRef} className="absolute top-12 ml-96 bg-[#F8F7F7] border border-gray-300 rounded shadow-lg p-4 w-64 pb-10">
           <div className='w-full flex justify-center text-[20px] mb-5'>
             <h1>Nuevo asesor</h1>
           </div>
-
           <div className="mb-4">
-            <select value={areaSeleccionada} onChange={(e) => { setAreaSeleccionada(e.target.value); setAsesorSeleccionado(""); }} className="w-full  rounded px-2 py-1">
-              <option value="" disabled>Areas</option>
+            <select value={areaSeleccionada} onChange={(e) => { setAreaSeleccionada(e.target.value); setAsesorSeleccionado(""); }} className="w-full rounded px-2 py-1">
+              <option value="" disabled>Áreas</option>
               {[...new Set(Asesor.map(a => a.area))].map(area => (
                 <option key={area} value={area}>{area}</option>
               ))}
             </select>
           </div>
           <div className="mb-4">
-
-            <select value={asesorSeleccionado} onChange={(e) => setAsesorSeleccionado(e.target.value)} className="w-full  rounded px-2 py-1">
+            <select value={asesorSeleccionado} onChange={(e) => setAsesorSeleccionado(e.target.value)} className="w-full rounded px-2 py-1">
               <option value="" disabled>Asesor</option>
               {asesoresFiltrados.map(asesor => (
                 <option key={asesor.id} value={asesor.asesor}>{asesor.asesor}</option>
@@ -136,24 +166,13 @@ const ListarAsignados = () => {
             </select>
           </div>
           <div className="flex justify-center gap-4 mt-7">
-            <button
-              onClick={() => setCambiar(false)}
-              className="px-3 py-1 border border-black rounded hover:bg-gray-100"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={() => setCambiar(false)}
-              className="px-3 py-1 bg-[#1C1C34] text-white rounded "
-            >
-              Cambiar
-            </button>
+            <button onClick={() => setCambiar(false)} className="px-3 py-1 border border-black rounded hover:bg-gray-100">Cancelar</button>
+            <button onClick={() => setCambiar(false)} className="px-3 py-1 bg-[#1C1C34] text-white rounded">Cambiar</button>
           </div>
         </div>
       )}
+    </div>
+  );
+};
 
-    </>
-  )
-}
-
-export default ListarAsignados
+export default ListarAsignados;

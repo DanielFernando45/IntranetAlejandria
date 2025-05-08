@@ -85,12 +85,12 @@ const AgregarAsesor = () => {
                                 <input name="universidad" value={formData.universidad} onChange={handleChange} placeholder='Ingresar Universidad' className='bg-[#F9F9F9] w-full h-[49px] rounded-lg text-[#808080] p-4' />
                             </div>
                             <div className='flex flex-col gap-3 w-full'>
-                                <p className='pl-[1px]'>Nivel educativo</p>
+                                <p className='pl-[1px]'>Grado Academico</p>
                                 <select name="gradoAcademico" value={formData.gradoAcademico || ""} onChange={handleChange} className='bg-[#F9F9F9] w-full h-[55px] rounded-lg text-[#808080] p-4'>
                                     <option value="">Seleccione nivel</option>
                                     <option value={1}>Estudiante Pregrado</option>
                                     <option value={2}>Bachiller</option>
-                                    <option value={3}>Titulado</option>
+                                    <option value={3}>Licenciado</option>
                                     <option value={4}>Maestría</option>
                                     <option value={5}>Doctorado</option>
                                 </select>

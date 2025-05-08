@@ -75,10 +75,10 @@ const ListarEstudiante = () => {
           >
             <div className="w-[40px] flex justify-center">{estudiante.id}</div>
             <div className="w-[300px] flex justify-start">{estudiante.nombre} {estudiante.apellido}</div>
-            <div className="w-[100px] flex justify-center">{formatearFecha(estudiante.fechas_asesoramiento.fecha_inicio)}</div>
-            <div className="w-[110px] flex justify-center">{formatearFecha(estudiante.fechas_asesoramiento.fecha_fin)}</div>
+            <div className="w-[100px] flex justify-center">{formatearFecha(estudiante.datos_asesoramiento.fecha_inicio)}</div>
+            <div className="w-[110px] flex justify-center">{formatearFecha(estudiante.datos_asesoramiento.fecha_fin)}</div>
             <div className="w-[360px] flex justify-start">{estudiante.carrera}</div>
-            <div className="w-[250px] flex justify-start">{estudiante.tipoContrato}</div>
+            <div className="w-[250px] flex justify-start">{estudiante.datos_asesoramiento.contrato.nombre}{estudiante.datos_asesoramiento.contrato.message}</div>
             <button
               onClick={() => handlerEditarEstudiante(estudiante.id)}
               className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34] flex justify-center text-white"

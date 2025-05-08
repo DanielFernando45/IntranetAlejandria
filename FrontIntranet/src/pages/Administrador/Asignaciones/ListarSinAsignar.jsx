@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import eliminar from "../../../assets/icons/delete.svg"
-
+import busqueda from "../../../assets/icons/busqueda.svg";
 
 const Asesor = [
   { id: 1, area: "Ingeneria", asesor: "Emanuel Flores" },
@@ -129,7 +129,7 @@ const ListarSinAsignar = () => {
         <h2 className="text-2xl font-semibold">Clientes Sin Asignar</h2>
         <div className="flex flex-col gap-2">
           <div className="flex items-start gap-3">
-            <h2 className="text-[20px] font-semibold mt-1">Principal:</h2>
+            <h2 className="text-[20px] font-semibold mt-1">Delegado:</h2>
             {clientesSeleccionados[0] && (
               <div className="flex items-center border gap-1 rounded px-2 py-[5px] bg-white shadow-sm">
                 <span className="text-sm">{clientesSeleccionados[0].nombre}</span>
@@ -153,14 +153,20 @@ const ListarSinAsignar = () => {
             </div>
           )}
         </div>
-
-
+      </div>
+      <div className="flex w-full h-8 rounded-md px-[10px] py-[6px] justify-between bg-[#E4E2E2]">
+        <input
+          className="bg-transparent w-full focus:outline-none text-black placeholder:text-[#888]"
+          type="text"
+          placeholder="Buscar por ID, DNI o nombre..."
+        />
+        <img src={busqueda} alt="Buscar" />
       </div>
 
       <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
         <div className="w-[40px] flex justify-center">ID</div>
         <div className="w-[300px] flex justify-center">Alumno</div>
-        <div className="w-[250px] flex justify-center">Contrato</div>
+        <div className="w-[250px] flex justify-center">Grado Academico</div>
         <div className="w-[160px] flex justify-center">Fecha de Creacion</div>
         <div className="w-[360px] flex justify-center">Carrera</div>
         <div className="w-[110px] flex justify-center">Accion</div>
