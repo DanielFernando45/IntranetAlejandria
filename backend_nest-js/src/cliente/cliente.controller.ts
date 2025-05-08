@@ -37,9 +37,9 @@ export class ClienteController {
         return this.clienteService.deletedCliente(id)
     }
 
-    @Get('cliente/sin_asignar')
+    @Get('filter/sin_asignar')
     async getClientesSinAsignar(){
-        return this.clienteService
+        return this.clienteService.clientesSinAsignar()
     }
 
     @UseGuards(JwtAuthGuard,RolesGuard)

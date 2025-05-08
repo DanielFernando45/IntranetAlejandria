@@ -9,7 +9,7 @@ export class AsesoramientoController {
 
   @Get("/listar")
   listar(){
-    this.asesoramientoService.findAll()
+    this.asesoramientoService.listar()
   }
 
   @Post("asignacion")

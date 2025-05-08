@@ -23,7 +23,7 @@ export class Asesoramiento {
     @Column()
     profesion_asesoria:string;
 
-    @Column()
+    @Column({ nullable: true })
     especialidad:string;
 
     @Column({type:'enum',enum:Tipo_Servicio})

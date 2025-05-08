@@ -28,11 +28,12 @@ export class AsesoramientoService {
   }
 
   async create(createAsesoramientoDto: CreateAsesoramientoDto,clientes:clientesExtraDTO) {
-    const {id_asesor,fecha_inicio,fecha_fin,tipoContrato,tipoTrabajo,...data}=createAsesoramientoDto
+    const {id_asesor,profesion_asesoria,tipo_servicio,fecha_inicio,fecha_fin,id_contrato,id_tipo_trabajo}=createAsesoramientoDto
+    
     if (!fecha_inicio || !fecha_fin || isNaN(fecha_inicio.getTime()) || isNaN(fecha_fin.getTime())) {
       throw new BadRequestException('Fechas inválidas');
     }
-    if(!tipoContrato||!tipoTrabajo) throw new BadRequestException("No se encontro el tipo de trabajo y contrato")
+    if(!id_contrato||!id_contrato) throw new BadRequestException("No se encontro el tipo de trabajo y contrato")
     if (fecha_fin < fecha_inicio) {
       throw new BadRequestException('La fecha de fin no puede ser anterior a la fecha de inicio');
     }
@@ -51,15 +52,14 @@ export class AsesoramientoService {
     await queryRunner.startTransaction()
 
     try{
-    const tipo_trabajo=await queryRunner.manager.findOneBy(TipoTrabajo,{id:tipoTrabajo})
-    const tipo_contrato=await queryRunner.manager.findOneBy(TipoContrato,{id:tipoContrato})
-    const newAsesoramiento=queryRunner.manager.create(Asesoramiento,{fecha_inicio,fecha_fin,tipo_trabajo,tipo_contrato,...data,estado:Estado_Asesoria.ACTIVO})
+    
+    const newAsesoramiento=queryRunner.manager.create(Asesoramiento,{fecha_inicio,profesion_asesoria,tipo_servicio,fecha_fin,tipoTrabajo: { id: id_tipo_trabajo },
+      tipoContrato: { id: id_contrato }, estado:Estado_Asesoria.ACTIVO,especialidad: createAsesoramientoDto.especialidad ?? null})
+  
     const addedAsesoramiento=await queryRunner.manager.save(newAsesoramiento)
     const id_asesoramiento=addedAsesoramiento.id
 
     const creacion=await this.procesosAsesoriaService.addProceso_to_Asesoramiento(clientes,id_asesor,id_asesoramiento,queryRunner.manager)
-    // console.log(id_asesoramiento)
-    // console.log(creacion)
     
     await queryRunner.commitTransaction()
     return "Agregado satisfactoriamente"
@@ -110,6 +110,25 @@ export class AsesoramientoService {
 
 
     return `Se desactivo el asesoramiento con id: ${id}`
+  }
+
+  async listar(){
+    const listAsesoria=await this.asesoramientoRepo
+      .createQueryBuilder('a')
+      .innerJoin('a.procesosasesoria','p')
+      .innerJoinAndSelect('p.cliente','c')
+      .innerJoinAndSelect('p.asesor','as')
+      .select(['a.fecha_inicio','c.nombre','c.apellido','as.nombre','as.apellido'])
+      .getMany();
+      
+      const Asesorias=listAsesoria[1]
+
+      const data={
+        nombre:Asesorias.procesosasesoria
+      }
+    
+      console.log(data)
+    
   }
 
   update(id: number, updateAsesoramientoDto: UpdateAsesoramientoDto) {

@@ -26,6 +26,11 @@ export class AsesorController {
             return this.asesorService.crearAsesor(body)
         }
 
+        @Get('filter/:id_area')
+        async listAsesorPorArea(@Param('id_area',ParseIntPipe) id_area:number){
+            return this.asesorService.asesorPorArea(id_area)
+        }
+
         @Patch('/update/:id')
         async update(@Param('id',ParseIntPipe) id:number,@Body() body:UpdateAsesorDto){
             return this.asesorService.patchAsesor(id,body)

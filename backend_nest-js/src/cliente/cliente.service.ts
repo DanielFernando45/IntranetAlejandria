@@ -67,7 +67,7 @@ export class ClienteService {
         if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
             const clienteDto: ListarClienteDto = {
                 ...oneCliente,
-                gradoAcademico: oneCliente.gradoAcademico?.nombre || '',
+                gradoAcademico:{id:oneCliente.gradoAcademico?.id,nombre:oneCliente.gradoAcademico?.nombre } ,
             };
             return clienteDto
     }
@@ -115,29 +115,27 @@ export class ClienteService {
         }   
     }
 
-    async clientesSinAsignar():Promise<ClientesSinAsignar[]>{
-        const listaClientes=await this.clienteRepo.createQueryBuilder('c')
-        .innerJoin('c.gradoAcademico','g')
-        .leftJoin('c.procesosAsesoria','p')
-        .where('p.id IS NULL')
-        .select(['c.id', 'c.nombre', 'c.apellido', 'g.nombre', 'c.fecha_creacion', 'c.carrera'])
-        .getMany()
+    async clientesSinAsignar(): Promise<ClientesSinAsignar[]> {
+        const clientesSinProcesos = await this.dataSource
+          .getRepository(Cliente)
+          .createQueryBuilder("c")
+          .leftJoin("c.procesosAsesoria", "p")
+          .leftJoinAndSelect("c.gradoAcademico", "grado")
+          .where("p.id IS NULL")
+          .getMany();
+      
+        const clientesFormateados: ClientesSinAsignar[] = clientesSinProcesos.map(cliente => ({
+          id: cliente.id,
+          nombre: cliente.nombre,
+          apellido: cliente.apellido,
+          gradoAcademico: cliente.gradoAcademico?.nombre ?? null,
+          fecha_creacion: cliente.fecha_creacion,
+          carrera: cliente.carrera
+        }));
+      
+        return clientesFormateados;
+      }
 
-
-        const clientesFormateados:ClientesSinAsignar[]= listaClientes.map(cliente => ({
-            id:cliente.id,
-            nombre: cliente.nombre,
-            apellido: cliente.apellido,
-            gradoAcademico: cliente.gradoAcademico.nombre, 
-            fecha_creacion: cliente.fecha_creacion,
-            carrera: cliente.carrera
-          }));
-        
-    
-          console.log(clientesFormateados);
-          return clientesFormateados
-
-    }
 
     async patchCliente(id:number,data:updateClienteDto){
         if(!Object.keys(data).length)throw new BadRequestException("No se envio un body para actualizar")
