@@ -47,6 +47,20 @@ const ListarEstudiante = () => {
     setEstudiantes(estudiantesBase);
   };
 
+  const handleEliminarEstudiante = async (id) =>{
+      if(!window.confirm("¿Estas Seguro de Eliminar?")) return;
+
+      try {
+          await axios.delete(`http://localhost:3001/cliente/delete/${id}`);
+          const nuevosEstudiantes = estudiantes.filter(estudiante => estudiante.id !== id); 
+          setEstudiantes(nuevosEstudiantes);
+          setEstudiantesBase(nuevosEstudiantes);
+      } catch (error) {
+          console.log('Error al eliminar el estudiante:',error);
+          alert('Error al eliminar el estudiante.');
+      }
+  };
+
   return (
     <>
       <div className="flex flex-col gap-[12px]">
@@ -80,10 +94,17 @@ const ListarEstudiante = () => {
             <div className="w-[360px] flex justify-start">{estudiante.carrera}</div>
             <div className="w-[250px] flex justify-start">{estudiante.datos_asesoramiento.contrato.nombre}{estudiante.datos_asesoramiento.contrato.message}</div>
             <button
-              onClick={() => handlerEditarEstudiante(estudiante.id)}
-              className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34] flex justify-center text-white"
-            >Editar</button>
-            <button className="w-[110px] rounded-md px-3 py-1 bg-[#8F1313] flex justify-center text-white">Eliminar</button>
+               onClick={() => handlerEditarEstudiante(estudiante.id)}
+               className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34] flex justify-center text-white"
+            > 
+               Editar
+            </button>
+            <button
+               onClick={() => handleEliminarEstudiante(estudiante.id)}
+               className="w-[110px] rounded-md px-3 py-1 bg-[#8F1313] flex justify-center text-white"
+            > 
+                Eliminar
+            </button>
           </div>
         ))}
       </div>

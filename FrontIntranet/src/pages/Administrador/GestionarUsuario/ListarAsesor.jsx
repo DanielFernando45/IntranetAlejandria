@@ -86,11 +86,11 @@ const ListarAsesor = () => {
                         key={asesor.id}
                         className={`flex justify-between items-center text-[#2B2829] font-normal p-[6px] rounded-md ${index % 2 === 0 ? "bg-white" : "bg-[#E9E7E7]"}`}
                     >
-                        <div className="w-[40px] flex justify-center">{asesor.id}</div>
-                        <div className="w-[250px] flex justify-start">{asesor.nombre} {asesor.apellido}</div>
+                        <div className="w-[40px] flex justify-center" >{asesor.id}</div>
+                        <div className="w-[250px] flex justify-start" >{asesor.nombre} {asesor.apellido}</div>
                         <div className="w-[250px] flex justify-center">{asesor.areaAsesor.nombre}</div>
-                        <div className="w-[250px] flex justify-start">{asesor.especialidad}</div>
-                        <div className="w-[250px] flex justify-start">{asesor.universidad}</div>
+                        <div className="w-[250px] flex justify-start" >{asesor.especialidad}</div>
+                        <div className="w-[250px] flex justify-start" >{asesor.universidad}</div>
                         <button
                             onClick={() => handleEditarAsesor(asesor.id)}
                             className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34] flex justify-center text-white"
