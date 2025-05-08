@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './cliente.entity';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { UserRole } from 'src/usuario/usuario.entity';
 import { CreateClienteDto } from './dto/crear-cliente.dto';
 import { ListarClienteDto } from './dto/listar-cliente.dto';
@@ -12,6 +12,7 @@ import { ListarClientesDto } from './dto/listar-clientes.dto';
 import { AsesoramientoService } from 'src/asesoramiento/asesoramiento.service';
 import { validate } from 'class-validator';
 import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
+import { ClientesSinAsignar } from './dto/clientes-sin-asignar.dto';
 
 @Injectable()
 export class ClienteService {
@@ -24,6 +25,9 @@ export class ClienteService {
 
         @InjectRepository(GradoAcademico)
         private gradoAcademicoRepo: Repository<GradoAcademico>,
+        
+        @InjectDataSource()
+        private readonly dataSource:DataSource
     ){}
 
     async listClients (): Promise<ListarClientesDto[]>{
@@ -37,7 +41,6 @@ export class ClienteService {
             const id_cliente = cliente.id;
             console.log(id_cliente)
             const datos_asesoramiento = await this.asesoramientoService.findDatesByCliente(id_cliente);
-            
             return {
             ...cliente,
             datos_asesoramiento:datos_asesoramiento
@@ -60,7 +63,7 @@ export class ClienteService {
     
     
     async listOneClient(id:number):Promise<ListarClienteDto>{
-        const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['tipoTrabajo', 'gradoAcademico', 'tipoContrato']})
+        const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['gradoAcademico'],select:['id','nombre','apellido','telefono','dni','carrera','gradoAcademico','universidad','pais','email']})
         if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
             const clienteDto: ListarClienteDto = {
                 ...oneCliente,
@@ -112,6 +115,30 @@ export class ClienteService {
         }   
     }
 
+    async clientesSinAsignar():Promise<ClientesSinAsignar[]>{
+        const listaClientes=await this.clienteRepo.createQueryBuilder('c')
+        .innerJoin('c.gradoAcademico','g')
+        .leftJoin('c.procesosAsesoria','p')
+        .where('p.id IS NULL')
+        .select(['c.id', 'c.nombre', 'c.apellido', 'g.nombre', 'c.fecha_creacion', 'c.carrera'])
+        .getMany()
+
+
+        const clientesFormateados:ClientesSinAsignar[]= listaClientes.map(cliente => ({
+            id:cliente.id,
+            nombre: cliente.nombre,
+            apellido: cliente.apellido,
+            gradoAcademico: cliente.gradoAcademico.nombre, 
+            fecha_creacion: cliente.fecha_creacion,
+            carrera: cliente.carrera
+          }));
+        
+    
+          console.log(clientesFormateados);
+          return clientesFormateados
+
+    }
+
     async patchCliente(id:number,data:updateClienteDto){
         if(!Object.keys(data).length)throw new BadRequestException("No se envio un body para actualizar")
         
@@ -122,29 +149,48 @@ export class ClienteService {
         }
     
         const updated=await this.clienteRepo.update(id,partialEntity)
-        if (updated===null) throw new NotFoundException("No se encuentra el registro")
-        if(updated.affected===0) throw new Error("No hay registro a afectar")
+        if(updated.affected===0) throw new NotFoundException("No hay registro a afectar")
         
         return updated
     }
 
     async deletedCliente(id:number){
-        const deleted=await this.clienteRepo.delete({id})
-        if(deleted.affected===0) throw new NotFoundException("No se encontro el registro a eliminar")
-        return {message:"Cliente eliminado correctamente",eliminados:deleted.affected}
+        const queryRunner=this.dataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
+
+        try {
+            const usuario=await queryRunner.manager.findOne(Cliente,{where:{id},relations:["usuario"]})
+            if (!usuario || !usuario.usuario) throw new NotFoundException("No se encontró el cliente o el usuario asociado");
+            const id_usuario=usuario?.usuario?.id
+            if(id_usuario===undefined) throw new NotFoundException("No se encontro el id de usuario")
+            const deleted=await queryRunner.manager.delete(Cliente,{id})
+            if(deleted.affected===0) throw new Error("No se encontró el cliente para eliminar")
+            await this.usuarioService.deleteUserWithCliente(id_usuario,queryRunner.manager)
+            await queryRunner.commitTransaction()
+            return {message:"Cliente eliminado correctamente",eliminados:deleted.affected}
+        } catch (error) {
+            await queryRunner.rollbackTransaction()
+            throw new InternalServerErrorException("Transacción fallida: " + error.message);
+        } finally{
+            await queryRunner.release()
+        }
     }
 
     async desactivateCliente(id:number){
+        
         const cliente=await this.clienteRepo.findOne({
             where:{id},
             relations:['usuario'],
             select:{ usuario: { id: true }}
         })
+        
         if(!cliente) return new NotFoundException("No se encontro el cliente en la bd")
         const id_usuario=cliente?.usuario.id
         if(!id_usuario) throw new NotFoundException("No se encontro el id")
-
         const response=await this.usuarioService.desactivateUser(id_usuario)
         return {message:"Usuario desactivado correctamente",affectado:response}
+        }catch(err){
+            throw new BadRequestException()
     }
 }
