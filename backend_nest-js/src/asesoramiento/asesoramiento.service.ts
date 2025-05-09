@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateAsesoramientoDto } from './dto/create-asesoramiento.dto';
 import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
 import { ProcesosAsesoriaService } from 'src/procesos_asesoria/procesos_asesoria.service';
@@ -96,8 +96,13 @@ export class AsesoramientoService {
   return solo_fechas
   }
 
-  async changeAsesor(id:number){
-
+  async changeAsesoramiento(id:number,cambios:UpdateAsesoramientoDto){
+    if(!Object.keys(cambios).length)throw new BadRequestException("No se envio un body para actualizar")
+        
+    const partialEntity: any = { ...cambios };
+    
+    const updateAsesoramiento=await this.asesoramientoRepo.update(id,cambios)
+    if(updateAsesoramiento.affected===0) throw new NotFoundException("No hay registro a afectar")
     return `Se cambio el asesor correctamente por el de ID ${id}`
   }
 
@@ -107,27 +112,77 @@ export class AsesoramientoService {
       {estado:Estado_Asesoria.DESACTIVADO}
     )
     if(desactAsesoria.affected===0) throw new BadRequestException("No se desactivo ningun usuario con el ID dado")
-
-
     return `Se desactivo el asesoramiento con id: ${id}`
   }
 
   async listar(){
-    const listAsesoria=await this.asesoramientoRepo
+    const listAsesoria = await this.asesoramientoRepo
       .createQueryBuilder('a')
-      .innerJoin('a.procesosasesoria','p')
-      .innerJoinAndSelect('p.cliente','c')
-      .innerJoinAndSelect('p.asesor','as')
-      .select(['a.fecha_inicio','c.nombre','c.apellido','as.nombre','as.apellido'])
-      .getMany();
-      
-      const Asesorias=listAsesoria[1]
+      .innerJoin('a.tipoTrabajo','t')
+      .innerJoin('a.procesosasesoria', 'p')
+      .innerJoin('p.cliente', 'c')
+      .innerJoin('p.asesor', 'ase')
+      .select([
+        'a.id',
+        'a.estado AS estado',
+        'a.fecha_inicio',
+        'c.id AS id_cliente',
+        'c.nombre AS cliente_nombre',
+        'c.apellido AS cliente_apellido',
+        'c.id AS id_asesor',
+        'ase.nombre AS asesor_nombre',
+        'ase.apellido AS asesor_apellido',
+        't.nombre AS tipo_trabajo'
+      ])
+      .getRawMany();
 
-      const data={
-        nombre:Asesorias.procesosasesoria
+      if (!listAsesoria || listAsesoria.length === 0) {
+          throw new NotFoundException('No hay asesorías disponibles');
       }
-    
-      console.log(data)
+
+      let arrayAsesor:number[]=[]
+      let idUsados:number[]=[]
+      let arregloAsesorias: object[] = []; 
+      let contador_alumnos = 0;
+      let contador_columnas=-1
+
+       
+      for(let i=0;i<listAsesoria.length;i++){
+        const asesoría = listAsesoria[i]
+
+        if (!asesoría.a_id || !asesoría.cliente_nombre || !asesoría.cliente_apellido) {
+            throw new BadRequestException('Datos incompletos para la asesoría');
+        }
+
+        contador_alumnos+=1
+        if(idUsados.includes(asesoría.a_id)){
+          arregloAsesorias[contador_columnas]={
+            ...arregloAsesorias[contador_columnas],
+            [`id_estudiante${contador_alumnos}`]:asesoría.id_cliente,
+            [`estudiante${contador_alumnos}`]: `${asesoría.cliente_nombre} ${asesoría.cliente_apellido}`,
+          }
+          
+        }else{
+        contador_columnas+=1
+        contador_alumnos=1
+        arregloAsesorias[contador_columnas]={
+          "id_asesoramiento":asesoría.a_id,
+          "id_asesor":asesoría.id_asesor,
+          "asesor":asesoría.asesor_nombre+" "+asesoría.asesor_apellido,
+          "tipo_trabajo":asesoría.tipo_trabajo,
+          "estado":asesoría.estado,
+          "id_delegado":asesoría.id_cliente,
+          "delegado":asesoría.cliente_nombre+" "+asesoría.cliente_apellido
+        }          
+        idUsados.push(asesoría.a_id)
+        
+      
+      }  
+        
+      }
+      console.log(arregloAsesorias)
+      return arregloAsesorias
+
     
   }
 

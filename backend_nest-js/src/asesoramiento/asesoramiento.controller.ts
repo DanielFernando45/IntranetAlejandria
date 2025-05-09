@@ -9,7 +9,7 @@ export class AsesoramientoController {
 
   @Get("/listar")
   listar(){
-    this.asesoramientoService.listar()
+    return this.asesoramientoService.listar()
   }
 
   @Post("asignacion")
@@ -24,9 +24,9 @@ export class AsesoramientoController {
       }
   }
 
-  @Patch("editar_asesor/id")
-  editar_asesor(@Param("id",ParseIntPipe) id:number){
-    this.asesoramientoService.changeAsesor(id)
+  @Patch("update/:id")
+  editar_asesor(@Param("id",ParseIntPipe) id:number,@Body() campos:UpdateAsesoramientoDto){
+    this.asesoramientoService.changeAsesoramiento(id,campos)
   }
 
 
