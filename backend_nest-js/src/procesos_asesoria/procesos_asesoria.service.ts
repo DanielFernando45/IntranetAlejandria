@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProcesosAsesoriaDto } from './dto/create-procesos_asesoria.dto';
 import { UpdateProcesosAsesoriaDto } from './dto/update-procesos_asesoria.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
@@ -31,6 +31,21 @@ export class ProcesosAsesoriaService {
         await manager.insert(ProcesosAsesoria,nuevoProceso)
       }
       return true
+  }
+
+  async actualizar_registros_por_Asesoramiento(id:number,manager:EntityManager){
+
+  }
+
+  async remove_by_asesoramiento(id:number,manager:EntityManager){
+    try{
+      const deletedProcesos=await manager.delete(ProcesosAsesoria,{asesoramiento:{id:id}})
+      if(deletedProcesos.affected===0)throw new NotFoundException(`No se encontro para eliminar con ese id:${id}`)
+      console.log(deletedProcesos.affected)
+    return true
+    }catch(err){
+      throw new Error(`Error en la eliminacion de los procesos Asesoria ${err}`)
+    }
   }
 
   findAll() {

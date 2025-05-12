@@ -38,13 +38,11 @@ export class Registros1746554350124 implements MigrationInterface {
               (2, 'Tesis'),
               (3, 'Tesis Maestria'),
               (4, 'Tesis Doctorado'),
-              (5, 'Proyecto'),
-              (6, 'Informe'),
-              (7, 'Plan de negocio'),
-              (8, 'Revision sistematica'),
-              (9, 'Articulo cientifico'),
-              (10, 'Estudio de prefactibilidad'),
-              (11, 'Suficiencia personal');
+              (5, 'Plan de negocio'),
+              (6, 'Revision sistematica'),
+              (7, 'Articulo cientifico'),
+              (8, 'Estudio de prefactibilidad'),
+              (9, 'Suficiencia personal');
           `);
           
           await queryRunner.query(`

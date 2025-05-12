@@ -9,6 +9,8 @@ import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
 import { DatosAsesoramientoDto} from 'src/cliente/dto/listar-clientes.dto';
 import { TipoContrato } from 'src/common/entidades/tipoContrato.entity';
 import { TipoTrabajo } from 'src/common/entidades/tipoTrabajo.entity';
+import { ProcesosAsesoria } from 'src/procesos_asesoria/entities/procesos_asesoria.entity';
+import { connect } from 'http2';
 
 
 @Injectable()
@@ -83,11 +85,7 @@ export class AsesoramientoService {
       .where('c.id = :id', { id })  // Filtra por el id del cliente
       .getOne();
   
-  //if(datosAsesoramiento===null) return { "fecha_inicio":"Por asignar", "fecha_fin":"Por asignar" }
-  //if (!datosAsesoramiento?.fecha_inicio || !datosAsesoramiento?.fecha_fin) throw new Error('Las fechas no están asignadas correctamente');
-  
     const solo_fechas={
-     //carrera:datosAsesoramiento? datosAsesoramiento.carrera:"Por asignar",
      contrato:datosAsesoramiento? {id:datosAsesoramiento.tipoContrato.id,nombre:datosAsesoramiento.tipoContrato.nombre}:{message:"Por asignar"},
      fecha_inicio:datosAsesoramiento? datosAsesoramiento.fecha_inicio:"Por asignar",
      fecha_fin:datosAsesoramiento? datosAsesoramiento.fecha_fin:"Por asignar"
@@ -106,13 +104,29 @@ export class AsesoramientoService {
     return `Se cambio el asesor correctamente por el de ID ${id}`
   }
 
-  async desactivate(id:number){
+  async changeState(id:number){
+    const estado_asesoria=await this.asesoramientoRepo.findOneBy({id})
+    if(estado_asesoria?.estado==="activo"){
     const desactAsesoria=await this.asesoramientoRepo.update(
       id,
       {estado:Estado_Asesoria.DESACTIVADO}
     )
     if(desactAsesoria.affected===0) throw new BadRequestException("No se desactivo ningun usuario con el ID dado")
     return `Se desactivo el asesoramiento con id: ${id}`
+    }
+
+    if(estado_asesoria?.estado==="desactivado"){
+      const desactAsesoria=await this.asesoramientoRepo.update(
+      id,
+      {estado:Estado_Asesoria.ACTIVO}
+    )
+    if(desactAsesoria.affected===0) throw new BadRequestException("No se activo ningun usuario con el ID dado")
+    return `Se activo el asesoramiento con id: ${id}`
+    }
+
+    if(estado_asesoria?.estado==="finalizado"){
+      return "Esta asesoria esta finalizada no podemos cambiarle"
+    }
   }
 
   async listar(){
@@ -185,14 +199,97 @@ export class AsesoramientoService {
   }
 
   async listar_por_id(id:number){
+    if (!id || typeof id !== 'number' || id <= 0) throw new BadRequestException('ID inválido proporcionado');
+    const listOneAsesoria = await this.asesoramientoRepo
+      .createQueryBuilder('a')
+      .innerJoin('a.tipoTrabajo','tt')
+      .innerJoin('a.tipoContrato','tc')
+      .innerJoin('a.procesosasesoria', 'p')
+      .innerJoin('p.cliente', 'c')
+      .innerJoin('p.asesor', 'ase')
+      .select([
+        'a.id',
+        'a.fecha_inicio',
+        'a.fecha_fin',
+        'a.estado AS estado',
+        'tt.id AS id_tipo_trabajo',
+        'tt.nombre AS tipo_trabajo',
+        'tc.id AS id_contrato',
+        'tc.nombre AS contrato',
+        'ase.id AS id_asesor',
+        'ase.nombre AS asesor_nombre',
+        'ase.apellido AS asesor_apellido',
+        'c.id AS id_delegado',
+        'c.nombre AS delegado_nombre',
+        'c.apellido AS delegado_apellido'
+      ])
+      .where('a.id=:id',{id})
+      .getRawMany();
+      
+      if (!listOneAsesoria || listOneAsesoria.length === 0)throw new NotFoundException(`No se encontró asesoría con ID ${id}`);
+      
+
+      let oneAsesoria={}
+      if (!listOneAsesoria[0].a_id || !listOneAsesoria[0].delegado_nombre) throw new NotFoundException('Datos incompletos para la asesoría');
+
+      oneAsesoria={
+        ...listOneAsesoria[0]
+      }
+      
+      for(let i=1;i<listOneAsesoria.length;i++){
+
+        oneAsesoria[`id_estudiante${i+1}`]=listOneAsesoria[i].id_delegado,
+        oneAsesoria[`nombre_estudiante${i+1}`]=listOneAsesoria[i].delegado_nombre,
+        oneAsesoria[`apellido_estudiante${i+1}`]=listOneAsesoria[i].delegado_apellido,
+        console.log(i)
+      }
+      return oneAsesoria
+
+  }
+
+
+  async update(id: number, updateAsesoramientoDto: UpdateAsesoramientoDto,clientes:clientesExtraDTO) {
+    //const {profesion_asesoria,id_asesor,especialidad,fecha_inicio,fecha_fin,tipo_servicio,id_tipo_trabajo,id_contrato}=updateAsesoramientoDto 
+    
+    const queryRunner=this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+    
+    try{
+    //const updatedAsesoramiento=await queryRunner.manager.update(Asesoramiento,{id},{profesion_asesoria,especialidad,fecha_fin,fecha_inicio,tipo_servicio,tipoTrabajo:{id:id_tipo_trabajo},tipoContrato:{id:id_contrato}})
+    const cantidad_modificada=await queryRunner.manager.count(ProcesosAsesoria,{where:{asesoramiento:{id:id}}})
+
+    for(let i=0;i<cantidad_modificada;i++){
+      await this.procesosAsesoriaService.actualizar_registros_por_Asesoramiento(i,queryRunner.manager)
+    }
+    
+    console.log(cantidad_modificada)
+    }catch(err){
+      queryRunner.rollbackTransaction()
+      throw new InternalServerErrorException(`No se puede actualizar completemente,cancelando cambios se presta este error ${err}`)
+    }finally{
+      await queryRunner.release()
+    }
     
   }
 
-  update(id: number, updateAsesoramientoDto: UpdateAsesoramientoDto) {
-    //return `This action updates a #${id} asesoramiento`;
+  async remove(id: number) {
+    const queryRunner=this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+    try{
+    const isCompletlyDeleted=await this.procesosAsesoriaService.remove_by_asesoramiento(id,queryRunner.manager)
+    const deletedAsesoramiento=await queryRunner.manager.delete(Asesoramiento,{id})
+    if(deletedAsesoramiento.affected===0)throw new NotFoundException(`No se encontro para eliminar con ese id:${id}`)
+    await queryRunner.commitTransaction()
+    return deletedAsesoramiento
+    }catch(err){
+      queryRunner.rollbackTransaction()
+      throw new InternalServerErrorException(`No se puede actualizar completemente,cancelando cambios se presta este error ${err}`)
+
+    }finally{
+      await queryRunner.release()
+    }
   }
 
-  remove(id: number) {
-    //return `This action removes a #${id} asesoramiento`;
-  }
 }
