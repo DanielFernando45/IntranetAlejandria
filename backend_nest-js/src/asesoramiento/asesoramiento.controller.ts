@@ -12,6 +12,11 @@ export class AsesoramientoController {
     return this.asesoramientoService.listar()
   }
 
+  @Get("/listar/:id")
+  listar_por_ID(@Param('id',ParseIntPipe) id:number){
+    return this.asesoramientoService.listar_por_id(id)
+  }
+
   @Post("asignacion")
   create(@Body() body:AsesoramientoWrpDTO) {
     return this.asesoramientoService.create(body.createAsesoramiento,body.clientes);

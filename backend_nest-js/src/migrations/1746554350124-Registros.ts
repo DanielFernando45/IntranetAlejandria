@@ -67,7 +67,14 @@ export class Registros1746554350124 implements MigrationInterface {
           
           await queryRunner.query(`
             INSERT INTO Alejandria.tipo_contrato (id, nombre, tipo_contrato, tipo_entrega, modalidad) VALUES 
-              (1, 'Contado/Avance/Individual', 'contado', 'avance', 'individual');
+              (1, 'Contado/Avance/Individual', 'contado', 'avance', 'individual'),
+              (2, 'Contado/Plazo/Individual', 'contado', 'plazo', 'individual'),
+              (3, 'Contado/Avance/Grupal', 'contado', 'avance', 'grupal'),
+              (4, 'Contado/Plazo/Grupal', 'contado', 'plazo', 'grupal'),
+              (5, 'Cuotas/Avance/Individual', 'cuotas', 'avance', 'individual'),
+              (6, 'Cuotas/Plazo/Individual', 'cuotas', 'plazo', 'individual'),
+              (7, 'Cuotas/Avance/Grupal', 'cuotas', 'avance', 'grupal'),
+              (8, 'Cuotas/Plazo/Grupal', 'cuotas', 'plazo', 'grupal');
           `);
     
           for (const u of [...usuarios, ...asesores, ...admins]) {

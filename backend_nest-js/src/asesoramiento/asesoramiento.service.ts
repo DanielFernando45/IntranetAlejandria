@@ -139,8 +139,6 @@ export class AsesoramientoService {
       if (!listAsesoria || listAsesoria.length === 0) {
           throw new NotFoundException('No hay asesorías disponibles');
       }
-
-      let arrayAsesor:number[]=[]
       let idUsados:number[]=[]
       let arregloAsesorias: object[] = []; 
       let contador_alumnos = 0;
@@ -183,6 +181,10 @@ export class AsesoramientoService {
       console.log(arregloAsesorias)
       return arregloAsesorias
 
+    
+  }
+
+  async listar_por_id(id:number){
     
   }
 
