@@ -4,6 +4,7 @@ import Buscar from "../../../Components/Administrador/GestionarUsuario/Buscar";
 import axios from "axios";
 
 const ListarSinAsignar = () => {
+  
   const [asesores, setAsesores] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
   const [estudiantesBase, setEstudiantesBase] = useState([]);
