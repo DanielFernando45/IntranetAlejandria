@@ -3,7 +3,7 @@ import { IsDate, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } fro
 import { Tipo_Servicio } from "../entities/asesoramiento.entity";
 
 
-export class CreateAsesoramientoDto {
+export class listarAsesoramientoDto {
     @IsNumber()
     @IsNotEmpty()
     id_asesoramiento:number;

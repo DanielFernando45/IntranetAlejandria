@@ -38,13 +38,11 @@ export class Registros1746554350124 implements MigrationInterface {
               (2, 'Tesis'),
               (3, 'Tesis Maestria'),
               (4, 'Tesis Doctorado'),
-              (5, 'Proyecto'),
-              (6, 'Informe'),
-              (7, 'Plan de negocio'),
-              (8, 'Revision sistematica'),
-              (9, 'Articulo cientifico'),
-              (10, 'Estudio de prefactibilidad'),
-              (11, 'Suficiencia personal');
+              (5, 'Plan de negocio'),
+              (6, 'Revision sistematica'),
+              (7, 'Articulo cientifico'),
+              (8, 'Estudio de prefactibilidad'),
+              (9, 'Suficiencia personal');
           `);
           
           await queryRunner.query(`
@@ -67,7 +65,14 @@ export class Registros1746554350124 implements MigrationInterface {
           
           await queryRunner.query(`
             INSERT INTO Alejandria.tipo_contrato (id, nombre, tipo_contrato, tipo_entrega, modalidad) VALUES 
-              (1, 'Contado/Avance/Individual', 'contado', 'avance', 'individual');
+              (1, 'Contado/Avance/Individual', 'contado', 'avance', 'individual'),
+              (2, 'Contado/Plazo/Individual', 'contado', 'plazo', 'individual'),
+              (3, 'Contado/Avance/Grupal', 'contado', 'avance', 'grupal'),
+              (4, 'Contado/Plazo/Grupal', 'contado', 'plazo', 'grupal'),
+              (5, 'Cuotas/Avance/Individual', 'cuotas', 'avance', 'individual'),
+              (6, 'Cuotas/Plazo/Individual', 'cuotas', 'plazo', 'individual'),
+              (7, 'Cuotas/Avance/Grupal', 'cuotas', 'avance', 'grupal'),
+              (8, 'Cuotas/Plazo/Grupal', 'cuotas', 'plazo', 'grupal');
           `);
     
           for (const u of [...usuarios, ...asesores, ...admins]) {

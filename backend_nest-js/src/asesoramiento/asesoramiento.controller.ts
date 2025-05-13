@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, ParseD
 import { AsesoramientoService } from './asesoramiento.service';
 import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
 import { AsesoramientoWrpDTO } from './dto/asesoramientoadd.wrpdto';
+import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
 
 @Controller('asesoramiento')
 export class AsesoramientoController {
@@ -9,7 +10,12 @@ export class AsesoramientoController {
 
   @Get("/listar")
   listar(){
-    this.asesoramientoService.listar()
+    return this.asesoramientoService.listar()
+  }
+
+  @Get("/listar/:id")
+  listar_por_ID(@Param('id',ParseIntPipe) id:number){
+    return this.asesoramientoService.listar_por_id(id)
   }
 
   @Post("asignacion")
@@ -24,24 +30,24 @@ export class AsesoramientoController {
       }
   }
 
-  @Patch("editar_asesor/id")
-  editar_asesor(@Param("id",ParseIntPipe) id:number){
-    this.asesoramientoService.changeAsesor(id)
+  // @Patch("update/:id")
+  // editar_asesor(@Param("id",ParseIntPipe) id:number,@Body() campos:UpdateAsesoramientoDto){
+  //   this.asesoramientoService.changeAsesoramiento(id,campos)
+  // }
+
+
+  @Patch('update/:id')
+  updateAsesor(@Param('id',ParseIntPipe) id: number, @Body() body:AsesoramientoWrpDTO) {
+    return this.asesoramientoService.update(id, body.createAsesoramiento,body.clientes);
   }
 
-
-  @Patch(':id')
-  updateAsesor(@Param('id',ParseIntPipe) id: number, @Body() updateAsesoramientoDto: UpdateAsesoramientoDto) {
-    return this.asesoramientoService.update(id, updateAsesoramientoDto);
-  }
-
-  @Patch("desactivate/:id")
+  @Patch("estado/:id")
   desactivateAsesoria(@Param('id',ParseIntPipe) id:number){
-    return this.asesoramientoService.desactivate(id)
+    return this.asesoramientoService.changeState(id)
   }
 
-  @Patch('finalized/:id')
-  finalizado(@Param('id') id: string) {
-    return this.asesoramientoService.remove(+id);
+  @Delete('delete/:id')
+  finalizado(@Param('id',ParseIntPipe) id: number) {
+    return this.asesoramientoService.remove(id);
   }
 }
