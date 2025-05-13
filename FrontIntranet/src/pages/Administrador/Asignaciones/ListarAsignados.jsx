@@ -1,9 +1,12 @@
 // Código modificado sin usar estado en el arreglo para la animación
 import React, { useState, useRef } from 'react'
+import { useNavigate } from "react-router-dom";
 import desactivado from "../../../assets/icons/delete.svg"
 import activado from "../../../assets/icons/check.svg"
 import flechaabajo from "../../../assets/icons/Flecha.svg";
 import flechaarriba from "../../../assets/icons/arrow-up.svg";
+import eliminar from "../../../assets/icons/tacho.svg"
+
 
 const Asesor = [
   { id: 1, area: "Ingeneria", asesor: "Emanuel Flores" },
@@ -24,6 +27,7 @@ const formatFecha = (fechaStr) => {
 };
 
 const ListarAsignados = () => {
+  const navigate = useNavigate();
   const [cambiar, setCambiar] = useState(false);
   const [expandedRows, setExpandedRows] = useState({});
   const [estadoLocal, setEstadoLocal] = useState({});
@@ -73,6 +77,10 @@ const ListarAsignados = () => {
     setExpandedRows(prev => ({ ...prev, [index]: !prev[index] }));
   }
 
+  const handleNuevaAsesoria = () =>{
+    navigate('/admin/asignaciones/asesoria-nueva')
+  }
+
   return (
     <div>
       <div className='flex justify-end mb-4'>
@@ -120,9 +128,12 @@ const ListarAsignados = () => {
                 </button>
                 {estadoActual ? 'Activado' : 'Desactivado'}
               </div>
-              <div className="w-[200px] text-white ml-3">
-                <button onClick={() => setCambiar(!cambiar)} className='bg-[#1C1C34] w-[160px] rounded-md px-3 py-1 flex justify-center'>
-                  Cambiar asesor
+              <div className="flex w-[200px] gap-1 items-center justify-center text-white ml-3">
+                <button  className='bg-[#1C1C34] w-[100px] rounded-md px-3 py-1 flex justify-center'>
+                  Editar
+                </button>
+                <button>
+                  <img src={eliminar} alt="" />
                 </button>
               </div>
               <div className='w-[40px]'>
@@ -141,36 +152,10 @@ const ListarAsignados = () => {
       </div>
 
       <div className='flex justify-end mt-4'>
-        <button className='border-green-950 border-[3px] rounded-lg w-[180px] text-white bg-black'>Agregar Asesoría</button>
+        <button onClick={handleNuevaAsesoria} className='border-green-950 border-[3px] rounded-lg w-[180px] text-white bg-black'>Agregar Asesoría</button>
       </div>
 
-      {cambiar && (
-        <div ref={dropdownRef} className="absolute top-12 ml-96 bg-[#F8F7F7] border border-gray-300 rounded shadow-lg p-4 w-64 pb-10">
-          <div className='w-full flex justify-center text-[20px] mb-5'>
-            <h1>Nuevo asesor</h1>
-          </div>
-          <div className="mb-4">
-            <select value={areaSeleccionada} onChange={(e) => { setAreaSeleccionada(e.target.value); setAsesorSeleccionado(""); }} className="w-full rounded px-2 py-1">
-              <option value="" disabled>Áreas</option>
-              {[...new Set(Asesor.map(a => a.area))].map(area => (
-                <option key={area} value={area}>{area}</option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <select value={asesorSeleccionado} onChange={(e) => setAsesorSeleccionado(e.target.value)} className="w-full rounded px-2 py-1">
-              <option value="" disabled>Asesor</option>
-              {asesoresFiltrados.map(asesor => (
-                <option key={asesor.id} value={asesor.asesor}>{asesor.asesor}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex justify-center gap-4 mt-7">
-            <button onClick={() => setCambiar(false)} className="px-3 py-1 border border-black rounded hover:bg-gray-100">Cancelar</button>
-            <button onClick={() => setCambiar(false)} className="px-3 py-1 bg-[#1C1C34] text-white rounded">Cambiar</button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 };

@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
-import eliminar from "../../../assets/icons/delete.svg"
+import React, { useState, useEffect } from 'react';
+import eliminar from "../../../assets/icons/delete.svg";
 import Buscar from "../../../Components/Administrador/GestionarUsuario/Buscar";
-import busqueda from "../../../assets/icons/busqueda.svg";
 import axios from "axios";
 
 const ListarSinAsignar = () => {
@@ -12,15 +11,19 @@ const ListarSinAsignar = () => {
   const [clientesOcultos, setClientesOcultos] = useState([]);
   const [areaSeleccionada, setAreaSeleccionada] = useState("");
   const [asesorSeleccionado, setAsesorSeleccionado] = useState("");
-  const [asesorSeleccionadoId, setAsesorSeleccionadoId] = useState(null);
-  const [profesionAsesoria, setProfesionAsesoria] = useState("");
-  const [tipoContrato, setTipoContrato] = useState("");
-  const [tipoServicio, setTipoServicio] = useState("");
-  const [tipoTrabajo, setTipoTrabajo] = useState("");
-  const [especialidad, setEspecialidad] = useState("");
-  const [fechaInicio, setFechaInicio] = useState("");
-  const [fechaFin, setFechaFin] = useState("");
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [asesorSeleccionadoId, setAsesorSeleccionadoId] = useState(0);
+  const [mostrarEspecialidad, setMostrarEspecialidad] = useState(false);
+  
+  // Estados para los datos del formulario
+  const [formData, setFormData] = useState({
+    profesion_asesoria: "",
+    tipo_servicio: "",
+    id_contrato: 0,
+    id_tipo_trabajo: 0,
+    especialidad: "",
+    fecha_inicio: "",
+    fecha_fin: ""
+  });
 
   // Función para obtener los asesores desde el endpoint filtrado por área
   const obtenerAsesores = async (areaId) => {
@@ -79,84 +82,118 @@ const ListarSinAsignar = () => {
     setEstudiantes(estudiantesBase);
   };
 
-  const handleAsignarAsesoramiento = async () => {
-    if (!validateForm()) return;
-
-    const data = {
-      createAsesoramiento: {
-        id_asesor: asesorSeleccionadoId,
-        profesion_asesoria: profesionAsesoria,
-        tipo_servicio: tipoServicio,
-        id_contrato: tipoContrato,
-        id_tipo_trabajo: tipoTrabajo,
-        fecha_inicio: fechaInicio,
-        fecha_fin: fechaFin
-      },
-      clientes: {
-        delegado: clientesSeleccionados[0]?.id || null
-      }
-    };
-
-    // Agregar clientes adicionales (si existen)
-    clientesSeleccionados.slice(1).forEach((cliente, index) => {
-      data.clientes[`id_cliente${index + 2}`] = cliente.id;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
     });
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/asesoramiento/asignacion",
-        data
-      );
-      console.log("Asesoramiento asignado:", response.data);
-      alert("Asesoramiento asignado correctamente");
-      resetForm();
-    } catch (error) {
-      console.error("Error al asignar asesoramiento:", error);
-      alert("Error al asignar asesoramiento");
-    }
   };
 
-  const validateForm = () => {
-    if (clientesSeleccionados.length === 0) {
-      alert("Debe seleccionar al menos un cliente");
-      return false;
-    }
-    if (!asesorSeleccionadoId) {
-      alert("Debe seleccionar un asesor");
-      return false;
-    }
-    if (!profesionAsesoria || !tipoContrato || !tipoServicio || !tipoTrabajo) {
-      alert("Debe completar todos los campos de datos de trabajo");
-      return false;
-    }
-    if (!fechaInicio || !fechaFin) {
-      alert("Debe seleccionar fechas de inicio y fin");
-      return false;
-    }
-    return true;
+  const handleNumberInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: parseInt(value, 10) || 0
+    });
   };
 
-  const resetForm = () => {
+  const handleTipoTrabajoChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    setFormData({
+      ...formData,
+      id_tipo_trabajo: value
+    });
+    // Mostrar especialidad solo para Tesis Maestría (3) y Tesis Doctorado (4)
+    setMostrarEspecialidad(value === 3 || value === 4);
+  };
+
+  const handleAsesorChange = (e) => {
+    const selectedOption = asesores.find(a => `${a.nombre} ${a.apellido}` === e.target.value);
+    setAsesorSeleccionado(e.target.value);
+    setAsesorSeleccionadoId(selectedOption?.id || 0);
+  };
+
+  const handleResetForm = () => {
+    // Resetear todos los estados del formulario
+    setFormData({
+      profesion_asesoria: "",
+      tipo_servicio: "",
+      id_contrato: 0,
+      id_tipo_trabajo: 0,
+      especialidad: "",
+      fecha_inicio: "",
+      fecha_fin: ""
+    });
     setClientesSeleccionados([]);
     setClientesOcultos([]);
     setAreaSeleccionada("");
     setAsesorSeleccionado("");
-    setAsesorSeleccionadoId(null);
-    setProfesionAsesoria("");
-    setTipoContrato("");
-    setTipoServicio("");
-    setTipoTrabajo("");
-    setEspecialidad("");
-    setFechaInicio("");
-    setFechaFin("");
-    setShowConfirmation(false);
+    setAsesorSeleccionadoId(0);
+    setMostrarEspecialidad(false);
   };
 
-  const handleAsesorChange = (e) => {
-    const selectedAsesorId = e.target.value;
-    const selectedAsesor = asesores.find(a => a.id == selectedAsesorId);
-    setAsesorSeleccionado(`${selectedAsesor.nombre} ${selectedAsesor.apellido}`);
-    setAsesorSeleccionadoId(selectedAsesor.id);
+  const handleAsignarAsesoria = async () => {
+    if (!confirm('¿Está seguro que desea asignar esta asesoría?')) {
+      return;
+    }
+
+    if (clientesSeleccionados.length === 0) {
+      alert('Debe seleccionar al menos un cliente');
+      return;
+    }
+
+    if (!asesorSeleccionadoId) {
+      alert('Debe seleccionar un asesor');
+      return;
+    }
+
+    if (!formData.profesion_asesoria || !formData.tipo_servicio || !formData.id_contrato || 
+        !formData.id_tipo_trabajo || !formData.fecha_inicio || !formData.fecha_fin) {
+      alert('Debe completar todos los campos obligatorios');
+      return;
+    }
+
+    // Preparar el objeto para enviar (todos los IDs como números)
+    const payload = {
+      createAsesoramiento: {
+        id_asesor: asesorSeleccionadoId,
+        profesion_asesoria: formData.profesion_asesoria,
+        tipo_servicio: formData.tipo_servicio,
+        id_contrato: formData.id_contrato,
+        id_tipo_trabajo: formData.id_tipo_trabajo,
+        fecha_inicio: formData.fecha_inicio,
+        fecha_fin: formData.fecha_fin,
+        ...(formData.especialidad && { especialidad: formData.especialidad })
+      },
+      clientes: {
+        delegado: clientesSeleccionados[0].id,
+        ...(clientesSeleccionados.length > 1 && {
+          ...Object.fromEntries(
+            clientesSeleccionados.slice(1).map((cliente, index) => [
+              `id_cliente${index + 2}`,
+              cliente.id
+            ])
+          )
+        })
+      }
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/asesoramiento/asignacion",
+        payload
+      );
+      alert('Asesoría asignada correctamente');
+      handleResetForm();
+      // Recargar estudiantes sin asignar
+      const res = await axios.get("http://localhost:3001/cliente/filter/sin_asignar");
+      setEstudiantes(res.data);
+      setEstudiantesBase(res.data);
+    } catch (error) {
+      console.error('Error al asignar asesoría:', error);
+      alert('Error al asignar asesoría');
+    }
   };
 
   return (
@@ -177,7 +214,7 @@ const ListarSinAsignar = () => {
           </div>
 
           {clientesSeleccionados.length > 1 && (
-            <div className="flex gap-2 mt-2">
+            <div className="flex  gap-2  mt-2">
               {clientesSeleccionados.slice(1).map((cliente) => (
                 <div key={cliente.id} className="flex items-center border rounded px-2 py-1 bg-white shadow-sm">
                   <span className="text-sm">{cliente.nombre} {cliente.apellido} </span>
@@ -225,7 +262,7 @@ const ListarSinAsignar = () => {
               onChange={(e) => { 
                 setAreaSeleccionada(e.target.value); 
                 setAsesorSeleccionado(""); 
-                setAsesorSeleccionadoId(null);
+                setAsesorSeleccionadoId(0);
               }} 
               className='border border-black rounded-md px-[14px] w-[275px] h-9'
             >
@@ -238,13 +275,15 @@ const ListarSinAsignar = () => {
             </select>
 
             <select 
-              value={asesorSeleccionadoId || ""} 
+              value={asesorSeleccionado} 
               onChange={handleAsesorChange} 
               className='border border-black rounded-md px-[14px] w-[555px] h-9'
             >
               <option value="" disabled>Asesor</option>
               {asesores.map(asesor => (
-                <option key={asesor.id} value={asesor.id}>{asesor.nombre} {asesor.apellido}</option>
+                <option key={asesor.id} value={`${asesor.nombre} ${asesor.apellido}`}>
+                  {asesor.nombre} {asesor.apellido}
+                </option>
               ))}
             </select>
           </div>
@@ -254,7 +293,7 @@ const ListarSinAsignar = () => {
             <button 
               onClick={() => {
                 setAsesorSeleccionado("");
-                setAsesorSeleccionadoId(null);
+                setAsesorSeleccionadoId(0);
               }} 
               className="ml-2 text-white border bg-[#0900FF] rounded-full w-5 h-5 flex items-center justify-center"
             >
@@ -272,27 +311,29 @@ const ListarSinAsignar = () => {
             <p>Profesión Asesoría:</p>
             <input 
               type="text" 
-              value={profesionAsesoria}
-              onChange={(e) => setProfesionAsesoria(e.target.value)}
+              name="profesion_asesoria"
+              value={formData.profesion_asesoria}
+              onChange={handleInputChange}
               className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9' 
             />
           </div>
           <div className='flex gap-4 items-center'>
             <p>Tipo de contrato:</p>
             <select 
-              value={tipoContrato}
-              onChange={(e) => setTipoContrato(e.target.value)}
+              name="id_contrato"
+              value={formData.id_contrato}
+              onChange={handleNumberInputChange}
               className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'
             >
-              <option value="">Seleccionar</option>
-              <option value={1}>Plazo/Al contado/Individual</option>
-              <option value={2}>Plazo/Al contado/Grupal</option>
-              <option value={3}>Plazo/Cuotas/Individual</option>
-              <option value={4}>Plazo/Cuotas/Grupal</option>
-              <option value={5}>Avance/Al contado/Individual</option>
-              <option value={6}>Avance/Al contado/Grupal</option>
-              <option value={7}>Avance/Cuotas/Individual</option>
-              <option value={8}>Avance/Cuotas/Grupal</option>
+              <option value={0} disabled>Seleccionar</option>
+              <option value={1}>Contado/Avance/Individual</option>
+              <option value={2}>Contado/Plazo/Individual</option>
+              <option value={3}>Contado/Avance/Grupal</option>
+              <option value={4}>Contado/Plazo/Grupal</option>
+              <option value={5}>Cuotas/Avance/Individual</option>
+              <option value={6}>Cuotas/Plazo/Individual</option>
+              <option value={7}>Cuotas/Avance/Grupal</option>
+              <option value={8}>Cuotas/Plazo/Grupal</option>
             </select>
           </div>
         </div>
@@ -301,8 +342,9 @@ const ListarSinAsignar = () => {
           <div className='flex gap-9 items-center'>
             <p>Tipo de servicio:</p>
             <select
-              value={tipoServicio}
-              onChange={(e) => setTipoServicio(e.target.value)}
+              name="tipo_servicio"
+              value={formData.tipo_servicio}
+              onChange={handleInputChange}
               className='border border-[#575051] rounded-lg px-[14px] w-[250px] h-9'
             >
               <option value="">Seleccionar</option>
@@ -315,11 +357,12 @@ const ListarSinAsignar = () => {
           <div className='flex gap-8 items-center'>
             <p>Tipo Trabajo:</p>
             <select 
-              value={tipoTrabajo}
-              onChange={(e) => setTipoTrabajo(e.target.value)}
+              name="id_tipo_trabajo"
+              value={formData.id_tipo_trabajo}
+              onChange={handleTipoTrabajoChange}
               className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'
             >
-              <option value="">Seleccionar</option>
+              <option value={0} disabled>Seleccionar</option>
               <option value={1}>Proyecto Bachillerato</option>
               <option value={2}>Tesis</option>
               <option value={3}>Tesis Maestría</option>
@@ -333,15 +376,18 @@ const ListarSinAsignar = () => {
           </div>
         </div>
 
-        <div className='flex gap-14 text-[#575051] items-center'>
-          <p>Especialidad:</p>
-          <input 
-            type="text" 
-            value={especialidad}
-            onChange={(e) => setEspecialidad(e.target.value)}
-            className='border border-[#575051] rounded-lg px-[14px] w-[350px] h-9' 
-          />
-        </div>
+        {mostrarEspecialidad && (
+          <div className='flex gap-14 text-[#575051] items-center'>
+            <p>Especialidad:</p>
+            <input 
+              type="text" 
+              name="especialidad"
+              value={formData.especialidad}
+              onChange={handleInputChange}
+              className='border border-[#575051] rounded-lg px-[14px] w-[350px] h-9' 
+            />
+          </div>
+        )}
       </div>
 
       <div className='flex flex-col gap-8 mt-4 '>
@@ -351,8 +397,9 @@ const ListarSinAsignar = () => {
             <p>Fecha inicio:</p>
             <input 
               type="date" 
-              value={fechaInicio}
-              onChange={(e) => setFechaInicio(e.target.value)}
+              name="fecha_inicio"
+              value={formData.fecha_inicio}
+              onChange={handleInputChange}
               className='border border-black rounded-md px-[14px] w-[275px] h-9' 
             />
           </div>
@@ -360,8 +407,9 @@ const ListarSinAsignar = () => {
             <p>Fecha final:</p>
             <input 
               type="date" 
-              value={fechaFin}
-              onChange={(e) => setFechaFin(e.target.value)}
+              name="fecha_fin"
+              value={formData.fecha_fin}
+              onChange={handleInputChange}
               className='border border-black rounded-md px-[14px] w-[275px] h-9' 
             />
           </div>
@@ -370,48 +418,20 @@ const ListarSinAsignar = () => {
 
       <div className='flex gap-5 justify-end mt-14'>
         <button 
-          onClick={resetForm}
+          onClick={handleResetForm}
           className="flex justify-center w-[140px] h-8 rounded font-semibold border border-black px-6 py-1"
         >
           Cancelar
         </button>
         <button 
-          onClick={() => setShowConfirmation(true)}
-          disabled={clientesSeleccionados.length === 0 || !asesorSeleccionadoId}
-          className={`flex justify-center text-white w-[140px] h-8 rounded font-semibold px-6 py-1 ${clientesSeleccionados.length === 0 || !asesorSeleccionadoId ? 'bg-gray-400' : 'bg-[#1C1C34]'}`}
+          onClick={handleAsignarAsesoria}
+          className="flex justify-center text-white w-[140px] h-8 rounded font-semibold bg-[#1C1C34] px-6 py-1"
         >
           Asignar
         </button>
       </div>
-
-      {/* Modal de confirmación */}
-      {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h3 className="text-xl font-semibold mb-4">Confirmar Asignación</h3>
-            <p className="mb-6">¿Está seguro que desea asignar estos clientes al asesor seleccionado?</p>
-            <div className="flex justify-end gap-4">
-              <button 
-                onClick={() => setShowConfirmation(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md"
-              >
-                Cancelar
-              </button>
-              <button 
-                onClick={() => {
-                  handleAsignarAsesoramiento();
-                  setShowConfirmation(false);
-                }}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md"
-              >
-                Confirmar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }
 
-export default ListarSinAsignar;
+export default ListarSinAsignar

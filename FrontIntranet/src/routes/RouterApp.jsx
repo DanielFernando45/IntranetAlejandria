@@ -27,6 +27,7 @@ import EditarEstudiante from '../pages/Administrador/GestionarUsuario/EditarEstu
 import EditarAsesor from '../pages/Administrador/GestionarUsuario/EditarAsesor';
 import ListarSinAsignar from '../pages/Administrador/Asignaciones/ListarSinAsignar';
 import ListarAsignado from '../pages/Administrador/Asignaciones/ListarAsignados';
+import AsesoriaNueva from '../pages/Administrador/Asignaciones/AsesoriaNueva';
 //Paginas Errores
 import Unauthorized from '../pages/Unauthorized';
 import ErrorScreen from '../pages/ErrorScreen';
@@ -74,6 +75,7 @@ const RouterApp = () => {
               <Route index element={<Navigate to="listar-asignar" replace />}/>
               <Route path ="listar-asignar" element={<ListarSinAsignar/>}/>
               <Route path ="listar-asignado" element={<ListarAsignado/>}/>
+              <Route path ="asesoria-nueva" element={<AsesoriaNueva/>}/>
         </Route>
 
         <Route path="/admin/gestionar-usuarios/agregar-estudiante" element={<AgregarEstudiante/>} />
