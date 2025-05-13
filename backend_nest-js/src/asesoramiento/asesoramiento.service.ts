@@ -179,6 +179,7 @@ export class AsesoramientoService {
         contador_alumnos=1
         arregloAsesorias[contador_columnas]={
           "id_asesoramiento":asesoría.a_id,
+          "fecha_inicio":asesoría.a_fecha_inicio,
           "id_asesor":asesoría.id_asesor,
           "asesor":asesoría.asesor_nombre+" "+asesoría.asesor_apellido,
           "tipo_trabajo":asesoría.tipo_trabajo,
@@ -192,7 +193,7 @@ export class AsesoramientoService {
       }  
         
       }
-      console.log(arregloAsesorias)
+      //console.log(arregloAsesorias)
       return arregloAsesorias
 
     
@@ -249,21 +250,84 @@ export class AsesoramientoService {
 
 
   async update(id: number, updateAsesoramientoDto: UpdateAsesoramientoDto,clientes:clientesExtraDTO) {
-    //const {profesion_asesoria,id_asesor,especialidad,fecha_inicio,fecha_fin,tipo_servicio,id_tipo_trabajo,id_contrato}=updateAsesoramientoDto 
+    let id_asesor
+    if(updateAsesoramientoDto.id_asesor!==undefined){
+      id_asesor=updateAsesoramientoDto.id_asesor
+      delete updateAsesoramientoDto.id_asesor
+    }
     
     const queryRunner=this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()
     
     try{
-    //const updatedAsesoramiento=await queryRunner.manager.update(Asesoramiento,{id},{profesion_asesoria,especialidad,fecha_fin,fecha_inicio,tipo_servicio,tipoTrabajo:{id:id_tipo_trabajo},tipoContrato:{id:id_contrato}})
-    const cantidad_modificada=await queryRunner.manager.count(ProcesosAsesoria,{where:{asesoramiento:{id:id}}})
+      if (updateAsesoramientoDto.fecha_inicio && updateAsesoramientoDto.fecha_fin) {
+      if (updateAsesoramientoDto.fecha_fin < updateAsesoramientoDto.fecha_inicio) {
+        throw new BadRequestException('La fecha de fin no puede ser anterior a la fecha de inicio');
+      }
+    }
+    //const {id_contrato,id_tipo_trabajo,...valoresUpdated}=updateAsesoramientoDto
+    const updated={...updateAsesoramientoDto}
+    if(updateAsesoramientoDto.id_contrato){ 
+      delete updated.id_contrato
+      updated['tipoContrato']={id:updateAsesoramientoDto.id_contrato}
+    }
 
-    for(let i=0;i<cantidad_modificada;i++){
-      await this.procesosAsesoriaService.actualizar_registros_por_Asesoramiento(i,queryRunner.manager)
+    if(updateAsesoramientoDto.id_tipo_trabajo){
+      delete updated.id_tipo_trabajo
+      updated['tipoTrabajo']={id:updateAsesoramientoDto.id_tipo_trabajo}
     }
     
-    console.log(cantidad_modificada)
+    await queryRunner.manager.update(Asesoramiento,{id},{...updated})
+    
+    const clienteIds: number[] = Object.values(clientes)
+      .filter(id => typeof id === 'number' && id > 0);
+
+    if (clienteIds.length === 0) {
+      throw new BadRequestException('Debe proporcionar al menos un cliente válido');
+    }
+
+    const procesosActuales = await queryRunner.manager.find(ProcesosAsesoria, {
+      where: { asesoramiento: { id } },
+      order: { id: "ASC" }, // Importante para que se mantenga el orden y se puedan comparar
+    });
+
+    const cantidadActual = procesosActuales.length;
+    const cantidadNueva = clienteIds.length;
+    
+    const cantidadActualizar = Math.min(cantidadActual, cantidadNueva);
+
+    for (let i = 0; i < cantidadActualizar; i++) {
+      await this.procesosAsesoriaService.actualizar_registros_por_Asesoramiento(
+        id,
+        clienteIds[i],
+        id_asesor,
+        queryRunner.manager,
+        procesosActuales[i].id
+      );
+    }
+
+    // 5. Agregar nuevos si hay más clientes
+    if (cantidadNueva > cantidadActualizar) {
+      for (let i = cantidadActualizar; i < cantidadNueva; i++) {
+        await this.procesosAsesoriaService.crear_registro_por_Asesoramiento(
+          id,
+          clienteIds[i],
+          id_asesor,
+          queryRunner.manager
+        );
+      }
+    }
+
+     // 6. Eliminar registros sobrantes si hay menos clientes
+    if (cantidadNueva < cantidadActual) {
+      for (let i = cantidadNueva; i < cantidadActual; i++) {
+        await queryRunner.manager.delete(ProcesosAsesoria, procesosActuales[i].id);
+      }
+    }
+    
+    await queryRunner.commitTransaction();
+    return 'Actualizado satisfactoriamente';
     }catch(err){
       queryRunner.rollbackTransaction()
       throw new InternalServerErrorException(`No se puede actualizar completemente,cancelando cambios se presta este error ${err}`)

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, ParseDatePipe } from '@nestjs/common';
 import { AsesoramientoService } from './asesoramiento.service';
 import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
-import { AsesoramientoWrpDTO } from './dto/asesoramientoadd.wrpdto';
+import { AsesoramientoUpdateWrpDTO, AsesoramientoWrpDTO } from './dto/asesoramientoadd.wrpdto';
 import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
 
 @Controller('asesoramiento')
@@ -37,7 +37,7 @@ export class AsesoramientoController {
 
 
   @Patch('update/:id')
-  updateAsesor(@Param('id',ParseIntPipe) id: number, @Body() body:AsesoramientoWrpDTO) {
+  updateAsesor(@Param('id',ParseIntPipe) id: number, @Body() body:AsesoramientoUpdateWrpDTO) {
     return this.asesoramientoService.update(id, body.createAsesoramiento,body.clientes);
   }
 
