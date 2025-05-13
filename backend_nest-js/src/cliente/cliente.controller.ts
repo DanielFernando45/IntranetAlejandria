@@ -19,6 +19,10 @@ export class ClienteController {
     async listAll(){
         return this.clienteService.listClients();
     }
+    @Get("filter/all")
+    async listAllAsignar(){
+        return this.clienteService.listarClientesAsignar()
+    }
 
 
     @Post("/add")

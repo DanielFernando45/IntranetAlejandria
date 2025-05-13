@@ -135,6 +135,26 @@ export class ClienteService {
       
         return clientesFormateados;
       }
+    
+    async listarClientesAsignar():Promise<ClientesSinAsignar[]>{
+        const clientesSinProcesos = await this.dataSource
+          .getRepository(Cliente)
+          .createQueryBuilder("c")
+          .leftJoin("c.procesosAsesoria", "p")
+          .leftJoinAndSelect("c.gradoAcademico", "grado")
+          .getMany();
+      
+        const clientesFormateados: ClientesSinAsignar[] = clientesSinProcesos.map(cliente => ({
+          id: cliente.id,
+          nombre: cliente.nombre,
+          apellido: cliente.apellido,
+          gradoAcademico: cliente.gradoAcademico?.nombre ?? null,
+          fecha_creacion: cliente.fecha_creacion,
+          carrera: cliente.carrera
+        }));
+      
+        return clientesFormateados;
+    }
 
 
     async patchCliente(id:number,data:updateClienteDto){

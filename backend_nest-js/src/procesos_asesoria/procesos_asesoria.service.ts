@@ -33,8 +33,22 @@ export class ProcesosAsesoriaService {
       return true
   }
 
-  async actualizar_registros_por_Asesoramiento(id:number,manager:EntityManager){
+  async actualizar_registros_por_Asesoramiento(idAsesoramiento:number,id_cliente:number,id_asesor:number|undefined,manager:EntityManager,id_proceso:number){
+    await manager.update(ProcesosAsesoria,{id:id_proceso},{
+      cliente:{id:id_cliente},
+      asesor:{id:id_asesor},
+      asesoramiento:{id:idAsesoramiento}
+    })
+  }
 
+  async crear_registro_por_Asesoramiento(idAsesoramiento:number,id_cliente:number,id_asesor:number|undefined,manager:EntityManager){
+    const nuevo=manager.create(ProcesosAsesoria,{
+      cliente:{id:id_cliente},
+      asesor:{id:id_asesor},
+      asesoramiento:{id:idAsesoramiento}
+    })
+    //await manager.save(nuevo);
+    await manager.insert(ProcesosAsesoria,nuevo)
   }
 
   async remove_by_asesoramiento(id:number,manager:EntityManager){
