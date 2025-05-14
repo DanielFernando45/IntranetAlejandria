@@ -3,6 +3,7 @@ import { AsesoramientoService } from './asesoramiento.service';
 import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
 import { AsesoramientoUpdateWrpDTO, AsesoramientoWrpDTO } from './dto/asesoramientoadd.wrpdto';
 import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
+import { FechasValuePipe } from 'src/common/pipes/parse-fecha.pipe';
 
 @Controller('asesoramiento')
 export class AsesoramientoController {
@@ -23,11 +24,9 @@ export class AsesoramientoController {
     return this.asesoramientoService.create(body.createAsesoramiento,body.clientes);
   }
 
-  @Get("listar/:fecha")
-  buscar_por_fecha(@Param("fecha") fecha:string){
-      if(fecha){
-          
-      }
+  @Get("filtrar/:fecha")
+  buscar_por_fecha(@Param("fecha",FechasValuePipe) fecha:Date){
+      return this.asesoramientoService.listar_segun_fecha(fecha)
   }
 
   // @Patch("update/:id")
