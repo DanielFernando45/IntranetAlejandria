@@ -20,6 +20,7 @@ import HomeAsesor from '../pages/Asesor/HomeAsesor';
 //Paginas Admin
 import GestionarUsuarios from '../pages/Administrador/GestionUser';
 import Asignaciones from '../pages/Administrador/Asignaciones';
+import EditarAsignacion from '../pages/Administrador/Asignaciones/EditarAsignado'
 import Pagos from '../pages/Administrador/Pagos';
 import AgregarEstudiante from '../pages/Administrador/GestionarUsuario/AgregarEstudiante';
 import AgregarAsesor from '../pages/Administrador/GestionarUsuario/AgregarAsesor';
@@ -78,6 +79,8 @@ const RouterApp = () => {
         </Route>
 
         <Route path="/admin/asignaciones/asesoria-nueva" element={<AsesoriaNueva/>}/>
+        <Route path="/admin/asignaciones/editar-asesoria/:id" element={<EditarAsignacion/>}/>
+
         <Route path="/admin/gestionar-usuarios/agregar-estudiante" element={<AgregarEstudiante/>} />
         <Route path="/admin/gestionar-usuarios/agregar-asesor" element={<AgregarAsesor/>} />
         <Route path="/admin/gestionar-usuarios/editar-estudiante/:id" element={<EditarEstudiante/>} />

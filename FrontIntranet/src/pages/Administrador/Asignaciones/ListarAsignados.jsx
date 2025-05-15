@@ -42,6 +42,10 @@ const ListarAsignados = () => {
     navigate('/admin/asignaciones/asesoria-nueva')
   }
 
+  const handleEditarAsesoria  = (id) =>{
+    navigate(`/admin/asignaciones/editar-asesoria/${id}`)
+  }
+
   // Función para obtener todos los estudiantes de un asesoramiento
   const obtenerEstudiantes = (asesoramiento) => {
     const estudiantes = [];
@@ -106,7 +110,7 @@ const ListarAsignados = () => {
                 {estadoActual ? 'Activado' : 'Desactivado'}
               </div>
               <div className="flex w-[200px] gap-1 items-center justify-center text-white ml-3">
-                <button className='bg-[#1C1C34] w-[100px] rounded-md px-3 py-1 flex justify-center'>
+                <button onClick={() => handleEditarAsesoria(a.id_asesoramiento)} className='bg-[#1C1C34] w-[100px] rounded-md px-3 py-1 flex justify-center'>
                   Editar
                 </button>
                 <button>
