@@ -212,6 +212,7 @@ export class AsesoramientoService {
         'a.id',
         'a.fecha_inicio',
         'a.fecha_fin',
+        'a.tipo_servicio',
         'a.estado AS estado',
         'tt.id AS id_tipo_trabajo',
         'tt.nombre AS tipo_trabajo',
