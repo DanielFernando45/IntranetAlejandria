@@ -7,10 +7,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, QueryRunner } from 'typeorm';
 import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
 import { DatosAsesoramientoDto} from 'src/cliente/dto/listar-clientes.dto';
-import { TipoContrato } from 'src/common/entidades/tipoContrato.entity';
-import { TipoTrabajo } from 'src/common/entidades/tipoTrabajo.entity';
 import { ProcesosAsesoria } from 'src/procesos_asesoria/entities/procesos_asesoria.entity';
-import { connect } from 'http2';
 
 
 @Injectable()
@@ -25,9 +22,6 @@ export class AsesoramientoService {
     private readonly dataSource:DataSource
   ){}
 
-  async findAll(){
-    return "Todos"
-  }
 
   async create(createAsesoramientoDto: CreateAsesoramientoDto,clientes:clientesExtraDTO) {
     const {id_asesor,profesion_asesoria,tipo_servicio,fecha_inicio,fecha_fin,id_contrato,id_tipo_trabajo}=createAsesoramientoDto
@@ -123,7 +117,6 @@ export class AsesoramientoService {
     if(desactAsesoria.affected===0) throw new BadRequestException("No se activo ningun usuario con el ID dado")
     return `Se activo el asesoramiento con id: ${id}`
     }
-
     if(estado_asesoria?.estado==="finalizado"){
       return "Esta asesoria esta finalizada no podemos cambiarle"
     }
@@ -158,7 +151,6 @@ export class AsesoramientoService {
       let contador_alumnos = 0;
       let contador_columnas=-1
 
-       
       for(let i=0;i<listAsesoria.length;i++){
         const asesoría = listAsesoria[i]
 
@@ -188,10 +180,7 @@ export class AsesoramientoService {
           "delegado":asesoría.cliente_nombre+" "+asesoría.cliente_apellido
         }          
         idUsados.push(asesoría.a_id)
-        
-      
       }  
-        
       }
       //console.log(arregloAsesorias)
       return arregloAsesorias
@@ -249,6 +238,76 @@ export class AsesoramientoService {
 
   }
 
+  async listar_segun_fecha(fecha_limite:Date){
+    console.log(fecha_limite)
+    const listAsesoria = await this.asesoramientoRepo
+      .createQueryBuilder('a')
+      .innerJoin('a.tipoTrabajo','t')
+      .innerJoin('a.procesosasesoria', 'p')
+      .innerJoin('p.cliente', 'c')
+      .innerJoin('p.asesor', 'ase')
+      .select([
+        'a.id',
+        'a.estado AS estado',
+        'a.fecha_inicio',
+        'c.id AS id_cliente',
+        'c.nombre AS cliente_nombre',
+        'c.apellido AS cliente_apellido',
+        'c.id AS id_asesor',
+        'ase.nombre AS asesor_nombre',
+        'ase.apellido AS asesor_apellido',
+        't.nombre AS tipo_trabajo'
+      ])
+      .where("a.fecha_inicio>= :desde",{
+        desde:fecha_limite
+      })
+      .getRawMany();
+
+      if (!listAsesoria || listAsesoria.length === 0) {
+        throw new NotFoundException('No hay asesorías disponibles');
+    }
+    let idUsados:number[]=[]
+    let arregloAsesorias: object[] = []; 
+    let contador_alumnos = 0;
+    let contador_columnas=-1
+
+     
+    for(let i=0;i<listAsesoria.length;i++){
+      const asesoría = listAsesoria[i]
+
+      if (!asesoría.a_id || !asesoría.cliente_nombre || !asesoría.cliente_apellido) {
+          throw new BadRequestException('Datos incompletos para la asesoría');
+      }
+
+      contador_alumnos+=1
+      if(idUsados.includes(asesoría.a_id)){
+        arregloAsesorias[contador_columnas]={
+          ...arregloAsesorias[contador_columnas],
+          [`id_estudiante${contador_alumnos}`]:asesoría.id_cliente,
+          [`estudiante${contador_alumnos}`]: `${asesoría.cliente_nombre} ${asesoría.cliente_apellido}`,
+        }
+        
+      }else{
+      contador_columnas+=1
+      contador_alumnos=1
+      arregloAsesorias[contador_columnas]={
+        "id_asesoramiento":asesoría.a_id,
+        "fecha_inicio":asesoría.a_fecha_inicio,
+        "id_asesor":asesoría.id_asesor,
+        "asesor":asesoría.asesor_nombre+" "+asesoría.asesor_apellido,
+        "tipo_trabajo":asesoría.tipo_trabajo,
+        "estado":asesoría.estado,
+        "id_delegado":asesoría.id_cliente,
+        "delegado":asesoría.cliente_nombre+" "+asesoría.cliente_apellido
+      }          
+      idUsados.push(asesoría.a_id)
+    }  
+      
+    }
+    //console.log(arregloAsesorias)
+    return arregloAsesorias
+  }
+
 
   async update(id: number, updateAsesoramientoDto: UpdateAsesoramientoDto,clientes:clientesExtraDTO) {
     let id_asesor
@@ -267,7 +326,6 @@ export class AsesoramientoService {
         throw new BadRequestException('La fecha de fin no puede ser anterior a la fecha de inicio');
       }
     }
-    //const {id_contrato,id_tipo_trabajo,...valoresUpdated}=updateAsesoramientoDto
     const updated={...updateAsesoramientoDto}
     if(updateAsesoramientoDto.id_contrato){ 
       delete updated.id_contrato
@@ -319,14 +377,13 @@ export class AsesoramientoService {
         );
       }
     }
-
      // 6. Eliminar registros sobrantes si hay menos clientes
     if (cantidadNueva < cantidadActual) {
       for (let i = cantidadNueva; i < cantidadActual; i++) {
         await queryRunner.manager.delete(ProcesosAsesoria, procesosActuales[i].id);
       }
     }
-    
+
     await queryRunner.commitTransaction();
     return 'Actualizado satisfactoriamente';
     }catch(err){
@@ -343,7 +400,7 @@ export class AsesoramientoService {
     await queryRunner.connect()
     await queryRunner.startTransaction()
     try{
-    const isCompletlyDeleted=await this.procesosAsesoriaService.remove_by_asesoramiento(id,queryRunner.manager)
+    await this.procesosAsesoriaService.remove_by_asesoramiento(id,queryRunner.manager)
     const deletedAsesoramiento=await queryRunner.manager.delete(Asesoramiento,{id})
     if(deletedAsesoramiento.affected===0)throw new NotFoundException(`No se encontro para eliminar con ese id:${id}`)
     await queryRunner.commitTransaction()
@@ -356,5 +413,4 @@ export class AsesoramientoService {
       await queryRunner.release()
     }
   }
-
 }
