@@ -24,7 +24,6 @@ export class ClienteController {
         return this.clienteService.listarClientesAsignar()
     }
 
-
     @Post("/add")
     @UsePipes(new ValidationPipe({transform:true}))
     async crearCliente(@Body() createClienteDto:CreateClienteDto){
@@ -35,7 +34,12 @@ export class ClienteController {
     async update(@Param('id',ParseIntPipe) id:number,@Body() body:updateClienteDto){
         return this.clienteService.patchCliente(id,body)
     }
-    
+
+    @Patch('updated_cliente/:id')
+    async updateByClient(@Param('id',ParseIntPipe) id:number,@Body() body:updateClienteDto){
+        return this.clienteService.patchByClient(id,body)
+    }
+
     @Delete('delete/:id')
     async delete(@Param('id',ParseIntPipe) id:number){
         return this.clienteService.deletedCliente(id)
@@ -51,5 +55,10 @@ export class ClienteController {
     @Patch("desactivate/:id")
     async desactivate(@Param('id',ParseIntPipe) id:number){
         return this.clienteService.desactivateCliente(id)
+    }
+
+    @Get('miAsesoramiento/:id')
+    async getAsesoramientos(@Param('id',ParseIntPipe) id:number){
+        return this.clienteService.getAsesorias(id)
     }
 }

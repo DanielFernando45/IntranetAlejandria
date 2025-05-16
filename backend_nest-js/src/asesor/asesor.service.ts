@@ -12,11 +12,13 @@ import { GradoAcademico } from 'src/common/entidades/gradoAcademico.entity';
 import { ListarClienteDto } from 'src/admin/dto/listar-admin.dto';
 import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
 import { UsuarioService } from 'src/usuario/usuario.service';
+import { AsesoramientoService } from 'src/asesoramiento/asesoramiento.service';
 
 @Injectable()
 export class AsesorService {
     constructor(
         private readonly usuarioService:UsuarioService,
+        private readonly asesoramientoService:AsesoramientoService,
 
         @InjectRepository(Asesor)
         private asesorRepo: Repository<Asesor>,
@@ -142,5 +144,10 @@ export class AsesorService {
 
         const response=await this.usuarioService.desactivateUser(id_usuario)
         return {message:"Usuario desactivado correctamente",affectado:response}
+    }
+
+    async getDatosAsesorByAsesoramiento(id:number){
+        const datosAsesor=await this.asesoramientoService.getInfoAsesorbyAsesoramiento(id)
+        return datosAsesor
     }
 }
