@@ -413,4 +413,45 @@ export class AsesoramientoService {
       await queryRunner.release()
     }
   }
+
+  async asesoramientosByClient(id:number){
+    const RawAsesoramiento=await this.asesoramientoRepo
+      .createQueryBuilder('a')
+      .innerJoinAndSelect('a.procesosasesoria','p')
+      .innerJoinAndSelect('p.cliente','cli')
+      .select(['a.id AS id,a.profesion_asesoria AS profesion_asesoria'])
+      .where('cli.id = :id', { id })
+      .getRawMany();
+
+    let response={}
+    RawAsesoramiento.forEach((item,index)=>{
+      response[`asesoria${index+1}`]=item
+    })
+    return response
+  }
+
+  async getInfoAsesorbyAsesoramiento(id:number){
+    const datosAsesor=await this.asesoramientoRepo
+      .createQueryBuilder('a')
+      .innerJoin('a.procesosasesoria','p')
+      .innerJoinAndSelect('p.asesor','ase')
+      .innerJoinAndSelect('ase.gradoAcademico','grad')
+      .innerJoinAndSelect('ase.areaAsesor','area')
+      .select(['ase.nombre AS nombre',
+        'ase.apellido AS apellido',
+        'ase.universidad AS universidad',
+        'grad.nombre AS gradoAcademico',
+        'area.nombre AS areaNombre'  
+      ])
+      .where('a.id= :id',{id})
+      .getRawMany()
+    
+    let response:{}={}
+    datosAsesor.forEach((datos,index)=>{
+      response[`asesor${index+1}`]=datos
+    })
+    
+    
+    return response
+  }
 }

@@ -13,6 +13,7 @@ import { AsesoramientoService } from 'src/asesoramiento/asesoramiento.service';
 import { validate } from 'class-validator';
 import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
 import { ClientesSinAsignar } from './dto/clientes-sin-asignar.dto';
+import { updatedByClient } from './dto/updated-by-client.dto';
 
 @Injectable()
 export class ClienteService {
@@ -63,7 +64,7 @@ export class ClienteService {
     
     
     async listOneClient(id:number):Promise<ListarClienteDto>{
-        const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['gradoAcademico'],select:['id','nombre','apellido','telefono','dni','carrera','gradoAcademico','universidad','pais','email']})
+        const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['gradoAcademico'],select:['id','nombre','apellido','telefono','dni','carrera','gradoAcademico','universidad','pais','email','url_imagen']})
         if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
             const clienteDto: ListarClienteDto = {
                 ...oneCliente,
@@ -156,6 +157,17 @@ export class ClienteService {
         return clientesFormateados;
     }
 
+    async patchByClient(id:number,data:updatedByClient){
+        if(!Object.keys(data).length)throw new BadRequestException("No se envio un body para actualizar")
+        
+        const partialEntity:any={...data}
+
+        const updated=await this.clienteRepo.update(id,partialEntity)
+        if(updated.affected===0) throw new NotFoundException("No hay registro a afectar")
+
+        return updated
+        
+    }
 
     async patchCliente(id:number,data:updateClienteDto){
         if(!Object.keys(data).length)throw new BadRequestException("No se envio un body para actualizar")
@@ -209,6 +221,12 @@ export class ClienteService {
         const response=await this.usuarioService.desactivateUser(id_usuario)
         return {message:"Usuario desactivado correctamente",affectado:response}
         }catch(err){
-            throw new BadRequestException()
+            throw new BadRequestException(`Esta mal la peticion se presenta el siguiente error :${err.message}`)
+    }
+
+    async getAsesorias(id:number){
+        const listAsesorias=await this.asesoramientoService.asesoramientosByClient(id)
+
+        return listAsesorias
     }
 }

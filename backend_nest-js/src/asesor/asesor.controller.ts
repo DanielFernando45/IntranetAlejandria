@@ -47,4 +47,9 @@ export class AsesorController {
         async desactivate(@Param('id',ParseIntPipe) id:number){
             return this.asesorService.desactivateAsesor(id)
         }
+
+        @Get("datosbyAsesoramiento/:id")
+        async getDataByAsesoramiento(@Param('id',ParseIntPipe) id:number){
+            return this.asesorService.getDatosAsesorByAsesoramiento(id)
+        }
 }
