@@ -5,6 +5,7 @@ import axios from "axios";
 import LayoutApp from '../../../layout/LayoutApp';
 import { useNavigate, useParams } from "react-router-dom";
 
+
 const EditarAsignado = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -107,7 +108,7 @@ const EditarAsignado = () => {
       }
 
       setClientesSeleccionados(estudiantesSeleccionados);
-      setClientesOcultos(estudiantesSeleccionados.map(e => e.id));
+      
 
       setCargando(false);
     } catch (error) {
@@ -134,13 +135,11 @@ const EditarAsignado = () => {
   const handleElegirCliente = (cliente) => {
     if (clientesSeleccionados.length < 5 && !clientesSeleccionados.find(c => c.id === cliente.id)) {
       setClientesSeleccionados([...clientesSeleccionados, cliente]);
-      setClientesOcultos([...clientesOcultos, cliente.id]);
     }
   };
 
-  const handleEliminarCliente = (clienteId) => {
+   const handleEliminarCliente = (clienteId) => {
     setClientesSeleccionados(clientesSeleccionados.filter(c => c.id !== clienteId));
-    setClientesOcultos(clientesOcultos.filter(id => id !== clienteId));
   };
 
   const handleBuscar = (query) => {
@@ -302,7 +301,7 @@ const EditarAsignado = () => {
             </div>
 
             {estudiantes.map((cliente, index) => (
-              !clientesOcultos.includes(cliente.id) && (
+              !clientesSeleccionados.find(c => c.id === cliente.id) && (
                 <div key={cliente.id} className={`flex justify-between text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
                   <div className="w-[40px] flex justify-center">{cliente.id}</div>
                   <div className="w-[300px] flex justify-center">{cliente.nombre} {cliente.apellido} </div>

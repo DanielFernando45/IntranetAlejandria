@@ -37,8 +37,8 @@ const GestionarUsuarios = () => {
 
           <Outlet />
 
-
         </div>
+        
       </main>
     </LayoutApp>
 

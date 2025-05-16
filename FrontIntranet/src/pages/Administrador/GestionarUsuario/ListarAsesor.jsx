@@ -73,8 +73,8 @@ const ListarAsesor = () => {
             <div className="flex flex-col">
                 <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
                     <div className="w-[40px] flex justify-center">ID</div>
-                    <div className="w-[250px] flex justify-center">Asesor</div>
-                    <div className="w-[250px] flex justify-center">Área</div>
+                    <div className="w-[300px] flex justify-center">Asesor</div>
+                    <div className="w-[150px] flex justify-center">Área</div>
                     <div className="w-[250px] flex justify-center">Especialidad</div>
                     <div className="w-[250px] flex justify-center">Universidad</div>
                     <div className="w-[110px] flex justify-center">Editar</div>
@@ -87,8 +87,8 @@ const ListarAsesor = () => {
                         className={`flex justify-between items-center text-[#2B2829] font-normal p-[6px] rounded-md ${index % 2 === 0 ? "bg-white" : "bg-[#E9E7E7]"}`}
                     >
                         <div className="w-[40px] flex justify-center" >{asesor.id}</div>
-                        <div className="w-[250px] flex justify-start" >{asesor.nombre} {asesor.apellido}</div>
-                        <div className="w-[250px] flex justify-center">{asesor.areaAsesor.nombre}</div>
+                        <div className="w-[300px] flex justify-start" >{asesor.nombre} {asesor.apellido}</div>
+                        <div className="w-[150px] flex justify-center">{asesor.areaAsesor.nombre}</div>
                         <div className="w-[250px] flex justify-start" >{asesor.especialidad}</div>
                         <div className="w-[250px] flex justify-start" >{asesor.universidad}</div>
                         <button
