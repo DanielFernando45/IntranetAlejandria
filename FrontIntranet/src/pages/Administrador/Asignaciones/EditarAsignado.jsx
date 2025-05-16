@@ -65,7 +65,7 @@ const EditarAsignado = () => {
       // Establecer datos del formulario
       setFormData({
         profesion_asesoria: data.tipo_trabajo,
-        tipo_servicio: data.tipo_servicio || "",
+        tipo_servicio: data.a_tipo_servicio || "",
         id_contrato: data.id_contrato,
         id_tipo_trabajo: data.id_tipo_trabajo,
         especialidad: data.especialidad || "",
@@ -91,7 +91,7 @@ const EditarAsignado = () => {
       // Pre-seleccionar delegado y estudiantes
       const estudiantesSeleccionados = [];
 
-      // Agregar delegado
+      // Agregar delegado si existe
       if (data.id_delegado) {
         const delegado = await obtenerEstudiante(data.id_delegado);
         if (delegado) estudiantesSeleccionados.push(delegado);
@@ -99,9 +99,9 @@ const EditarAsignado = () => {
 
       // Agregar estudiantes adicionales (estudiante2 a estudiante5)
       for (let i = 2; i <= 5; i++) {
-        const estudianteId = data[`id_estudiante${i}`];
-        if (estudianteId) {
-          const estudiante = await obtenerEstudiante(estudianteId);
+        const estudianteKey = `id_estudiante${i}`;
+        if (data[estudianteKey]) {
+          const estudiante = await obtenerEstudiante(data[estudianteKey]);
           if (estudiante) estudiantesSeleccionados.push(estudiante);
         }
       }
@@ -262,7 +262,7 @@ const EditarAsignado = () => {
             <div className="flex flex-col gap-2">
               <div className="flex items-start gap-3">
                 <h2 className="text-[20px] font-semibold mt-1">Delegado:</h2>
-                {clientesSeleccionados[0] && (
+                {clientesSeleccionados.length > 0 && (
                   <div className="flex items-center border gap-1 rounded px-2 py-[5px] bg-white shadow-sm">
                     <span className="text-sm">{clientesSeleccionados[0].nombre} {clientesSeleccionados[0].apellido}</span>
                     <button onClick={() => handleEliminarCliente(clientesSeleccionados[0].id)}>
@@ -273,15 +273,18 @@ const EditarAsignado = () => {
               </div>
 
               {clientesSeleccionados.length > 1 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {clientesSeleccionados.slice(1).map((cliente, index) => (
-                    <div key={cliente.id} className="flex items-center border rounded px-2 py-1 bg-white shadow-sm">
-                      <span className="text-sm">Estudiante {index + 2}: {cliente.nombre} {cliente.apellido}</span>
-                      <button onClick={() => handleEliminarCliente(cliente.id)}>
-                        <img src={eliminar} alt="" />
-                      </button>
-                    </div>
-                  ))}
+                <div className="flex flex-col gap-2 mt-2">
+                  <h2 className="text-[20px] font-semibold">Estudiantes:</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {clientesSeleccionados.slice(1).map((cliente) => (
+                      <div key={cliente.id} className="flex items-center border rounded px-2 py-1 bg-white shadow-sm">
+                        <span className="text-sm">{cliente.nombre} {cliente.apellido}</span>
+                        <button onClick={() => handleEliminarCliente(cliente.id)}>
+                          <img src={eliminar} alt="" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

@@ -38,6 +38,7 @@ import ResetPassword from '../pages/ResetPassword';
 import NuevaContraseña from '../pages/NuevaContraseña';
 import ListarEstudiante from '../pages/Administrador/GestionarUsuario/ListarEstudiante';
 import ListarAsesor from '../pages/Administrador/GestionarUsuario/ListarAsesor';
+import ConfigIntra from '../pages/Administrador/ConfigIntra';
 
 
 const RouterApp = () => {
@@ -88,7 +89,7 @@ const RouterApp = () => {
 
         
         <Route path="/admin/pagos" element={<Pagos/>}/>
-
+        <Route path ="/admin/confIntra" element={<ConfigIntra/>}/>
       </Route>
 
       {/* RUTA NO AUTORIZADA */}

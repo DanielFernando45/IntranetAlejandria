@@ -21,14 +21,20 @@ const ListarAsignados = () => {
   const [expandedRows, setExpandedRows] = useState({});
   const [estadoLocal, setEstadoLocal] = useState({});
   const [asesoramientos, setAsesoramientos] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [asesoramientoToDelete, setAsesoramientoToDelete] = useState(null);
 
   useEffect(() => {
+    fetchAsesoramientos();
+  }, []);
+
+  const fetchAsesoramientos = () => {
     axios.get("http://localhost:3001/asesoramiento/listar")
       .then((res) => {
         setAsesoramientos(res.data);
       })
       .catch((err) => console.error("Error al obtener asesoramientos:", err));
-  }, []);
+  };
 
   const toggleEstadoVisual = (id) => {
     setEstadoLocal(prev => ({ ...prev, [id]: !prev[id] }));
@@ -42,8 +48,33 @@ const ListarAsignados = () => {
     navigate('/admin/asignaciones/asesoria-nueva')
   }
 
-  const handleEditarAsesoria  = (id) =>{
+  const handleEditarAsesoria = (id) => {
     navigate(`/admin/asignaciones/editar-asesoria/${id}`)
+  }
+
+  const handleDeleteClick = (id) => {
+    setAsesoramientoToDelete(id);
+    setShowDeleteModal(true);
+  }
+
+  const confirmDelete = () => {
+    if (!asesoramientoToDelete) return;
+    
+    axios.delete(`http://localhost:3001/asesoramiento/delete/${asesoramientoToDelete}`)
+      .then(() => {
+        // Actualizar la lista después de eliminar
+        fetchAsesoramientos();
+        setShowDeleteModal(false);
+      })
+      .catch(err => {
+        console.error("Error al eliminar asesoramiento:", err);
+        setShowDeleteModal(false);
+      });
+  }
+
+  const cancelDelete = () => {
+    setAsesoramientoToDelete(null);
+    setShowDeleteModal(false);
   }
 
   // Función para obtener todos los estudiantes de un asesoramiento
@@ -60,9 +91,30 @@ const ListarAsignados = () => {
 
   return (
     <div>
-      <div className='flex justify-end mb-4'>
-        <div className='rounded-lg border border-black px-5'>Filtrar por fecha</div>
-      </div>
+      {/* Modal de confirmación de eliminación */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 className="text-lg font-semibold mb-4">Confirmar Eliminación</h3>
+            <p>¿Estás seguro que deseas eliminar este asesoramiento? Esta acción no se puede deshacer.</p>
+            <div className="flex justify-end gap-4 mt-6">
+              <button 
+                onClick={cancelDelete}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="flex flex-col">
         <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
           <div className="w-[80px] flex justify-center">IdAsesoria</div>
@@ -113,8 +165,8 @@ const ListarAsignados = () => {
                 <button onClick={() => handleEditarAsesoria(a.id_asesoramiento)} className='bg-[#1C1C34] w-[100px] rounded-md px-3 py-1 flex justify-center'>
                   Editar
                 </button>
-                <button>
-                  <img src={eliminar} alt="" />
+                <button onClick={() => handleDeleteClick(a.id_asesoramiento)}>
+                  <img src={eliminar} alt="Eliminar" className="hover:opacity-70" />
                 </button>
               </div>
               <div className='w-[40px] flex justify-center'>
