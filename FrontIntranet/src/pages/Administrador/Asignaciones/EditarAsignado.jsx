@@ -5,7 +5,6 @@ import axios from "axios";
 import LayoutApp from '../../../layout/LayoutApp';
 import { useNavigate, useParams } from "react-router-dom";
 
-
 const EditarAsignado = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -13,7 +12,6 @@ const EditarAsignado = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [estudiantesBase, setEstudiantesBase] = useState([]);
   const [clientesSeleccionados, setClientesSeleccionados] = useState([]);
-  const [clientesOcultos, setClientesOcultos] = useState([]);
   const [areaSeleccionada, setAreaSeleccionada] = useState("");
   const [asesorSeleccionado, setAsesorSeleccionado] = useState("");
   const [asesorSeleccionadoId, setAsesorSeleccionadoId] = useState(0);
@@ -45,21 +43,17 @@ const EditarAsignado = () => {
     }
   };
 
-  // Función para obtener datos de un estudiante por ID
-  const obtenerEstudiante = async (id) => {
-    try {
-      const response = await axios.get(`http://localhost:3001/cliente/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error al obtener estudiante con ID ${id}:`, error);
-      return null;
-    }
-  };
-
   // Cargar datos iniciales del asesoramiento
   const cargarDatosAsesoramiento = async () => {
     try {
       setCargando(true);
+
+      // Obtener todos los estudiantes primero para el buscador
+      const estudiantesResponse = await axios.get("http://localhost:3001/cliente/filter/all");
+      setEstudiantes(estudiantesResponse.data);
+      setEstudiantesBase(estudiantesResponse.data);
+
+      // Obtener datos del asesoramiento
       const response = await axios.get(`http://localhost:3001/asesoramiento/listar/${id}`);
       const data = response.data;
 
@@ -84,32 +78,54 @@ const EditarAsignado = () => {
       setAsesorSeleccionado(`${asesorData.nombre} ${asesorData.apellido}`);
       setAsesorSeleccionadoId(data.id_asesor);
 
-      // Cargar estudiantes (clientes)
-      const estudiantesResponse = await axios.get("http://localhost:3001/cliente/filter/all");
-      setEstudiantes(estudiantesResponse.data);
-      setEstudiantesBase(estudiantesResponse.data);
-
       // Pre-seleccionar delegado y estudiantes
       const estudiantesSeleccionados = [];
 
       // Agregar delegado si existe
       if (data.id_delegado) {
-        const delegado = await obtenerEstudiante(data.id_delegado);
-        if (delegado) estudiantesSeleccionados.push(delegado);
+        const delegadoEncontrado = estudiantesResponse.data.find(e => e.id === data.id_delegado);
+        if (delegadoEncontrado) {
+          estudiantesSeleccionados.push(delegadoEncontrado);
+        } else {
+          // Si no está en la lista de estudiantes, crear un objeto con los datos básicos
+          estudiantesSeleccionados.push({
+            id: data.id_delegado,
+            nombre: data.delegado_nombre,
+            apellido: data.delegado_apellido,
+            // Datos adicionales que podrían ser necesarios
+            gradoAcademico: "No disponible",
+            carrera: "No disponible",
+            fecha_creacion: new Date().toISOString()
+          });
+        }
       }
 
       // Agregar estudiantes adicionales (estudiante2 a estudiante5)
       for (let i = 2; i <= 5; i++) {
         const estudianteKey = `id_estudiante${i}`;
+        const nombreKey = `nombre_estudiante${i}`;
+        const apellidoKey = `apellido_estudiante${i}`;
+
         if (data[estudianteKey]) {
-          const estudiante = await obtenerEstudiante(data[estudianteKey]);
-          if (estudiante) estudiantesSeleccionados.push(estudiante);
+          const estudianteEncontrado = estudiantesResponse.data.find(e => e.id === data[estudianteKey]);
+          if (estudianteEncontrado) {
+            estudiantesSeleccionados.push(estudianteEncontrado);
+          } else {
+            // Si no está en la lista de estudiantes, crear un objeto con los datos básicos
+            estudiantesSeleccionados.push({
+              id: data[estudianteKey],
+              nombre: data[nombreKey],
+              apellido: data[apellidoKey],
+              // Datos adicionales que podrían ser necesarios
+              gradoAcademico: "No disponible",
+              carrera: "No disponible",
+              fecha_creacion: new Date().toISOString()
+            });
+          }
         }
       }
 
       setClientesSeleccionados(estudiantesSeleccionados);
-      
-
       setCargando(false);
     } catch (error) {
       console.error('Error al cargar datos del asesoramiento:', error);
@@ -138,7 +154,7 @@ const EditarAsignado = () => {
     }
   };
 
-   const handleEliminarCliente = (clienteId) => {
+  const handleEliminarCliente = (clienteId) => {
     setClientesSeleccionados(clientesSeleccionados.filter(c => c.id !== clienteId));
   };
 
@@ -211,28 +227,38 @@ const EditarAsignado = () => {
       return;
     }
 
-    // Preparar el objeto para enviar
+    // Preparar el objeto para enviar según el formato JSON proporcionado
     const payload = {
-      id_asesor: asesorSeleccionadoId,
-      profesion_asesoria: formData.profesion_asesoria,
-      tipo_servicio: formData.tipo_servicio,
-      id_contrato: formData.id_contrato,
-      id_tipo_trabajo: formData.id_tipo_trabajo,
-      fecha_inicio: formData.fecha_inicio,
-      fecha_fin: formData.fecha_fin,
-      ...(formData.especialidad && { especialidad: formData.especialidad }),
-      id_delegado: clientesSeleccionados[0].id
+      createAsesoramiento: {
+        id_asesor: asesorSeleccionadoId,
+        tipo_servicio: formData.tipo_servicio,
+        profesion_asesoria: formData.profesion_asesoria,
+        especialidad: formData.especialidad,
+        id_contrato: formData.id_contrato,
+        id_tipo_trabajo: formData.id_tipo_trabajo,
+        fecha_inicio: formData.fecha_inicio,
+        fecha_fin: formData.fecha_fin
+      },
+      clientes: {
+        delegado: clientesSeleccionados[0].id,
+        id_cliente2: clientesSeleccionados.length > 1 ? clientesSeleccionados[1].id : null
+      }
     };
 
-    // Agregar estudiantes adicionales (estudiante2 a estudiante5)
-    for (let i = 1; i < clientesSeleccionados.length; i++) {
-      payload[`id_estudiante${i + 1}`] = clientesSeleccionados[i].id;
+    // Agregar estudiantes adicionales si existen (hasta 5)
+    for (let i = 1; i < clientesSeleccionados.length && i < 5; i++) {
+      payload.clientes[`id_cliente${i + 1}`] = clientesSeleccionados[i].id;
     }
 
     try {
-      await axios.put(
-        `http://localhost:3001/asesoramiento/editar_asesor/${id}`,
-        payload
+      await axios.patch(
+        `http://localhost:3001/asesoramiento/update/${id}`,
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
       alert('Asesoría modificada correctamente');
       Atras();
@@ -251,6 +277,7 @@ const EditarAsignado = () => {
       </LayoutApp>
     );
   }
+
   return (
     <LayoutApp>
       <main className="flex flex-col mx-32 items-start">

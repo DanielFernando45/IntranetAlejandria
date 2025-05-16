@@ -118,10 +118,10 @@ const ListarAsignados = () => {
       <div className="flex flex-col">
         <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
           <div className="w-[80px] flex justify-center">IdAsesoria</div>
-          <div className="w-[300px] flex justify-center">Delegado</div>
+          <div className="w-[300px] flex justify-center">Delegado-Cliente</div>
           <div className="w-[250px] flex justify-center">Tipo Trabajo</div>
           <div className="w-[180px] flex justify-center">Fecha asignación</div>
-          <div className="w-[300px] flex justify-center">Clientes</div>
+          <div className="w-[350px] flex justify-center mx-3">Alumnos-Clientes</div>
           <div className="w-[300px] flex justify-center">Asesor</div>
           <div className="w-[60px] flex justify-center">Estado</div>
           <div className="w-[200px] flex justify-center ml-3">Acción</div>
@@ -139,17 +139,17 @@ const ListarAsignados = () => {
 
           return (
             <div key={a.id_asesoramiento} className={`flex justify-between items-center text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
-              <div className="w-[80px] flex justify-center">{a.id_asesoramiento}</div>
-              <div className="w-[300px] flex justify-center">{a.delegado || "----------------------"}</div>
+              <div className="w-[80px] flex justify-center mx-2">{a.id_asesoramiento}</div>
+              <div className="w-[350px] flex justify-center">{a.delegado || "----------------------"}</div>
               <div className="w-[250px] flex justify-center">{a.tipo_trabajo}</div>
               <div className="w-[180px] flex justify-center">{formatFecha(a.fecha_inicio)}</div>
-              <div className="w-[300px] flex flex-col justify-center items-center">
+              <div className="w-[350px] flex flex-col justify-center items-center mx-3">
                 <div>{primerCliente}</div>
                 {mostrarTodos && estudiantes.slice(1).map((estudiante, i) => (
                   <div key={i}>{estudiante}</div>
                 ))}
               </div>
-              <div className="w-[300px] flex justify-center">{a.asesor}</div>
+              <div className="w-[310px] flex justify-center">{a.asesor}</div>
               <div className="w-[60px] text-[8px] flex flex-col items-center">
                 <button onClick={() => toggleEstadoVisual(a.id_asesoramiento)}
                   className={`w-[60px] h-[25px] font-semibold rounded-3xl border border-black flex items-center transition-all duration-[700ms] ease-in-out ${estadoActual ? 'justify-end pr-1' : 'justify-start pl-1'}`}>
