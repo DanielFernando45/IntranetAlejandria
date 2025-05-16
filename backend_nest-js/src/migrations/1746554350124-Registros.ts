@@ -7,27 +7,29 @@ export class Registros1746554350124 implements MigrationInterface {
      public async up(queryRunner: QueryRunner): Promise<void> {
           const usuarios = [
             { id: 1, dni: 12345678, correo: "juantinoco23@gmail.com", role: "estudiante", nombre: "Juan", apellido: "Tinoco", telefono: 12345678, universidad: "UNMSM", grado: 1, carrera:"Derecho" },
-            { id: 3, dni: 4567890, correo: "gabrielv45@gmail.com", role: "estudiante", nombre: "Gabriel", apellido: "Vargas", telefono: 98982131, universidad: "UNI",grado: 2 , carrera:"Ingenieria de sistemas" },
-            { id: 5, dni: 11223344, correo: "lauraq92@gmail.com", role: "estudiante", nombre: "Laura", apellido: "Quispe", telefono: 99887766, universidad: "PUCP", grado: 2, carrera:"Arquitectura" },
-            { id: 6, dni: 22334455, correo: "carlosmendez90@gmail.com", role: "estudiante", nombre: "Carlos", apellido: "Mendez", telefono: 98765432, universidad: "UNI", grado: 3, carrera:"Ingenieria electronica" },
-            { id: 7, dni: 33445566, correo: "vanesalopez@gmail.com", role: "estudiante", nombre: "Vanesa", apellido: "Lopez", telefono: 97654321, universidad: "UNFV", grado: 1, carrera:"Educacion Secundaria" },
-            { id: 8, dni: 44556677, correo: "martinruiz@gmail.com", role: "estudiante", nombre: "Martín", apellido: "Ruiz", telefono: 96543210, universidad: "UNMSM", grado: 2, carrera:"Medicina" },
-            { id: 9, dni: 55667788, correo: "elizabethc@gmail.com", role: "estudiante", nombre: "Elizabeth", apellido: "Castro", telefono: 95432109, universidad: "ULima", grado: 3, carrera:"Comunicaciones" },
-            { id: 10, dni: 66778899, correo: "franklinb@gmail.com", role: "estudiante", nombre: "Franklin", apellido: "Bravo", telefono: 94321098, universidad: "USMP", grado: 2, carrera:"Enfermeria" }
+            { id: 2, dni: 4567890, correo: "gabrielv45@gmail.com", role: "estudiante", nombre: "Gabriel", apellido: "Vargas", telefono: 98982131, universidad: "UNI",grado: 2 , carrera:"Ingenieria de sistemas" },
+            { id: 3, dni: 11223344, correo: "lauraq92@gmail.com", role: "estudiante", nombre: "Laura", apellido: "Quispe", telefono: 99887766, universidad: "PUCP", grado: 2, carrera:"Arquitectura" },
+            { id: 4, dni: 22334455, correo: "carlosmendez90@gmail.com", role: "estudiante", nombre: "Carlos", apellido: "Mendez", telefono: 98765432, universidad: "UNI", grado: 3, carrera:"Ingenieria electronica" },
+            { id: 5, dni: 33445566, correo: "vanesalopez@gmail.com", role: "estudiante", nombre: "Vanesa", apellido: "Lopez", telefono: 97654321, universidad: "UNFV", grado: 1, carrera:"Educacion Secundaria" },
+            { id: 6, dni: 44556677, correo: "martinruiz@gmail.com", role: "estudiante", nombre: "Martín", apellido: "Ruiz", telefono: 96543210, universidad: "UNMSM", grado: 2, carrera:"Medicina" },
+            { id: 7, dni: 55667788, correo: "elizabethc@gmail.com", role: "estudiante", nombre: "Elizabeth", apellido: "Castro", telefono: 95432109, universidad: "ULima", grado: 3, carrera:"Comunicaciones" },
+            { id: 8, dni: 66778899, correo: "franklinb@gmail.com", role: "estudiante", nombre: "Franklin", apellido: "Bravo", telefono: 94321098, universidad: "USMP", grado: 2, carrera:"Enfermeria" }
           ];
       
           const asesores = [
-            { id: 2, dni: 87654321, correo: "alonso12bernal@gmail.com",role:"asesor", nombre: "Alonso", apellido: "Bernal", telefono: 87654321, area: 1, grado: 3, especialidad: "Finanzas empresariales", universidad: "UNALM" },
-            { id: 11, dni: 77889900, correo: "marianaz@gmail.com",role:"asesor",nombre: "Mariana", apellido: "Zapata", telefono: 91234567, area: 2, grado: 4, especialidad: "Investigación social", universidad: "PUCP" },
-            { id: 12, dni: 88990011, correo: "pedrog@gmail.com", role:"asesor",nombre: "Pedro", apellido: "García", telefono: 92345678, area: 3, grado: 4, especialidad: "Salud pública", universidad: "UNMSM" },
-            { id: 13, dni: 99001122, correo: "lucianac@gmail.com", role:"asesor",nombre: "Luciana", apellido: "Cueva", telefono: 93456789, area: 4, grado: 3, especialidad: "Ingeniería de sistemas", universidad: "UNI" },
-            { id: 14, dni: 10111213, correo: "ricardop@gmail.com", role:"asesor",nombre: "Ricardo", apellido: "Pérez", telefono: 94567890, area: 5, grado: 5, especialidad: "Derecho penal", universidad: "UNMSM" }
+            { id: 11, dni: 70000312, correo: "Solis_Diana11@gmail.com",role:"asesor", nombre: "Diana Alexandra", apellido: "Solis Rios", telefono: 958309003, area: 3, grado: 4, especialidad: "Gestion de los servicios de la salud", universidad: "Universidad Cesar Vallejo" },
+            { id: 12, dni: 75834615, correo: "Victor_Avendaño12@gmail.com",role:"asesor",nombre: "Victor Alfonso", apellido: "Avendaño Jave", telefono: 933014331, area: 5, grado: 4, especialidad: "Maestria en derecho civil con mencion en derecho de la familia", universidad: "Universidad Privada Norbert Wiener" },
+            { id: 13, dni: 75359423, correo: "Olenka_Meza13@gmail.com", role:"asesor",nombre: "Olenka Ethel", apellido: "Mogrovejo Meza", telefono: 967499479, area: 4, grado: 3, especialidad: "Ingenieria Industrial", universidad: "Universidad Cesar Vallejo" },
+            { id: 14, dni: 74569542, correo: "grecia_salazar14@gmail.com", role:"asesor",nombre: "Grecia Alexi Fernanda", apellido: "Salazar Valera", telefono: 926530923, area: 1, grado: 3, especialidad: "Contadoria Publica", universidad: "Universidad Cesar Vallejo" },
+            { id: 15, dni: 75082592, correo: "brenda_lucia15@gmail.com", role:"asesor",nombre: "Brenda Lucia", apellido: "Castillo Rodriguez", telefono: 917732296, area: 1, grado: 3, especialidad: "Linguistica", universidad: "Universidad nacional Federico Villareal" },
+            { id: 16, dni: 72729085, correo: "Roman_Solano@gmail.com", role:"asesor",nombre: "Israel Anthony", apellido: "Roman Solano", telefono: 994195709, area: 3, grado: 3, especialidad: "Psicologia", universidad: "Universidad Nacional Mayor de San marcos" },
+            { id: 17, dni: 72951640, correo: "Daniel_Emmerson@gmail.com", role:"asesor",nombre: "Daniel Emmerson", apellido: "Dominguez Lope", telefono: 977587126, area: 1, grado: 3, especialidad: "Economia con mencion en Economia publica", universidad: "Universidad Nacional Mayor de San marcos" }
           ];
       
           const admins = [
-            { id: 4, dni: 45475734, correo: "antonioborges24@gmail.com",role:"admin", nombre: "Antonio Borges" },
-            { id: 15, dni: 12131415, correo: "sofiaram@gmail.com",role:"admin", nombre: "Sofía Ramírez" },
-            { id: 16, dni: 13141516, correo: "ernestou@gmail.com",role:"admin", nombre: "Ernesto Ulloa" }
+            { id: 18, dni: 45475734, correo: "antonioborges24@gmail.com",role:"admin", nombre: "Antonio Borges" },
+            { id: 19, dni: 12131415, correo: "sofiaram@gmail.com",role:"admin", nombre: "Sofía Ramírez" },
+            { id: 20, dni: 13141516, correo: "ernestou@gmail.com",role:"admin", nombre: "Ernesto Ulloa" }
           ];
       
     
