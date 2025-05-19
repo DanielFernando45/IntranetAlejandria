@@ -29,7 +29,7 @@ export class AsesoramientoService {
     if (!fecha_inicio || !fecha_fin || isNaN(fecha_inicio.getTime()) || isNaN(fecha_fin.getTime())) {
       throw new BadRequestException('Fechas inválidas');
     }
-    if(!id_contrato||!id_contrato) throw new BadRequestException("No se encontro el tipo de trabajo y contrato")
+    if(!id_tipo_trabajo||!id_contrato) throw new BadRequestException("No se encontro el tipo de trabajo y contrato")
     if (fecha_fin < fecha_inicio) {
       throw new BadRequestException('La fecha de fin no puede ser anterior a la fecha de inicio');
     }
