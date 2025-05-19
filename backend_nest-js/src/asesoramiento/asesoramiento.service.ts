@@ -29,7 +29,7 @@ export class AsesoramientoService {
     if (!fecha_inicio || !fecha_fin || isNaN(fecha_inicio.getTime()) || isNaN(fecha_fin.getTime())) {
       throw new BadRequestException('Fechas inválidas');
     }
-    if(!id_contrato||!id_contrato) throw new BadRequestException("No se encontro el tipo de trabajo y contrato")
+    if(!id_tipo_trabajo||!id_contrato) throw new BadRequestException("No se encontro el tipo de trabajo y contrato")
     if (fecha_fin < fecha_inicio) {
       throw new BadRequestException('La fecha de fin no puede ser anterior a la fecha de inicio');
     }
@@ -453,5 +453,13 @@ export class AsesoramientoService {
     
     
     return response
+  }
+
+  async contratoDelAsesoramiento(id:number){
+    const datosContrato=await this.asesoramientoRepo.findOne({where:{id},relations:["tipoContrato"],select:["id","fecha_inicio","fecha_fin"]})
+    if(!datosContrato) throw new NotFoundException("No hay un contrato con ese id de asesoramiento")
+    if (!datosContrato.tipoContrato) throw new NotFoundException("No se encontró un tipo de contrato asociado al asesoramiento");
+
+    return datosContrato
   }
 }

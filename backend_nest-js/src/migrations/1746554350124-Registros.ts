@@ -27,7 +27,7 @@ export class Registros1746554350124 implements MigrationInterface {
             { id: 16, dni: 72729085, correo: "Roman_Solano16@gmail.com", role:"asesor",nombre: "Israel Anthony", apellido: "Roman Solano", telefono: 994195709, area: 3, grado: 3, especialidad: "Psicologia", universidad: "Universidad Nacional Mayor de San marcos" },
             { id: 17, dni: 72951640, correo: "Daniel_Emmerson17@gmail.com", role:"asesor",nombre: "Daniel Emmerson", apellido: "Dominguez Lope", telefono: 977587126, area: 1, grado: 3, especialidad: "Economia publica", universidad: "Universidad Nacional Mayor de San marcos" },
             { id: 18, dni: 76087518, correo: "Emmanuel_Flores18@gmail.com", role:"asesor",nombre: "Emanuel Oswaldo", apellido: "Flores Utos", telefono: 937213818, area: 4, grado: 4, especialidad: "Gestion publica", universidad: "Universidad San Ignacio de Loyola" },
-            { id: 19, dni: 46540926, correo: "Heredia_Lidia19@gmail.com", role:"asesor",nombre: "Lidia Balbina", apellido: "Heredia Falla", telefono: 940154863, area: 3, grado: 3, especialidad: "Psicologia", universidad: "Universidad Cesar Vallejo" },
+            { id: 19, dni: 46540926, correo: "Heredia_Lidia19@gmail.com", role:"asesor",nombre: "Lidia Balbina", apellido: "Heredia Falla", telefono: 940154863, area: 2, grado: 3, especialidad: "Psicologia", universidad: "Universidad Cesar Vallejo" },
             { id: 20, dni: 71980097, correo: "Salazar_Nieto@gmail.com", role:"asesor",nombre: "Haider Dante", apellido: "Salazar Nieto", telefono: 903038968, area: 4, grado: 3, especialidad: "Ingenieria Electronica", universidad: "Universidad Tecnologica del Peru" }
           ];
       

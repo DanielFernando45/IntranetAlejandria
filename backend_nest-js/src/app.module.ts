@@ -8,12 +8,14 @@ import { ClienteModule } from './cliente/cliente.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule,ConfigService } from '@nestjs/config';
 import { AsesorModule } from './asesor/asesor.module';
-import { ENTITIES } from './entities';
+import { Entities } from './entities';
 import { MailModule } from './mail/mail.module';
 import { Throttle,ThrottlerModule } from '@nestjs/throttler';
 import { AsesoramientoModule } from './asesoramiento/asesoramiento.module';
 import { ProcesosAsesoriaModule } from './procesos_asesoria/procesos_asesoria.module';
 import { CommonModule } from './common/common.module';
+import { AsuntosModule } from './asuntos/asuntos.module';
+import { DocumentosModule } from './documentos/documentos.module';
 
 let puerto:number
 
@@ -37,7 +39,7 @@ if(process.env.DB_PORT){
         username: configService.get<string>('DB_USER')||'root',
         password: configService.get<string>('DB_PASSWORD')||'12345',
         database: configService.get<string>('DB_NAME')||'Alejandria',
-        entities: ENTITIES,  // Aquí debes pasar todas tus entidades
+        entities: Entities,  // Aquí debes pasar todas tus entidades
         synchronize: false,  // Cambiar a `false` en producción
       }),
       inject: [ConfigService],
@@ -47,7 +49,7 @@ if(process.env.DB_PORT){
     AdminModule,
     ClienteModule, 
     AsesorModule, MailModule, AsesoramientoModule, ProcesosAsesoriaModule
-    ,CommonModule],
+    ,CommonModule, AsuntosModule, DocumentosModule],
   controllers: [AppController],
   providers: [AppService],
 })

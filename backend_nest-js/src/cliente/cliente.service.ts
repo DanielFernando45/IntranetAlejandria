@@ -229,4 +229,9 @@ export class ClienteService {
 
         return listAsesorias
     }
+    async getContratos(id:number){
+        const contrato=await this.asesoramientoService.contratoDelAsesoramiento(id)
+
+        return contrato
+    }
 }
