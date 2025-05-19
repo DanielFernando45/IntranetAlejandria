@@ -454,4 +454,12 @@ export class AsesoramientoService {
     
     return response
   }
+
+  async contratoDelAsesoramiento(id:number){
+    const datosContrato=await this.asesoramientoRepo.findOne({where:{id},relations:["tipoContrato"],select:["id","fecha_inicio","fecha_fin"]})
+    if(!datosContrato) throw new NotFoundException("No hay un contrato con ese id de asesoramiento")
+    if (!datosContrato.tipoContrato) throw new NotFoundException("No se encontró un tipo de contrato asociado al asesoramiento");
+
+    return datosContrato
+  }
 }

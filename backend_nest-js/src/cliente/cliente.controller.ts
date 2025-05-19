@@ -61,4 +61,8 @@ export class ClienteController {
     async getAsesoramientos(@Param('id',ParseIntPipe) id:number){
         return this.clienteService.getAsesorias(id)
     }
+    @Get("misContratos/:id")
+    async getContratos(@Param('id',ParseIntPipe) id:number){
+        return this.clienteService.getContratos(id)
+    }
 }
