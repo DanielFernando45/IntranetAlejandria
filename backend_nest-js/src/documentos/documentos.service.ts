@@ -8,9 +8,9 @@ import { Documento, Subido } from './entities/documento.entity';
 export class DocumentosService {
   constructor(){}
   
-  async addedDocumentByClient(secureUrl: string,manager:EntityManager) {
+  async addedDocumentByClient(secureUrl: string,id:number,manager:EntityManager) {
     try{
-      const newDocument=manager.create(Documento,{nombre:"adsdsda",ruta:secureUrl,subido_por:Subido.CLIENTE,created_at:new Date()})
+      const newDocument=manager.create(Documento,{nombre:"adsdsda",ruta:secureUrl,subido_por:Subido.CLIENTE,created_at:new Date(),asunto:{id}})
       await manager.save(newDocument)
       return true
     }catch(err){

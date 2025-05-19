@@ -1,10 +1,11 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Asunto } from "src/asuntos/entities/asunto.entity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Subido{
     CLIENTE="cliente",
     ASESOR="asesor"
 }
-
+@Entity()
 export class Documento {
     @PrimaryGeneratedColumn()
     id:number;
@@ -20,4 +21,9 @@ export class Documento {
 
     @Column()
     created_at:Date
+
+    @ManyToOne(()=>Asunto)
+    @JoinColumn({name:"id_asunto"})
+    asunto:Asunto
+
 }

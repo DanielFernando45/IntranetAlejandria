@@ -1,5 +1,5 @@
 import { Asesoramiento } from "src/asesoramiento/entities/asesoramiento.entity";
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Estado_asunto{
     ENVIADO="enviado",
@@ -7,6 +7,7 @@ export enum Estado_asunto{
     ENTREGADO="entregado"
 }
 
+@Entity()
 export class Asunto {
     @PrimaryGeneratedColumn()
     id:number;

@@ -20,8 +20,8 @@ export class CreateAsuntoDto {
     @IsDate()
     fecha_entrega:Date;
 
-    @IsInt()
+    @IsString()
     @IsNotEmpty()
-    id_asesoramiento:number;
+    id_asesoramiento:string;
     
 }

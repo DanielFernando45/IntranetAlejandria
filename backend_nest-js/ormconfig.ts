@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { ENTITIES } from 'src/entities';
+import { Entities } from 'src/entities';
 import * as path from 'path';
 import { config } from 'dotenv';
 config({ path: path.resolve(__dirname, '../../.env') }); // Ajusta la ruta si es necesario
@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD||'12345',
   database: process.env.DB_NAME || 'Alejandria',
-  entities: ENTITIES,
+  entities: Entities,
   migrations: ['src/migrations/*.ts'],
   synchronize: false, // muy importante en producción
 });

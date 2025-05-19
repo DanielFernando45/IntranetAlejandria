@@ -8,7 +8,7 @@ import { ClienteModule } from './cliente/cliente.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule,ConfigService } from '@nestjs/config';
 import { AsesorModule } from './asesor/asesor.module';
-import { ENTITIES } from './entities';
+import { Entities } from './entities';
 import { MailModule } from './mail/mail.module';
 import { Throttle,ThrottlerModule } from '@nestjs/throttler';
 import { AsesoramientoModule } from './asesoramiento/asesoramiento.module';
@@ -39,7 +39,7 @@ if(process.env.DB_PORT){
         username: configService.get<string>('DB_USER')||'root',
         password: configService.get<string>('DB_PASSWORD')||'12345',
         database: configService.get<string>('DB_NAME')||'Alejandria',
-        entities: ENTITIES,  // Aquí debes pasar todas tus entidades
+        entities: Entities,  // Aquí debes pasar todas tus entidades
         synchronize: false,  // Cambiar a `false` en producción
       }),
       inject: [ConfigService],

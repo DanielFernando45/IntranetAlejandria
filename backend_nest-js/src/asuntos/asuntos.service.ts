@@ -21,13 +21,15 @@ export class AsuntosService {
     const queryRunner=this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()
+    const id_asesoramiento=parseInt(createAsuntoDto.id_asesoramiento)
     
     try{
-    const newAsunt=queryRunner.manager.create(Asunto,{...createAsuntoDto,estado:Estado_asunto.ENTREGADO,fecha_envio:new Date()})
+    const newAsunt=queryRunner.manager.create(Asunto,{...createAsuntoDto,asesoramiento:{id:id_asesoramiento},estado:Estado_asunto.ENTREGADO,fecha_envio:new Date()})
 
-    await queryRunner.manager.save(newAsunt)
+    const {id}=await queryRunner.manager.save(newAsunt)
 
-    const saveDocument=await this.documentosService.addedDocumentByClient(secureUrl,queryRunner.manager)
+
+    const saveDocument=await this.documentosService.addedDocumentByClient(secureUrl,id,queryRunner.manager)
     await queryRunner.commitTransaction()
     return "Agregado satisfactoriamente"
     }catch(err){
