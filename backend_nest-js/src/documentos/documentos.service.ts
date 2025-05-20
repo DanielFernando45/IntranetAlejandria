@@ -8,11 +8,11 @@ import { Documento, Subido } from './entities/documento.entity';
 export class DocumentosService {
   constructor(){}
   
-  async addedDocumentByClient(secureUrl: string,id:number,manager:EntityManager) {
+  async addedDocumentByClient(nombreDocumento:string,secureUrl: string,id:number,manager:EntityManager) {
     try{
-      const newDocument=manager.create(Documento,{nombre:"adsdsda",ruta:secureUrl,subido_por:Subido.CLIENTE,created_at:new Date(),asunto:{id}})
-      await manager.save(newDocument)
-      return true
+      const newDocument=manager.create(Documento,{nombre:nombreDocumento,ruta:secureUrl,subido_por:Subido.CLIENTE,created_at:new Date(),asunto:{id}})
+      const response=await manager.save(newDocument)
+      return response
     }catch(err){
       return new InternalServerErrorException(`Error al agregar el documento ${err.message}`)
     }

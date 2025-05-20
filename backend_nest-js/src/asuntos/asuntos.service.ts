@@ -1,10 +1,11 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateAsuntoDto } from './dto/create-asunto.dto';
 import { UpdateAsuntoDto } from './dto/update-asunto.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Asunto, Estado_asunto } from './entities/asunto.entity';
 import { DocumentosService } from 'src/documentos/documentos.service';
+import { Asesoramiento } from 'src/asesoramiento/entities/asesoramiento.entity';
 
 @Injectable()
 export class AsuntosService {
@@ -17,19 +18,23 @@ export class AsuntosService {
     @InjectDataSource()
     private readonly dataSource:DataSource
   ){}
-  async create(createAsuntoDto: CreateAsuntoDto,secureUrl:string) {
+  async create(createAsuntoDto: CreateAsuntoDto,listaNombreyUrl) {
     const queryRunner=this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()
     const id_asesoramiento=parseInt(createAsuntoDto.id_asesoramiento)
     
     try{
+    const existAsesoramiento=queryRunner.manager.findOne(Asesoramiento,{where:{id:id_asesoramiento}})
+    if(!existAsesoramiento) throw new Error("No existe este asesoramiento")
     const newAsunt=queryRunner.manager.create(Asunto,{...createAsuntoDto,asesoramiento:{id:id_asesoramiento},estado:Estado_asunto.ENTREGADO,fecha_envio:new Date()})
-
+    
     const {id}=await queryRunner.manager.save(newAsunt)
 
-
-    const saveDocument=await this.documentosService.addedDocumentByClient(secureUrl,id,queryRunner.manager)
+    await Promise.all(listaNombreyUrl.map(async(nombreyUrl)=>{
+      await this.documentosService.addedDocumentByClient(nombreyUrl.nombreDocumento,nombreyUrl.secureUrl,id,queryRunner.manager)
+    }))
+    
     await queryRunner.commitTransaction()
     return "Agregado satisfactoriamente"
     }catch(err){
