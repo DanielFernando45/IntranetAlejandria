@@ -141,7 +141,10 @@ export class AsesoramientoService {
         'ase.apellido AS asesor_apellido',
         't.nombre AS tipo_trabajo'
       ])
+      .orderBy('p.id','ASC')
       .getRawMany();
+
+      console.log(listAsesoria)
 
       if (!listAsesoria || listAsesoria.length === 0) {
           throw new NotFoundException('No hay asesorías disponibles');
@@ -215,6 +218,7 @@ export class AsesoramientoService {
         'c.apellido AS delegado_apellido'
       ])
       .where('a.id=:id',{id})
+      .orderBy('p.id','ASC')
       .getRawMany();
       
       if (!listOneAsesoria || listOneAsesoria.length === 0)throw new NotFoundException(`No se encontró asesoría con ID ${id}`);
@@ -261,6 +265,7 @@ export class AsesoramientoService {
       .where("a.fecha_inicio>= :desde",{
         desde:fecha_limite
       })
+      .orderBy('p.id','ASC')
       .getRawMany();
 
       if (!listAsesoria || listAsesoria.length === 0) {
@@ -415,6 +420,8 @@ export class AsesoramientoService {
   }
 
   async asesoramientosByClient(id:number){
+    try{
+
     const RawAsesoramiento=await this.asesoramientoRepo
       .createQueryBuilder('a')
       .innerJoinAndSelect('a.procesosasesoria','p')
@@ -422,15 +429,23 @@ export class AsesoramientoService {
       .select(['a.id AS id,a.profesion_asesoria AS profesion_asesoria'])
       .where('cli.id = :id', { id })
       .getRawMany();
-
+    
+    if (!RawAsesoramiento || RawAsesoramiento.length === 0) throw new Error('No se encontraron asesoramientos para este cliente');
+    
     let response={}
     RawAsesoramiento.forEach((item,index)=>{
       response[`asesoria${index+1}`]=item
     })
+
     return response
+  }catch(err){
+    console.error('Error al obtener los asesoramientos del cliente:', err.message);
+    throw new InternalServerErrorException('Error al obtener los asesoramientos del cliente');
+  }
   }
 
   async getInfoAsesorbyAsesoramiento(id:number){
+    try{
     const datosAsesor=await this.asesoramientoRepo
       .createQueryBuilder('a')
       .innerJoin('a.procesosasesoria','p')
@@ -444,15 +459,15 @@ export class AsesoramientoService {
         'area.nombre AS areaNombre'  
       ])
       .where('a.id= :id',{id})
-      .getRawMany()
+      .getRawOne()
     
-    let response:{}={}
-    datosAsesor.forEach((datos,index)=>{
-      response[`asesor${index+1}`]=datos
-    })
-    
-    
-    return response
+    if(!datosAsesor)throw new NotFoundException("No se encontraron asesores")
+    if (!datosAsesor.nombre || !datosAsesor.apellido) throw new Error('Los datos del asesor están incompletos');
+
+    return datosAsesor
+    }catch(err){
+        throw new InternalServerErrorException("Error al obtener el asesor")
+    } 
   }
 
   async contratoDelAsesoramiento(id:number){

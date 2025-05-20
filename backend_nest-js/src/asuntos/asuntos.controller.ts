@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, InternalServerErrorException, UploadedFiles } from '@nestjs/common';
 import { AsuntosService } from './asuntos.service';
 import { CreateAsuntoDto } from './dto/create-asunto.dto';
 import { UpdateAsuntoDto } from './dto/update-asunto.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { fileFilter } from 'src/documentos/helpers/fileFilter.helper';
 import { fileNamer } from 'src/documentos/helpers/fileNamer.helper';
 import { diskStorage } from 'multer';
@@ -14,19 +14,34 @@ export class AsuntosController {
   constructor(private readonly asuntosService: AsuntosService) {}
 
   @Post("addWithDocument")
-  @UseInterceptors(FileInterceptor('file',{
+  @UseInterceptors(FilesInterceptor('files',10,{
     fileFilter,
     storage:diskStorage({
-      destination:'./static/products',
+      destination:'./static/documents',
       filename:fileNamer
     })
   }))
-  addAsuntoinAsesoramiento(@UploadedFile() file:Express.Multer.File,@Body() createAsuntoDto: CreateAsuntoDto) {
-    if(!file) throw new BadRequestException("Make sure this file is a image")
-    console.log(file)
-
-    const secureUrl=`${HOST_API}/files/product/${file.filename}`;
-    return this.asuntosService.create(createAsuntoDto,secureUrl);
+  async addAsuntoinAsesoramiento(@UploadedFiles() files:Express.Multer.File[],@Body() createAsuntoDto: CreateAsuntoDto) {
+    if(!files || files.length===0)throw new BadRequestException("No se ha enviado archivos")
+    try{
+    //const secureUrl=`${HOST_API}/files/product/${file.filename}`;
+    // await Promise.all(
+    //   files.map(async(item)=>{
+    //     const nombreDocumento=item.originalname
+    //     const secureUrl=`${HOST_API}/files/product/${item.filename}`
+    //     await this.asuntosService.create(createAsuntoDto,nombreDocumento,secureUrl)
+    //   })
+    //   )
+    const listaNombresyUrl=files.map((item)=>{
+      return {nombreDocumento:item.originalname,secureUrl:`${HOST_API}/files/product/${item.filename}`}
+    })
+    console.log(listaNombresyUrl)
+      
+    const response=await this.asuntosService.create(createAsuntoDto,listaNombresyUrl)
+    return response
+    }catch(err){
+      throw new InternalServerErrorException("Error al agregar los archivos")
+    }
   }
 
   @Get()

@@ -30,5 +30,4 @@ export class Asunto {
     @ManyToOne(()=>Asesoramiento)
     @JoinColumn({name:'id_asesoramiento'})
     asesoramiento:Asesoramiento
-
 }
