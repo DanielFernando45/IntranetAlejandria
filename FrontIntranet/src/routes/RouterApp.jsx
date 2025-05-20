@@ -8,6 +8,9 @@ import HomeEstudiante from '../pages/Estudiante/HomeEstudiante';
 import ReunionesEstudiante from '../pages/Estudiante/ReunionesEstudiante';
 import EntregaRevisionEst from '../pages/Estudiante/EntregaRevisionEst';
 import CalendarioEstudiante from '../pages/Estudiante/CalendarioEstudiante';
+import RecursosEstudiante from '../pages/Estudiante/RecursosEstudiante';
+import PagosEstudiante from '../pages/Estudiante/PagosEstudiante';
+import Soporte from '../pages/Estudiante/SoporteEstudiante';
 import MiPerfil from '../pages/Estudiante/MiPerfil';
 import MiAsesor from '../pages/Estudiante/MiAsesor';
 import MiContrato from '../pages/Estudiante/MiContrato';
@@ -20,8 +23,8 @@ import HomeAsesor from '../pages/Asesor/HomeAsesor';
 //Paginas Admin
 import GestionarUsuarios from '../pages/Administrador/GestionUser';
 import Asignaciones from '../pages/Administrador/Asignaciones';
-import EditarAsignacion from '../pages/Administrador/Asignaciones/EditarAsignado'
 import Pagos from '../pages/Administrador/Pagos';
+import EditarAsignacion from '../pages/Administrador/Asignaciones/EditarAsignado'
 import AgregarEstudiante from '../pages/Administrador/GestionarUsuario/AgregarEstudiante';
 import AgregarAsesor from '../pages/Administrador/GestionarUsuario/AgregarAsesor';
 import EditarEstudiante from '../pages/Administrador/GestionarUsuario/EditarEstudiante';
@@ -51,6 +54,9 @@ const RouterApp = () => {
         <Route path="/estudiante/reuniones" element={<ReunionesEstudiante />} />
         <Route path="/estudiante/entrega" element={<EntregaRevisionEst />} />
         <Route path="/estudiante/calendario" element={<CalendarioEstudiante/>}/>
+        <Route path="/estudiante/recursos" element={<RecursosEstudiante/>}/>
+        <Route path="/estudiante/pagos" element={<PagosEstudiante/>}/>
+        <Route path="/estudiante/soporte" element={<Soporte/>}/>
         <Route path="/estudiante/miperfil" element={<MiPerfil/>}/>
         <Route path="/estudiante/miperfiledit" element={<MiPerfilEdit/>}/>
         <Route path="/estudiante/miasesor" element={<MiAsesor/>}/>

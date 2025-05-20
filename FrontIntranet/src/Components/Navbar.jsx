@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 
-import logoaleja from "../assets/images/LogoAlejandria.png";
+import logoaleja from "../assets/images/LogoAlejandriaSIN.png";
 import perfil from "../assets/icons/PerfilIcon.svg";
 import flechaabajo from "../assets/icons/Flecha.svg";
 import flechaarriba from "../assets/icons/arrow-up.svg";
@@ -33,7 +33,7 @@ const Navbar = ({ user }) => {
 
   return (
     <nav className="bg-white fixed top-0 left-[100px] w-[calc(100%-100px)] flex h-[70px] p-[5px_19px] justify-between items-center shadow-md z-10">
-      <img src={logoaleja} alt="Logo Aleja" className="w-[120px] h-16" />
+      <img src={logoaleja} alt="Logo Aleja" className=" w-40" />
 
       <div className="inline-flex items-center gap-4 relative">
         <img src={perfil} alt="Icono de perfil" />
