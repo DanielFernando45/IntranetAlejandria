@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateProcesosAsesoriaDto } from './dto/create-procesos_asesoria.dto';
 import { UpdateProcesosAsesoriaDto } from './dto/update-procesos_asesoria.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
@@ -60,6 +60,20 @@ export class ProcesosAsesoriaService {
     }catch(err){
       throw new Error(`Error en la eliminacion de los procesos Asesoria ${err}`)
     }
+  }
+
+  async getDelegado(asesoramientoId:number){
+    const delegadoprocess=await this.procesosAsesoriaRepo.findOne({
+      where:{
+        asesoramiento:{
+          id:asesoramientoId
+        }
+      },
+      relations:{asesoramiento:true}
+    })
+    if(delegadoprocess===null) throw new InternalServerErrorException("no hay un delegado")
+    console.log(delegadoprocess)
+    return delegadoprocess
   }
 
   findAll() {
