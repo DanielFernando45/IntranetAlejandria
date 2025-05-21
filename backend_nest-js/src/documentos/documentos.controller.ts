@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Res } from '@nestjs/common';
+import {Response} from 'express'
 import { DocumentosService } from './documentos.service';
 import { CreateDocumentoDto } from './dto/create-documento.dto';
 import { UpdateDocumentoDto } from './dto/update-documento.dto';
@@ -12,14 +13,17 @@ export class DocumentosController {
     return "Nice"
   }
 
-  @Get()
-  findAll() {
-    return this.documentosService.findAll();
-  }
+  @Get('download/:pathFile')
+  findFile(
+    @Res() res:Response,
+    @Param('pathFile') pathName:string){
+      const path=this.documentosService.getFile(pathName)
+      return res.sendFile(path)
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.documentosService.findOne(+id);
+  @Get("list/:id")
+  async listDocuments(@Param("id",ParseIntPipe) id:number) {
+    return this.documentosService.findDocuments(id);
   }
 
   @Patch(':id')

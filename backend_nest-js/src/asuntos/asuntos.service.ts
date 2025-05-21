@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateAsuntoDto } from './dto/create-asunto.dto';
 import { UpdateAsuntoDto } from './dto/update-asunto.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Asunto, Estado_asunto } from './entities/asunto.entity';
 import { DocumentosService } from 'src/documentos/documentos.service';
 import { Asesoramiento } from 'src/asesoramiento/entities/asesoramiento.entity';
+import { ChangeToProcess } from './dto/change-to-process.dto';
 
 @Injectable()
 export class AsuntosService {
@@ -45,8 +46,14 @@ export class AsuntosService {
     }
   }
 
-  findAll() {
-    return `This action returns all asuntos`;
+  async EstateToProcess(id:number,body:ChangeToProcess) {
+    const exists=await this.asuntoRepo.findOneBy({id})
+    if(!exists) throw new NotFoundException("No se encontro un registro con ese id")
+    if(exists.fecha_revision!==null) throw new BadRequestException("Ese asunto ya esta en proceso")
+
+    const changeState=await this.asuntoRepo.update(id,{...body,fecha_revision:new Date(),estado:Estado_asunto.PROCESO})
+    if(changeState.affected===0) throw new NotFoundException("No se encontro un asunto con ese ID")
+    return `Se actualizo las filas estado y fecha_revision del id:${id}`;
   }
 
   findOne(id: number) {

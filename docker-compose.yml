@@ -39,6 +39,10 @@ services:
       - type: volume
         source: backend_node_modules
         target: /myapp/node_modules
+      - type: bind
+        source: ./backend_nest-js/static
+        target: /myapp/static
+        consistency: cached
     networks:
       - app-network
     
