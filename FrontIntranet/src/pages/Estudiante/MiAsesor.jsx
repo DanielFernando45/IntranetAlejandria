@@ -4,7 +4,7 @@ import LayoutApp from '../../layout/LayoutApp';
 
 const MiAsesor = () => {
   const [asesorias, setAsesorias] = useState([]);
-  const [asesores, setAsesores] = useState([]);
+  const [asesores, setAsesores] = useState(null);
   const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
 
   // Obtener asesorías al cargar el componente
@@ -39,8 +39,7 @@ const MiAsesor = () => {
     fetch(`http://localhost:3001/asesor/datosbyAsesoramiento/${asesoriaId}`)
       .then(res => res.json())
       .then(data => {
-        const asesoresArray = Object.values(data);
-        setAsesores(asesoresArray);
+        setAsesores(data);
       })
       .catch(error => console.error('Error al obtener datos del asesor:', error));
   };
@@ -73,17 +72,20 @@ const MiAsesor = () => {
           <h1 className='text-xl font-medium'>Mi asesor</h1>
           <img src={perfil} alt="Perfil" className='w-[240px] h-[240px]' />
 
-          {asesores.length > 0 ? (
-            asesores.map((asesor, index) => (
-              <div key={index} className='text-center'>
-                <h1 className='text-xl font-medium'>{asesor.nombre} {asesor.apellido}</h1>
-                <h2>{asesor.areaNombre}</h2>
-                <p>{asesor.gradoAcademico}</p>
-              </div>
-            ))
-          ) : (
-            <p className='text-gray-500'>Selecciona una asesoría para ver los detalles</p>
-          )}
+            {asesores ? (
+              <>
+                <div  className='text-center'>
+                  <h1 className='text-xl font-medium'>{asesores.nombre} {asesores.apellido}</h1>
+                  <h2>{asesores.areaNombre}</h2>
+                  <p>{asesores.gradoAcademico}</p>
+                </div>
+              </>
+              
+            ):(
+              <p className="text-gray-500">No hay Asesor disponible para esta asesoría.</p>
+            )
+          }
+            
         </div>
       </main>
     </LayoutApp>
