@@ -63,18 +63,22 @@ export class ProcesosAsesoriaService {
   }
 
   async getDelegado(asesoramientoId:number){
-    const delegadoprocess=await this.procesosAsesoriaRepo.findOne({
-      where:{
-        asesoramiento:{
-          id:asesoramientoId
-        }
-      },
-      relations:{asesoramiento:true}
-    })
-    if(delegadoprocess===null) throw new InternalServerErrorException("no hay un delegado")
+    const delegadoprocess=await this.procesosAsesoriaRepo
+      .createQueryBuilder('pr')
+      .innerJoin('pr.asesoramiento','a')
+      .innerJoinAndSelect('pr.cliente','c')
+      .select([
+        'c.id AS clienteId'
+      ])
+      .where('a.id= :id',{id:asesoramientoId})
+      .getRawOne()
+
     console.log(delegadoprocess)
+    if(!delegadoprocess) throw new InternalServerErrorException("no hay un delegado")
     return delegadoprocess
   }
+
+  
 
   findAll() {
     return `This action returns all procesosAsesoria`;

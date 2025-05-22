@@ -4,5 +4,5 @@ import { Estado_asunto } from "../entities/asunto.entity";
 export class ChangeToProcess{
     @IsDateString()
     @IsNotEmpty()
-    fecha_entrega:Date;
+    fecha_terminado:Date;
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateDocumentoDto } from './dto/create-documento.dto';
 import { UpdateDocumentoDto } from './dto/update-documento.dto';
 import { EntityManager, Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { listAllDocumento } from './dto/list-all-documento.dto';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { archivosDataDto } from 'src/asuntos/dto/archivos-data.dto';
 
 @Injectable()
 export class DocumentosService {
@@ -49,8 +50,20 @@ export class DocumentosService {
       ])
       .where("as.id= :id",{id})
       .getRawMany()
+    
+      if(listDocuments.length===0)throw new NotFoundException("No se encontro el documento")
 
     return listDocuments;
+  } 
+
+  async finallyDocuments(id:number,dataFiles:archivosDataDto,manager:EntityManager){
+    try{
+      const newDocument=manager.create(Documento,{nombre:dataFiles.nombreDocumento,ruta:dataFiles.secureUrl,subido_por:Subido.ASESOR,created_at:new Date(),asunto:{id}})
+      const response=await manager.save(newDocument)
+      return response
+    }catch(err){
+      return new InternalServerErrorException(`Error al agregar el documento ${err.message}`)
+    }
   }
 
   findOne(id: number) {

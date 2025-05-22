@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, InternalServerErrorException, UploadedFiles, ParseIntPipe, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, InternalServerErrorException, UploadedFiles, ParseIntPipe, Inject, UseGuards } from '@nestjs/common';
 import { AsuntosService } from './asuntos.service';
 import { CreateAsuntoDto } from './dto/create-asunto.dto';
 import { UpdateAsuntoDto } from './dto/update-asunto.dto';
@@ -7,13 +7,15 @@ import { fileFilter } from 'src/documentos/helpers/fileFilter.helper';
 import { fileNamer } from 'src/documentos/helpers/fileNamer.helper';
 import { diskStorage } from 'multer';
 import { ChangeToProcess } from './dto/change-to-process.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { IsDelegadoGuard } from 'src/common/guards/delegado.guard';
 
 const HOST_API="http://localhost:3001"
 
 @Controller('asuntos')
 export class AsuntosController {
   constructor(private readonly asuntosService: AsuntosService
-  ) {}
+  ){}
 
   @Post("addWithDocument")
   @UseInterceptors(FilesInterceptor('files',10,{
@@ -26,7 +28,7 @@ export class AsuntosController {
   async addAsuntoinAsesoramiento(@UploadedFiles() files:Express.Multer.File[],@Body() createAsuntoDto: CreateAsuntoDto) {
     if(!files || files.length===0)throw new BadRequestException("No se ha enviado archivos")
     try{
-    const listaNombresyUrl=files.map((item)=>{
+      const listaNombresyUrl=files.map((item)=>{
       return {nombreDocumento:item.originalname,secureUrl:`${HOST_API}/files/product/${item.filename}`}
     })
     console.log(listaNombresyUrl)
@@ -39,23 +41,46 @@ export class AsuntosController {
   }
 
   @Patch("en_proceso/:id")
-  async toProcess(@Param('id',ParseIntPipe) id:number,@Body() body:ChangeToProcess){
+  @UseGuards(JwtAuthGuard,IsDelegadoGuard)
+  async toProcess(@Param('id',ParseIntPipe) id:number,@Body() body){
     return await this.asuntosService.EstateToProcess(id,body)
   }
 
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.asuntosService.findOne(+id);
+  @Patch("finished/:id")
+  @UseGuards(JwtAuthGuard,IsDelegadoGuard)
+  @UseInterceptors(FilesInterceptor('files',10,{
+    fileFilter,
+    storage:diskStorage({
+      destination:'./static/documents',
+      filename:fileNamer
+    })
+  }))
+  async finishAsunto(@Param('id',ParseIntPipe) id:number,@UploadedFiles() files:Express.Multer.File[]){
+    if(!files || files.length===0)throw new BadRequestException("No se ha enviado archivos")
+    try{
+    const listaNombresyUrl=files.map((item)=>{
+      return {nombreDocumento:item.originalname,secureUrl:`${HOST_API}/files/product/${item.filename}`}
+    })
+    console.log(listaNombresyUrl)
+    return await this.asuntosService.finishAsunt(id,listaNombresyUrl)
+    }catch(err){
+      return new InternalServerErrorException(`Error en el controlador, ${err.message}`)
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAsuntoDto: UpdateAsuntoDto) {
-    return this.asuntosService.update(+id, updateAsuntoDto);
-  }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.asuntosService.remove(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.asuntosService.findOne(+id);
+  // }
+
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateAsuntoDto: UpdateAsuntoDto) {
+  //   return this.asuntosService.update(+id, updateAsuntoDto);
+  // }
+
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.asuntosService.remove(+id);
+  // }
 }
