@@ -17,16 +17,17 @@ export class IsDelegadoGuard implements CanActivate{
     ){}
 
     async canActivate(context:ExecutionContext):Promise<boolean>{
-        const req:Request=context.switchToHttp().getRequest() ;
+        const req:Request=context.switchToHttp().getRequest();
         console.log('DEBUG: req.user =', req.user);
         const user=req.user  as { id: number; username: string; role: string };
         if(user===undefined) throw new BadRequestException("No es valido ingrese correctamente")
-        const asesoriamientoId=req.body.idAsesoramiento || req.params.idAsesoramiento
-        console.log(asesoriamientoId)
+        //console.log(req.params)
+        const id_asesoramiento= req.params.id_asesoramiento || req.body.id_asesoramiento
+        const asesoramientoId=parseInt(id_asesoramiento)
+        
+        if(!asesoramientoId) throw new UnauthorizedException("Id de asesoramiento no proporcionado")
     
-        if(!asesoriamientoId) throw new UnauthorizedException("Id de asesoramiento no proporcionado")
-    
-        const cliente=await this.procesosAsesoriaService.getDelegado(asesoriamientoId)
+        const cliente=await this.procesosAsesoriaService.getDelegado(asesoramientoId)
         console.log(cliente.clienteId)
 
         if(cliente.clienteId!==user.id) throw new UnauthorizedException("Solo el delegado puede realizar esta accion")

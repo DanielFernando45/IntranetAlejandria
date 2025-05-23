@@ -17,7 +17,9 @@ export class AsuntosController {
   constructor(private readonly asuntosService: AsuntosService
   ){}
 
-  @Post("addWithDocument")
+  
+  @Post("addWithDocument/:id_asesoramiento")
+  @UseGuards(JwtAuthGuard,IsDelegadoGuard)
   @UseInterceptors(FilesInterceptor('files',10,{
     fileFilter,
     storage:diskStorage({
@@ -25,7 +27,7 @@ export class AsuntosController {
       filename:fileNamer
     })
   }))
-  async addAsuntoinAsesoramiento(@UploadedFiles() files:Express.Multer.File[],@Body() createAsuntoDto: CreateAsuntoDto) {
+  async addAsuntoinAsesoramiento(@UploadedFiles() files:Express.Multer.File[],@Body() createAsuntoDto: CreateAsuntoDto ,@Param('id_asesoramiento',ParseIntPipe) id_asesoramiento:number) {
     if(!files || files.length===0)throw new BadRequestException("No se ha enviado archivos")
     try{
       const listaNombresyUrl=files.map((item)=>{
@@ -33,7 +35,7 @@ export class AsuntosController {
     })
     console.log(listaNombresyUrl)
       
-    const response=await this.asuntosService.create(createAsuntoDto,listaNombresyUrl)
+    const response=await this.asuntosService.create(createAsuntoDto,listaNombresyUrl,id_asesoramiento)
     return response
     }catch(err){
       throw new InternalServerErrorException("Error al agregar los archivos")
@@ -41,8 +43,7 @@ export class AsuntosController {
   }
 
   @Patch("en_proceso/:id")
-  @UseGuards(JwtAuthGuard,IsDelegadoGuard)
-  async toProcess(@Param('id',ParseIntPipe) id:number,@Body() body){
+  async toProcess(@Param('id',ParseIntPipe) id:number,@Body() body:ChangeToProcess){
     return await this.asuntosService.EstateToProcess(id,body)
   }
 
@@ -68,11 +69,15 @@ export class AsuntosController {
     }
   }
 
+  @Get('terminados/:id')
+  async getTerminados(@Param('id',ParseIntPipe) id:number){
+    return await this.asuntosService.getFinished(id)
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.asuntosService.findOne(+id);
-  // }
+  @Get('all/:id')
+  async getAll(@Param('id',ParseIntPipe) id:number){
+    return await this.asuntosService.getAll(id)
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateAsuntoDto: UpdateAsuntoDto) {

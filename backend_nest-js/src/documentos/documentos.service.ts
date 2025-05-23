@@ -17,6 +17,7 @@ export class DocumentosService {
     @InjectRepository(Documento)
     private documentoRepo:Repository<Documento>
   ){}
+
   getFile(path:string){
     const pathFile=join(__dirname,'../../../static/documents',path)
     console.log(pathFile)
@@ -28,6 +29,13 @@ export class DocumentosService {
 
   async addedDocumentByClient(nombreDocumento:string,secureUrl: string,id:number,manager:EntityManager) {
     try{
+      if (!nombreDocumento || typeof nombreDocumento !== 'string' || nombreDocumento.trim().length === 0) {
+        throw new BadRequestException('nombreDocumento es obligatorio y debe ser un texto no vacío');
+      }
+
+      if (!secureUrl || typeof secureUrl !== 'string' || secureUrl.trim().length === 0) {
+        throw new BadRequestException('secureUrl es obligatorio y debe ser un texto no vacío');
+      }
       const newDocument=manager.create(Documento,{nombre:nombreDocumento,ruta:secureUrl,subido_por:Subido.CLIENTE,created_at:new Date(),asunto:{id}})
       const response=await manager.save(newDocument)
       return response
@@ -36,24 +44,53 @@ export class DocumentosService {
     }
   }
 
-  async findDocuments(id:number): Promise<listAllDocumento[]> {
-    const listDocuments:listAllDocumento[]=await this.documentoRepo
+  async findDocuments(id:number){
+    const listDocuments=await this.documentoRepo
       .createQueryBuilder('d')
       .innerJoinAndSelect('d.asunto','a')
       .innerJoin('a.asesoramiento','as')
       .select([
+        'a.id AS id_asunto',
         'd.nombre AS nombre',
         'a.titulo AS asunto',
         'a.estado AS estado',
-        'd.created_at AS fecha_subida',
-        'd.ruta AS ruta',
-      ])
-      .where("as.id= :id",{id})
-      .getRawMany()
-    
+         'd.ruta AS ruta',
+        ])
+        .where("as.id= :id",{id})
+        .orderBy('a.id', 'ASC')       
+        .addOrderBy('d.created_at', 'ASC')
+        .getRawMany()
+        
       if(listDocuments.length===0)throw new NotFoundException("No se encontro el documento")
+      
+    const arreglo: object[] = [];
 
-    return listDocuments;
+  listDocuments.forEach((document) => {
+    const asunto = document['asunto'];
+    const idAsunto = document['id_asunto'];
+
+    let index = arreglo.findIndex((item: any) => item['id_asunto'] === idAsunto);
+
+    if (index === -1) {
+      // Nuevo asunto
+      arreglo.push({
+        id_asunto: idAsunto,
+        asunto,
+        estado: document['estado'],
+        nombreDoc1: document['nombre'],
+        ruta1: document['ruta'],
+      });
+    } else {
+      
+      const count = Object.keys(arreglo[index]).filter((key) => key.startsWith('nombreDoc')).length + 1;
+
+      arreglo[index][`nombreDoc${count}`] = document['nombre'];
+      arreglo[index][`ruta${count}`] = document['ruta'];
+    }
+  });
+
+  return arreglo;
+
   } 
 
   async finallyDocuments(id:number,dataFiles:archivosDataDto,manager:EntityManager){
