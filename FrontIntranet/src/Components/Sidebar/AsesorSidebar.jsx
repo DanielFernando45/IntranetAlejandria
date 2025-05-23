@@ -17,7 +17,7 @@ const LINKS = [
   { icono: Reuniones, path: "/asesor/reuniones", title: "Reuniones" },
   { icono: EntreRev, path: "/asesor/entrega", title: "Entrega/Revisión" },
   { icono: Calendario, path: "/asesor/calendario", title: "Calendario" },
-  { icono: Gestion, path: "/asesor/soporte", title: "Gestionar Alumnos" },
+  { icono: Gestion, path: "/asesor/gestionarAlumno", title: "Gestionar Alumnos" },
 ];
 
 const AsesorSidebar =() =>{

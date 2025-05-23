@@ -19,6 +19,11 @@ import MiPerfilEdit from '../pages/Estudiante/MiPerfilEdit';
 
 //Paginas Asesor
 import HomeAsesor from '../pages/Asesor/HomeAsesor';
+import Reuniones from '../pages/Asesor/ReunionesAsesor';
+import EntregaRev from '../pages/Asesor/EntregaRevisionAse';
+import Calendario from '../pages/Asesor/CalendarioAsesor';
+import GestionarAlum from '../pages/Asesor/GestionarAsesor';
+
 
 //Paginas Admin
 import GestionarUsuarios from '../pages/Administrador/GestionUser';
@@ -68,6 +73,11 @@ const RouterApp = () => {
       {/* RUTAS ASESOR */}
       <Route element={<ProtectedRoutes allowedRoles={['asesor']} />}>
         <Route path="/asesor/home" element={<HomeAsesor />} />
+        <Route path="/asesor/reuniones" element={<Reuniones />} />
+        <Route path="/asesor/entrega" element={<EntregaRev />} />
+        <Route path="/asesor/calendario" element={<Calendario />} />
+        <Route path="/asesor/gestionarAlumno" element={<GestionarAlum />} />
+
       </Route>
 
       {/* RUTAS ADMIN */}

@@ -6,10 +6,10 @@ import Zoom from "../../assets/images/zoom.svg"
 const HomeAsesor = () => {
 return(
     <LayoutApp>
-        <main className="ml-32 mr-8">
+        <main className="ml-8 mr-8">
                     
                 {/*Portada */}
-                  <div className=" flex items-center justify-between bg-[#17162E] text-white rounded-2xl  w-full   shadow-lg mt-24  ">
+                  <div className=" flex items-center justify-between bg-[#17162E] text-white rounded-2xl  w-full   shadow-lg   ">
                 
                       <div className="flex flex-col w-2/3 pl-14 ">
                         <p className="text-[22px] text-[#B5B5B5] ">12 de Febrero , 2025</p>
