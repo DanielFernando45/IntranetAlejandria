@@ -5,7 +5,7 @@ import PreguntasFrecuentes from '../../Components/Cliente/PreguntasFrecuentes';
 const SoporteEstudiante = () => {
   return (
     <LayoutApp>
-      <main className='flex mx-20  justify-between'>
+      <main className='flex mx-20 justify-between'>
         <div className='flex flex-col w-[50%] h-[850px] bg-white rounded-xl p-5 gap-24'>
           <div className='flex w-full justify-center text-[30px] font-semibold'>
             <h1>Formulario de soporte</h1>

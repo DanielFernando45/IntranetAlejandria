@@ -36,7 +36,9 @@ import EditarEstudiante from '../pages/Administrador/GestionarUsuario/EditarEstu
 import EditarAsesor from '../pages/Administrador/GestionarUsuario/EditarAsesor';
 import ListarSinAsignar from '../pages/Administrador/Asignaciones/ListarSinAsignar';
 import ListarAsignado from '../pages/Administrador/Asignaciones/ListarAsignados';
-import AsesoriaNueva from '../pages/Administrador/Asignaciones/AsesoriaNueva'
+import AsesoriaNueva from '../pages/Administrador/Asignaciones/AsesoriaNueva';
+import GestionarSoporte from '../pages/Administrador/GestionSoporte';
+
 //Paginas Errores
 import Unauthorized from '../pages/Unauthorized';
 import ErrorScreen from '../pages/ErrorScreen';
@@ -106,6 +108,8 @@ const RouterApp = () => {
         
         <Route path="/admin/pagos" element={<Pagos/>}/>
         <Route path ="/admin/confIntra" element={<ConfigIntra/>}/>
+        <Route path="/admin/soporte" element={<GestionarSoporte/>}/>
+
       </Route>
 
       {/* RUTA NO AUTORIZADA */}

@@ -33,7 +33,7 @@ const LINKS = [
   },
   { icono: Pagos, path: "/admin/pagos", title: "Pagos" },
   { icono: ConfIntranet, path: "/admin/confIntra", title: "Configuración de Intranet"},
-  { icono: GestionSoporte, path: "/admin/calendario", title: "Gestion Soporte Tecnico" },
+  { icono: GestionSoporte, path: "/admin/soporte", title: "Gestion Soporte Tecnico" },
 ];
 
 const AdminSidebar = () => {
