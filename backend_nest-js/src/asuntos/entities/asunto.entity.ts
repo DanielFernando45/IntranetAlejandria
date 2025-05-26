@@ -19,13 +19,13 @@ export class Asunto {
     estado:Estado_asunto;
 
     @Column()
-    fecha_envio:Date;
+    fecha_entregado:Date;
 
     @Column({nullable:true})
     fecha_revision:Date;
 
     @Column({nullable:true})
-    fecha_entrega:Date
+    fecha_terminado:Date
 
     @ManyToOne(()=>Asesoramiento)
     @JoinColumn({name:'id_asesoramiento'})

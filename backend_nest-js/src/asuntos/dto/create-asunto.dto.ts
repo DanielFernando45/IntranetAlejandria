@@ -23,8 +23,5 @@ export class CreateAsuntoDto {
     @IsDate()
     fecha_entrega:Date;
 
-    @IsString()
-    @IsNotEmpty()
-    id_asesoramiento:string;
     
 }
