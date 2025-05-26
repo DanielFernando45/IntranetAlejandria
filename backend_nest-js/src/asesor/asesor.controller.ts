@@ -52,4 +52,9 @@ export class AsesorController {
         async getDataByAsesoramiento(@Param('id',ParseIntPipe) id:number){
             return this.asesorService.getDatosAsesorByAsesoramiento(id)
         }
+
+        @Get("listarAsesoramientoConDelegado/:id_asesor")
+        async getDelegadoyAsesoramiento(@Param('id_asesor',ParseIntPipe) id_asesor:number){
+            return this.asesorService.getAsesoramientoyDelegado(id_asesor)
+        }
 }

@@ -7,10 +7,7 @@ import { UpdateProcesosAsesoriaDto } from './dto/update-procesos_asesoria.dto';
 export class ProcesosAsesoriaController {
   constructor(private readonly procesosAsesoriaService: ProcesosAsesoriaService) {}
 
-  @Post()
-  create(@Body() createProcesosAsesoriaDto: CreateProcesosAsesoriaDto) {
-    return this.procesosAsesoriaService.create(createProcesosAsesoriaDto);
-  }
+  
 
   @Get()
   findAll() {

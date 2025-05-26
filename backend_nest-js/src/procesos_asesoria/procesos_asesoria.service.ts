@@ -5,6 +5,8 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { ProcesosAsesoria } from './entities/procesos_asesoria.entity';
 import { Repository, DataSource, EntityManager } from 'typeorm';
 import { clientesExtraDTO } from './dto/clientes_extra.dto';
+import { Asesoramiento } from 'src/asesoramiento/entities/asesoramiento.entity';
+import { Cliente } from 'src/cliente/cliente.entity';
 
 @Injectable()
 export class ProcesosAsesoriaService {
@@ -15,10 +17,6 @@ export class ProcesosAsesoriaService {
     @InjectDataSource()
     private readonly dataSource:DataSource
   ){}
-
-  create(createProcesosAsesoriaDto: CreateProcesosAsesoriaDto) {
-    return 'This action adds a new procesosAsesoria';
-  }
 
   async addProceso_to_Asesoramiento(clientes:clientesExtraDTO,id_asesor:number,id_asesoramiento:number,manager:EntityManager){
       const clienteIds = Object.values(clientes).filter(id => typeof id === 'number' && id > 0);
@@ -73,11 +71,31 @@ export class ProcesosAsesoriaService {
       .where('a.id= :id',{id:asesoramientoId})
       .getRawOne()
 
-    console.log(delegadoprocess)
     if(!delegadoprocess) throw new InternalServerErrorException("no hay un delegado")
     return delegadoprocess
   }
+  
+  async getDelegadoAndIdAsesoramiento(id_asesor:number,manager:EntityManager){
+    
+    try{
 
+      const listAsesoramientoId=await manager.find(Asesoramiento,{where:{procesosasesoria:{asesor:{id:id_asesor}}}})
+      
+      const listAll=Promise.all(listAsesoramientoId.map(async(asesoramiento)=>{
+        const delegado=await this.getDelegado(asesoramiento.id)
+        const getNombreDelegado=await manager.findOne(Cliente,{where:{id:delegado.clienteId}})
+        return({
+          'id_asesoramiento':asesoramiento.id,
+          'delegado':`${getNombreDelegado?.nombre} ${getNombreDelegado?.apellido}`
+        })
+      }))
+      //console.log(listAll)
+      return listAll
+
+    }catch(err){
+      return new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
+    }
+  }
   
 
   findAll() {

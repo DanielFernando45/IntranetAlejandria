@@ -1,7 +1,7 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Asesor } from './asesor.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Usuario ,UserRole} from '../usuario/usuario.entity';
 import { createAsesorDto } from './dto/crear-asesor.dto';
 import * as bcrypt from "bcrypt"
@@ -13,12 +13,18 @@ import { ListarClienteDto } from 'src/admin/dto/listar-admin.dto';
 import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
 import { UsuarioService } from 'src/usuario/usuario.service';
 import { AsesoramientoService } from 'src/asesoramiento/asesoramiento.service';
+import { ProcesosAsesoriaService } from 'src/procesos_asesoria/procesos_asesoria.service';
+import { Asesoramiento } from 'src/asesoramiento/entities/asesoramiento.entity';
 
 @Injectable()
 export class AsesorService {
     constructor(
         private readonly usuarioService:UsuarioService,
         private readonly asesoramientoService:AsesoramientoService,
+        private readonly procesosAsesoriaService:ProcesosAsesoriaService,
+
+        @InjectDataSource()
+        private readonly dataSource:DataSource,
 
         @InjectRepository(Asesor)
         private asesorRepo: Repository<Asesor>,
@@ -149,5 +155,23 @@ export class AsesorService {
     async getDatosAsesorByAsesoramiento(id:number){
         const datosAsesor=await this.asesoramientoService.getInfoAsesorbyAsesoramiento(id)
         return datosAsesor
+    }
+
+    async getAsesoramientoyDelegado(id_asesor:number){
+        try{
+        const queryRunner=this.dataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
+        
+
+        
+        // const listDelegadosYAsesoramiento=Promise.all(listAsesoramiento.map(async(asesoramientoId)=>{
+        //     return this.procesosAsesoriaService.getDelegadoAndIdAsesoramiento(asesoramientoId.id,queryRunner.manager) 
+        // }))
+        
+        return this.procesosAsesoriaService.getDelegadoAndIdAsesoramiento(id_asesor,queryRunner.manager)
+    }catch(err){
+        return new InternalServerErrorException(`Error ${err.message}`)
+    }
     }
 }
