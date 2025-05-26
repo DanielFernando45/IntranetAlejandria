@@ -2,7 +2,7 @@ import { Asunto } from "src/asuntos/entities/asunto.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Subido{
-    CLIENTE="cliente",
+    ESTUDIANTE="estudiante",
     ASESOR="asesor"
 }
 @Entity()

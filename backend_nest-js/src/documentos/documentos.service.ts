@@ -36,7 +36,7 @@ export class DocumentosService {
       if (!secureUrl || typeof secureUrl !== 'string' || secureUrl.trim().length === 0) {
         throw new BadRequestException('secureUrl es obligatorio y debe ser un texto no vacío');
       }
-      const newDocument=manager.create(Documento,{nombre:nombreDocumento,ruta:secureUrl,subido_por:Subido.CLIENTE,created_at:new Date(),asunto:{id}})
+      const newDocument=manager.create(Documento,{nombre:nombreDocumento,ruta:secureUrl,subido_por:Subido.ESTUDIANTE,created_at:new Date(),asunto:{id}})
       const response=await manager.save(newDocument)
       return response
     }catch(err){
