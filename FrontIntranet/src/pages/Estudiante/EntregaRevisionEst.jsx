@@ -1,5 +1,5 @@
 import LayoutApp from "../../layout/LayoutApp";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import flechaAzul from "../../assets/icons/arrowAzul.svg"
 import plus from "../../assets/icons/IconEstudiante/add.svg"
 import Descargas from "../../assets/icons/Descargas.svg"
@@ -8,11 +8,61 @@ import EnvioArchivo from "../../Components/EnvioArchivos";
 const EntregaRevisionEst = () => {
   const [vista, setVista] = useState("terminados");
   const [showModal, setShowModal] = useState(false);
+  const [asesorias, setAsesorias] = useState([]);
+  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
+
+
+  useEffect(() => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      const id = user.id;
+
+      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          const asesoriasArray = Object.values(data).map(item => ({
+            id: item.id,
+            profesion: item.profesion_asesoria
+          }));
+          setAsesorias(asesoriasArray);
+
+          if (asesoriasArray.length > 0) {
+            const primeraAsesoriaId = asesoriasArray[0].id;
+            setSelectedAsesoriaId(primeraAsesoriaId);
+
+          }
+        })
+        .catch(error => console.error('Error al obtener asesorías:', error));
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const asesoriaId = e.target.value;
+    setSelectedAsesoriaId(asesoriaId);
+  }
+
 
   return (
     <LayoutApp>
       <main className="flex flex-col gap-11 m-5 items-start p-5">
-        
+
+        <div className="flex ml-8 justify-between w-full">
+          <button className="flex justify-between px-3 rounded-lg bg-white w-[180px] items-center font-medium" onClick={() => setShowModal(true)}>
+            <p>Nuevo Avance</p>
+            <img className="" src={plus} alt="" />
+          </button>
+          <select
+            className='border-2 rounded-md px-2 border-black'
+            onChange={handleChange}
+            value={selectedAsesoriaId || ''}
+          >
+            {asesorias.map((asesoria, index) => (
+              <option key={index} value={asesoria.id}>{asesoria.profesion}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="flex flex-col gap-[10px] ml-8 px-[40px] py-5 w-full h-[400px] bg-white rounded-[10px]">
           <div className="flex flex-col gap-[12px]">
             <div className=" mt-5 flex justify-between">
@@ -41,11 +91,6 @@ const EntregaRevisionEst = () => {
             </div>
           </div>
 
-          <span className="flex w-full justify-center">
-            <button onClick={() => setShowModal(true)}>
-              <img src={plus} alt="" />
-            </button>
-          </span>
 
           <div>
             {vista === "terminados" ? (
