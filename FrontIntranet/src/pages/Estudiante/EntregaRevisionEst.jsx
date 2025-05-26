@@ -11,9 +11,9 @@ const EntregaRevisionEst = () => {
 
   return (
     <LayoutApp>
-      <main className="flex flex-col gap-11 m-32 items-start">
+      <main className="flex flex-col gap-11 m-5 items-start p-5">
         
-        <div className="flex flex-col gap-[10px] ml-8   px-[40px] py-5 w-full h-[400px] bg-white rounded-[10px]">
+        <div className="flex flex-col gap-[10px] ml-8 px-[40px] py-5 w-full h-[400px] bg-white rounded-[10px]">
           <div className="flex flex-col gap-[12px]">
             <div className=" mt-5 flex justify-between">
               <h2 className="text-2xl font-bold">Asuntos</h2>
@@ -25,7 +25,7 @@ const EntregaRevisionEst = () => {
 
             <div className="flex w-full border-b-2 gap-3 border-black font-normal">
               <button
-                className={`px-3 rounded-t-[5px] w-[105px] ${vista === "terminados" ? "bg-[#17162E] text-white" : ""
+                className={`px-3 rounded-t-[5px] w-[115px] ${vista === "terminados" ? "bg-[#17162E] text-white" : ""
                   }`}
                 onClick={() => setVista("terminados")}
               >

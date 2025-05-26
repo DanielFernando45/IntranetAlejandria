@@ -8,7 +8,7 @@ const GestionSoporte = () => {
     return (
         <LayoutApp>
             <main className="flex flex-col gap-11 m-5 items-start">
-                <div className="flex flex-col gap-[10px]    px-[40px] py-5 w-full h-[400px] bg-white rounded-[10px]">
+                <div className="flex flex-col gap-[10px] px-[40px] py-5 w-full h-[400px] bg-white rounded-[10px]">
                     <div className="flex flex-col gap-[12px]">
                         <div className=" mt-5 flex justify-between">
                             <h2 className="text-2xl font-bold">Soporte</h2>

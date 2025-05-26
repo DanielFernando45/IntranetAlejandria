@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-
+import agregar from "../assets/icons/IconEstudiante/add.svg"
+import eliminar from "../assets/icons/delete.svg";
 const EnvioArchivo = ({ show, onClose }) => {
   const [asunto, setAsunto] = useState('');
   const [archivos, setArchivos] = useState([]);
   const fileInputRef = useRef(null);
 
   const tiposPermitidos = [
-     // Documentos
+    // Documentos
     'application/pdf', 'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'text/plain', 'application/vnd.ms-powerpoint',
@@ -68,79 +69,80 @@ const EnvioArchivo = ({ show, onClose }) => {
       onClick={handleClickOutside}
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto"
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto transition-all duration-300">
+      <div className="bg-[#F8F7F7] flex flex-col  gap-4 rounded-2xl shadow-2xl w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto transition-all duration-300">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg"
         >✕</button>
-        <h2 className="text-xl font-semibold mb-4">Agregar Asunto</h2>
+        <div className='flex justify-center'>
+          <h2 className="text-xl font-medium ">Agregar Asunto</h2>
+        </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Asunto</label>
+
+        <div className="flex mb-4 gap-10 items-center">
+          <label className="block text-sm  mb-1">Asunto</label>
           <input
             type="text"
             value={asunto}
             onChange={e => setAsunto(e.target.value)}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder='Inserte el asunto'
+            className="w-full  rounded px-3 py-[2px] focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Archivos</label>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleUploadClick}
-              className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-            >
-              Subir archivos
-            </button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              multiple
-              accept={tiposPermitidos.join(',')}
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </div>
+        <div className="flex gap-7 ">
+          <label className=" text-sm  mb-1 mt-1">Archivos</label>
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            multiple
+            accept={tiposPermitidos.join(',')}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          {archivos.length > 0 && (
+            <ul className="flex flex-col text-sm text-gray-700 gap-3">
+              {archivos.map((file, index) => (
+                <li key={index} className="flex w-[375px] justify-between items-center bg-white rounded">
+                  <span className="truncate w-[80%]">{file.name}</span>
+                  <button
+                    onClick={() => eliminarArchivo(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <img src={eliminar} alt="" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
-        {archivos.length > 0 && (
-          <ul className="mb-4 text-sm text-gray-700 space-y-2">
-            {archivos.map((file, index) => (
-              <li key={index} className="flex justify-between items-center bg-gray-100 px-3 py-1 rounded">
-                <span className="truncate w-[80%]">{file.name}</span>
-                <button
-                  onClick={() => eliminarArchivo(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  ✕
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className='flex justify-center'>
+          {archivos.length < 7 && (
+            <button
+              onClick={handleUploadClick}
+              
+            >
+              <img src={agregar} alt="" />
+            </button>
+          )}
+        </div>
 
-        {archivos.length < 7 && (
-          <button
-            onClick={handleUploadClick}
-            className="text-blue-600 hover:underline mb-4"
-          >
-            Agregar más archivos
-          </button>
-        )}
 
-        <button
-          className={`w-full py-2 rounded text-white ${
-            asunto.trim() !== '' && archivos.length > 0
-              ? 'bg-green-600 hover:bg-green-700'
-              : 'bg-gray-400 cursor-not-allowed'
-          }`}
+          <div className='flex justify-center'>
+            <button
+          className={`w-[130px] text-[13px] rounded-md ${asunto.trim() !== '' && archivos.length > 0
+            ? 'bg-[#DAD6D7] hover:bg-black text-white'
+            : 'bg-[#DAD6D7] cursor-not-allowed'
+            }`}
           onClick={handleSubmit}
           disabled={asunto.trim() === '' || archivos.length === 0}
         >
           Subir
         </button>
+          </div>
+        
       </div>
     </div>
   );
