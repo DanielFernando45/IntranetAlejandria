@@ -79,9 +79,13 @@ export class ProcesosAsesoriaService {
     
     try{
 
-      const listAsesoramientoId=await manager.find(Asesoramiento,{where:{procesosasesoria:{asesor:{id:id_asesor}}}})
+      const listAsesoramientoId=await manager.find(Asesoramiento,{where:{procesosasesoria:{asesor:{id:id_asesor}}},
+      relations: ['procesosasesoria', 'procesosasesoria.asesor']})
       
-      const listAll=Promise.all(listAsesoramientoId.map(async(asesoramiento)=>{
+      if (!listAsesoramientoId.length) throw new NotFoundException(`No se encontraron asesoramientos para el asesor con ID ${id_asesor}`);
+    
+      const listAll=Promise.all(
+        listAsesoramientoId.map(async(asesoramiento)=>{
         const delegado=await this.getDelegado(asesoramiento.id)
         const getNombreDelegado=await manager.findOne(Cliente,{where:{id:delegado.clienteId}})
         return({
