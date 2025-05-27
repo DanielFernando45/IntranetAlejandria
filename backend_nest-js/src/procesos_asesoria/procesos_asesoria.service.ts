@@ -90,7 +90,8 @@ export class ProcesosAsesoriaService {
         const getNombreDelegado=await manager.findOne(Cliente,{where:{id:delegado.clienteId}})
         return({
           'id_asesoramiento':asesoramiento.id,
-          'delegado':`${getNombreDelegado?.nombre} ${getNombreDelegado?.apellido}`
+          'profesion_asesoria':asesoramiento.profesion_asesoria,
+          'delegado':`${getNombreDelegado?.nombre?.split(' ')[0]} ${getNombreDelegado?.apellido?.split(' ')[0]}`
         })
       }))
       //console.log(listAll)

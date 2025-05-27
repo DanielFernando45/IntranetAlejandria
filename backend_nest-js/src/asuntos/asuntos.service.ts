@@ -82,13 +82,14 @@ export class AsuntosService {
 
   async getFinished(id:number){
     const listFinished=await this.asuntoRepo.find({where:{estado:Estado_asunto.TERMINADO,asesoramiento:{id}},
+      order:{fecha_entregado:'DESC'},
       select:['titulo','fecha_entregado','fecha_revision','fecha_terminado','estado']})
 
-    if (!listFinished || listFinished.length === 0) throw new Error('No hay asuntos terminados.');
+    if (!listFinished || listFinished.length === 0) throw new NotFoundException('No hay asuntos terminados.');
 
     for (const asunto of listFinished) {
     if (!asunto.titulo || !asunto.fecha_entregado || !asunto.fecha_revision || !asunto.fecha_terminado) {
-    throw new Error(`Faltan datos en el asunto: ${JSON.stringify(asunto)}`);
+    throw new BadRequestException(`Faltan datos en el asunto: ${JSON.stringify(asunto)}`);
     }
     }
     const response:listFinished[]=listFinished.map((asunto)=>{
@@ -104,10 +105,62 @@ export class AsuntosService {
   }
 
   async getAll(id:number){
-    const listFinished=await this.asuntoRepo.find({where:{asesoramiento:{id}}})
+    const listAll=await this.asuntoRepo
+      .createQueryBuilder('asun')
+      .innerJoinAndSelect('asun.documentos','doc')
+      .innerJoin('asun.asesoramiento','ase')
+      .where('ase.id=:id',{id})
+      .andWhere("asun.estado IN (:...estados)",{estados:[Estado_asunto.ENTREGADO,Estado_asunto.PROCESO]})
+      .select(['asun.id AS id_asunto',
+        'asun.titulo AS Titulo',
+        'asun.estado AS Estado',
+        'asun.fecha_entregado AS Fecha_entregado',
+        'ase.profesion_asesoria AS profesion_asesoria',
+        'asun.fecha_revision AS Fecha_revision',
+        'asun.fecha_terminado AS Fecha_terminado',
+        'doc.nombre AS Documento_nombre',
+      ])
+      .orderBy('asun.fecha_entregado','ASC')
+      .getRawMany()
+  
+  
 
-    if(!listFinished || listFinished.length===0) throw new NotFoundException("No se encontro")
-    return listFinished
+    let idUsados:number[]=[]
+      let arregloAsuntos: object[] = []; 
+      let contador_alumnos = 0;
+      let contador_columnas=-1
+
+      for(let i=0;i<listAll.length;i++){
+        const documento= listAll[i]
+
+        if(contador_alumnos>=2){
+          break
+        }
+        console.log(contador_alumnos)
+        if(idUsados.includes(documento.id_asunto)){
+          arregloAsuntos[contador_columnas]={
+            ...arregloAsuntos[contador_columnas],
+            [`documento_${contador_alumnos}`]:documento.Documento_nombre
+          }
+          
+        }else{
+        contador_columnas+=1
+        contador_alumnos=1
+       arregloAsuntos[contador_columnas]={
+          "id_asunto":documento.id_asunto,
+          "titulo":documento.Titulo,
+          "fecha_entrega":documento.Fecha_entregado,
+          "profesion_asesoria":documento.profesion_asesoria,
+          "fecha_revision":documento.Fecha_revision,
+          "fecha_terminado":documento.Fecha_terminado,
+          "documento_0":documento.Documento_nombre,
+        }          
+        idUsados.push(documento.id_asunto)
+      }  
+      }
+    
+    if(!listAll || listAll .length===0) throw new NotFoundException("No se encontro")
+      return arregloAsuntos
   }
 
   findOne(id: number) {
