@@ -1,5 +1,5 @@
 import React from 'react'
-import LayoutApp from '../../layout/LayoutApp'
+import LayoutApp from '../../../layout/LayoutApp'
 
 const CambiarContraseña = () => {
   return (

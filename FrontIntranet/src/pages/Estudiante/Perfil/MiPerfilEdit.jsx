@@ -1,7 +1,7 @@
 import React from 'react'
-import LayoutApp from '../../layout/LayoutApp'
-import perfil from "../../assets/icons/PerfilIcon.svg"
-import flecha from "../../assets/icons/Flecha.svg"
+import LayoutApp from '../../../layout/LayoutApp'
+import perfil from "../../../assets/icons/PerfilIcon.svg"
+import flecha from "../../../assets/icons/Flecha.svg"
 
 const MiPerfilEdit = () => {
   return (

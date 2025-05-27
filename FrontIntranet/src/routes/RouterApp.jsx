@@ -11,16 +11,20 @@ import CalendarioEstudiante from '../pages/Estudiante/CalendarioEstudiante';
 import RecursosEstudiante from '../pages/Estudiante/RecursosEstudiante';
 import PagosEstudiante from '../pages/Estudiante/PagosEstudiante';
 import Soporte from '../pages/Estudiante/SoporteEstudiante';
-import MiPerfil from '../pages/Estudiante/MiPerfil';
-import MiAsesor from '../pages/Estudiante/MiAsesor';
-import MiContrato from '../pages/Estudiante/MiContrato';
-import CambiarContraseña from '../pages/Estudiante/CambiarContraseña';
-import MiPerfilEdit from '../pages/Estudiante/MiPerfilEdit';
+import MiPerfil from '../pages/Estudiante/Perfil/MiPerfil';
+import MiAsesor from '../pages/Estudiante/Perfil/MiAsesor';
+import MiContrato from '../pages/Estudiante/Perfil/MiContrato';
+import CambiarContraseña from '../pages/Estudiante/Perfil/CambiarContraseña';
+import MiPerfilEdit from '../pages/Estudiante/Perfil/MiPerfilEdit';
+import Terminados from '../pages/Estudiante/EntregasEnvio/Terminados';
+import Pendientes from '../pages/Estudiante/EntregasEnvio/Pendientes';
 
 //Paginas Asesor
 import HomeAsesor from '../pages/Asesor/HomeAsesor';
 import Reuniones from '../pages/Asesor/ReunionesAsesor';
 import EntregaRev from '../pages/Asesor/EntregaRevisionAse';
+import DocPendientes from '../pages/Asesor/EnviosCliente/DocPendientes';
+import DocTerminado from '../pages/Asesor/EnviosCliente/DocTerminado';
 import Calendario from '../pages/Asesor/CalendarioAsesor';
 import GestionarAlum from '../pages/Asesor/GestionarAsesor';
 
@@ -59,24 +63,42 @@ const RouterApp = () => {
       <Route element={<ProtectedRoutes allowedRoles={['estudiante']} />}>
         <Route path="/estudiante/home" element={<HomeEstudiante />} />
         <Route path="/estudiante/reuniones" element={<ReunionesEstudiante />} />
-        <Route path="/estudiante/entrega" element={<EntregaRevisionEst />} />
-        <Route path="/estudiante/calendario" element={<CalendarioEstudiante/>}/>
-        <Route path="/estudiante/recursos" element={<RecursosEstudiante/>}/>
-        <Route path="/estudiante/pagos" element={<PagosEstudiante/>}/>
-        <Route path="/estudiante/soporte" element={<Soporte/>}/>
-        <Route path="/estudiante/miperfil" element={<MiPerfil/>}/>
-        <Route path="/estudiante/miperfiledit" element={<MiPerfilEdit/>}/>
-        <Route path="/estudiante/miasesor" element={<MiAsesor/>}/>
-        <Route path="/estudiante/micontrato" element={<MiContrato/>}/>
-        <Route path="/estudiante/cambiarcontraseña" element={<CambiarContraseña/>}/>
-        
+
+        <Route path="/estudiante/entrega" element={<EntregaRevisionEst />} >
+          <Route index element={<Navigate to="terminados" replace />} />
+          <Route path="terminados" element={<Terminados />} />
+          <Route path="pendientes" element={<Pendientes />} />
+          <Route />
+
+        </Route>
+
+        <Route path="/estudiante/calendario" element={<CalendarioEstudiante />} />
+        <Route path="/estudiante/recursos" element={<RecursosEstudiante />} />
+        <Route path="/estudiante/pagos" element={<PagosEstudiante />} />
+        <Route path="/estudiante/soporte" element={<Soporte />} />
+        <Route path="/estudiante/miperfil" element={<MiPerfil />} />
+        <Route path="/estudiante/miperfiledit" element={<MiPerfilEdit />} />
+        <Route path="/estudiante/miasesor" element={<MiAsesor />} />
+        <Route path="/estudiante/micontrato" element={<MiContrato />} />
+        <Route path="/estudiante/cambiarcontraseña" element={<CambiarContraseña />} />
+
       </Route>
+
+
+
 
       {/* RUTAS ASESOR */}
       <Route element={<ProtectedRoutes allowedRoles={['asesor']} />}>
         <Route path="/asesor/home" element={<HomeAsesor />} />
         <Route path="/asesor/reuniones" element={<Reuniones />} />
-        <Route path="/asesor/entrega" element={<EntregaRev />} />
+
+        <Route path="/asesor/entrega" element={<EntregaRev />}>
+          <Route index element={<Navigate to="terminados" replace />} />
+          <Route path="terminados" element={<DocTerminado />} />
+          <Route path="pendientes" element={<DocPendientes />} />
+        </Route>
+
+
         <Route path="/asesor/calendario" element={<Calendario />} />
         <Route path="/asesor/gestionarAlumno" element={<GestionarAlum />} />
 
@@ -86,29 +108,29 @@ const RouterApp = () => {
       <Route element={<ProtectedRoutes allowedRoles={['admin']} />}>
 
         <Route path="/admin/gestionar-usuarios" element={<GestionarUsuarios />}>
-              <Route index element={<Navigate to="listar-estudiantes" replace />} />
-              <Route path="listar-estudiantes" element={<ListarEstudiante/>} />
-              <Route path="listar-asesores" element={<ListarAsesor/>} />
-        </Route> 
-
-        <Route path="/admin/asignaciones" element={<Asignaciones/>}>
-              <Route index element={<Navigate to="listar-asignar" replace />}/>
-              <Route path ="listar-asignar" element={<ListarSinAsignar/>}/>
-              <Route path ="listar-asignado" element={<ListarAsignado/>}/>
+          <Route index element={<Navigate to="listar-estudiantes" replace />} />
+          <Route path="listar-estudiantes" element={<ListarEstudiante />} />
+          <Route path="listar-asesores" element={<ListarAsesor />} />
         </Route>
 
-        <Route path="/admin/asignaciones/asesoria-nueva" element={<AsesoriaNueva/>}/>
-        <Route path="/admin/asignaciones/editar-asesoria/:id" element={<EditarAsignacion/>}/>
+        <Route path="/admin/asignaciones" element={<Asignaciones />}>
+          <Route index element={<Navigate to="listar-asignar" replace />} />
+          <Route path="listar-asignar" element={<ListarSinAsignar />} />
+          <Route path="listar-asignado" element={<ListarAsignado />} />
+        </Route>
 
-        <Route path="/admin/gestionar-usuarios/agregar-estudiante" element={<AgregarEstudiante/>} />
-        <Route path="/admin/gestionar-usuarios/agregar-asesor" element={<AgregarAsesor/>} />
-        <Route path="/admin/gestionar-usuarios/editar-estudiante/:id" element={<EditarEstudiante/>} />
-        <Route path="/admin/gestionar-usuarios/editar-asesor/:id" element={<EditarAsesor/>} />
+        <Route path="/admin/asignaciones/asesoria-nueva" element={<AsesoriaNueva />} />
+        <Route path="/admin/asignaciones/editar-asesoria/:id" element={<EditarAsignacion />} />
 
-        
-        <Route path="/admin/pagos" element={<Pagos/>}/>
-        <Route path ="/admin/confIntra" element={<ConfigIntra/>}/>
-        <Route path="/admin/soporte" element={<GestionarSoporte/>}/>
+        <Route path="/admin/gestionar-usuarios/agregar-estudiante" element={<AgregarEstudiante />} />
+        <Route path="/admin/gestionar-usuarios/agregar-asesor" element={<AgregarAsesor />} />
+        <Route path="/admin/gestionar-usuarios/editar-estudiante/:id" element={<EditarEstudiante />} />
+        <Route path="/admin/gestionar-usuarios/editar-asesor/:id" element={<EditarAsesor />} />
+
+
+        <Route path="/admin/pagos" element={<Pagos />} />
+        <Route path="/admin/confIntra" element={<ConfigIntra />} />
+        <Route path="/admin/soporte" element={<GestionarSoporte />} />
 
       </Route>
 
@@ -119,8 +141,8 @@ const RouterApp = () => {
       <Route path="*" element={<ErrorScreen />} />
 
       {/* RECUPERAR CONTRASEÑA */}
-      <Route path="/recuperarContraseña" element={<ResetPassword/>} />
-      <Route path='/cambiarContraseña' element={<NuevaContraseña/>} />
+      <Route path="/recuperarContraseña" element={<ResetPassword />} />
+      <Route path='/cambiarContraseña' element={<NuevaContraseña />} />
     </Routes>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import LayoutApp from '../../layout/LayoutApp'
-import LogoAleja from "../../assets/icons/IconEstudiante/LogoOscuro.svg";
+import LayoutApp from '../../../layout/LayoutApp'
+import LogoAleja from "../../../assets/icons/IconEstudiante/LogoOscuro.svg";
 
 const MiContrato = () => {
     const [asesorias, setAsesorias] = useState([]);

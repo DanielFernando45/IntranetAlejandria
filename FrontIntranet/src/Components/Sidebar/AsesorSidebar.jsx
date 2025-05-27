@@ -15,7 +15,15 @@ import Gestion from "../../assets/icons/IconAsesor/gestionAlum.svg";
 const LINKS = [
   { icono: HomeEstu, path: "/asesor/home", title: "Home" },
   { icono: Reuniones, path: "/asesor/reuniones", title: "Reuniones" },
-  { icono: EntreRev, path: "/asesor/entrega", title: "Entrega/Revisión" },
+  { 
+    icono: EntreRev, 
+    path: "/asesor/entrega", 
+    title: "Entrega/Revisión", 
+    subLinks: [
+      { path: "/asesor/entrega/terminados"},
+      { path: "/asesor/entrega/pendientes"},
+    ]
+  },
   { icono: Calendario, path: "/asesor/calendario", title: "Calendario" },
   { icono: Gestion, path: "/asesor/gestionarAlumno", title: "Gestionar Alumnos" },
 ];
@@ -32,6 +40,7 @@ const AsesorSidebar =() =>{
     setIsExpanded(false);
   };
 
+  const isActive = (path) => location.pathname.startsWith(path);
   return (
     <>
 
@@ -56,7 +65,8 @@ const AsesorSidebar =() =>{
 
         <ul className="flex flex-col gap-1 items-start">
           {LINKS.map((link) => {
-            const isActive = location.pathname === link.path;
+
+            const active = isActive(link.path);
             return (
                 <Link to={link.path}>
                 <li
@@ -65,7 +75,7 @@ const AsesorSidebar =() =>{
                   isExpanded ? "w-[266px]" : "w-[100px]"
                 } h-[77px] px-[20px] py-[25px] cursor-pointer flex-shrink-0 bg-white z-30 transition-all duration-300 
                 hover:bg-[#F0EFEF] ${
-                  isActive ? "bg-[#EFEFEF] border-l-[5px] border-[#000]" : ""
+                  active ? "bg-[#EFEFEF] border-l-[5px] border-[#000]" : ""
                 }`}
                 onClick={handleItemClick}
               >

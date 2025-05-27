@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import perfil from "../../assets/icons/PerfilIcon.svg";
-import LayoutApp from '../../layout/LayoutApp';
+import perfil from "../../../assets/icons/PerfilIcon.svg";
+import LayoutApp from '../../../layout/LayoutApp';
 
 const MiAsesor = () => {
   const [asesorias, setAsesorias] = useState([]);
