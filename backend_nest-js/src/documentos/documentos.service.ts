@@ -65,7 +65,7 @@ export class DocumentosService {
       
     const arreglo: object[] = [];
 
-  listDocuments.forEach((document) => {
+    listDocuments.forEach((document) => {
     const asunto = document['asunto'];
     const idAsunto = document['id_asunto'];
 

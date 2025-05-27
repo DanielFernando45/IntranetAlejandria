@@ -123,7 +123,7 @@ export class AsuntosService {
       .orderBy('asun.fecha_entregado','ASC')
       .getRawMany()
   
-  
+    if(!listAll || listAll .length===0) throw new NotFoundException("No se encontro")
 
     let idUsados:number[]=[]
       let arregloAsuntos: object[] = []; 
@@ -159,7 +159,7 @@ export class AsuntosService {
       }  
       }
     
-    if(!listAll || listAll .length===0) throw new NotFoundException("No se encontro")
+    
       return arregloAsuntos
   }
 
