@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { ReunionesService } from './reuniones.service';
 import { CreateReunioneDto } from './dto/create-reunione.dto';
 import { UpdateReunioneDto } from './dto/update-reunione.dto';
@@ -7,9 +7,9 @@ import { UpdateReunioneDto } from './dto/update-reunione.dto';
 export class ReunionesController {
   constructor(private readonly reunionesService: ReunionesService) {}
 
-  @Post()
-  create(@Body() createReunioneDto: CreateReunioneDto) {
-    return this.reunionesService.create(createReunioneDto);
+  @Post("add/:id")
+  async createReunion(@Param('id',ParseIntPipe) id:number,@Body() createReunioneDto: CreateReunioneDto) {
+    return this.reunionesService.addReunion(id,createReunioneDto);
   }
 
   @Get()

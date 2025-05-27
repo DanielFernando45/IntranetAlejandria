@@ -1,11 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReunioneDto } from './dto/create-reunione.dto';
 import { UpdateReunioneDto } from './dto/update-reunione.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Estado_reunion, Reunion } from './entities/reunion.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReunionesService {
-  create(createReunioneDto: CreateReunioneDto) {
-    return 'This action adds a new reunione';
+  constructor(
+    @InjectRepository(Reunion)
+    private reunionRepo:Repository<Reunion>
+  ){}
+
+  async addReunion(id:number,createReunioneDto: CreateReunioneDto) {
+    // const asesoramiento = await this.asesoramientoRepo.findOne({ where: { id } });
+    // if (!asesoramiento) throw new NotFoundException(`Asesoramiento con id ${id} no encontrado`);
+
+    const newReunion=this.reunionRepo.create({...createReunioneDto,estado:Estado_reunion.ESPERA,fecha_creacion:new Date(),asesoramiento:{id}})
+    await this.reunionRepo.save(newReunion)
+    return 'Se añadio la reunion';
   }
 
   findAll() {

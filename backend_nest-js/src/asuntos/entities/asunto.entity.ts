@@ -1,5 +1,6 @@
 import { Asesoramiento } from "src/asesoramiento/entities/asesoramiento.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Documento } from "src/documentos/entities/documento.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Estado_asunto{
     ENTREGADO="entregado",
@@ -30,4 +31,7 @@ export class Asunto {
     @ManyToOne(()=>Asesoramiento)
     @JoinColumn({name:'id_asesoramiento'})
     asesoramiento:Asesoramiento
+
+    @OneToMany(()=>Documento,documento=>documento.asunto)
+    documentos:Documento[]
 }
