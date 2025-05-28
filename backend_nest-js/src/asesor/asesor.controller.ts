@@ -53,7 +53,7 @@ export class AsesorController {
             return this.asesorService.getDatosAsesorByAsesoramiento(id)
         }
 
-        @Get("listarAsesoramientoConDelegado/:id_asesor")
+        @Get("asesoramientosYDelegado/:id_asesor")
         async getDelegadoyAsesoramiento(@Param('id_asesor',ParseIntPipe) id_asesor:number){
             return this.asesorService.getAsesoramientoyDelegado(id_asesor)
         }

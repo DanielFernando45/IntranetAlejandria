@@ -9,6 +9,7 @@ import { diskStorage } from 'multer';
 import { ChangeToProcess } from './dto/change-to-process.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { IsDelegadoGuard } from 'src/common/guards/delegado.guard';
+import { updateClienteDto } from 'src/cliente/dto/update-cliente.dto';
 
 const HOST_API="http://localhost:3001"
 
@@ -48,7 +49,6 @@ export class AsuntosController {
   }
 
   @Patch("finished/:id")
-  @UseGuards(JwtAuthGuard,IsDelegadoGuard)
   @UseInterceptors(FilesInterceptor('files',10,{
     fileFilter,
     storage:diskStorage({
@@ -56,14 +56,17 @@ export class AsuntosController {
       filename:fileNamer
     })
   }))
-  async finishAsunto(@Param('id',ParseIntPipe) id:number,@UploadedFiles() files:Express.Multer.File[]){
+  async finishAsunto(@Param('id',ParseIntPipe) id:number,@Body() cambioAsunto:UpdateAsuntoDto,@UploadedFiles() files:Express.Multer.File[]){
+
     if(!files || files.length===0)throw new BadRequestException("No se ha enviado archivos")
     try{
     const listaNombresyUrl=files.map((item)=>{
       return {nombreDocumento:item.originalname,secureUrl:`${HOST_API}/files/product/${item.filename}`}
     })
-    console.log(listaNombresyUrl)
-    return await this.asuntosService.finishAsunt(id,listaNombresyUrl)
+    const newTitulo=cambioAsunto.titulo
+    if(!newTitulo)throw new BadRequestException("Falta agregar el titulo")
+    // console.log(listaNombresyUrl)
+    return await this.asuntosService.finishAsunt(id,newTitulo,listaNombresyUrl)
     }catch(err){
       return new InternalServerErrorException(`Error en el controlador, ${err.message}`)
     }

@@ -128,19 +128,57 @@ export class Registros1746554350124 implements MigrationInterface {
             // Insertar asesoramiento
             await queryRunner.query(`
                 INSERT INTO Alejandria.asesoramiento (id, profesion_asesoria,especialidad,tipo_servicio,id_tipo_trabajo,id_contrato,estado, fecha_inicio, fecha_fin) VALUES 
-                (1, 'Administracion','Administracion tributaria','proyecto',3,1,'activo', '2025-04-01 08:00:00', '2025-04-30 17:00:00');
+                (1, 'Investigacion Sistema tributario','Administracion tributaria','proyecto',3,1,'activo', '2025-04-01 08:00:00', '2025-04-30 17:00:00'),
+                (2, 'Trabajo Ingenieria Industrial','Magister en Ingenieria Industrial','completo',3,5,'activo','2025-05-11 09:00:00','2025-09-16 08:00:00');
             `);
       
             // Insertar proceso de asesoría vinculando al cliente y al asesor
             await queryRunner.query(`
                 INSERT INTO Alejandria.procesos_asesoria (id, id_cliente, id_asesor,id_asesoramiento) VALUES 
-                (1, 1, 1, 1);
+                (1, 1, 1, 1),
+                (2, 2, 1, 1);
             `);
             await queryRunner.query(`
                 INSERT INTO Alejandria.procesos_asesoria (id, id_cliente, id_asesor,id_asesoramiento) VALUES 
-                (2, 2, 1, 1);
+                (3, 3, 2, 2),
+                (4, 1, 2, 2),
+                (5, 2, 2, 2),
+                (6, 4, 2, 2);
             `);
-    
+            await queryRunner.query(`
+                INSERT INTO Alejandria.asunto (id,titulo, estado, fecha_entregado, fecha_revision, fecha_terminado, id_asesoramiento)
+                VALUES
+                (1,'Revisado Avance 1', 'terminado', '2025-05-01 10:00:00', '2025-05-06 13:45:00', '2025-05-14 16:00:00', 1),
+                (2,'Correcion parcial', 'proceso', '2025-05-10 09:00:00', '2025-05-10 14:00:00', '2025-05-15 14:00:00', 1),
+                (3,'Entrega Final', 'entregado', '2025-05-20 11:30:00', NULL , NULL , 1);
+            `);
+            await queryRunner.query(`
+                INSERT INTO Alejandria.asunto (id,titulo, estado, fecha_entregado, fecha_revision, fecha_terminado, id_asesoramiento)
+                VALUES
+                (4,'Revision Antecedentes', 'terminado', '2025-05-02 10:00:00', '2025-05-04 13:45:00', '2025-05-10 16:00:00', 2),
+                (5,'Correcion Justificacion', 'proceso', '2025-05-11 09:00:00', '2025-05-12 14:00:00', '2025-05-15 14:00:00', 2),
+                (6,'Entrega de objetivos', 'entregado', '2025-05-22 11:30:00', NULL , NULL , 2),
+                (7,'Entrega de metodologia', 'entregado', '2025-05-23 11:30:00', NULL , NULL , 2);
+            `);
+            //Documentos
+            await queryRunner.query(`
+                INSERT INTO Alejandria.documento(id,nombre, ruta, subido_por, created_at, id_asunto)
+                VALUES
+                (1,'Introduccion.pdf','http://localhost:3001/files/product/e9f44976-77bf-4616-a590-1bd39bed726d.pdf','estudiante','2025-05-01 10:00:00',1),
+                (2,'Justificacion.pdf','http://localhost:3001/files/product/7f8ce5dd-ea00-449e-acb7-5791eb4b845d.pdf','estudiante','2025-05-01 10:00:00',1),
+                (3,'Antecedentes.pdf','http://localhost:3001/files/product/ce2e00a7-5a7b-4f17-9c75-498cf2b1ab8a.pdf','estudiante','2025-05-02 10:00:00',4),
+                (4,'Tesis_parcial.pdf','http://localhost:3001/files/product/8b2a467c-5aab-462f-8bef-c0deabd9d7a3.pdf','estudiante','2025-05-10 09:00:00',2),
+                (5,'Revision_Antecedentes.pdf','http://localhost:3001/files/product/bc92027f-41ee-453d-8266-1b9aa3d5b765.pdf','asesor','2025-05-10 14:00:00',4),
+                (6,'Justificacion_Corregida.docx','http://localhost:3001/files/product/0f5d4802-4e62-4b67-b1da-fa11757d89eb.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-11 09:00:00',5),
+                (7,'Revision_Introduccion.docx','http://localhost:3001/files/product/de654cd1-3c96-40c5-b40a-d553b444a77b.vnd.openxmlformats-officedocument.wordprocessingml.document','asesor','2025-05-14 16:00:00',1),
+                (8,'Revision_Justificacion.docx','http://localhost:3001/files/product/1d2c378b-7ab7-4543-a1e2-cd05a950dd98.vnd.openxmlformats-officedocument.wordprocessingml.document','asesor','2025-05-14 16:00:00',1),
+                (9,'Documento_Final.docx','http://localhost:3001/files/product/1cffdb11-3c33-4a92-8a15-942233e783da.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-20 11:30:00',3),
+                (10,'Objetivos_Generales.docx','http://localhost:3001/files/product/82e1b90b-5a78-4aba-b46b-1c0dcde78387.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-22 11:30:00',6),
+                (11,'Objetivos_Especificos.docx','http://localhost:3001/files/product/95ea10c4-5fed-424c-87b8-64b0e09c7eb1.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-22 11:30:00',6),
+                (12,'Metodologia_1ra_parte', 'http://localhost:3001/files/product/1d2c378b-7ab7-4543-a1e2-cd05a950dd98.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-23 11:30:00',7),
+                (13,'Entrega_Metodologia_v2.docx','http://localhost:3001/files/product/1337877f-aa03-483d-bea3-88fd25205d40.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-23 11:30:00',7),
+                (14,'Metricas_Metodologia.pdf','http://localhost:3001/files/product/ffebb101-2996-4485-9cbf-0cea1898d7e4.pdf','estudiante','2025-05-23 11:30:00',7);
+            `);
         }
     
         public async down(queryRunner: QueryRunner): Promise<void> {

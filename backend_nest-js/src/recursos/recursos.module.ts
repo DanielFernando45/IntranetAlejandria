@@ -7,9 +7,15 @@ import { GuiasService } from './services/guias.service';
 import { HerramientasService } from './services/herramientas.service';
 import { NoticiasService } from './services/noticias.service';
 import { TutorialesService } from './services/tutoriales.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Guia } from './entities/guia.entity';
+import { Noticia } from './entities/noticia.entity';
+import { Herramienta } from './entities/herramienta.entity';
+import { Tutorial } from './entities/tutorial.entity';
 
 
 @Module({
+  imports:[TypeOrmModule.forFeature([Guia,Noticia,Herramienta,Tutorial])],
   controllers: [GuiasController,HerramientasController,NoticiasController,TutorialesController],
   providers: [GuiasService,HerramientasService,NoticiasService,TutorialesService],
 })
