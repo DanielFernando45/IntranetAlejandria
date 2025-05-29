@@ -52,7 +52,7 @@ const Pendientes = () => {
           <div className='flex justify-between items-center py-1'>
             <div className="w-[300px] flex">{pendiente.titulo}</div>
             <div className="w-[250px] flex justify-center">
-              {formatDate(pendiente.fecha_entregado)}
+              {formatDate(pendiente.fecha_entrega)}
             </div>
             <button 
               onClick={() => toggleOpen(pendiente.id)} 
@@ -69,14 +69,14 @@ const Pendientes = () => {
           {openItems[pendiente.id] && (
             <div className='flex flex-col gap-2 transition-all duration-300 ease-in-out mt-5'>
               <div className='flex justify-between'>
-                <div>Avance</div>
+                <div>{pendiente.documento_0}</div>
                 <div className='flex w-[450px] gap-4'>
-                  <p>Enviado: {formatDate(pendiente.fecha_entregado)}</p>
+                  <p>Enviado: {formatDate(pendiente.fecha_entrega)}</p>
                 </div>
-                <div>{formatTime(pendiente.fecha_entregado)}</div>
-                <button className='text-white bg-[#054755] rounded-md px-6'>
+                <div>{formatTime(pendiente.fecha_entrega)}</div>
+                <div className='text-white bg-[#054755] rounded-md px-6'>
                   {pendiente.estado === 'entregado' ? 'Entregado' : pendiente.estado}
-                </button>
+                </div>
               </div>
             </div>
           )}

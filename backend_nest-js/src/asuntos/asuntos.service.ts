@@ -149,6 +149,7 @@ export class AsuntosService {
        arregloAsuntos[contador_columnas]={
           "id_asunto":documento.id_asunto,
           "titulo":documento.Titulo,
+          "estado":documento.Estado,
           "fecha_entrega":documento.Fecha_entregado,
           "profesion_asesoria":documento.profesion_asesoria,
           "fecha_revision":documento.Fecha_revision,
