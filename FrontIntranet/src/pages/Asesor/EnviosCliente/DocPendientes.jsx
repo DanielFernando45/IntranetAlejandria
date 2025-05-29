@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import arrowIcon from '../../../assets/icons/IconEstudiante/arriba.svg'
 import axios from 'axios'
 import { useOutletContext } from 'react-router-dom';
-
+import FechaEstimada from '../../../Components/Asesor/FechaEstimada'
 
 const DocPendientes = () => {
   const [pendientes, setPendientes] = useState([]);
@@ -114,7 +114,11 @@ const DocPendientes = () => {
           
         </div>
       ))}
+      <FechaEstimada
+        
+      />
     </div>
+    
   )
 }
 

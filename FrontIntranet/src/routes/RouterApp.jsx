@@ -27,7 +27,10 @@ import DocPendientes from '../pages/Asesor/EnviosCliente/DocPendientes';
 import DocTerminado from '../pages/Asesor/EnviosCliente/DocTerminado';
 import Calendario from '../pages/Asesor/CalendarioAsesor';
 import GestionarAlum from '../pages/Asesor/GestionarAsesor';
-
+import Activos from '../pages/Asesor/GestionAlumActivos/Activos';
+import Desactivados from '../pages/Asesor/GestionAlumActivos/Desactivados';
+import Proximos from '../pages/Asesor/Reunion/ReunionProximo';
+import Anteriores from '../pages/Asesor/Reunion/ReunionAnteriores';
 
 //Paginas Admin
 import GestionarUsuarios from '../pages/Administrador/GestionUser';
@@ -90,7 +93,12 @@ const RouterApp = () => {
       {/* RUTAS ASESOR */}
       <Route element={<ProtectedRoutes allowedRoles={['asesor']} />}>
         <Route path="/asesor/home" element={<HomeAsesor />} />
-        <Route path="/asesor/reuniones" element={<Reuniones />} />
+
+        <Route path="/asesor/reuniones" element={<Reuniones />}>
+          <Route index element={<Navigate to="proximo" replace />} />
+          <Route path="proximo" element={<Proximos />} />
+          <Route path="anteriores" element={<Anteriores />} />
+        </Route>
 
         <Route path="/asesor/entrega" element={<EntregaRev />}>
           <Route index element={<Navigate to="terminados" replace />} />
@@ -100,7 +108,12 @@ const RouterApp = () => {
 
 
         <Route path="/asesor/calendario" element={<Calendario />} />
-        <Route path="/asesor/gestionarAlumno" element={<GestionarAlum />} />
+
+        <Route path="/asesor/gestionarAlumno" element={<GestionarAlum />}>
+          <Route index element={<Navigate to="activos" replace />} />
+          <Route path="activos" element={<Activos />} />
+          <Route path="desactivados" element={<Desactivados />} />
+        </Route>
 
       </Route>
 

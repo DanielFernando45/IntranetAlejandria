@@ -2,11 +2,8 @@ import LayoutApp from "../../layout/LayoutApp";
 import { useState, useEffect } from "react";
 import flechaAzul from "../../assets/icons/arrowAzul.svg"
 import plus from "../../assets/icons/IconEstudiante/add.svg"
-import Descargas from "../../assets/icons/Descargas.svg"
 import EnvioArchivo from "../../Components/EnvioArchivos";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-import arrowIcon from '../../assets/icons/IconEstudiante/arriba.svg'
-import descargar from '../../assets/icons/Descargas.svg'
 import MisEnvios from '../../pages/Estudiante/EntregasEnvio/MisEnviosCli'
 import EnvioAsesor from '../../pages/Estudiante/EntregasEnvio/EnvioAsesor'
 
@@ -146,9 +143,9 @@ const EntregaRevisionEst = () => {
           <div>
             {
               docEnvio === "MisEnvios" ? (
-                <MisEnvios/>
+                <MisEnvios idAsesoramiento={selectedAsesoriaId}/>
               ) : (
-                <EnvioAsesor/>
+                <EnvioAsesor idAsesoramiento={selectedAsesoriaId}/>
               )
             }
           </div>
