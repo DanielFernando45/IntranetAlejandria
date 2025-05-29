@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class AddDocs1746554350105 implements MigrationInterface {
-    name = 'AddDocs1746554350105'
+export class AgregadoReuniones1746554350105 implements MigrationInterface {
+    name = 'AgregadoReuniones1746554350105'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`usuarios\` (\`id\` int NOT NULL AUTO_INCREMENT, \`username\` varchar(255) NOT NULL, \`password\` varchar(255) NOT NULL, \`role\` enum ('admin', 'asesor', 'estudiante') NOT NULL, \`estado\` tinyint NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -14,8 +14,8 @@ export class AddDocs1746554350105 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`grado_academico\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`area_asesor\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`asesor\` (\`id\` int NOT NULL AUTO_INCREMENT, \`dni\` varchar(255) NOT NULL, \`nombre\` varchar(255) NOT NULL, \`apellido\` varchar(255) NOT NULL, \`email\` varchar(255) NOT NULL, \`telefono\` int NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`especialidad\` varchar(255) NOT NULL, \`universidad\` varchar(255) NOT NULL, \`id_area\` int NULL, \`id_grado_academico\` int NULL, \`usuarioId\` int NULL, UNIQUE INDEX \`REL_285f003441aa6855dc95f4c7b8\` (\`usuarioId\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`asunto\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`estado\` enum ('entregado', 'proceso', 'terminado') NOT NULL, \`fecha_entregado\` datetime NOT NULL, \`fecha_revision\` datetime NULL, \`fecha_terminado\` datetime NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`documento\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`ruta\` varchar(255) NOT NULL, \`subido_por\` enum ('estudiante', 'asesor') NOT NULL, \`created_at\` datetime NOT NULL, \`id_asunto\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`asunto\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`estado\` enum ('entregado', 'proceso', 'terminado') NOT NULL, \`fecha_entregado\` datetime NOT NULL, \`fecha_revision\` datetime NULL, \`fecha_terminado\` datetime NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`admin\` ADD CONSTRAINT \`FK_d6655cf5853701ab8ac2d7d4d35\` FOREIGN KEY (\`usuarioId\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`asesoramiento\` ADD CONSTRAINT \`FK_6e9597d7abfb30df60996e0ab8b\` FOREIGN KEY (\`id_tipo_trabajo\`) REFERENCES \`tipo_trabajo\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`asesoramiento\` ADD CONSTRAINT \`FK_dfe1c20580248b8d9ce30a9f195\` FOREIGN KEY (\`id_contrato\`) REFERENCES \`tipo_contrato\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -27,13 +27,13 @@ export class AddDocs1746554350105 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`asesor\` ADD CONSTRAINT \`FK_31c3d36ed1fd055597ab389da36\` FOREIGN KEY (\`id_area\`) REFERENCES \`area_asesor\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`asesor\` ADD CONSTRAINT \`FK_cc2a52d979ab00d8b94b3a8d9ed\` FOREIGN KEY (\`id_grado_academico\`) REFERENCES \`grado_academico\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`asesor\` ADD CONSTRAINT \`FK_285f003441aa6855dc95f4c7b83\` FOREIGN KEY (\`usuarioId\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE \`asunto\` ADD CONSTRAINT \`FK_d94dbc00a1ba0f63437a4c08314\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`documento\` ADD CONSTRAINT \`FK_a549abd88ad576aa9b315a56725\` FOREIGN KEY (\`id_asunto\`) REFERENCES \`asunto\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`asunto\` ADD CONSTRAINT \`FK_d94dbc00a1ba0f63437a4c08314\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE \`documento\` DROP FOREIGN KEY \`FK_a549abd88ad576aa9b315a56725\``);
         await queryRunner.query(`ALTER TABLE \`asunto\` DROP FOREIGN KEY \`FK_d94dbc00a1ba0f63437a4c08314\``);
+        await queryRunner.query(`ALTER TABLE \`documento\` DROP FOREIGN KEY \`FK_a549abd88ad576aa9b315a56725\``);
         await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_285f003441aa6855dc95f4c7b83\``);
         await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_cc2a52d979ab00d8b94b3a8d9ed\``);
         await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_31c3d36ed1fd055597ab389da36\``);
@@ -45,8 +45,8 @@ export class AddDocs1746554350105 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`asesoramiento\` DROP FOREIGN KEY \`FK_dfe1c20580248b8d9ce30a9f195\``);
         await queryRunner.query(`ALTER TABLE \`asesoramiento\` DROP FOREIGN KEY \`FK_6e9597d7abfb30df60996e0ab8b\``);
         await queryRunner.query(`ALTER TABLE \`admin\` DROP FOREIGN KEY \`FK_d6655cf5853701ab8ac2d7d4d35\``);
-        await queryRunner.query(`DROP TABLE \`documento\``);
         await queryRunner.query(`DROP TABLE \`asunto\``);
+        await queryRunner.query(`DROP TABLE \`documento\``);
         await queryRunner.query(`DROP INDEX \`REL_285f003441aa6855dc95f4c7b8\` ON \`asesor\``);
         await queryRunner.query(`DROP TABLE \`asesor\``);
         await queryRunner.query(`DROP TABLE \`area_asesor\``);

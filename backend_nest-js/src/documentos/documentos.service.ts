@@ -44,7 +44,7 @@ export class DocumentosService {
     }
   }
 
-  async findDocuments(id:number){
+  async findDocuments(id:number,subido_por:Subido){
     const listDocuments=await this.documentoRepo
       .createQueryBuilder('d')
       .innerJoinAndSelect('d.asunto','a')
@@ -57,6 +57,7 @@ export class DocumentosService {
          'd.ruta AS ruta',
         ])
         .where("as.id= :id",{id})
+        .andWhere("d.subido_por=:subido_por",{subido_por})
         .orderBy('a.id', 'ASC')       
         .addOrderBy('d.created_at', 'ASC')
         .getRawMany()
@@ -65,7 +66,7 @@ export class DocumentosService {
       
     const arreglo: object[] = [];
 
-  listDocuments.forEach((document) => {
+    listDocuments.forEach((document) => {
     const asunto = document['asunto'];
     const idAsunto = document['id_asunto'];
 

@@ -57,24 +57,27 @@ export class AsuntosService {
     return `Se actualizo las filas estado y fecha_revision del id:${id}`;
   }
 
-  async finishAsunt(id:number,dataFiles:archivosDataDto[]){
+  async finishAsunt(id:number,cambio_asunto:string,dataFiles:archivosDataDto[]){
     const queryRunner=this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()
 
     try{
-      const finishedAsunt=await queryRunner.manager.update(Asunto,{id},{estado:Estado_asunto.TERMINADO,fecha_terminado:new Date()})
-      console.log(finishedAsunt.affected)
+      const fecha_actual=new Date()
+      const validateAsunt=await queryRunner.manager.findOne(Asunto,{where:{id},select:['estado','fecha_revision']})
+      if(validateAsunt?.estado!==Estado_asunto.PROCESO) throw new BadRequestException("No se puede modificar porque no esta en proceso")
+      if(validateAsunt.fecha_revision>fecha_actual) throw new BadRequestException("Estan mal las fechas")
+      const finishedAsunt=await queryRunner.manager.update(Asunto,{id},{titulo:cambio_asunto,estado:Estado_asunto.TERMINADO,fecha_terminado:fecha_actual})
+      
       await Promise.all(dataFiles.map(async(data)=>{
         await this.documentosService.finallyDocuments(id,data,queryRunner.manager)
       }))
-
+                      
       await queryRunner.commitTransaction()
-      return "Agregado satisfactoriamente"
+      return "Terminado el asunto satisfactoriamente"
     }catch(err){
       await queryRunner.rollbackTransaction()
-      console.log(err)
-      throw new InternalServerErrorException(`Error al finalizar el asunto ${err.message}`)
+      throw new InternalServerErrorException(`${err.message}`)
     }finally{
       await queryRunner.release()
     }
@@ -123,7 +126,7 @@ export class AsuntosService {
       .orderBy('asun.fecha_entregado','ASC')
       .getRawMany()
   
-  
+    if(!listAll || listAll .length===0) throw new NotFoundException("No se encontro")
 
     let idUsados:number[]=[]
       let arregloAsuntos: object[] = []; 
@@ -160,7 +163,7 @@ export class AsuntosService {
       }  
       }
     
-    if(!listAll || listAll .length===0) throw new NotFoundException("No se encontro")
+    
       return arregloAsuntos
   }
 

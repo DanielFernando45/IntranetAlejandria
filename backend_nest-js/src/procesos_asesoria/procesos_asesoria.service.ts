@@ -56,7 +56,7 @@ export class ProcesosAsesoriaService {
       console.log(deletedProcesos.affected)
     return true
     }catch(err){
-      throw new Error(`Error en la eliminacion de los procesos Asesoria ${err}`)
+      throw new InternalServerErrorException(`Error en la eliminacion de los procesos Asesoria ${err}`)
     }
   }
 
