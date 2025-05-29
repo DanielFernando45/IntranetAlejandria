@@ -164,20 +164,20 @@ export class Registros1746554350124 implements MigrationInterface {
             await queryRunner.query(`
                 INSERT INTO Alejandria.documento(id,nombre, ruta, subido_por, created_at, id_asunto)
                 VALUES
-                (1,'Introduccion.pdf','http://localhost:3001/files/product/013ae2a4-7064-4564-9be5-587d9e0960c9.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-01 10:00:00',1),
+                (1,'Introduccion.docx','http://localhost:3001/files/product/013ae2a4-7064-4564-9be5-587d9e0960c9.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-01 10:00:00',1),
                 (2,'Justificacion.pdf','http://localhost:3001/files/product/401ff9ea-a846-4847-b6f3-8c176a5ed28a.pdf','estudiante','2025-05-01 10:00:00',1),
-                (3,'Antecedentes.pdf','http://localhost:3001/files/product/5db587a8-3961-4f6f-a071-aa7ab9ee2783.vnd.openxmlformats-officedocument.spreadsheetml.sheet','estudiante','2025-05-02 10:00:00',4),
-                (4,'Tesis_parcial.pdf','http://localhost:3001/files/product/0c6bb221-0624-438f-a7e4-95ff3b2d1414.mp4','estudiante','2025-05-10 09:00:00',2),
-                (5,'Revision_Antecedentes.pdf','http://localhost:3001/files/product/cf2f9e1d-99dd-4a72-9d2d-0ecd005b2252.mpeg','asesor','2025-05-10 14:00:00',4),
-                (6,'Justificacion_Corregida.docx','http://localhost:3001/files/product/105dfa71-32df-4adc-b89b-864669734213.jpeg','estudiante','2025-05-11 09:00:00',5),
-                (7,'Revision_Introduccion.docx','http://localhost:3001/files/product/493111ef-7525-414f-891f-becb81f7aaf4.png','asesor','2025-05-14 16:00:00',1),
-                (8,'Revision_Justificacion.docx','http://localhost:3001/files/product/3c2eb1e4-91ef-411b-94c2-7f88fa0f87f5.webp','asesor','2025-05-14 16:00:00',1),
-                (9,'Documento_Final.docx','http://localhost:3001/files/product/a1d4105c-8653-42c7-86d6-ec8c76706854.gif','estudiante','2025-05-20 11:30:00',3),
-                (10,'Objetivos_Generales.docx','http://localhost:3001/files/product/3e18078b-36ed-4e02-82d5-1105e5576b93.vnd.rar','estudiante','2025-05-22 11:30:00',6),
-                (11,'Objetivos_Especificos.docx','http://localhost:3001/files/product/73d80ca0-6a46-46d9-b5ce-a024df5a0053.zip','estudiante','2025-05-22 11:30:00',6),
-                (12,'Metodologia_1ra_parte', 'http://localhost:3001/files/product/09949cfc-6cd8-4394-bbd7-ce0ccdcd8291.x-7z-compressed','estudiante','2025-05-23 11:30:00',7),
-                (13,'Entrega_Metodologia_v2.docx','http://localhost:3001/files/product/5974b5e0-cab0-470c-be12-0e1179d0b98f.pdf','estudiante','2025-05-23 11:30:00',7),
-                (14,'Metricas_Metodologia.pdf','http://localhost:3001/files/product/9d2ba25a-123b-40ba-9b38-966d422dc6ca.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-23 11:30:00',7);
+                (3,'Antecedentes.xslx','http://localhost:3001/files/product/5db587a8-3961-4f6f-a071-aa7ab9ee2783.vnd.openxmlformats-officedocument.spreadsheetml.sheet','estudiante','2025-05-02 10:00:00',4),
+                (4,'Tesis_parcial.mp4','http://localhost:3001/files/product/0c6bb221-0624-438f-a7e4-95ff3b2d1414.mp4','estudiante','2025-05-10 09:00:00',2),
+                (5,'Revision_Antecedentes.pptx','http://localhost:3001/files/product/f80ce8fc-af74-43dd-90e2-45fac1d1b4e0.vnd.openxmlformats-officedocument.presentationml.presentation','asesor','2025-05-10 14:00:00',4),
+                (6,'Justificacion_Corregida.jpeg','http://localhost:3001/files/product/105dfa71-32df-4adc-b89b-864669734213.jpeg','estudiante','2025-05-11 09:00:00',5),
+                (7,'Revision_Introduccion.png','http://localhost:3001/files/product/493111ef-7525-414f-891f-becb81f7aaf4.png','asesor','2025-05-14 16:00:00',1),
+                (8,'Revision_Justificacion.webp','http://localhost:3001/files/product/3c2eb1e4-91ef-411b-94c2-7f88fa0f87f5.webp','asesor','2025-05-14 16:00:00',1),
+                (9,'Documento_Final.dif','http://localhost:3001/files/product/a1d4105c-8653-42c7-86d6-ec8c76706854.gif','estudiante','2025-05-20 11:30:00',3),
+                (10,'Objetivos_Generales.rar','http://localhost:3001/files/product/3e18078b-36ed-4e02-82d5-1105e5576b93.vnd.rar','estudiante','2025-05-22 11:30:00',6),
+                (11,'Objetivos_Especificos.zip','http://localhost:3001/files/product/73d80ca0-6a46-46d9-b5ce-a024df5a0053.zip','estudiante','2025-05-22 11:30:00',6),
+                (12,'Metodologia_1ra_parte.7z', 'http://localhost:3001/files/product/09949cfc-6cd8-4394-bbd7-ce0ccdcd8291.x-7z-compressed','estudiante','2025-05-23 11:30:00',7),
+                (13,'Entrega_Metodologia_v2.pdf','http://localhost:3001/files/product/5974b5e0-cab0-470c-be12-0e1179d0b98f.pdf','estudiante','2025-05-23 11:30:00',7),
+                (14,'Metricas_Metodologia.docx','http://localhost:3001/files/product/9d2ba25a-123b-40ba-9b38-966d422dc6ca.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-23 11:30:00',7);
             `);
         }
     
