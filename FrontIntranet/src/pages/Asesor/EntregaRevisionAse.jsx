@@ -2,8 +2,6 @@ import LayoutApp from "../../layout/LayoutApp";
 import { useState, useEffect } from "react";
 import flechaAzul from "../../assets/icons/arrowAzul.svg"
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-import arrowIcon from '../../assets/icons/IconEstudiante/arriba.svg'
-import descargar from '../../assets/icons/Descargas.svg'
 import MiEnvioAsesor from '../../pages/Asesor/EnviosCliente/MisEnviosAsesor'
 import EnvioCliente from '../../pages/Asesor/EnviosCliente/EnviosCliente'
 
@@ -29,7 +27,7 @@ const EntregaRevisionAse = () => {
       const user = JSON.parse(userString);
       const id = user.id;
 
-      fetch(`http://localhost:3001/asesor/listarAsesoramientoConDelegado/${id}`)
+      fetch(`http://localhost:3001/asesor/asesoramientosYDelegado/${id}`)
         .then(res => res.json())
         .then(data => {
           const asesoriasArray = Object.values(data).map(item => ({
@@ -138,9 +136,9 @@ const EntregaRevisionAse = () => {
           <div>
             {
               docEnvio === "MisEnvios" ? (
-                <MiEnvioAsesor/>
+                <MiEnvioAsesor idAsesoramiento={selectedAsesoriaId} />
               ) : (
-                <EnvioCliente/>
+                <EnvioCliente idAsesoramiento={selectedAsesoriaId} />
               )
             }
           </div>
