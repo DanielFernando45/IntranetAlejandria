@@ -1,15 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { PagosService } from './pagos.service';
-import { CreatePagoDto } from './dto/create-pago.dto';
+import { CreatePagoAlContadoDto } from './dto/create-pago-al-contado.dto';
 import { UpdatePagoDto } from './dto/update-pago.dto';
 
 @Controller('pagos')
 export class PagosController {
   constructor(private readonly pagosService: PagosService) {}
 
-  @Post()
-  create(@Body() createPagoDto: CreatePagoDto) {
-    return this.pagosService.create(createPagoDto);
+  @Post("al_contado/:id")
+  async añadir_pago_al_contado(@Body() createPagoDto: CreatePagoAlContadoDto,@Param('id',ParseIntPipe) id_asesoramiento:number) {
+    const response=await this.pagosService.post_pago_al_contado(createPagoDto,id_asesoramiento);
+    return response
   }
 
   @Get()

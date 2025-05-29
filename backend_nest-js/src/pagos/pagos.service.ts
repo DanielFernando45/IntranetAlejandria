@@ -1,10 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePagoDto } from './dto/create-pago.dto';
 import { UpdatePagoDto } from './dto/update-pago.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Pago } from './entities/pago.entity';
+import { Repository } from 'typeorm';
+import { Informacion_Pagos } from './entities/informacion_pagos.entity';
+import { CreatePagoAlContadoDto } from './dto/create-pago-al-contado.dto';
 
 @Injectable()
 export class PagosService {
-  create(createPagoDto: CreatePagoDto) {
+  constructor(
+      @InjectRepository(Pago)
+      private pagoRepo:Repository<Pago>,
+
+      @InjectRepository(Informacion_Pagos)
+      private informacionRepo:Repository<Pago>
+    ){}
+  
+  async post_pago_al_contado(createPagoDto: CreatePagoAlContadoDto,id:number) {
+    const newInfoPago=this.informacionRepo.create()
     return 'This action adds a new pago';
   }
 

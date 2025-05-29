@@ -1,5 +1,6 @@
 import { TipoContrato } from "src/common/entidades/tipoContrato.entity";
 import { TipoTrabajo } from "src/common/entidades/tipoTrabajo.entity";
+import { Informacion_Pagos } from "src/pagos/entities/informacion_pagos.entity";
 import { ProcesosAsesoria } from "src/procesos_asesoria/entities/procesos_asesoria.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -48,4 +49,7 @@ export class Asesoramiento {
 
     @OneToMany(() => ProcesosAsesoria, procesosasesoria => procesosasesoria.asesoramiento)
     procesosasesoria: ProcesosAsesoria[];
+
+    // @OneToMany(()=>Informacion_Pagos,informacion_pago=>informacion_pago.asesoramiento)
+    // informacion_pago:Informacion_Pagos[]
 }

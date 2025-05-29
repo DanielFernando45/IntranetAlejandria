@@ -12,7 +12,7 @@ export class listFinished{
 
     @IsNotEmpty()
     @IsDateString()
-    fecha_revision:Date;
+    fecha_proceso:Date;
 
     @IsNotEmpty()
     @IsDateString()
