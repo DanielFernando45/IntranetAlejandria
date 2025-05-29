@@ -13,7 +13,17 @@ export const fileFilter=(req:Express.Request,file:Express.Multer.File,callback:F
 
     const fileExtension=file.mimetype.split('/')[1]
     console.log(file.mimetype)
-    const validExtension=['vnd.openxmlformats-officedocument.wordprocessingml.document','pdf','vnd.openxmlformats-officedocument.spreadsheetml.sheet','vnd.ms-excel']
+    const validExtension=['application/pdf', 'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'text/plain', 'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // Videos
+    'video/mp4', 'video/webm', 'video/ogg',
+    // Imágenes
+    'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+    // Comprimidos
+    'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed']
 
     if(validExtension.includes(fileExtension)){
         return callback(null,true)
