@@ -175,7 +175,7 @@ export class Registros1746554350124 implements MigrationInterface {
                 (9,'Documento_Final.docx','http://localhost:3001/files/product/a1d4105c-8653-42c7-86d6-ec8c76706854.gif','estudiante','2025-05-20 11:30:00',3),
                 (10,'Objetivos_Generales.docx','http://localhost:3001/files/product/3e18078b-36ed-4e02-82d5-1105e5576b93.vnd.rar','estudiante','2025-05-22 11:30:00',6),
                 (11,'Objetivos_Especificos.docx','http://localhost:3001/files/product/73d80ca0-6a46-46d9-b5ce-a024df5a0053.zip','estudiante','2025-05-22 11:30:00',6),
-                (12,'Metodologia_1ra_parte', 'http://localhost:3001/files/product/09949cfc-6cd8-4394-bbd7-ce0ccdcd8291.x-7z-compressed,'estudiante','2025-05-23 11:30:00',7),
+                (12,'Metodologia_1ra_parte', 'http://localhost:3001/files/product/09949cfc-6cd8-4394-bbd7-ce0ccdcd8291.x-7z-compressed','estudiante','2025-05-23 11:30:00',7),
                 (13,'Entrega_Metodologia_v2.docx','http://localhost:3001/files/product/5974b5e0-cab0-470c-be12-0e1179d0b98f.pdf','estudiante','2025-05-23 11:30:00',7),
                 (14,'Metricas_Metodologia.pdf','http://localhost:3001/files/product/9d2ba25a-123b-40ba-9b38-966d422dc6ca.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-23 11:30:00',7);
             `);
