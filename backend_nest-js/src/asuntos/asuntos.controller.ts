@@ -25,8 +25,11 @@ export class AsuntosController {
     fileFilter,
     storage:diskStorage({
       destination:'./static/documents',
-      filename:fileNamer
-    })
+      filename:fileNamer,
+    }),
+    limits:{
+      fileSize:1024*1025*100,
+    }
   }))
   async addAsuntoinAsesoramiento(@UploadedFiles() files:Express.Multer.File[],@Body() createAsuntoDto: CreateAsuntoDto ,@Param('id_asesoramiento',ParseIntPipe) id_asesoramiento:number) {
     if(!files || files.length===0)throw new BadRequestException("No se ha enviado archivos")

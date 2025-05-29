@@ -8,6 +8,7 @@ import { listAllDocumento } from './dto/list-all-documento.dto';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { archivosDataDto } from 'src/asuntos/dto/archivos-data.dto';
+import { asuntoFileDto } from './dto/asunto.files.dto';
 
 @Injectable()
 export class DocumentosService {
@@ -17,6 +18,7 @@ export class DocumentosService {
     @InjectRepository(Documento)
     private documentoRepo:Repository<Documento>
   ){}
+  
 
   getFile(path:string){
     const pathFile=join(__dirname,'../../../static/documents',path)
@@ -55,6 +57,9 @@ export class DocumentosService {
         'a.titulo AS asunto',
         'a.estado AS estado',
          'd.ruta AS ruta',
+         'a.fecha_entregado AS fecha_entregado',
+         'a.fecha_revision AS fecha_revision',
+         'a.fecha_terminado AS fecha_terminado',
         ])
         .where("as.id= :id",{id})
         .andWhere("d.subido_por=:subido_por",{subido_por})
@@ -63,30 +68,47 @@ export class DocumentosService {
         .getRawMany()
         
       if(listDocuments.length===0)throw new NotFoundException("No se encontro el documento")
-      
-    const arreglo: object[] = [];
+    
+    
+
+    const arreglo: asuntoFileDto[] = [];
 
     listDocuments.forEach((document) => {
     const asunto = document['asunto'];
     const idAsunto = document['id_asunto'];
 
     let index = arreglo.findIndex((item: any) => item['id_asunto'] === idAsunto);
+    
+   let estado = document['estado'] || 'null';
+let fecha: string;
 
-    if (index === -1) {
-      // Nuevo asunto
-      arreglo.push({
-        id_asunto: idAsunto,
-        asunto,
-        estado: document['estado'],
-        nombreDoc1: document['nombre'],
-        ruta1: document['ruta'],
-      });
+if (estado === 'terminado') {
+  fecha = document['fecha_terminado'];
+} else if (estado === 'proceso') {
+  fecha = document['fecha_revision'];
+} else if (estado === 'entregado') {
+  fecha = document['fecha_entregado'];
+} else {
+  fecha = new Date().toISOString(); // Valor por defecto si no hay fecha específica
+}
+
+if (index === -1) {
+  // Nuevo asunto
+  arreglo.push({
+    id_asunto: idAsunto,
+    asunto,
+    estado,
+    fecha, // ✅ ya lo tienes
+    nombreDoc1: document['nombre'],
+    ruta1: document['ruta'],
+  });
     } else {
       
       const count = Object.keys(arreglo[index]).filter((key) => key.startsWith('nombreDoc')).length + 1;
 
       arreglo[index][`nombreDoc${count}`] = document['nombre'];
       arreglo[index][`ruta${count}`] = document['ruta'];
+      
     }
   });
 

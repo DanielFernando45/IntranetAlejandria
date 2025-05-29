@@ -18,6 +18,7 @@ import { AsuntosModule } from './asuntos/asuntos.module';
 import { DocumentosModule } from './documentos/documentos.module';
 import { ReunionesModule } from './reuniones/reuniones.module';
 import { RecursosModule } from './recursos/recursos.module';
+import { PagosModule } from './pagos/pagos.module';
 
 let puerto:number
 
@@ -51,7 +52,7 @@ if(process.env.DB_PORT){
     AdminModule,
     ClienteModule, 
     AsesorModule, MailModule, AsesoramientoModule, ProcesosAsesoriaModule
-    ,CommonModule, AsuntosModule, DocumentosModule, ReunionesModule, RecursosModule],
+    ,CommonModule, AsuntosModule, DocumentosModule, ReunionesModule, RecursosModule, PagosModule],
   controllers: [AppController],
   providers: [AppService],
 })
