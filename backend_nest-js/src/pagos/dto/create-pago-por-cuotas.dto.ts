@@ -1,6 +1,6 @@
-import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsDate, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
-export class CreatePagoAlContadoDto {
+export class CreatePagoPorCuotaDto {
     @IsString()
     @IsNotEmpty()
     titulo:string;
@@ -12,6 +12,10 @@ export class CreatePagoAlContadoDto {
     @IsDateString()
     @IsNotEmpty()
     fecha_pago:Date;
+
+    @IsNumber()
+    @IsNotEmpty()
+    numero_cuotas:number;
 
     @IsNumber()
     @IsNotEmpty()
