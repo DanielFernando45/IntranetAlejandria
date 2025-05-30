@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import Menu from "../../assets/icons/IconEstudiante/BotonMenu.svg";
@@ -33,67 +33,93 @@ const LINKS = [
 
 const EstudianteSidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 900);
+      if (window.innerWidth >= 900) {
+        setIsExpanded(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleMenu = () => {
     setIsExpanded(!isExpanded);
   };
 
   const handleItemClick = () => {
-    setIsExpanded(false);
+    if (isMobile) {
+      setIsExpanded(false);
+    }
   };
 
   const isActive = (path) => location.pathname.startsWith(path);
+
   return (
     <>
-      {isExpanded && (
+      {isExpanded && isMobile && (
         <div
           className="fixed inset-0 bg-black/30 z-20"
           onClick={() => setIsExpanded(false)}
         />
       )}
-
+  
       <nav
-        className={`fixed left-0 top-0 h-full ${isExpanded ? "w-[266px]" : "w-[100px]"
-          } flex-shrink-0 bg-white z-30 transition-all duration-300`}
+        className={`fixed left-0 top-0 h-full ${
+          isMobile 
+            ? (isExpanded ? "w-[266px]" : "w-[100px] h-[71px] shadow-md") 
+            : (isExpanded ? "w-[266px]" : "w-[100px]")
+        } flex-shrink-0 bg-white z-30 transition-all duration-300`}
       >
-        <div className="flex flex-col items-center gap-[30px] py-5 px-5">
-          <img src={LogoAleja} alt="Logo" />
-          <button onClick={toggleMenu}>
-            <img src={isExpanded ? Menu : MenuRetraido} alt="Toggle Menu" />
-          </button>
-        </div>
+        {!isMobile || isExpanded ? (
+          <div className="flex flex-col items-center gap-[30px] py-5 px-5">
+            <img src={LogoAleja} alt="Logo" />
+            <button onClick={toggleMenu} >
+              <img src={isExpanded ? Menu : MenuRetraido} alt="Toggle Menu" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center py-5">
+            <button onClick={toggleMenu} className="p-2">
+              <img src={MenuRetraido} alt="Toggle Menu" />
+            </button>
+          </div>
+        )}
 
-        <ul className="flex flex-col gap-1 items-start">
-          {LINKS.map((link) => {
-            // Verifica si la ruta principal o alguna de sus subrutas está activa
-            const active = isActive(link.path);
-            return (
-              <div key={link.title}>
-                {/* Solo renderizamos la ruta principal */}
-                <Link to={link.path}>
-                  <li
-                    className={`flex items-center ${isExpanded ? "w-[266px]" : "w-[100px]"
+        {(!isMobile || isExpanded) && (
+          <ul className="flex flex-col gap-1 items-start">
+            {LINKS.map((link) => {
+              const active = isActive(link.path);
+              return (
+                <div key={link.title}>
+                  <Link to={link.path}>
+                    <li
+                      className={`flex items-center ${
+                        isExpanded ? "w-[266px]" : "w-[100px]"
                       } h-[77px] px-[20px] py-[25px] cursor-pointer flex-shrink-0 bg-white z-30 transition-all duration-300 
                         hover:bg-[#F0EFEE] ${active ? "bg-[#F0EFEE] border-l-[5px] border-[#000]" : ""}`}
-                    onClick={handleItemClick}
-                  >
-                    <div className="flex items-center gap-4 w-full">
-                      <img src={link.icono} className="w-6 h-6" />
-                      {isExpanded && (
-                        <span className="text-[17px] font-medium text-gray-800">
-                          {link.title}
-                        </span>
-                      )}
-                    </div>
-                  </li>
-                </Link>
-
-                {/* Las subrutas ya no se renderizan en el sidebar */}
-              </div>
-            );
-          })}
-        </ul>
+                      onClick={handleItemClick}
+                    >
+                      <div className="flex items-center gap-4 w-full">
+                        <img src={link.icono} className="w-6 h-6" />
+                        {isExpanded && (
+                          <span className="text-[17px] font-medium text-gray-800">
+                            {link.title}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  </Link>
+                </div>
+              );
+            })}
+          </ul>
+        )}
       </nav>
     </>
   );

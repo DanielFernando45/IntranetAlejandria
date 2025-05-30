@@ -54,7 +54,6 @@ const ReunionesEstudiante = () => {
                                             </span>
                                         </div>
                                     </div>
-
                                     <div className="flex flex-col sm:flex-row w-full sm:w-[310px] h-auto sm:h-[150px] items-center">
                                         <div className="flex flex-col justify-center items-center rounded-t-xl sm:rounded-l-xl sm:rounded-tr-none w-full sm:w-[104px] h-[100px] sm:h-full bg-[#054755] p-4 text-white">
                                             <p>Marzo</p>
@@ -72,7 +71,6 @@ const ReunionesEstudiante = () => {
                                             </span>
                                         </div>
                                     </div>
-
                                     <div className="flex flex-col sm:flex-row w-full sm:w-[310px] h-auto sm:h-[150px] items-center">
                                         <div className="flex flex-col justify-center items-center rounded-t-xl sm:rounded-l-xl sm:rounded-tr-none w-full sm:w-[104px] h-[100px] sm:h-full bg-[#0A8EAA] p-4 text-white">
                                             <p>Marzo</p>
@@ -90,7 +88,6 @@ const ReunionesEstudiante = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    
                                     <div className="flex flex-col sm:flex-row w-full sm:w-[310px] h-auto sm:h-[150px] items-center">
                                         <div className="flex flex-col justify-center items-center rounded-t-xl sm:rounded-l-xl sm:rounded-tr-none w-full sm:w-[104px] h-[100px] sm:h-full bg-[#0A8EAA] p-4 text-white">
                                             <p>Marzo</p>
@@ -108,7 +105,6 @@ const ReunionesEstudiante = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    
                                 </div>
 
 
