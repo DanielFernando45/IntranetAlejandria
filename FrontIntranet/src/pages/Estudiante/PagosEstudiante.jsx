@@ -28,13 +28,13 @@ const PagosEstudiante = () => {
                 <div className='flex justify-center w-[170px]'>Cuota 1</div>
                 <div className='flex justify-center w-[80px]'>S/1100</div>
                 <div className='flex justify-center w-[160px]'>13 de Abril 2025</div>
-                <div className='flex justify-center w-[100px] text-[#E7B008] border border-[#E7B008] rounded-lg '>En proceso</div>
+                <div className='flex justify-center w-[100px] text-[#1DEE43] border border-[#1DEE43] rounded-lg '>Pagado</div>
               </div>
               <div className='flex flex-row justify-between bg-[#E9E7E7] p-2 rounded-lg'>
                 <div className='flex justify-center w-[170px]'>Cuota 1</div>
                 <div className='flex justify-center w-[80px]'>S/1100</div>
                 <div className='flex justify-center w-[160px]'>25 de Febrero 2025</div>
-                <div className='flex justify-center w-[100px] text-[#F51515] border border-[#F51515] rounded-lg '>Vencido</div>
+                <div className='flex justify-center w-[100px] text-[#1DEE43] border border-[#1DEE43] rounded-lg '>Pagado</div>
               </div>
             </div>
             <div className='flex flex-col gap-4 w-[230px] '>
@@ -76,13 +76,13 @@ const PagosEstudiante = () => {
                 <div className='flex justify-center w-[300px]'>Elaboración de paper</div>
                 <div className='flex justify-center w-[80px]'>S/1100</div>
                 <div className='flex justify-center w-[160px]'>13 de Abril 2025</div>
-                <div className='flex justify-center w-[100px] text-[#E7B008] border border-[#E7B008] rounded-lg '>En proceso</div>
+                <div className='flex justify-center w-[100px] text-[#1DEE43] border border-[#1DEE43] rounded-lg '>Pagado</div>
               </div>
               <div className='flex flex-row justify-between bg-[#E9E7E7] p-2 rounded-lg'>
                 <div className='flex justify-center w-[300px]'>Especialista usando proteus</div>
                 <div className='flex justify-center w-[80px]'>S/1100</div>
                 <div className='flex justify-center w-[160px]'>25 de Febrero 2025</div>
-                <div className='flex justify-center w-[100px] text-[#F51515] border border-[#F51515] rounded-lg '>Vencido</div>
+                <div className='flex justify-center w-[100px] text-[#1DEE43] border border-[#1DEE43] rounded-lg '>Pagado</div>
               </div>
             </div>
             
