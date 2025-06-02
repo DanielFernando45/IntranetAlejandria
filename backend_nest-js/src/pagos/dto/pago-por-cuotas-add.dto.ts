@@ -1,8 +1,9 @@
-import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
 import { ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreatePagoPorCuotaDto } from './create-pago-por-cuotas.dto';
 import { Cuotas } from './cuotas.dto';
+import { UpdatePagoPorCuotasDto } from './update-pago.dto';
+import { UpdateCuotasDto } from './cuotas-update.dto';
 
 export class PagoPorCuotaWrpDTO{
     @ValidateNested()
@@ -14,12 +15,12 @@ export class PagoPorCuotaWrpDTO{
     cuotas:Cuotas;
 }
 
-// export class AsesoramientoUpdateWrpDTO{
-//     @ValidateNested()
-//     @Type(()=>UpdateAsesoramientoDto)
-//     createAsesoramiento:UpdateAsesoramientoDto;
+export class PagoPorCuotaUpdate{
+    @ValidateNested()
+    @Type(()=>UpdatePagoPorCuotasDto)
+    updatePagoPorCuotas:UpdatePagoPorCuotasDto;
 
-//     @ValidateNested()
-//     @Type(()=>clientesExtraDTO)
-//     clientes:clientesExtraDTO;
-// }
+    @ValidateNested()
+    @Type(()=>UpdateCuotasDto)
+    updateCuotas:UpdateCuotasDto;
+}

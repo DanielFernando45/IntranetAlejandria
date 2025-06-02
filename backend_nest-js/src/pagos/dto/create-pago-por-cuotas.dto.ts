@@ -20,5 +20,4 @@ export class CreatePagoPorCuotaDto {
     @IsNumber()
     @IsNotEmpty()
     id_asesoramiento:number;
-    
 }

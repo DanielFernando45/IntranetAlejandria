@@ -15,6 +15,5 @@ export class CreatePagoAlContadoDto {
 
     @IsNumber()
     @IsNotEmpty()
-    id_asesoramiento:number;
-    
+    id_asesoramiento:number; 
 }

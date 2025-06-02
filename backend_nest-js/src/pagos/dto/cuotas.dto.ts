@@ -23,7 +23,7 @@ export class Cuotas{
 
     @IsDateString()
     @IsOptional()
-    fecha_pago2:Date;
+    fecha_pago2?:Date;
 
     @IsString()
     @IsOptional()
