@@ -57,7 +57,7 @@ const EntregaRevisionEst = () => {
 
   return (
     <LayoutApp>
-      <main className="flex flex-col gap-11 m-5 items-start p-5">
+      <main className="flex flex-col gap-3 mx-5 items-start p-5">
 
         <div className="flex ml-8 justify-between w-full">
           <button className="flex justify-between px-3 rounded-lg bg-white w-[180px] items-center font-medium" 
@@ -114,7 +114,7 @@ const EntregaRevisionEst = () => {
 
         </div>
 
-        <div className="flex flex-col gap-[10px] ml-8 p-[20px] w-full h-[300px] bg-white rounded-[10px]">
+        <div className="flex flex-col gap-[10px] ml-8 p-[20px] w-full  bg-white rounded-[10px]">
 
           <div className="flex justify-between  ">
             <h2 className="text-2xl font-bold">Documentos</h2>

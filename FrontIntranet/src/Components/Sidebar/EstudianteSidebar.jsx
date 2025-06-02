@@ -21,8 +21,8 @@ const LINKS = [
     path: "/estudiante/entrega",
     title: "Entrega/Revisión",
     subLinks: [
-      { path: "/estudiante/entrega/terminados"},
-      { path: "/estudiante/entrega/pendientes"},
+      { path: "/estudiante/entrega/terminados" },
+      { path: "/estudiante/entrega/pendientes" },
     ]
   },
   { icono: Calendario, path: "/estudiante/calendario", title: "Calendario" },
@@ -64,17 +64,17 @@ const EstudianteSidebar = () => {
     <>
       {isExpanded && isMobile && (
         <div
-          className="fixed inset-0 bg-black/30 z-20"
+          className="fixed inset-0 bg-black/30 z-20 "
           onClick={() => setIsExpanded(false)}
         />
       )}
-  
+
       <nav
-        className={`fixed left-0 top-0 h-full ${
-          isMobile 
-            ? (isExpanded ? "w-[266px]" : "w-[100px] h-[71px] shadow-md") 
-            : (isExpanded ? "w-[266px]" : "w-[100px]")
-        } flex-shrink-0 bg-white z-30 transition-all duration-300`}
+        className={`fixed left-0 top-0  
+            ${isMobile
+            ? (isExpanded ? "w-[266px] h-full" : "w-[101px] h-[70px] shadow-md")
+            : (isExpanded ? "w-[266px] " : "w-[100px] h-full")
+          } flex-shrink-0 bg-white z-30 transition-[width] duration-500 ease-in-out overflow-hidden`}
       >
         {!isMobile || isExpanded ? (
           <div className="flex flex-col items-center gap-[30px] py-5 px-5">
@@ -92,28 +92,28 @@ const EstudianteSidebar = () => {
         )}
 
         {(!isMobile || isExpanded) && (
-          <ul className="flex flex-col gap-1 items-start">
+          <ul className="flex flex-col gap-1 items-start ">
             {LINKS.map((link) => {
               const active = isActive(link.path);
               return (
                 <div key={link.title}>
                   <Link to={link.path}>
                     <li
-                      className={`flex items-center ${
-                        isExpanded ? "w-[266px]" : "w-[100px]"
-                      } h-[77px] px-[20px] py-[25px] cursor-pointer flex-shrink-0 bg-white z-30 transition-all duration-300 
-                        hover:bg-[#F0EFEE] ${active ? "bg-[#F0EFEE] border-l-[5px] border-[#000]" : ""}`}
+                      className={`flex items-center ${isExpanded ? "w-[266px]" : "w-[100px]"} h-[77px] px-[20px] py-[25px] cursor-pointer flex-shrink-0
+                                  z-30 transition-all duration-300 ease-in-out hover:bg-[#F0EFEE] ${active ? "bg-[#F0EFEE] border-l-[5px] border-[#000]" : ""}`}
                       onClick={handleItemClick}
                     >
-                      <div className="flex items-center gap-4 w-full">
-                        <img src={link.icono} className="w-6 h-6" />
-                        {isExpanded && (
-                          <span className="text-[17px] font-medium text-gray-800">
-                            {link.title}
-                          </span>
-                        )}
+                      <div className="flex items-center gap-4 w-full transition-all duration-300 ease-in-out">
+                        <img src={link.icono} className="w-6 h-6 transition-all duration-300 ease-in-out" />
+                        <span
+                          className={`text-[17px] font-medium text-gray-800 transition-opacity duration-300 ease-in-out ${isExpanded ? "opacity-100 ml-1" : "opacity-0 ml-[-10px]"
+                            }`}
+                        >
+                          {link.title}
+                        </span>
                       </div>
                     </li>
+
                   </Link>
                 </div>
               );

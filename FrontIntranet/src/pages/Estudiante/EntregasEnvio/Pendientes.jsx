@@ -48,25 +48,25 @@ const Pendientes = () => {
   return (
     <div className="flex flex-col gap-3">
       {pendientes.map((pendiente) => (
-        <div key={pendiente.id} className="flex flex-col text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md px-6 transition-all duration-300">
+        <div key={pendiente.id_asunto} className="flex flex-col text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md px-6 transition-all duration-300">
           <div className='flex justify-between items-center py-1'>
             <div className="w-[300px] flex">{pendiente.titulo}</div>
             <div className="w-[250px] flex justify-center">
               {formatDate(pendiente.fecha_entrega)}
             </div>
             <button 
-              onClick={() => toggleOpen(pendiente.id)} 
+              onClick={() => toggleOpen(pendiente.id_asunto)} 
               className="transition-transform duration-300"
             >
               <img 
                 src={arrowIcon} 
                 alt="toggle" 
-                className={`transform transition-transform duration-300 ${openItems[pendiente.id] ? 'rotate-180' : 'rotate-0'}`} 
+                className={`transform transition-transform duration-300 ${openItems[pendiente.id_asunto] ? 'rotate-180' : 'rotate-0'}`} 
               />
             </button>
           </div>
 
-          {openItems[pendiente.id] && (
+          {openItems[pendiente.id_asunto] && (
             <div className='flex flex-col gap-2 transition-all duration-300 ease-in-out mt-5'>
               <div className='flex justify-between'>
                 <div>{pendiente.documento_0}</div>

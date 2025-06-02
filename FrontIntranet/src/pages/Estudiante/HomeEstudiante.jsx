@@ -7,7 +7,8 @@ import FeclaIzqui from "../../assets/icons/arrow-left.svg"
 import FechaDerec from "../../assets/icons/arrow-right.svg"
 import Descargas from "../../assets/icons/Descargas.svg"
 import Zoom from "../../assets/images/zoom.svg"
-
+import DocsAsesor from "../Estudiante/EntregasEnvio/EnvioAsesor"
+import { useState, useEffect } from "react";
 
 const NoticiasRecientes = [
   { imagen: NoticiaUno, texto: "Reunión de asesores el viernes a las 3 PM" },
@@ -19,27 +20,55 @@ const NoticiasRecientes = [
 
 
 const HomeEstudiante = () => {
+  
+  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
+
+  useEffect(() => {
+      const userString = localStorage.getItem('user');
+      if (userString) {
+        const user = JSON.parse(userString);
+        const id = user.id;
+  
+        fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+          .then(res => res.json())
+          .then(data => {
+            const asesoriasArray = Object.values(data).map(item => ({
+              id: item.id,
+              profesion: item.profesion_asesoria
+            }));
+
+            if (asesoriasArray.length > 0) {
+              const primeraAsesoriaId = asesoriasArray[0].id;
+              setSelectedAsesoriaId(primeraAsesoriaId);
+  
+            }
+          })
+          .catch(error => console.error('Error al obtener asesorías:', error));
+      }
+    }, []);
+
   return (
     <LayoutApp>
-      <main className="ml-8 mr-8">
+      <main className="mx-1">
 
         {/*Portada */}
-        <div className=" flex items-center justify-between bg-[#17162E] text-white rounded-2xl  w-full   shadow-lg   ">
+        <div className=" flex items-center flex-col  lg:flex-row justify-between bg-[#17162E] text-white rounded-2xl  w-full   shadow-lg   ">
 
-          <div className="flex flex-col w-2/3 pl-14 ">
-            <p className="text-[22px] text-[#B5B5B5] ">12 de Febrero , 2025</p>
-            <h2 className="text-[38px] font-semibold mt-2">
+          <div className="flex flex-col lg:w-2/3 p-4 lg:pl-14 pt-6">
+            <p className="mn:text-[15px] text-[12px] lg:text-[22px] text-[#B5B5B5] ">12 de Febrero , 2025</p>
+            <h2 className="lg:text-[38px] mn:text-[12px] text-[15px] font-semibold mt-2">
               Bienvenido Fernando Guzman al
               Intranet de asesoría de tesis
             </h2>
-            <p className="text-[22px] text-[#B5B5B5] ">Aquí encontraras toda las herramientas que vas a utilizar</p>
+            <p className="lg:text-[22px] text-[12px] text-[#B5B5B5]  ">Aquí encontraras toda las herramientas que vas a utilizar</p>
           </div>
 
-          <div className="h-[280px]">
+          <div className="flex lg:h-[280px] h-[100px]">
+            
             <img
               src={portada}
               alt="Graduación"
-              className="rounded-r-xl w-full h-full object-cover"
+              className="rounded-r-xl w-full h-full  object-cover"
             />
           </div>
 
@@ -78,58 +107,10 @@ const HomeEstudiante = () => {
               </div>
             </section>
 
-            <div className="flex flex-col  ">
-              <div className="flex justify-between text-[#495D72] font-medium   p-[6px] rounded-md">
-                <div className="w-[300px] flex justify-center">Titulo</div>
-                <div className="w-[250px] flex justify-center">Descripcion</div>
-                <div className="w-[100px] flex justify-center">Fecha</div>
-                <div className="w-[102px] flex justify-center">Time</div>
-                <div className="w-[85px] rounded-md px-3   flex justify-center "> Descargas </div>
-              </div>
-              <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7]  p-[6px] rounded-md">
-                <div className="w-[300px] flex justify-center">Observaciones de la introducción</div>
-                <div className="w-[250px] flex justify-center">Se envía las observaciones</div>
-                <div className="w-[100px] flex justify-center">May 25,2025</div>
-                <div className="w-[102px] flex justify-center">11:15 AM</div>
-                <div className="w-[85px] rounded-md px-3  flex justify-center "> <img className="w-[15px]" src={Descargas}></img> </div>
-              </div>
-              <div className="flex justify-between text-[#2B2829] font-normal   p-[6px] rounded-md">
-                <div className="w-[300px] flex justify-center">Observaciones de la introducción</div>
-                <div className="w-[250px] flex justify-center">Se envía las observaciones</div>
-                <div className="w-[100px] flex justify-center">May 25,2025</div>
-                <div className="w-[102px] flex justify-center">11:15 AM</div>
-                <div className="w-[85px] rounded-md px-3  flex justify-center "> <img className="w-[15px]" src={Descargas}></img> </div>
-              </div>
-              <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md">
-                <div className="w-[300px] flex justify-center">Observaciones de la introducción</div>
-                <div className="w-[250px] flex justify-center">Se envía las observaciones</div>
-                <div className="w-[100px] flex justify-center">May 25,2025</div>
-                <div className="w-[102px] flex justify-center">11:15 AM</div>
-                <div className="w-[85px] rounded-md px-3  flex justify-center "> <img className="w-[15px]" src={Descargas}></img> </div>
-              </div>
-              <div className="flex justify-between text-[#2B2829] font-normal   p-[6px] rounded-md">
-                <div className="w-[300px] flex justify-center">Observaciones de la introducción</div>
-                <div className="w-[250px] flex justify-center">Se envía las observaciones</div>
-                <div className="w-[100px] flex justify-center">May 25,2025</div>
-                <div className="w-[102px] flex justify-center">11:15 AM</div>
-                <div className="w-[85px] rounded-md px-3  flex justify-center "> <img className="w-[15px]" src={Descargas}></img> </div>
-              </div>
-              <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7]  p-[6px] rounded-md">
-                <div className="w-[300px] flex justify-center">Observaciones de la introducción</div>
-                <div className="w-[250px] flex justify-center">Se envía las observaciones</div>
-                <div className="w-[100px] flex justify-center">May 25,2025</div>
-                <div className="w-[102px] flex justify-center">11:15 AM</div>
-                <div className="w-[85px] rounded-md px-3  flex justify-center "> <img className="w-[15px]" src={Descargas}></img> </div>
-              </div>
-              <div className="flex justify-between text-[#2B2829] font-normal   p-[6px] rounded-md">
-                <div className="w-[300px] flex justify-center">Observaciones de la introducción</div>
-                <div className="w-[250px] flex justify-center">Se envía las observaciones</div>
-                <div className="w-[100px] flex justify-center">May 25,2025</div>
-                <div className="w-[102px] flex justify-center">11:15 AM</div>
-                <div className="w-[85px] rounded-md px-3  flex justify-center "> <img className="w-[15px]" src={Descargas}></img> </div>
-              </div>
-
+            <div>
+              <DocsAsesor idAsesoramiento={selectedAsesoriaId}></DocsAsesor>
             </div>
+
 
           </div>
 
