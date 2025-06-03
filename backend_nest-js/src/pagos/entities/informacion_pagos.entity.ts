@@ -7,6 +7,11 @@ export enum tipoPago{
     CUOTAS="cuotas"
 }
 
+export enum tipoServicio{
+    ASESORIA="asesoria",
+    OTROS="otros"
+}
+
 @Entity()
 export class Informacion_Pagos{
     @PrimaryGeneratedColumn()
@@ -20,6 +25,9 @@ export class Informacion_Pagos{
 
     @Column({type:'enum',enum:tipoPago})
     tipo_pago:tipoPago;
+
+    @Column({type:'enum',enum:tipoServicio})
+    tipo_servicio:tipoServicio
 
     @Column({nullable:true})
     numero_cuotas:number;

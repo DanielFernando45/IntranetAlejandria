@@ -2,11 +2,12 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { estadoPago, Pago } from './entities/pago.entity';
 import { DataSource, Repository } from 'typeorm';
-import { Informacion_Pagos, tipoPago } from './entities/informacion_pagos.entity';
+import { Informacion_Pagos, tipoPago, tipoServicio } from './entities/informacion_pagos.entity';
 import { CreatePagoAlContadoDto } from './dto/create-pago-al-contado.dto';
 import { PagoPorCuotaUpdate, PagoPorCuotaWrpDTO } from './dto/pago-por-cuotas-add.dto';
 import { UpdateCuotasDto } from './dto/cuotas-update.dto';
 import { UpdatePagoContadoDto } from './dto/update-pago.dto';
+import { listServiciosDto } from './dto/listDtos/list-servicios.dto';
 
 @Injectable()
 export class PagosService {
@@ -21,18 +22,20 @@ export class PagosService {
       private readonly dataSource:DataSource
     ){}
   
-  async post_pago_al_contado(createPagoDto: CreatePagoAlContadoDto) {
+  async contadoYotrosServicios(createPagoDto: CreatePagoAlContadoDto,tipo_servicio:tipoServicio) {
     const queryRunner=this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()  
 
     try{
       const newInfopago=queryRunner.manager.create(Informacion_Pagos,{titulo:createPagoDto.titulo,pago_total:createPagoDto.pago_total
-        ,numero_cuotas:1,fecha_creado:new Date(),tipo_pago:tipoPago.CONTADO,asesoramiento:{id:createPagoDto.id_asesoramiento}
+        ,numero_cuotas:1,fecha_creado:new Date(),
+        tipo_pago:tipoPago.CONTADO,tipo_servicio:tipo_servicio,
+        asesoramiento:{id:createPagoDto.id_asesoramiento}
       })
-
+      console.log(newInfopago)
       const {id}=await queryRunner.manager.save(newInfopago)
-
+      
       const newPago=queryRunner.manager.create(Pago,{nombre:createPagoDto.titulo,fecha_pago:createPagoDto.fecha_pago,
         estado_pago:estadoPago.PAGADO,monto:createPagoDto.pago_total,informacion_pago:{id}})
       
@@ -61,6 +64,7 @@ export class PagosService {
         numero_cuotas:infoValues.numero_cuotas,
         fecha_creado:new Date(),
         tipo_pago:tipoPago.CUOTAS,
+        tipo_servicio:tipoServicio.ASESORIA,
         asesoramiento:{id:infoValues.id_asesoramiento}
     })
       const {id}=await queryRunner.manager.save(newInfopago)
@@ -129,10 +133,67 @@ export class PagosService {
     await this.pagoRepo.save(cuotas)
     return `Se actualizaron las cuotas`;
   } 
-  
-  findAll() {
-    return `This action returns all pagos`;
+
+  async updateOtroServicios(id:number,body:UpdatePagoContadoDto){
+    const queryRunner=this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+    try{
+      const infoPago = await queryRunner.manager.findOne(Informacion_Pagos, {
+      where: { id, tipo_servicio:tipoServicio.OTROS},
+      relations: ['asesoramiento'],
+      });
+      if(infoPago===null)throw new NotFoundException("No se encontro un servicio de tipo otros")
+     
+      const pago=await queryRunner.manager.findOneByOrFail(Pago,{informacion_pago:{id}})
+      
+
+      if(body.id_asesoramiento && body.pago_total){
+        infoPago.asesoramiento.id=body.id_asesoramiento
+        infoPago.pago_total=body.pago_total     
+      }
+      if(body.pago_total) pago.monto=body.pago_total
+      if(body.fecha_pago) pago.fecha_pago=body.fecha_pago
+
+
+      await queryRunner.manager.save(infoPago)
+      await queryRunner.manager.save(pago)
+
+      await queryRunner.commitTransaction()
+
+      return "Actualizado satisfactoriamente"
+    }catch(err){
+      await queryRunner.rollbackTransaction()
+      return (err.message)
+    }finally{
+      await queryRunner.release()
+    }
   }
+  
+  async findAllServicios():Promise<listServiciosDto[]>{
+    const infoServicios=await this.informacionRepo
+    .createQueryBuilder('i')
+    .innerJoinAndSelect('i.asesoramiento','a')
+    .innerJoinAndSelect('i.pagos','p')
+    .select(['a.id AS id','i.titulo AS titulo','i.pago_total AS pago_total','p.fecha_pago AS fecha_pago'])
+    .where('i.tipo_servicio=:tipo_servicio',{tipo_servicio:tipoServicio.OTROS})
+    .getRawMany()
+    
+    console.log(infoServicios)
+    
+    const response=infoServicios.map((info)=>{
+      return({
+        "id":info.id,
+        "delegado":"a",
+        "titulo":info.titulo,
+        "pago_total":info.pago_total,
+        "fecha_pago":info.fecha_pago
+      }
+      )
+    })
+    return response;
+  }
+
 
   findOne(id: number) {
     return `This action returns a #${id} pago`;
