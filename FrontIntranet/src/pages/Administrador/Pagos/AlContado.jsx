@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from "react";
-import AlContadoNuevo from '../../../Components/Administrador/Pagos/AlContadoNuevo';
-import EnActividad from '../../../Components/Administrador/Pagos/EnActividad';
+import AlContadoNuevo from './AlContado/AlContadoNuevo';
+import EnActividad from './AlContado/EnActividad';
 const AlContado = () => {
   const [contado, setContado] = useState("nuevo");  
 
@@ -26,12 +26,10 @@ const AlContado = () => {
       <div>
         {contado === "nuevo" ? (
           <>
-
             <AlContadoNuevo></AlContadoNuevo>
-
           </>
         ) : (
-          <EnActividad></EnActividad>
+            <EnActividad></EnActividad>
         )}
       </div>
 

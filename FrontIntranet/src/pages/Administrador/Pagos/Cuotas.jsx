@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from "react";
-import CuotasNuevos from '../../../Components/Administrador/Pagos/CuotasNuevo';
-import GestionPago from '../../../Components/Administrador/Pagos/GestionPagos';
+import CuotasNuevos from './Cuotas/CuotasNuevo';
+import GestionPago from './Cuotas/GestionPagos';
 
 const Cuotas = () => {
   const [vista,setVista]=useState("ClientesNuevo");

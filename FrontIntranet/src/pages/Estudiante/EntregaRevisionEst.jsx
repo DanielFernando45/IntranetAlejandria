@@ -11,12 +11,9 @@ const EntregaRevisionEst = () => {
   const [showModal, setShowModal] = useState(false);
   const [asesorias, setAsesorias] = useState([]);
   const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
-  const [isOpen, setIsOpen] = useState(false)
   const [docEnvio, setEnvio] = useState("MisEnvios");
 
-  const toggleOpen = () => {
-    setIsOpen(!isOpen)
-  }
+
 
   const navigate = useNavigate();
   const location = useLocation();

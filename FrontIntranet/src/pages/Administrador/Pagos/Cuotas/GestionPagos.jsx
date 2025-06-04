@@ -1,14 +1,15 @@
 import React from 'react'
-
+import ActualizarPago from '../../../../Components/Administrador/Pagos/ActualizarPago'
  const GestionPagos = () => {
     return (
+        <>
         <div className="flex flex-col ">
 
             <div className="flex justify-between text-[#495D72] font-medium p-[6px] pr-10 rounded-md">
                 <div className="w-[40px] flex justify-center">ID</div>
                 <div className="w-[300px] flex justify-center">Alumno</div>
                 <div className="w-[210px] flex justify-center">Contrato</div>
-                <div className="w-[160px] flex justify-center">Fecha de Creacion</div>
+                <div className="w-[160px] flex justify-center">Fecha Creacion</div>
                 <div className="w-[370px] flex justify-center">Carrera</div>
                 <div className="w-[280px] flex justify-center ml-5">Accion</div>
             </div>
@@ -122,6 +123,11 @@ import React from 'react'
             </div>
 
         </div>
+
+        <ActualizarPago/>
+
+        </>
+        
     )
 }
 
