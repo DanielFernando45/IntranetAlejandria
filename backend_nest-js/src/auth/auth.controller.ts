@@ -3,7 +3,7 @@
 // @Controller('auth')
 // export class AuthController {}
 
-import { Controller, Post, Body, Param, BadRequestException, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Param, BadRequestException, Patch, ParseIntPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changue-password.dto';
@@ -33,6 +33,11 @@ export class AuthController {
     }
     return new BadRequestException("La contraseñas no son iguales")
 
+  }
+
+  @Patch('change-password/:id')
+  changePassword(@Param('id',ParseIntPipe) id:number,@Body() body){
+    return this.authService.changePassword(id,body.oldPassword,body.newPassword)
   }
 
 }

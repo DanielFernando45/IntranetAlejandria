@@ -1,8 +1,3 @@
-// import { Injectable } from '@nestjs/common';
-
-// @Injectable()
-// export class AuthService {}
-
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Usuario } from '../usuario/usuario.entity';
@@ -120,17 +115,17 @@ export class AuthService {
     
     return {message:"Contraseña cambiada correctamente"}
   }
-  async changePassword(oldPassword:string,newPassword:string){
-    // const searchedUser=await 1
-    // if(!searchedUser)throw new NotFoundException("No se encuentra ese user")
-    // const comparationPassword=searchedUser? await bcrypt.compare(oldPassword,searchedUser.password) :false
-    // if(!comparationPassword){
-    //   throw new BadRequestException("No es correcta la contraseña ingresada")
-    // }
-    // const newHashed=await bcrypt.hash(newPassword,10)
-    // searchedUser.password=newHashed
+  async changePassword(id:number,oldPassword:string,newPassword:string){
+    const searchedUser=await this.usuarioRepo.findOneBy({id})
+    if(!searchedUser)throw new NotFoundException("No se encuentra ese user")
+    const comparationPassword=searchedUser? await bcrypt.compare(oldPassword,searchedUser.password) :false
+    if(!comparationPassword){
+      throw new BadRequestException("No es correcta la contraseña ingresada")
+    }
+    const newHashed=await bcrypt.hash(newPassword,10)
+    searchedUser.password=newHashed
   
-    // const updated=await this.usuarioRepo.save(searchedUser)
+    const updated=await this.usuarioRepo.save(searchedUser)
   
       return {"message":"Contraseña cambiada correctamente"}
   }

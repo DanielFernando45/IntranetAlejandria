@@ -50,6 +50,6 @@ export class Asesoramiento {
     @OneToMany(() => ProcesosAsesoria, procesosasesoria => procesosasesoria.asesoramiento)
     procesosasesoria: ProcesosAsesoria[];
 
-    // @OneToMany(()=>Informacion_Pagos,informacion_pago=>informacion_pago.asesoramiento)
-    // informacion_pago:Informacion_Pagos[]
+    @OneToMany(()=>Informacion_Pagos,informacion_pago=>informacion_pago.asesoramiento)
+    informacion_pago:Informacion_Pagos[]
 }

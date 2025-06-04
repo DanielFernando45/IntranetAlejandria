@@ -21,7 +21,7 @@ export class Informacion_Pagos{
     titulo:string;
 
     @Column()
-    pago_total:Number;
+    pago_total:number;
 
     @Column({type:'enum',enum:tipoPago})
     tipo_pago:tipoPago;

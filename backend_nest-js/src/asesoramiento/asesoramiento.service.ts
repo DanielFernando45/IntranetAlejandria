@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateAsesoramientoDto } from './dto/create-asesoramiento.dto';
 import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
 import { ProcesosAsesoriaService } from 'src/procesos_asesoria/procesos_asesoria.service';
@@ -8,12 +8,18 @@ import { DataSource, Repository, QueryRunner } from 'typeorm';
 import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
 import { DatosAsesoramientoDto} from 'src/cliente/dto/listar-clientes.dto';
 import { ProcesosAsesoria } from 'src/procesos_asesoria/entities/procesos_asesoria.entity';
+import { ClienteService } from 'src/cliente/cliente.service';
+import { listAsesoramientoYDelegadoDto } from './dto/list-asesoramiento-delegado.dto';
+
 
 
 @Injectable()
 export class AsesoramientoService {
   constructor(
     private readonly procesosAsesoriaService:ProcesosAsesoriaService,
+
+    @Inject(forwardRef(() => ClienteService))
+    private readonly clienteService:ClienteService,
 
     @InjectRepository(Asesoramiento)
     private asesoramientoRepo:Repository<Asesoramiento>,
@@ -476,5 +482,36 @@ export class AsesoramientoService {
     if (!datosContrato.tipoContrato) throw new NotFoundException("No se encontró un tipo de contrato asociado al asesoramiento");
 
     return datosContrato
+  }
+  async listAsesoriasSinpagos():Promise<listAsesoramientoYDelegadoDto[]>{
+    const datosAsesoramiento=await this.asesoramientoRepo
+      .createQueryBuilder('ase')
+      .leftJoin('ase.informacion_pago','infoPago')
+      .innerJoinAndSelect('ase.tipoContrato','con')
+      .innerJoinAndSelect('ase.tipoTrabajo','tra')
+      .select(['ase.id AS id',
+        'con.tipo_contrato AS tipo_contrato',
+        'tra.nombre AS tipo_trabajo',
+        'ase.fecha_inicio',
+        'ase.profesion_asesoria AS profesion_asesoria']
+      )
+      .where('infoPago.id IS NULL')
+      .getRawMany()
+    
+    const listAsesoramientoAndDelegado=Promise.all(datosAsesoramiento.map(async(asesoramiento)=>{
+      let delegado=await this.clienteService.getDelegado(asesoramiento.id)
+      return(
+        {
+          "id_asesoramiento":asesoramiento.id,
+          "delegado":delegado,
+          "tipo_contrato":asesoramiento.tipo_contrato,
+          "tipo_trabajo":asesoramiento.tipo_trabajo,
+          "fecha_inicio":asesoramiento.fecha_inicio,
+          "profesion_asesoria":asesoramiento.profesion_asesoria
+        }
+      )
+    }))
+
+    return listAsesoramientoAndDelegado
   }
 }

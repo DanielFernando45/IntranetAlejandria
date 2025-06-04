@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './cliente.entity';
 import { Repository, DataSource } from 'typeorm';
@@ -14,11 +14,15 @@ import { validate } from 'class-validator';
 import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
 import { ClientesSinAsignar } from './dto/clientes-sin-asignar.dto';
 import { updatedByClient } from './dto/updated-by-client.dto';
+import { ProcesosAsesoria } from 'src/procesos_asesoria/entities/procesos_asesoria.entity';
 
 @Injectable()
 export class ClienteService {
     constructor(
+       
         private readonly usuarioService:UsuarioService,
+
+        @Inject(forwardRef(() => AsesoramientoService))
         private readonly asesoramientoService:AsesoramientoService,
 
         @InjectRepository(Cliente)
@@ -234,4 +238,25 @@ export class ClienteService {
 
         return contrato
     }
+
+    async getDelegado(id_asesoramiento:number){
+        const queryRunner=this.dataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
+
+        try{
+        
+            const listAsesoramientoId=await queryRunner.manager.findOne(ProcesosAsesoria,{where:{asesoramiento:{id:id_asesoramiento}},relations:['cliente']})
+            if (!listAsesoramientoId) throw new NotFoundException(`No se encontraron asesoramientos con el ID ${id_asesoramiento}`);
+
+            const nombreDelegado=`${listAsesoramientoId.cliente.nombre} ${listAsesoramientoId.cliente.apellido}`
+            return nombreDelegado
+            
+        }catch(err){
+            new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
+        }
+    }
+
+    
+
 }

@@ -1,4 +1,4 @@
-import { IsDateString, IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsDateString, IsInt, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class listServiciosDto{
     @IsNotEmpty()
@@ -14,7 +14,7 @@ export class listServiciosDto{
     titulo:string;
 
     @IsNotEmpty()
-    @IsInt()
+    @IsNumber()
     pago_total:number;
 
     @IsNotEmpty()
