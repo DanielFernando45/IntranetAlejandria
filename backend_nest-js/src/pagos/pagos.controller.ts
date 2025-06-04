@@ -1,34 +1,62 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { PagosService } from './pagos.service';
-import { CreatePagoDto } from './dto/create-pago.dto';
-import { UpdatePagoDto } from './dto/update-pago.dto';
+import { CreatePagoAlContadoDto } from './dto/create-pago-al-contado.dto';
+import { CreatePagoPorCuotaDto } from './dto/create-pago-por-cuotas.dto';
+import { PagoPorCuotaUpdate, PagoPorCuotaWrpDTO } from './dto/pago-por-cuotas-add.dto';
+import { UpdateCuotasDto } from './dto/cuotas-update.dto';
+import { UpdatePagoContadoDto } from './dto/update-pago.dto';
+import { tipoServicio } from './entities/informacion_pagos.entity';
 
 @Controller('pagos')
 export class PagosController {
   constructor(private readonly pagosService: PagosService) {}
 
-  @Post()
-  create(@Body() createPagoDto: CreatePagoDto) {
-    return this.pagosService.create(createPagoDto);
+  @Post("alContado")
+  async añadir_pago_al_contado(@Body() createPagoDto: CreatePagoAlContadoDto) {
+    const tipo_servicio=tipoServicio.ASESORIA
+    const response=await this.pagosService.contadoYotrosServicios(createPagoDto,tipo_servicio);
+    return response
   }
 
-  @Get()
-  findAll() {
-    return this.pagosService.findAll();
+  @Post("porCuotas")
+  async añadir_pago_por_cuotas(@Body() createPagoDto: PagoPorCuotaWrpDTO) {
+    const response=await this.pagosService.post_pago_por_cuotas(createPagoDto);
+    return response
+  }
+
+  @Post("otrosServicios")
+  async añadirOtrosServicios(@Body() addNewService:CreatePagoAlContadoDto){
+    const tipo_servicio=tipoServicio.OTROS
+    const response=await this.pagosService.contadoYotrosServicios(addNewService,tipo_servicio)
+    return response
+  }
+
+  @Patch('updateContado/:id')
+  async updateContado(@Param('id',ParseIntPipe) id:number,@Body() updatePagoAlContadoDto:UpdatePagoContadoDto){
+    return await this.pagosService.updateContado(id,updatePagoAlContadoDto)
+  }
+
+  @Patch('updateCuotas/:id')
+  async updateCuotas(@Param('id',ParseIntPipe) id:number, @Body() updatePagoDto:UpdateCuotasDto) {
+    return await this.pagosService.updateCuotas(id, updatePagoDto);
+  }
+
+  @Patch('updateServicios/:id')
+  async updateOtroServicios(@Param('id',ParseIntPipe) id:number,@Body() updateServiciosDto:UpdatePagoContadoDto){
+    return await this.pagosService.updateOtroServicios(id,updateServiciosDto)
+  }
+  
+  @Get("listServicios")
+  async findAllServicios() {
+    return this.pagosService.findAllServicios();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pagosService.findOne(+id);
+  findOne(@Param('id',ParseIntPipe) id:number) {
+    return this.pagosService.findOne(id);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePagoDto: UpdatePagoDto) {
-    return this.pagosService.update(+id, updatePagoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pagosService.remove(+id);
+  @Delete('delete/:id')
+  remove(@Param('id',ParseIntPipe) id:number){
+    return this.pagosService.deletePago(id);
   }
 }

@@ -99,7 +99,7 @@ export class AsuntosService {
       return {
         titulo:asunto.titulo,
         fecha_entregado:asunto.fecha_entregado,
-        fecha_revision:asunto.fecha_revision,
+        fecha_proceso:asunto.fecha_revision,
         fecha_terminado:asunto.fecha_terminado,
         estado:asunto.estado
       }

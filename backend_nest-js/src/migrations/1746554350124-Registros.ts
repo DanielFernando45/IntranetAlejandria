@@ -172,7 +172,7 @@ export class Registros1746554350124 implements MigrationInterface {
                 (6,'Justificacion_Corregida.jpeg','http://localhost:3001/files/product/105dfa71-32df-4adc-b89b-864669734213.jpeg','estudiante','2025-05-11 09:00:00',5),
                 (7,'Revision_Introduccion.png','http://localhost:3001/files/product/493111ef-7525-414f-891f-becb81f7aaf4.png','asesor','2025-05-14 16:00:00',1),
                 (8,'Revision_Justificacion.webp','http://localhost:3001/files/product/3c2eb1e4-91ef-411b-94c2-7f88fa0f87f5.webp','asesor','2025-05-14 16:00:00',1),
-                (9,'Documento_Final.dif','http://localhost:3001/files/product/a1d4105c-8653-42c7-86d6-ec8c76706854.gif','estudiante','2025-05-20 11:30:00',3),
+                (9,'Documento_Final.gif','http://localhost:3001/files/product/a1d4105c-8653-42c7-86d6-ec8c76706854.gif','estudiante','2025-05-20 11:30:00',3),
                 (10,'Objetivos_Generales.rar','http://localhost:3001/files/product/3e18078b-36ed-4e02-82d5-1105e5576b93.vnd.rar','estudiante','2025-05-22 11:30:00',6),
                 (11,'Objetivos_Especificos.zip','http://localhost:3001/files/product/73d80ca0-6a46-46d9-b5ce-a024df5a0053.zip','estudiante','2025-05-22 11:30:00',6),
                 (12,'Metodologia_1ra_parte.7z', 'http://localhost:3001/files/product/09949cfc-6cd8-4394-bbd7-ce0ccdcd8291.x-7z-compressed','estudiante','2025-05-23 11:30:00',7),

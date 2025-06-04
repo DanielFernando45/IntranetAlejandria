@@ -34,4 +34,5 @@ export class Asunto {
 
     @OneToMany(()=>Documento,documento=>documento.asunto)
     documentos:Documento[]
+    
 }
