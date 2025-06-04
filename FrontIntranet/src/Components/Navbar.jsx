@@ -32,7 +32,7 @@ const Navbar = ({ user }) => {
   };
 
   return (
-    <nav className="bg-white fixed top-0 left-[100px] w-[calc(100%-100px)] flex h-[70px] p-[5px_19px] justify-between items-center shadow-md z-10">
+    <nav className="bg-white fixed top-0 left-[100px] w-[calc(100%-100px)] flex h-[56px] p-[5px_19px] justify-between items-center shadow-md z-10">
       <img src={logoaleja} alt="Logo Aleja" className=" w-40" />
 
       <div className="inline-flex items-center gap-4 relative">
@@ -42,7 +42,7 @@ const Navbar = ({ user }) => {
           <div className="flex flex-col text-right leading-tight">
             <span className="font-medium">{user?.nombre}</span>
             <span className="text-sm text-gray-500 capitalize">{user?.role}</span>
-          </div>
+          </div>|
 
           <button onClick={toggleMenu}>
             <img src={isMenuOpen ? flechaarriba : flechaabajo} alt="Toggle menú" />

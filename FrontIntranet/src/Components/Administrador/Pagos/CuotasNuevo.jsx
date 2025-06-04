@@ -24,7 +24,7 @@ const CuotasNuevo = () => {
                     <div className="w-[40px] flex justify-center">0125</div>
                     <div className="w-[300px] flex justify-center">Juan Mateo Pérez Vinlof</div>
                     <div className="w-[210px] flex justify-center">Plazo/Cuotas/Grupal</div>
-                    <div className="w-[160px] flex justify-center">25/07/24</div>
+                    <div className="w-[160px] flex justify-center">25/07/25</div>
                     <div className="w-[360px] flex justify-center">Administracion de empresas Internacionales</div>
                     <button onClick={() => setAsigPago(!asigPago)} className="w-[140px] font-medium rounded-md px-3 py-1 bg-[#1C1C34] ml-5 flex justify-center text-white text-[14px]"> Asignar Pago </button>
                 </div>
@@ -116,7 +116,7 @@ const CuotasNuevo = () => {
                         </div>
                         <div className='flex flex-col w-[169px] h-[82px] gap-[15px]'>
                             <h2 className='font-medium'>Numero de cuotas:</h2>
-                            <select onChange={handleNumeroCuotasChange} value={numeroCuotas}  className='flex items-center rounded-2xl  w-full h-[43px] bg-[#E9E7E7] px-4 font-medium'>
+                            <select onChange={handleNumeroCuotasChange} value={numeroCuotas} className='flex items-center rounded-2xl  w-full h-[43px] bg-[#E9E7E7] px-4 font-medium'>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -147,19 +147,19 @@ const CuotasNuevo = () => {
                         </div>
                     </div>
 
-                    {numeroCuotas >1 &&(
-                      <div className='text-[25px] font-semibold'>
+                    {numeroCuotas > 1 && (
+                        <div className='text-[25px] font-semibold'>
                             <h2>Fijar otras cuotas</h2>
-                      </div>  
+                        </div>
                     )}
 
-                    
+
                     {numeroCuotas > 1 && (
-                        
+
                         [...Array(numeroCuotas - 1)].map((_, index) => (
-                            
+
                             <div key={index} className='flex justify-start gap-5 mt-5'>
-                                
+
                                 <div className='flex flex-col w-[250px] gap-[15px]'>
                                     <h2 className='font-medium'>Nombre:</h2>
                                     <input placeholder={`Cuota ${index + 2}`} className='rounded-2xl text-[#1C1C34] w-full h-[43px] bg-[#E9E7E7] px-4 font-medium' />
@@ -172,7 +172,7 @@ const CuotasNuevo = () => {
 
                             </div>
                         ))
-                                        
+
                     )}
 
                     <div className='flex w-full py-4 px-1 h-[68px] justify-end gap-4'>

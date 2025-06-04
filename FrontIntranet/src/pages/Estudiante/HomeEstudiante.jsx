@@ -1,5 +1,5 @@
 import LayoutApp from "../../layout/LayoutApp";
-import portada from "../../assets/images/portada.png"
+import portada from "../../assets/images/portadaMobile.png"
 import flechaVer from "../../assets/icons/flechaMorada.svg"
 import flechaAzul from "../../assets/icons/arrowAzul.svg"
 import NoticiaUno from "../../assets/images/NoticiaAsesor.png"
@@ -20,62 +20,60 @@ const NoticiasRecientes = [
 
 
 const HomeEstudiante = () => {
-  
+
   const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
 
   useEffect(() => {
-      const userString = localStorage.getItem('user');
-      if (userString) {
-        const user = JSON.parse(userString);
-        const id = user.id;
-  
-        fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
-          .then(res => res.json())
-          .then(data => {
-            const asesoriasArray = Object.values(data).map(item => ({
-              id: item.id,
-              profesion: item.profesion_asesoria
-            }));
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      const id = user.id;
 
-            if (asesoriasArray.length > 0) {
-              const primeraAsesoriaId = asesoriasArray[0].id;
-              setSelectedAsesoriaId(primeraAsesoriaId);
-  
-            }
-          })
-          .catch(error => console.error('Error al obtener asesorías:', error));
-      }
-    }, []);
+      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          const asesoriasArray = Object.values(data).map(item => ({
+            id: item.id,
+            profesion: item.profesion_asesoria
+          }));
+
+          if (asesoriasArray.length > 0) {
+            const primeraAsesoriaId = asesoriasArray[0].id;
+            setSelectedAsesoriaId(primeraAsesoriaId);
+
+          }
+        })
+        .catch(error => console.error('Error al obtener asesorías:', error));
+    }
+  }, []);
 
   return (
     <LayoutApp>
       <main className="mx-1">
 
         {/*Portada */}
-        <div className=" flex items-center flex-col  lg:flex-row justify-between bg-[#17162E] text-white rounded-2xl  w-full   shadow-lg   ">
+        <div className=" flex items-center relative flex-col md:flex-row bg-[#17162E] text-white rounded-2xl mn:w-[280px] md:w-[320px] md:h-[96px] shadow-lg ">
 
-          <div className="flex flex-col lg:w-2/3 p-4 lg:pl-14 pt-6">
-            <p className="mn:text-[15px] text-[12px] lg:text-[22px] text-[#B5B5B5] ">12 de Febrero , 2025</p>
-            <h2 className="lg:text-[38px] mn:text-[12px] text-[15px] font-semibold mt-2">
-              Bienvenido Fernando Guzman al
-              Intranet de asesoría de tesis
+          <div className="flex flex-col  lg:w-2/3 p-4 lg:pl-14 pt-6 mn:pt-1 w-full md:h-full md:pt-5">
+            <p className="mn:text-[12px] md:text-[5px] text-[12px] lg:text-[22px] text-[#B5B5B5] ">12 de Febrero , 2025</p>
+            <h2 className="lg:text-[38px] md:text-[8px] mn:text-[15px] text-[15px] font-semibold mt-2 md:mt-1 ">
+              Bienvenido Fernando Guzman al Intranet de asesoría de tesis
             </h2>
-            <p className="lg:text-[22px] text-[12px] text-[#B5B5B5]  ">Aquí encontraras toda las herramientas que vas a utilizar</p>
+            <p className="lg:text-[22px] text-[10px] md:text-[4px] text-[#B5B5B5] absolute top-[110px] mn:top-[110px] md:top-[70px] ">
+              Aquí encontraras toda la información para tu  asesoría de tesis
+            </p>
           </div>
 
-          <div className="flex lg:h-[280px] h-[100px]">
-            
-            <img
-              src={portada}
-              alt="Graduación"
-              className="rounded-r-xl w-full h-full  object-cover"
-            />
-          </div>
+          <img
+            src={portada}
+            alt="Graduación"
+            className="rounded-b-xl w-full h-full md:h-24 md:rounded-r-xl object-cover  "
+          />
 
         </div>
 
         {/*Noticias, Envios Asesor*/}
-        <div className="flex justify-between">
+        <div className="flex justify-between md:flex-row flex-col">
 
           <div className="w-full flex flex-col gap-6">
             <section>

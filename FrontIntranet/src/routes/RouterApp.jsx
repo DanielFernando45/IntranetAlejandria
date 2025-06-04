@@ -36,6 +36,9 @@ import Anteriores from '../pages/Asesor/Reunion/ReunionAnteriores';
 import GestionarUsuarios from '../pages/Administrador/GestionUser';
 import Asignaciones from '../pages/Administrador/Asignaciones';
 import Pagos from '../pages/Administrador/Pagos';
+import AlContado from '../pages/Administrador/Pagos/AlContado';
+import ServiciosExtra from '../pages/Administrador/Pagos/ServiciosExtra';
+import Cuotas from '../pages/Administrador/Pagos/Cuotas';
 import EditarAsignacion from '../pages/Administrador/Asignaciones/EditarAsignado'
 import AgregarEstudiante from '../pages/Administrador/GestionarUsuario/AgregarEstudiante';
 import AgregarAsesor from '../pages/Administrador/GestionarUsuario/AgregarAsesor';
@@ -141,7 +144,14 @@ const RouterApp = () => {
         <Route path="/admin/gestionar-usuarios/editar-asesor/:id" element={<EditarAsesor />} />
 
 
-        <Route path="/admin/pagos" element={<Pagos />} />
+        <Route path="/admin/pagos" element={<Pagos />}>
+           <Route index element={<Navigate to="cuotas" replace/>}/> 
+           <Route path="cuotas" element={<Cuotas/>}/>
+           <Route path="al-contado" element={<AlContado/>}/> 
+           <Route path="servicio-extra" element={<ServiciosExtra/>}/>            
+        </Route>
+
+
         <Route path="/admin/confIntra" element={<ConfigIntra />} />
         <Route path="/admin/soporte" element={<GestionarSoporte />} />
 

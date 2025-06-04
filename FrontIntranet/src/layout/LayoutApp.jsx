@@ -32,7 +32,7 @@ const LayoutApp = ({ children }) => {
     <div>
       {renderSidebar()}
       <Navbar user={user} />
-      <div className="lg:ml-[100px] mt-[70px] p-4"> {/* Ajuste de margen para layout */}
+      <div className="lg:ml-[100px]  mt-[70px] p-4 md:p-1 "> {/* Ajuste de margen para layout */}
         {children}
       </div>
     </div>

@@ -112,7 +112,7 @@ const ReunionesEstudiante = () => {
     return (
         <LayoutApp>
             <main className="flex justify-center">
-                <div className="flex flex-col gap-[40px] lg:ml-1 p-[40px] h-[767px] bg-white rounded-[20px]">
+                <div className="flex flex-col gap-[40px] lg:ml-1 p-[20px] h-[767px]  bg-white rounded-[20px] ">
                     <div className="flex flex-col gap-[12px]">
                         <h1 className="font-medium text-[20px]">Reuniones</h1>
                         <div className="flex w-full border-b gap-3 border-black font-normal">
