@@ -5,7 +5,7 @@ import { CreatePagoPorCuotaDto } from './dto/create-pago-por-cuotas.dto';
 import { PagoPorCuotaUpdate, PagoPorCuotaWrpDTO } from './dto/pago-por-cuotas-add.dto';
 import { UpdateCuotasDto } from './dto/cuotas-update.dto';
 import { UpdatePagoContadoDto } from './dto/update-pago.dto';
-import { tipoServicio } from './entities/informacion_pagos.entity';
+import { tipoPago, tipoServicio } from './entities/informacion_pagos.entity';
 
 @Controller('pagos')
 export class PagosController {
@@ -51,10 +51,39 @@ export class PagosController {
     return this.pagosService.findAllServicios();
   }
 
+  @Get('contado')
+  getPagoContado(){
+    const tipo=tipoPago.CONTADO
+    console.log('Entrando a /contado')
+    return this.pagosService.getPagosByTipo(tipo)
+  }
+
+  @Get('cuotas')
+  getPagosCuotas(){
+    const tipo=tipoPago.CUOTAS
+    console.log('Entrando a /cuotas')
+    return this.pagosService.getPagosByTipo(tipo)
+  }
+
+  @Get('misAsesorias/:id')
+  misPagosAsesorias(@Param('id',ParseIntPipe) id:number){
+    const tipo_servicio=tipoServicio.ASESORIA
+    return this.pagosService.listPagosByAsesoramiento(id,tipo_servicio)
+  }
+
+  @Get('misServicios/:id')
+  misPagosServicios(@Param('id',ParseIntPipe) id:number){
+    const tipo_servicio=tipoServicio.OTROS
+    return this.pagosService.listPagosByAsesoramiento(id,tipo_servicio)
+  }
+
   @Get(':id')
   findOne(@Param('id',ParseIntPipe) id:number) {
     return this.pagosService.findOne(id);
   }
+
+  
+
   @Delete('delete/:id')
   remove(@Param('id',ParseIntPipe) id:number){
     return this.pagosService.deletePago(id);

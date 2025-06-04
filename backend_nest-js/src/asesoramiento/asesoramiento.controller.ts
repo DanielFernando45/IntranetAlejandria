@@ -19,6 +19,11 @@ export class AsesoramientoController {
     return this.asesoramientoService.listar_por_id(id)
   }
 
+  @Get("listarSinPagos")
+  listarSinpagos(){
+    return this.asesoramientoService.listAsesoriasSinpagos()
+  }
+
   @Post("asignacion")
   create(@Body() body:AsesoramientoWrpDTO) {
     return this.asesoramientoService.create(body.createAsesoramiento,body.clientes);

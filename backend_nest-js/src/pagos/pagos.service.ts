@@ -8,10 +8,16 @@ import { PagoPorCuotaUpdate, PagoPorCuotaWrpDTO } from './dto/pago-por-cuotas-ad
 import { UpdateCuotasDto } from './dto/cuotas-update.dto';
 import { UpdatePagoContadoDto } from './dto/update-pago.dto';
 import { listServiciosDto } from './dto/listDtos/list-servicios.dto';
+import { ClienteModule } from 'src/cliente/cliente.module';
+import { ClienteService } from 'src/cliente/cliente.service';
+import { listPagosEstudianteDto } from './dto/listDtos/list-pagos-estudiante.dto';
+import { listPagosAdminDto } from './dto/listDtos/list-pagos-admin.dto';
 
 @Injectable()
 export class PagosService {
   constructor(
+      private readonly clienteService:ClienteService,
+
       @InjectRepository(Pago)
       private pagoRepo:Repository<Pago>,
 
@@ -175,22 +181,23 @@ export class PagosService {
     .createQueryBuilder('i')
     .innerJoinAndSelect('i.asesoramiento','a')
     .innerJoinAndSelect('i.pagos','p')
-    .select(['a.id AS id','i.titulo AS titulo','i.pago_total AS pago_total','p.fecha_pago AS fecha_pago'])
+    .select(['i.id AS id','a.id AS idAsesoramiento','i.titulo AS titulo','i.pago_total AS pago_total','p.fecha_pago AS fecha_pago'])
     .where('i.tipo_servicio=:tipo_servicio',{tipo_servicio:tipoServicio.OTROS})
     .getRawMany()
     
     console.log(infoServicios)
     
-    const response=infoServicios.map((info)=>{
+    const response=await Promise.all(infoServicios.map(async(info)=>{
+      let delegado=await this.clienteService.getDelegado(info.idAsesoramiento)
       return({
         "id":info.id,
-        "delegado":"a",
+        "delegado":`${delegado}`,
         "titulo":info.titulo,
         "pago_total":info.pago_total,
         "fecha_pago":info.fecha_pago
       }
       )
-    })
+    }))
     return response;
   }
 
@@ -219,4 +226,36 @@ export class PagosService {
       await queryRunner.release()
     }
   }
+
+  async getPagosByTipo(tipo:tipoPago):Promise<listPagosAdminDto[]>{
+    const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo},relations:['asesoramiento'],select:(['id','titulo','pago_total','fecha_creado','asesoramiento'])})
+    
+    const listPagos=Promise.all(datosPago.map(async(pago)=>{
+      let delegado=await this.clienteService.getDelegado(pago.asesoramiento.id)
+      if(!delegado)throw new NotFoundException("Error en conseguir el delegado")
+      return({
+        "id_infoPago":pago.id,
+        "delegado":delegado,
+        "titulo":pago.titulo,
+        "fecha_creado":pago.fecha_creado,
+        "monto_total":pago.pago_total
+      }
+      )
+    }))
+    return listPagos
+  }
+
+  async listPagosByAsesoramiento(id:number,tipo_servicio:tipoServicio):Promise<listPagosEstudianteDto[]>{
+    const listPagos:listPagosEstudianteDto[]=await this.informacionRepo
+      .createQueryBuilder('inf')
+      .leftJoin('inf.asesoramiento','ase')
+      .innerJoinAndSelect('inf.pagos','pagos')
+      .select(['pagos.nombre AS titulo','pagos.monto AS monto','pagos.fecha_pago AS fecha_pago','pagos.estado_pago AS estado_pago'])
+      .where('inf.tipo_servicio= :tipoServicio',{tipoServicio:tipo_servicio})
+      .andWhere('ase.id= :id',{id})
+      .getRawMany()
+
+    return listPagos
+  }
+  
 }
