@@ -1,13 +1,15 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class PagosAñadidos1746554350105 implements MigrationInterface {
-    name = 'PagosAñadidos1746554350105'
+export class ReunionesAñadidas1746554350105 implements MigrationInterface {
+    name = 'ReunionesAñadidas1746554350105'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`usuarios\` (\`id\` int NOT NULL AUTO_INCREMENT, \`username\` varchar(255) NOT NULL, \`password\` varchar(255) NOT NULL, \`role\` enum ('admin', 'asesor', 'estudiante') NOT NULL, \`estado\` tinyint NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`admin\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`email\` varchar(255) NOT NULL, \`dni\` varchar(255) NOT NULL, \`usuarioId\` int NULL, UNIQUE INDEX \`REL_d6655cf5853701ab8ac2d7d4d3\` (\`usuarioId\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`tipo_contrato\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`tipo_contrato\` varchar(255) NOT NULL, \`tipo_entrega\` varchar(255) NOT NULL, \`modalidad\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`tipo_trabajo\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`pago\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`monto\` int NOT NULL, \`fecha_pago\` datetime NULL, \`estado_pago\` enum ('pagado', 'por_pagar') NOT NULL, \`id_informacion_pago\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`informacion_pagos\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`pago_total\` int NOT NULL, \`tipo_pago\` enum ('contado', 'cuotas') NOT NULL, \`tipo_servicio\` enum ('asesoria', 'otros') NOT NULL, \`numero_cuotas\` int NULL, \`fecha_creado\` datetime NOT NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`asesoramiento\` (\`id\` int NOT NULL AUTO_INCREMENT, \`profesion_asesoria\` varchar(255) NOT NULL, \`especialidad\` varchar(255) NULL, \`tipo_servicio\` enum ('proyecto', 'informe_final', 'completo') NOT NULL, \`estado\` enum ('activo', 'desactivado', 'finalizado') NOT NULL, \`fecha_inicio\` datetime NOT NULL, \`fecha_fin\` datetime NOT NULL, \`id_tipo_trabajo\` int NULL, \`id_contrato\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`procesos_asesoria\` (\`id\` int NOT NULL AUTO_INCREMENT, \`id_cliente\` int NULL, \`id_asesor\` int NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`cliente\` (\`id\` int NOT NULL AUTO_INCREMENT, \`dni\` varchar(255) NOT NULL, \`nombre\` varchar(255) NOT NULL, \`apellido\` varchar(255) NOT NULL, \`telefono\` int NOT NULL, \`email\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`pais\` varchar(255) NOT NULL, \`universidad\` varchar(255) NOT NULL, \`fecha_creacion\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`carrera\` varchar(255) NOT NULL, \`id_grado_academico\` int NULL, \`usuarioId\` int NULL, UNIQUE INDEX \`REL_26eb6132b607fd16d904df0367\` (\`usuarioId\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -16,9 +18,14 @@ export class PagosAñadidos1746554350105 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`asesor\` (\`id\` int NOT NULL AUTO_INCREMENT, \`dni\` varchar(255) NOT NULL, \`nombre\` varchar(255) NOT NULL, \`apellido\` varchar(255) NOT NULL, \`email\` varchar(255) NOT NULL, \`telefono\` int NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`especialidad\` varchar(255) NOT NULL, \`universidad\` varchar(255) NOT NULL, \`id_area\` int NULL, \`id_grado_academico\` int NULL, \`usuarioId\` int NULL, UNIQUE INDEX \`REL_285f003441aa6855dc95f4c7b8\` (\`usuarioId\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`documento\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`ruta\` varchar(255) NOT NULL, \`subido_por\` enum ('estudiante', 'asesor') NOT NULL, \`created_at\` datetime NOT NULL, \`id_asunto\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`asunto\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`estado\` enum ('entregado', 'proceso', 'terminado') NOT NULL, \`fecha_entregado\` datetime NOT NULL, \`fecha_revision\` datetime NULL, \`fecha_terminado\` datetime NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`pago\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`monto\` int NOT NULL, \`fecha_pago\` datetime NULL, \`estado_pago\` enum ('pagado', 'por_pagar') NOT NULL, \`id_informacion_pago\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`informacion_pagos\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`pago_total\` int NOT NULL, \`tipo_pago\` enum ('contado', 'cuotas') NOT NULL, \`tipo_servicio\` enum ('asesoria', 'otros') NOT NULL, \`numero_cuotas\` int NULL, \`fecha_creado\` datetime NOT NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`guia\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`herramienta\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`noticia\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`tutorial\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`reunion\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`fecha_reunion\` timestamp NOT NULL, \`estado\` enum ('espera', 'terminado') NOT NULL DEFAULT 'espera', \`enlace_zoom\` varchar(255) NULL, \`enlace_video\` varchar(255) NULL, \`fecha_creacion\` timestamp NOT NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`admin\` ADD CONSTRAINT \`FK_d6655cf5853701ab8ac2d7d4d35\` FOREIGN KEY (\`usuarioId\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`pago\` ADD CONSTRAINT \`FK_6d27019b9d8ee3c2a2bd5cff213\` FOREIGN KEY (\`id_informacion_pago\`) REFERENCES \`informacion_pagos\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`informacion_pagos\` ADD CONSTRAINT \`FK_15ac0b8eeb544b1a4b1fedcb162\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`asesoramiento\` ADD CONSTRAINT \`FK_6e9597d7abfb30df60996e0ab8b\` FOREIGN KEY (\`id_tipo_trabajo\`) REFERENCES \`tipo_trabajo\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`asesoramiento\` ADD CONSTRAINT \`FK_dfe1c20580248b8d9ce30a9f195\` FOREIGN KEY (\`id_contrato\`) REFERENCES \`tipo_contrato\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` ADD CONSTRAINT \`FK_94f8df2aa71583b6dfc0e744872\` FOREIGN KEY (\`id_cliente\`) REFERENCES \`cliente\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -31,13 +38,11 @@ export class PagosAñadidos1746554350105 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`asesor\` ADD CONSTRAINT \`FK_285f003441aa6855dc95f4c7b83\` FOREIGN KEY (\`usuarioId\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`documento\` ADD CONSTRAINT \`FK_a549abd88ad576aa9b315a56725\` FOREIGN KEY (\`id_asunto\`) REFERENCES \`asunto\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`asunto\` ADD CONSTRAINT \`FK_d94dbc00a1ba0f63437a4c08314\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE \`pago\` ADD CONSTRAINT \`FK_6d27019b9d8ee3c2a2bd5cff213\` FOREIGN KEY (\`id_informacion_pago\`) REFERENCES \`informacion_pagos\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE \`informacion_pagos\` ADD CONSTRAINT \`FK_15ac0b8eeb544b1a4b1fedcb162\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`reunion\` ADD CONSTRAINT \`FK_c571dc653fcb46e946ed80121d9\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE \`informacion_pagos\` DROP FOREIGN KEY \`FK_15ac0b8eeb544b1a4b1fedcb162\``);
-        await queryRunner.query(`ALTER TABLE \`pago\` DROP FOREIGN KEY \`FK_6d27019b9d8ee3c2a2bd5cff213\``);
+        await queryRunner.query(`ALTER TABLE \`reunion\` DROP FOREIGN KEY \`FK_c571dc653fcb46e946ed80121d9\``);
         await queryRunner.query(`ALTER TABLE \`asunto\` DROP FOREIGN KEY \`FK_d94dbc00a1ba0f63437a4c08314\``);
         await queryRunner.query(`ALTER TABLE \`documento\` DROP FOREIGN KEY \`FK_a549abd88ad576aa9b315a56725\``);
         await queryRunner.query(`ALTER TABLE \`asesor\` DROP FOREIGN KEY \`FK_285f003441aa6855dc95f4c7b83\``);
@@ -50,9 +55,14 @@ export class PagosAñadidos1746554350105 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`procesos_asesoria\` DROP FOREIGN KEY \`FK_94f8df2aa71583b6dfc0e744872\``);
         await queryRunner.query(`ALTER TABLE \`asesoramiento\` DROP FOREIGN KEY \`FK_dfe1c20580248b8d9ce30a9f195\``);
         await queryRunner.query(`ALTER TABLE \`asesoramiento\` DROP FOREIGN KEY \`FK_6e9597d7abfb30df60996e0ab8b\``);
+        await queryRunner.query(`ALTER TABLE \`informacion_pagos\` DROP FOREIGN KEY \`FK_15ac0b8eeb544b1a4b1fedcb162\``);
+        await queryRunner.query(`ALTER TABLE \`pago\` DROP FOREIGN KEY \`FK_6d27019b9d8ee3c2a2bd5cff213\``);
         await queryRunner.query(`ALTER TABLE \`admin\` DROP FOREIGN KEY \`FK_d6655cf5853701ab8ac2d7d4d35\``);
-        await queryRunner.query(`DROP TABLE \`informacion_pagos\``);
-        await queryRunner.query(`DROP TABLE \`pago\``);
+        await queryRunner.query(`DROP TABLE \`reunion\``);
+        await queryRunner.query(`DROP TABLE \`tutorial\``);
+        await queryRunner.query(`DROP TABLE \`noticia\``);
+        await queryRunner.query(`DROP TABLE \`herramienta\``);
+        await queryRunner.query(`DROP TABLE \`guia\``);
         await queryRunner.query(`DROP TABLE \`asunto\``);
         await queryRunner.query(`DROP TABLE \`documento\``);
         await queryRunner.query(`DROP INDEX \`REL_285f003441aa6855dc95f4c7b8\` ON \`asesor\``);
@@ -63,6 +73,8 @@ export class PagosAñadidos1746554350105 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE \`cliente\``);
         await queryRunner.query(`DROP TABLE \`procesos_asesoria\``);
         await queryRunner.query(`DROP TABLE \`asesoramiento\``);
+        await queryRunner.query(`DROP TABLE \`informacion_pagos\``);
+        await queryRunner.query(`DROP TABLE \`pago\``);
         await queryRunner.query(`DROP TABLE \`tipo_trabajo\``);
         await queryRunner.query(`DROP TABLE \`tipo_contrato\``);
         await queryRunner.query(`DROP INDEX \`REL_d6655cf5853701ab8ac2d7d4d3\` ON \`admin\``);

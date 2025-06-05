@@ -10,4 +10,5 @@ export class Tutorial{
 
     @Column()
     enlace:string;
+    
 }

@@ -1,11 +1,12 @@
 import { Asesoramiento } from "src/asesoramiento/entities/asesoramiento.entity";
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 
 export enum Estado_reunion{
     ESPERA="espera",
     TERMINADO="terminado"
 }
 
+@Entity()
 export class Reunion {
     @PrimaryGeneratedColumn()
     id:number;

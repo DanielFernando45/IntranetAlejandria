@@ -1,15 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Res } from '@nestjs/common';
 import { ReunionesService } from './reuniones.service';
 import { CreateReunionDto } from './dto/create-reunion.dto';
 import { UpdateReunioneDto } from './dto/update-reunione.dto';
+import { ZoomAuthService } from './zoom.auth.service';
+import {Response} from 'express'
+import { ZoomMeetingService } from './zoom.meeting.service';
 
 @Controller('reuniones')
 export class ReunionesController {
-  constructor(private readonly reunionesService: ReunionesService) {}
+  constructor(private readonly reunionesService: ReunionesService,
+              private readonly zoomService:ZoomMeetingService
+            ){}
+
+  @Post('crear-reunion')
+  async crearReunion(@Body() body:CreateReunionDto){
+    const reunion=await this.reunionesService.addReunion(body)
+   
+    return {
+      "message":"Reunion creada correctamente",
+      reunion
+    }
+    
+  }
 
   @Post("add/:id")
   async createReunion(@Param('id',ParseIntPipe) id:number,@Body() createReunionDto: CreateReunionDto) {
-    return this.reunionesService.addReunion(id,createReunionDto);
+    return this.reunionesService.addReunion(createReunionDto);
   }
 
   @Get()
