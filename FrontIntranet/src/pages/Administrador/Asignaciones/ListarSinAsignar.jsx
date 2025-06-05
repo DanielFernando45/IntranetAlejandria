@@ -4,7 +4,7 @@ import Buscar from "../../../Components/Administrador/GestionarUsuario/Buscar";
 import axios from "axios";
 
 const ListarSinAsignar = () => {
-  
+
   const [asesores, setAsesores] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
   const [estudiantesBase, setEstudiantesBase] = useState([]);
@@ -14,7 +14,7 @@ const ListarSinAsignar = () => {
   const [asesorSeleccionado, setAsesorSeleccionado] = useState("");
   const [asesorSeleccionadoId, setAsesorSeleccionadoId] = useState(0);
   const [mostrarEspecialidad, setMostrarEspecialidad] = useState(false);
-  
+
   // Estados para los datos del formulario
   const [formData, setFormData] = useState({
     profesion_asesoria: "",
@@ -149,8 +149,8 @@ const ListarSinAsignar = () => {
       return;
     }
 
-    if (!formData.profesion_asesoria || !formData.tipo_servicio || !formData.id_contrato || 
-        !formData.id_tipo_trabajo || !formData.fecha_inicio || !formData.fecha_fin) {
+    if (!formData.profesion_asesoria || !formData.tipo_servicio || !formData.id_contrato ||
+      !formData.id_tipo_trabajo || !formData.fecha_inicio || !formData.fecha_fin) {
       alert('Debe completar todos los campos obligatorios');
       return;
     }
@@ -258,13 +258,13 @@ const ListarSinAsignar = () => {
         <h2 className='text-[20px] font-medium'>Asesor</h2>
         {!asesorSeleccionado ? (
           <div className='flex justify-between'>
-            <select 
-              value={areaSeleccionada} 
-              onChange={(e) => { 
-                setAreaSeleccionada(e.target.value); 
-                setAsesorSeleccionado(""); 
+            <select
+              value={areaSeleccionada}
+              onChange={(e) => {
+                setAreaSeleccionada(e.target.value);
+                setAsesorSeleccionado("");
                 setAsesorSeleccionadoId(0);
-              }} 
+              }}
               className='border border-black rounded-md px-[14px] w-[275px] h-9'
             >
               <option value="" disabled>Áreas</option>
@@ -275,9 +275,9 @@ const ListarSinAsignar = () => {
               <option value={5}>Legal</option>
             </select>
 
-            <select 
-              value={asesorSeleccionado} 
-              onChange={handleAsesorChange} 
+            <select
+              value={asesorSeleccionado}
+              onChange={handleAsesorChange}
               className='border border-black rounded-md px-[14px] w-[555px] h-9'
             >
               <option value="" disabled>Asesor</option>
@@ -291,11 +291,11 @@ const ListarSinAsignar = () => {
         ) : (
           <div className="flex items-center border rounded px-2 py-1 w-fit">
             {asesorSeleccionado}
-            <button 
+            <button
               onClick={() => {
                 setAsesorSeleccionado("");
                 setAsesorSeleccionadoId(0);
-              }} 
+              }}
               className="ml-2 text-white border bg-[#0900FF] rounded-full w-5 h-5 flex items-center justify-center"
             >
               ×
@@ -310,17 +310,17 @@ const ListarSinAsignar = () => {
         <div className='flex gap-9 text-[#575051]'>
           <div className='flex gap-4 items-center'>
             <p>Profesión Asesoría:</p>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="profesion_asesoria"
               value={formData.profesion_asesoria}
               onChange={handleInputChange}
-              className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9' 
+              className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'
             />
           </div>
           <div className='flex gap-4 items-center'>
             <p>Tipo de contrato:</p>
-            <select 
+            <select
               name="id_contrato"
               value={formData.id_contrato}
               onChange={handleNumberInputChange}
@@ -357,7 +357,7 @@ const ListarSinAsignar = () => {
 
           <div className='flex gap-8 items-center'>
             <p>Tipo Trabajo:</p>
-            <select 
+            <select
               name="id_tipo_trabajo"
               value={formData.id_tipo_trabajo}
               onChange={handleTipoTrabajoChange}
@@ -380,12 +380,12 @@ const ListarSinAsignar = () => {
         {mostrarEspecialidad && (
           <div className='flex gap-14 text-[#575051] items-center'>
             <p>Especialidad:</p>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="especialidad"
               value={formData.especialidad}
               onChange={handleInputChange}
-              className='border border-[#575051] rounded-lg px-[14px] w-[350px] h-9' 
+              className='border border-[#575051] rounded-lg px-[14px] w-[350px] h-9'
             />
           </div>
         )}
@@ -396,35 +396,35 @@ const ListarSinAsignar = () => {
         <div className='flex justify-start gap-28'>
           <div className='flex gap-4 text-[#575051] items-center'>
             <p>Fecha inicio:</p>
-            <input 
-              type="date" 
+            <input
+              type="date"
               name="fecha_inicio"
               value={formData.fecha_inicio}
               onChange={handleInputChange}
-              className='border border-black rounded-md px-[14px] w-[275px] h-9' 
+              className='border border-black rounded-md px-[14px] w-[275px] h-9'
             />
           </div>
           <div className='flex gap-4 text-[#575051] items-center'>
             <p>Fecha final:</p>
-            <input 
-              type="date" 
+            <input
+              type="date"
               name="fecha_fin"
               value={formData.fecha_fin}
               onChange={handleInputChange}
-              className='border border-black rounded-md px-[14px] w-[275px] h-9' 
+              className='border border-black rounded-md px-[14px] w-[275px] h-9'
             />
           </div>
         </div>
       </div>
 
       <div className='flex gap-5 justify-end mt-14'>
-        <button 
+        <button
           onClick={handleResetForm}
           className="flex justify-center w-[140px] h-8 rounded font-semibold border border-black px-6 py-1"
         >
           Cancelar
         </button>
-        <button 
+        <button
           onClick={handleAsignarAsesoria}
           className="flex justify-center text-white w-[140px] h-8 rounded font-semibold bg-[#1C1C34] px-6 py-1"
         >

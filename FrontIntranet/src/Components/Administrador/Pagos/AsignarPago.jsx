@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from "react";
 
-const AsignarPago = () => {
+const AsignarPago = ({Cerrar}) => {
     const [numeroCuotas, setNumeroCuotas] = useState(1);
     
         const handleNumeroCuotasChange = (e) => {
@@ -84,7 +84,7 @@ const AsignarPago = () => {
                 <button className='h-7  w-[100px] border border-black rounded-[4px] text-[11px] font-bold text-[#02242B]'>
                     Agregar
                 </button>
-                <button onClick={() => setAsigPago(false)} className='h-7  w-[100px] border bg-black rounded-[4px] text-[11px] font-bold text-white'>
+                <button onClick={Cerrar} className='h-7  w-[100px] border bg-black rounded-[4px] text-[11px] font-bold text-white'>
                     Cancelar
                 </button>
             </div>

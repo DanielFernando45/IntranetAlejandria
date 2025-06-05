@@ -5,8 +5,6 @@ import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
 const Pagos = () => {
     //Menus
-    
-
     const navigate = useNavigate();
     const location = useLocation();
 
