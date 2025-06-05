@@ -483,20 +483,22 @@ export class AsesoramientoService {
 
     return datosContrato
   }
-  async listAsesoriasSinpagos():Promise<listAsesoramientoYDelegadoDto[]>{
+  async listAsesoriasSinpagos(tipoContrato:string):Promise<listAsesoramientoYDelegadoDto[]>{
     const datosAsesoramiento=await this.asesoramientoRepo
       .createQueryBuilder('ase')
       .leftJoin('ase.informacion_pago','infoPago')
       .innerJoinAndSelect('ase.tipoContrato','con')
       .innerJoinAndSelect('ase.tipoTrabajo','tra')
-      .select(['ase.id AS id',
+      .select(['DISTINCT ase.id AS id',
         'con.tipo_contrato AS tipo_contrato',
         'tra.nombre AS tipo_trabajo',
         'ase.fecha_inicio',
         'ase.profesion_asesoria AS profesion_asesoria']
       )
       .where('infoPago.id IS NULL')
+      .andWhere('con.tipo_contrato= :tipoContrato',{tipoContrato})
       .getRawMany()
+
     
     const listAsesoramientoAndDelegado=Promise.all(datosAsesoramiento.map(async(asesoramiento)=>{
       let delegado=await this.clienteService.getDelegado(asesoramiento.id)
@@ -508,6 +510,32 @@ export class AsesoramientoService {
           "tipo_trabajo":asesoramiento.tipo_trabajo,
           "fecha_inicio":asesoramiento.fecha_inicio,
           "profesion_asesoria":asesoramiento.profesion_asesoria
+        }
+      )
+    }))
+
+    return listAsesoramientoAndDelegado
+  }
+
+  async listDelegadoToServicios(){
+    const datosAsesoramiento=await this.asesoramientoRepo
+      .createQueryBuilder('ase')
+      .leftJoin('ase.informacion_pago','infoPago')
+      .innerJoinAndSelect('ase.tipoTrabajo','tra')
+      .select(['DISTINCT ase.id AS id',
+        'tra.nombre AS tipo_trabajo',
+      ]
+      )
+      .getRawMany()
+
+    
+    const listAsesoramientoAndDelegado=Promise.all(datosAsesoramiento.map(async(asesoramiento)=>{
+      let delegado=await this.clienteService.getDelegado(asesoramiento.id)
+      return(
+        {
+          "id_asesoramiento":asesoramiento.id,
+          "delegado":delegado,
+          "tipo_trabajo":asesoramiento.tipo_trabajo,
         }
       )
     }))

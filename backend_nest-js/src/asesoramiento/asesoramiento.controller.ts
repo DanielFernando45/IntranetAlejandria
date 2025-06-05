@@ -14,15 +14,28 @@ export class AsesoramientoController {
     return this.asesoramientoService.listar()
   }
 
+  @Get("cuotasSinPagos")
+  listarCuotasSinpagos(){
+    const tipo_contrato='cuotas'
+    return this.asesoramientoService.listAsesoriasSinpagos(tipo_contrato)
+  }
+
+  @Get('contadoSinPagos')
+  listarContadosSinPagos(){
+    const tipo_contrato='contado'
+    return this.asesoramientoService.listAsesoriasSinpagos(tipo_contrato)
+  }
+  
+  @Get('delegadosToServicios')
+  listarDelegadosToServicios(){
+    return this.asesoramientoService.listDelegadoToServicios()
+  }
+
   @Get("/listar/:id")
   listar_por_ID(@Param('id',ParseIntPipe) id:number){
     return this.asesoramientoService.listar_por_id(id)
   }
 
-  @Get("listarSinPagos")
-  listarSinpagos(){
-    return this.asesoramientoService.listAsesoriasSinpagos()
-  }
 
   @Post("asignacion")
   create(@Body() body:AsesoramientoWrpDTO) {

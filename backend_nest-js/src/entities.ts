@@ -11,7 +11,11 @@ import { Documento } from "./documentos/entities/documento.entity";
 import { Informacion_Pagos } from "./pagos/entities/informacion_pagos.entity";
 import { Pago } from "./pagos/entities/pago.entity";
 import { ProcesosAsesoria } from "./procesos_asesoria/entities/procesos_asesoria.entity";
+import { Guia } from "./recursos/entities/guia.entity";
+import { Herramienta } from "./recursos/entities/herramienta.entity";
+import { Noticia } from "./recursos/entities/noticia.entity";
+import { Tutorial } from "./recursos/entities/tutorial.entity";
 import { Reunion } from "./reuniones/entities/reunion.entity";
 import { Usuario } from "./usuario/usuario.entity";
 
-export const Entities=[Admin,Asesor,Cliente,Usuario,TipoContrato,TipoTrabajo,AreaAsesor,GradoAcademico,ProcesosAsesoria,Asesoramiento,Documento,Asunto,Reunion,Pago,Informacion_Pagos]
+export const Entities=[Admin,Asesor,Cliente,Usuario,TipoContrato,TipoTrabajo,AreaAsesor,GradoAcademico,ProcesosAsesoria,Asesoramiento,Documento,Asunto,Reunion,Pago,Informacion_Pagos,Guia,Herramienta,Noticia,Tutorial]

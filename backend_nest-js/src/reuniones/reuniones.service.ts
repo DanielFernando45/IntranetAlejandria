@@ -4,21 +4,31 @@ import { UpdateReunioneDto } from './dto/update-reunione.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Estado_reunion, Reunion } from './entities/reunion.entity';
 import { Repository } from 'typeorm';
+import { ZoomMeetingService } from './zoom.meeting.service';
 
 @Injectable()
 export class ReunionesService {
   constructor(
+    private readonly zoomMeetingService:ZoomMeetingService,
+
     @InjectRepository(Reunion)
     private reunionRepo:Repository<Reunion>
   ){}
 
-  async addReunion(id:number,createReunionDto: CreateReunionDto) {
-    // const asesoramiento = await this.asesoramientoRepo.findOne({ where: { id } });
-    // if (!asesoramiento) throw new NotFoundException(`Asesoramiento con id ${id} no encontrado`);
+  async addReunion(createReunionDto: CreateReunionDto) {
+    const fechaISO=new Date(createReunionDto.fecha_reunion).toISOString()
+    const zoomMeeting=await this.zoomMeetingService.createMeeting('consultores.alejandria@gmail.com',createReunionDto.titulo,fechaISO)
+  
+    const newReunion=this.reunionRepo.create({
+      titulo:createReunionDto.titulo,
+      fecha_reunion:createReunionDto.fecha_reunion,
+      enlace_video:zoomMeeting.join_url,
+      estado:Estado_reunion.ESPERA,      
+      fecha_creacion:new Date(),
+      asesoramiento:{id:createReunionDto.id_asesoramiento},
+    })
 
-    const newReunion=this.reunionRepo.create({...createReunionDto,estado:Estado_reunion.ESPERA,fecha_creacion:new Date(),asesoramiento:{id}})
     await this.reunionRepo.save(newReunion)
-    return 'Se añadio la reunion';
   }
 
   findAll() {
