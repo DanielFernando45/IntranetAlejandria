@@ -483,13 +483,14 @@ export class AsesoramientoService {
 
     return datosContrato
   }
+
   async listAsesoriasSinpagos(tipoContrato:string):Promise<listAsesoramientoYDelegadoDto[]>{
     const datosAsesoramiento=await this.asesoramientoRepo
       .createQueryBuilder('ase')
       .leftJoin('ase.informacion_pago','infoPago')
       .innerJoinAndSelect('ase.tipoContrato','con')
       .innerJoinAndSelect('ase.tipoTrabajo','tra')
-      .select(['DISTINCT ase.id AS id',
+      .select(['ase.id AS id',
         'con.tipo_contrato AS tipo_contrato',
         'tra.nombre AS tipo_trabajo',
         'ase.fecha_inicio',
@@ -499,7 +500,6 @@ export class AsesoramientoService {
       .andWhere('con.tipo_contrato= :tipoContrato',{tipoContrato})
       .getRawMany()
 
-    
     const listAsesoramientoAndDelegado=Promise.all(datosAsesoramiento.map(async(asesoramiento)=>{
       let delegado=await this.clienteService.getDelegado(asesoramiento.id)
       return(
@@ -508,12 +508,10 @@ export class AsesoramientoService {
           "delegado":delegado,
           "tipo_contrato":asesoramiento.tipo_contrato,
           "tipo_trabajo":asesoramiento.tipo_trabajo,
-          "fecha_inicio":asesoramiento.fecha_inicio,
           "profesion_asesoria":asesoramiento.profesion_asesoria
         }
       )
     }))
-
     return listAsesoramientoAndDelegado
   }
 
