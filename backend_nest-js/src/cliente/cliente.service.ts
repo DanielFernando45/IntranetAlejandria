@@ -177,7 +177,7 @@ export class ClienteService {
         if(!Object.keys(data).length)throw new BadRequestException("No se envio un body para actualizar")
         
         const partialEntity: any = { ...data };
-    
+
         if (data.gradoAcademico) {
             partialEntity.gradoAcademico = { id: data.gradoAcademico };
         }

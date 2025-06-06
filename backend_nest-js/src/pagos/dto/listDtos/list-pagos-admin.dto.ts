@@ -1,5 +1,6 @@
 import { InternalServerErrorException } from "@nestjs/common";
 import { IsDateString, IsEnum, IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { tipoPago } from "src/pagos/entities/informacion_pagos.entity";
 
 
 export class listPagosAdminDto{
@@ -9,18 +10,18 @@ export class listPagosAdminDto{
 
     @IsNotEmpty()
     @IsString()
-    delegado:string ;
+    delegado:string;
 
     @IsNotEmpty()
-    @IsString()
-    titulo:string;
+    @IsEnum(tipoPago)
+    contrato:tipoPago;
 
     @IsNotEmpty()
     @IsDateString()
-    fecha_creado:Date;
+    fecha_ultimo_pago:Date;
 
     @IsNotEmpty()
     @IsNumber()
-    monto_total:number
+    ultimo_monto:number
 
 }

@@ -1,10 +1,6 @@
 import { IsDate, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreatePagoPorCuotaDto {
-    @IsString()
-    @IsNotEmpty()
-    titulo:string;
-
     @IsNumber()
     @IsNotEmpty()
     pago_total:number;

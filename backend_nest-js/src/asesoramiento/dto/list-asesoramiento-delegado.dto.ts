@@ -18,10 +18,6 @@ export class listAsesoramientoYDelegadoDto{
     tipo_trabajo:string;
 
     @IsNotEmpty()
-    @IsDateString()
-    fecha_inicio:Date;
-
-    @IsNotEmpty()
     @IsString()
     profesion_asesoria:string
 }

@@ -4,11 +4,10 @@ import { estadoPago, Pago } from './entities/pago.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Informacion_Pagos, tipoPago, tipoServicio } from './entities/informacion_pagos.entity';
 import { CreatePagoAlContadoDto } from './dto/create-pago-al-contado.dto';
-import { PagoPorCuotaUpdate, PagoPorCuotaWrpDTO } from './dto/pago-por-cuotas-add.dto';
+import { PagoPorCuotaWrpDTO } from './dto/pago-por-cuotas-add.dto';
 import { UpdateCuotasDto } from './dto/cuotas-update.dto';
 import { UpdatePagoContadoDto } from './dto/update-pago.dto';
 import { listServiciosDto } from './dto/listDtos/list-servicios.dto';
-import { ClienteModule } from 'src/cliente/cliente.module';
 import { ClienteService } from 'src/cliente/cliente.service';
 import { listPagosEstudianteDto } from './dto/listDtos/list-pagos-estudiante.dto';
 import { listPagosAdminDto } from './dto/listDtos/list-pagos-admin.dto';
@@ -32,30 +31,42 @@ export class PagosService {
     const queryRunner=this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()  
-
+    
     try{
-      const newInfopago=queryRunner.manager.create(Informacion_Pagos,{titulo:createPagoDto.titulo,pago_total:createPagoDto.pago_total
-        ,numero_cuotas:1,fecha_creado:new Date(),
+      let newPago
+      
+      if(tipo_servicio===tipoServicio.ASESORIA){
+        const newInfopago=queryRunner.manager.create(Informacion_Pagos,{titulo:"Pago total",pago_total:createPagoDto.pago_total,
+        numero_cuotas:1,fecha_creado:new Date(),
         tipo_pago:tipoPago.CONTADO,tipo_servicio:tipo_servicio,
         asesoramiento:{id:createPagoDto.id_asesoramiento}
       })
-      console.log(newInfopago)
+      
       const {id}=await queryRunner.manager.save(newInfopago)
-      
-      const newPago=queryRunner.manager.create(Pago,{nombre:createPagoDto.titulo,fecha_pago:createPagoDto.fecha_pago,
+        newPago=queryRunner.manager.create(Pago,{nombre:"Pago total",fecha_pago:createPagoDto.fecha_pago,
         estado_pago:estadoPago.PAGADO,monto:createPagoDto.pago_total,informacion_pago:{id}})
+      }
+      if(tipo_servicio===tipoServicio.OTROS){
+        const newInfopago=queryRunner.manager.create(Informacion_Pagos,{titulo:createPagoDto.titulo,pago_total:createPagoDto.pago_total,
+        numero_cuotas:1,fecha_creado:new Date(),
+        tipo_pago:tipoPago.CONTADO,tipo_servicio:tipo_servicio,
+        asesoramiento:{id:createPagoDto.id_asesoramiento}
+      })
       
+      const {id}=await queryRunner.manager.save(newInfopago)
+        newPago=queryRunner.manager.create(Pago,{nombre:createPagoDto.titulo,fecha_pago:createPagoDto.fecha_pago,
+        estado_pago:estadoPago.PAGADO,monto:createPagoDto.pago_total,informacion_pago:{id}})
+      }
       await queryRunner.manager.save(newPago)
-      
       await queryRunner.commitTransaction()
       return "Pago agregado correctamente"
     }catch(err){
       await queryRunner.rollbackTransaction()
-      return new InternalServerErrorException("Error al intentar crear el pago")
+      return new InternalServerErrorException(`Error al intentar crear el pago ${err.message}`)
     }finally{
       await queryRunner.release()
     }
-  }
+  } 
 
   async post_pago_por_cuotas(createPagoDto:PagoPorCuotaWrpDTO){
     const queryRunner=this.dataSource.createQueryRunner()
@@ -65,7 +76,7 @@ export class PagosService {
     const infoValues=createPagoDto.createPagoPorCuotas
     const pagosValues=createPagoDto.cuotas
     try{
-      const newInfopago=queryRunner.manager.create(Informacion_Pagos,{titulo:infoValues.titulo,
+      const newInfopago=queryRunner.manager.create(Informacion_Pagos,{titulo:"Pago por cuotas",
         pago_total:infoValues.pago_total,
         numero_cuotas:infoValues.numero_cuotas,
         fecha_creado:new Date(),
@@ -75,13 +86,13 @@ export class PagosService {
     })
       const {id}=await queryRunner.manager.save(newInfopago)
       
-      const pago1=queryRunner.manager.create(Pago,{nombre:pagosValues.nombre1,monto:pagosValues.monto1,estado_pago:estadoPago.PAGADO,fecha_pago:pagosValues.fecha_pago1,informacion_pago:{id}})
+      const pago1=queryRunner.manager.create(Pago,{nombre:"Cuota 1",monto:pagosValues.monto1,estado_pago:estadoPago.PAGADO,fecha_pago:pagosValues.fecha_pago1,informacion_pago:{id}})
       await queryRunner.manager.save(pago1)
-      const pago2=queryRunner.manager.create(Pago,{nombre:pagosValues.nombre2,monto:pagosValues.monto2,estado_pago:estadoPago.POR_PAGAR,informacion_pago:{id}})
+      const pago2=queryRunner.manager.create(Pago,{nombre:"Cuota 2",monto:pagosValues.monto2,estado_pago:estadoPago.POR_PAGAR,informacion_pago:{id}})
       await queryRunner.manager.save(pago2)
       
-      if(pagosValues.nombre3 && pagosValues.monto3 && infoValues.numero_cuotas===3){
-        const pago3=queryRunner.manager.create(Pago,{nombre:pagosValues.nombre3,monto:pagosValues.monto3,estado_pago:estadoPago.POR_PAGAR,informacion_pago:{id}})
+      if(pagosValues.monto3 && infoValues.numero_cuotas===3){
+        const pago3=queryRunner.manager.create(Pago,{nombre:"Cuota 3",monto:pagosValues.monto3,estado_pago:estadoPago.POR_PAGAR,informacion_pago:{id}})
         await queryRunner.manager.save(pago3)
 
         if(pago1.monto+pago2.monto+pago3.monto!==infoValues.pago_total)throw new BadRequestException("Las cuotas deben sumar el pago total")
@@ -127,7 +138,7 @@ export class PagosService {
     const monto_total=cuotas.reduce((acumulador,valorActual)=>acumulador+valorActual.monto,0)
 
     for(let i=0;i<cuotas.length;i++){
-      updateCuotasDto[`nombre${i+1}`] && (cuotas[i].nombre=updateCuotasDto[`nombre${i+1}`])
+      //updateCuotasDto[`nombre${i+1}`] && (cuotas[i].nombre=updateCuotasDto[`nombre${i+1}`])
       updateCuotasDto[`monto${i+1}`] && (cuotas[i].monto=updateCuotasDto[`monto${i+1}`])
       if(updateCuotasDto[`fecha_pago${i+1}`]){
         cuotas[i].fecha_pago=updateCuotasDto[`fecha_pago${i+1}`]
@@ -166,7 +177,6 @@ export class PagosService {
       await queryRunner.manager.save(pago)
 
       await queryRunner.commitTransaction()
-
       return "Actualizado satisfactoriamente"
     }catch(err){
       await queryRunner.rollbackTransaction()
@@ -228,21 +238,30 @@ export class PagosService {
   }
 
   async getPagosByTipo(tipo:tipoPago):Promise<listPagosAdminDto[]>{
-    const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo},relations:['asesoramiento'],select:(['id','titulo','pago_total','fecha_creado','asesoramiento'])})
+    const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo},relations:['asesoramiento'],select:(['id','asesoramiento'])})
     
     const listPagos=Promise.all(datosPago.map(async(pago)=>{
       let delegado=await this.clienteService.getDelegado(pago.asesoramiento.id)
+      let lastPago=await this.getUltimoPago(pago.id)
       if(!delegado)throw new NotFoundException("Error en conseguir el delegado")
       return({
         "id_infoPago":pago.id,
         "delegado":delegado,
-        "titulo":pago.titulo,
-        "fecha_creado":pago.fecha_creado,
-        "monto_total":pago.pago_total
+        "contrato":tipo,
+        "fecha_ultimo_pago":lastPago.fecha_pago,
+        "ultimo_monto":lastPago.monto
       }
       )
     }))
     return listPagos
+  }
+
+  async getUltimoPago(id:number){
+    const lastPago=await this.pagoRepo.find({where:{informacion_pago:{id}},
+    order:{fecha_pago:'DESC'},
+    take:1
+  })
+    return lastPago[0]
   }
 
   async listPagosByAsesoramiento(id:number,tipo_servicio:tipoServicio):Promise<listPagosEstudianteDto[]>{
