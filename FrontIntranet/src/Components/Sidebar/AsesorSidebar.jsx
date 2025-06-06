@@ -25,7 +25,7 @@ const LINKS = [
     ]
   },
   { icono: Calendario, path: "/asesor/calendario", title: "Calendario" },
-  { icono: Gestion, path: "/asesor/gestionarAlumno", title: "Gestionar Alumnos" },
+  { icono: Gestion, path: "/asesor/gestionarAlumno", title: "Gestionar Clientes" },
 ];
 
 const AsesorSidebar =() =>{
