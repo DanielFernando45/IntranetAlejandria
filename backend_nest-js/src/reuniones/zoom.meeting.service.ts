@@ -14,7 +14,7 @@ export class ZoomMeetingService{
             {
                 topic,
                 type:2,
-                startTime:startTime,
+                start_time:startTime,
                 duration:120,
                 timezone:'America/Lima',
                 settings:{

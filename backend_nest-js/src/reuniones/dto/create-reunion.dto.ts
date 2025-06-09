@@ -1,4 +1,4 @@
-import { IsDateString, IsEnum, IsIn, IsInt, isNotEmpty, IsNotEmpty, IsString } from "class-validator";
+import { IsDateString, IsEnum, IsIn, IsInt, IsISO8601, isNotEmpty, IsNotEmpty, IsString } from "class-validator";
 import { Estado_reunion } from "../entities/reunion.entity";
 
 export class CreateReunionDto {
@@ -6,7 +6,7 @@ export class CreateReunionDto {
     @IsNotEmpty()
     titulo:string;
 
-    @IsDateString()
+    @IsISO8601({strict:true})
     @IsNotEmpty()
     fecha_reunion:Date;
 

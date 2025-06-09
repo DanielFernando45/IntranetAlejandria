@@ -174,4 +174,16 @@ export class AsesorService {
         return new InternalServerErrorException(`Error ${err.message}`)
     }
     }
+
+    async getSector(id:number){
+        const datosAsesor=await this.asesorRepo.findOneByOrFail({id})
+        if([3,4].includes(datosAsesor.areaAsesor.id)){
+            return "Sector 1"
+        }
+        if([1,2,5].includes(datosAsesor.areaAsesor.id)){
+            return "Sector 2"
+        }
+
+        return "No hay area"
+    }
 }

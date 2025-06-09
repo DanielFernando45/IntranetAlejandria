@@ -250,10 +250,14 @@ export class ClienteService {
             if (!listAsesoramientoId) throw new NotFoundException(`No se encontraron asesoramientos con el ID ${id_asesoramiento}`);
 
             const nombreDelegado=`${listAsesoramientoId.cliente.nombre} ${listAsesoramientoId.cliente.apellido}`
+            await queryRunner.commitTransaction()
             return nombreDelegado
             
         }catch(err){
+            await queryRunner.rollbackTransaction()
             new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
+        }finally{
+            await queryRunner.release()
         }
     }
 

@@ -500,7 +500,7 @@ export class AsesoramientoService {
       .andWhere('con.tipo_contrato= :tipoContrato',{tipoContrato})
       .getRawMany()
 
-    const listAsesoramientoAndDelegado=Promise.all(datosAsesoramiento.map(async(asesoramiento)=>{
+    const listAsesoramientoAndDelegado=await Promise.all(datosAsesoramiento.map(async(asesoramiento)=>{
       let delegado=await this.clienteService.getDelegado(asesoramiento.id)
       return(
         {
@@ -527,7 +527,7 @@ export class AsesoramientoService {
       .getRawMany()
 
     
-    const listAsesoramientoAndDelegado=Promise.all(datosAsesoramiento.map(async(asesoramiento)=>{
+    const listAsesoramientoAndDelegado=await Promise.all(datosAsesoramiento.map(async(asesoramiento)=>{
       let delegado=await this.clienteService.getDelegado(asesoramiento.id)
       return(
         {

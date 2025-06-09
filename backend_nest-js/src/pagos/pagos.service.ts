@@ -241,6 +241,7 @@ export class PagosService {
     const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo},relations:['asesoramiento'],select:(['id','asesoramiento'])})
     
     const listPagos=Promise.all(datosPago.map(async(pago)=>{
+      console.log(new Date())
       let delegado=await this.clienteService.getDelegado(pago.asesoramiento.id)
       let lastPago=await this.getUltimoPago(pago.id)
       if(!delegado)throw new NotFoundException("Error en conseguir el delegado")

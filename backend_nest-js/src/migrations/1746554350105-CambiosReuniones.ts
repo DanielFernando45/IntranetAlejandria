@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class ReunionesAñadidas1746554350105 implements MigrationInterface {
-    name = 'ReunionesAñadidas1746554350105'
+export class CambiosReuniones1746554350105 implements MigrationInterface {
+    name = 'CambiosReuniones1746554350105'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`usuarios\` (\`id\` int NOT NULL AUTO_INCREMENT, \`username\` varchar(255) NOT NULL, \`password\` varchar(255) NOT NULL, \`role\` enum ('admin', 'asesor', 'estudiante') NOT NULL, \`estado\` tinyint NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -22,7 +22,7 @@ export class ReunionesAñadidas1746554350105 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`herramienta\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`noticia\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`tutorial\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`reunion\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`fecha_reunion\` timestamp NOT NULL, \`estado\` enum ('espera', 'terminado') NOT NULL DEFAULT 'espera', \`enlace_zoom\` varchar(255) NULL, \`enlace_video\` varchar(255) NULL, \`fecha_creacion\` timestamp NOT NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`reunion\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`fecha_reunion\` timestamp NOT NULL, \`estado\` enum ('espera', 'terminado') NOT NULL DEFAULT 'espera', \`enlace_zoom\` varchar(255) NULL, \`enlace_video\` varchar(255) NULL, \`meetingId\` varchar(255) NULL, \`zoomUuid\` varchar(255) NOT NULL, \`fecha_creacion\` timestamp NOT NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`admin\` ADD CONSTRAINT \`FK_d6655cf5853701ab8ac2d7d4d35\` FOREIGN KEY (\`usuarioId\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`pago\` ADD CONSTRAINT \`FK_6d27019b9d8ee3c2a2bd5cff213\` FOREIGN KEY (\`id_informacion_pago\`) REFERENCES \`informacion_pagos\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`informacion_pagos\` ADD CONSTRAINT \`FK_15ac0b8eeb544b1a4b1fedcb162\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
