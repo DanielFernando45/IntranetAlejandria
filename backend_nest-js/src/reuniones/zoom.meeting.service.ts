@@ -6,8 +6,7 @@ import axios from "axios";
 export class ZoomMeetingService{
     constructor(private zoomAuth:ZoomAuthService){}
 
-    async createMeeting(userEmail:string,topic:string,startTime:string){
-        const token=await this.zoomAuth.getAccessToken()
+    async createMeeting(userEmail:string,topic:string,startTime:string,token:string){
 
         const res=await axios.post(
             `https://api.zoom.us/v2/users/${userEmail}/meetings`,

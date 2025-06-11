@@ -12,7 +12,11 @@ export class CreateReunionDto {
 
     @IsInt()
     @IsNotEmpty()
-    id_asesoramiento:number
+    id_asesoramiento:number;
+
+    @IsInt()
+    @IsNotEmpty()
+    id_asesor:number
 
     // @IsString()
     // @IsNotEmpty()

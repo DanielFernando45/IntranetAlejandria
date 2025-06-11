@@ -2,14 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Res } 
 import { ReunionesService } from './reuniones.service';
 import { CreateReunionDto } from './dto/create-reunion.dto';
 import { UpdateReunioneDto } from './dto/update-reunione.dto';
-import { ZoomAuthService } from './zoom.auth.service';
 import {Response} from 'express'
 import { ZoomMeetingService } from './zoom.meeting.service';
 
 @Controller('reuniones')
 export class ReunionesController {
   constructor(private readonly reunionesService: ReunionesService,
-              private readonly zoomService:ZoomMeetingService
+              private readonly zoomService:ZoomMeetingService,
+              
             ){}
 
   @Post('crear-reunion')
@@ -23,9 +23,12 @@ export class ReunionesController {
     
   }
 
-  @Post("add/:id")
-  async createReunion(@Param('id',ParseIntPipe) id:number,@Body() createReunionDto: CreateReunionDto) {
-    return this.reunionesService.addReunion(createReunionDto);
+  @Delete("eliminar-reunion/:id")
+  async createReunion(@Param('id') meetingId:string,@Body() body:{id_asesor:number}) {
+    const eliminated=await this.reunionesService.deleteReunion(meetingId,body.id_asesor)
+    return {
+      "message":`${eliminated}`
+    }
   }
 
   @Get()

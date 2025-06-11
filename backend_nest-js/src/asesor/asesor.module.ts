@@ -13,6 +13,7 @@ import { ProcesosAsesoriaModule } from 'src/procesos_asesoria/procesos_asesoria.
 @Module({
   imports:[TypeOrmModule.forFeature([Asesor,Usuario,AreaAsesor,GradoAcademico]),UsuarioModule,AsesoramientoModule,ProcesosAsesoriaModule],
   providers: [AsesorService],
-  controllers: [AsesorController]
+  controllers: [AsesorController],
+  exports:[AsesorService]
 })
 export class AsesorModule {}

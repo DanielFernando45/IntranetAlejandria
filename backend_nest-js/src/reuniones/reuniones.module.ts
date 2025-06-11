@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Reunion } from './entities/reunion.entity';
 import { ZoomAuthService } from './zoom.auth.service';
 import { ZoomMeetingService } from './zoom.meeting.service';
+import { AsesorModule } from 'src/asesor/asesor.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Reunion])],
+  imports:[TypeOrmModule.forFeature([Reunion]),AsesorModule],
   controllers: [ReunionesController],
   providers: [ReunionesService,ZoomAuthService,ZoomMeetingService],
 })
