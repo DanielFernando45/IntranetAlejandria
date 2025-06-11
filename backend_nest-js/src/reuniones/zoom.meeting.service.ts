@@ -14,10 +14,13 @@ export class ZoomMeetingService{
                 topic,
                 type:2,
                 start_time:startTime,
-                duration:120,
+                duration:60,
                 timezone:'America/Lima',
                 settings:{
-                    join_before_host: false,
+                    join_before_host: true,
+                    enforce_login:false,
+                    meeting_authentication:false,
+                    waiting_room: false,
                     approval_type: 1,
                     recording: 'cloud',
                 }

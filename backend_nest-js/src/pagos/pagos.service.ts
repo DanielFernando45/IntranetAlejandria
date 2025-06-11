@@ -165,12 +165,13 @@ export class PagosService {
       const pago=await queryRunner.manager.findOneByOrFail(Pago,{informacion_pago:{id}})
       
 
-      if(body.id_asesoramiento && body.pago_total){
-        infoPago.asesoramiento.id=body.id_asesoramiento
-        infoPago.pago_total=body.pago_total     
+      if(body.fecha_pago && body.pago_total && body.titulo){
+        infoPago.pago_total=body.pago_total
+        infoPago.titulo=body.titulo     
       }
       if(body.pago_total) pago.monto=body.pago_total
       if(body.fecha_pago) pago.fecha_pago=body.fecha_pago
+      if(body.titulo) pago.nombre=body.titulo
 
 
       await queryRunner.manager.save(infoPago)

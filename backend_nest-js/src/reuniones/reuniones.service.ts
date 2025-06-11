@@ -46,10 +46,11 @@ export class ReunionesService {
       titulo:createReunionDto.titulo,
       fecha_reunion:createReunionDto.fecha_reunion,
       enlace_zoom:zoomMeeting.join_url,
+      zoom_password:zoomMeeting.password,
       meetingId:String(zoomMeeting.id),
       zoomUuid:zoomMeeting.uuid,
       estado:Estado_reunion.ESPERA,      
-      fecha_creacion:new Date(),
+      fecha_creacion:horaLima.toJSDate(),
       asesoramiento:{id:createReunionDto.id_asesoramiento},
     })
 
@@ -71,8 +72,36 @@ export class ReunionesService {
       return response
   }
 
-  findAll() {
-    return `This action returns all reuniones`;
+  async handleRecordingCompleted(data:any){
+    console.log("🎥 Grabación completada:", JSON.stringify(data, null, 2));
+    const meetingId=data.payload.object.id;
+    const files=data.payload.object.recording_files
+
+    const videoFile=files.find(f=>f.file_type==='MP4')
+    const playUrl=videoFile?.play_url;
+
+    const password=data.payload.object.password
+
+    if(!playUrl) return;
+
+    await this.reunionRepo.update({meetingId},{enlace_video:playUrl,estado:Estado_reunion.TERMINADO,video_password:password})
+  }
+
+  async listEspera(id:number){
+    const enEspera=await this.reunionRepo.find({where:{asesoramiento:{id},estado:Estado_reunion.ESPERA},
+                                                select:['meetingId','titulo','fecha_reunion','enlace_zoom','enlace_zoom']})
+    if(enEspera.length===0)throw new NotFoundException("No se encontro reuniones para ese asesoramiento")
+
+    return enEspera
+  }
+
+  async listTerminados(id:number){
+    const terminados=await this.reunionRepo.find({where:{asesoramiento:{id},estado:Estado_reunion.TERMINADO},
+                                                  select:['meetingId','titulo','fecha_reunion','enlace_video','enlace_video']})
+
+    if(terminados.length===0)throw new NotFoundException("No se encontro reuniones terminadas")
+
+    return terminados
   }
 
   findOne(id: number) {
