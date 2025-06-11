@@ -3,22 +3,18 @@ import axios from 'axios';
 
 @Injectable()
 export class ZoomAuthService{
-    private clientId="9TqwyiIUSmao8DLWxntRQw";
-    private clientSecret="6W3arutJRbZ0HZ530XrsdEdz0UNjO9Li"
-    private accountId="zotGX7FnRpCp3HQsNj6kSw"
-
-    async getAccessToken(): Promise<string> {
+    async getAccessToken(client_id:string,client_secret:string,client_account_id:string): Promise<string> {
     const res = await axios.post(
       'https://zoom.us/oauth/token',
       null,
       {
         params: {
           grant_type: 'account_credentials',
-          account_id: this.accountId,
+          account_id: client_account_id,
         },
         auth: {
-          username: this.clientId,
-          password: this.clientSecret,
+          username: client_id,
+          password: client_secret,
         },
       },
     );

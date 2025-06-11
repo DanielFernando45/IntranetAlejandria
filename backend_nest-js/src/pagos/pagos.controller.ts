@@ -62,7 +62,7 @@ export class PagosController {
   getPagosCuotas(){
     const tipo=tipoPago.CUOTAS
     console.log('Entrando a /cuotas')
-    return this.pagosService.getPagosByTipo(tipo)
+    return this.pagosService.getPagosCuotas(tipo)
   }
 
   @Get('misAsesorias/:id')

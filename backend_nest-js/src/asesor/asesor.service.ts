@@ -174,4 +174,29 @@ export class AsesorService {
         return new InternalServerErrorException(`Error ${err.message}`)
     }
     }
+
+    async getCredentialsBySector(id:number){
+        const datosAsesor=await this.asesorRepo.findOne({where:{id},relations:['areaAsesor']})
+        if(!datosAsesor)throw new NotFoundException("No se encontro el asesor")
+        console.log(datosAsesor)
+        if([3,4].includes(datosAsesor.areaAsesor.id)){
+            return {
+                "correo":`${String(process.env.S1_EMAIL)}`,
+                "client_id":`${String(process.env.S1_CLIENT_ID)}`,
+                "client_secret":`${String(process.env.S1_CLIENT_SECRET)}`,
+                "client_account_id":`${process.env.S1_ACCOUNT_ID}`
+            }
+        }
+        if([1,2,5].includes(datosAsesor.areaAsesor.id)){
+            return {
+                "correo":`${String(process.env.S2_EMAIL)}`,
+                "client_id":`${String(process.env.S2_CLIENT_ID)}`,
+                "client_secret":`${String(process.env.S2_CLIENT_SECRET)}`,
+                "client_account_id":`${process.env.S2_ACCOUNT_ID}`
+            }
+        }
+        else{
+            throw new InternalServerErrorException("no se encuentra esa area")
+        }
+    }
 }

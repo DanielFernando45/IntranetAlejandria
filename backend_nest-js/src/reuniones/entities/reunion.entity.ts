@@ -26,8 +26,11 @@ export class Reunion {
     @Column({ nullable: true })
     enlace_video: string;
 
-    // @Column({ nullable: true })
-    // zoomId: string;
+    @Column({ nullable: true })
+    meetingId: string;
+    
+    @Column()
+    zoomUuid:string;
     
     @Column({ type: 'timestamp' })
     fecha_creacion:Date;

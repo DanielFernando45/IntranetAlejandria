@@ -237,10 +237,28 @@ export class PagosService {
     }
   }
 
+  async getPagosCuotas(tipo:tipoPago){
+    const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo},relations:['asesoramiento','pagos'],select:(['id','asesoramiento'])})
+    
+    const listPagos=await Promise.all(datosPago.map(async(pago)=>{
+      let delegado=await this.clienteService.getDelegado(pago.asesoramiento.id)
+      if(!delegado) throw new NotFoundException()
+        return({
+          "id_infopago":pago.id,
+          "delegado":delegado,
+          "contrato":tipo,
+          "pagos":pago.pagos.reverse()
+        })
+    }))
+    
+    return listPagos
+  }
+  
   async getPagosByTipo(tipo:tipoPago):Promise<listPagosAdminDto[]>{
     const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo},relations:['asesoramiento'],select:(['id','asesoramiento'])})
     
-    const listPagos=Promise.all(datosPago.map(async(pago)=>{
+    const listPagos=await Promise.all(datosPago.map(async(pago)=>{
+      console.log(new Date())
       let delegado=await this.clienteService.getDelegado(pago.asesoramiento.id)
       let lastPago=await this.getUltimoPago(pago.id)
       if(!delegado)throw new NotFoundException("Error en conseguir el delegado")
