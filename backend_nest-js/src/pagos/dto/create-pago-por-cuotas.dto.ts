@@ -5,10 +5,6 @@ export class CreatePagoPorCuotaDto {
     @IsNotEmpty()
     pago_total:number;
 
-    @IsDateString()
-    @IsNotEmpty()
-    fecha_pago:Date;
-
     @IsNumber()
     @IsNotEmpty()
     numero_cuotas:number;

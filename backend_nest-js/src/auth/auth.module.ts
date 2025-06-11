@@ -17,14 +17,6 @@ import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot({
-          throttlers:[
-            {
-              ttl:6000,
-              limit:4,
-            }
-          ]
-      }),
     TypeOrmModule.forFeature([Usuario,Admin,Asesor,Cliente]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'superSecret',
@@ -32,10 +24,7 @@ import { PassportModule } from '@nestjs/passport';
     }),UsuarioModule,MailModule,PassportModule
   ],
 
-  providers: [AuthService, JwtStrategy,{
-    provide: APP_GUARD,
-    useClass: ThrottlerGuard
-  }],
+  providers: [AuthService, JwtStrategy],
 
   controllers: [AuthController],
   

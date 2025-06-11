@@ -12,7 +12,7 @@ const AlContadoNuevo = () => {
     useEffect(() => {
         const fetchCuotasSinPago = async () => {
             try {
-                const response = await fetch('http://localhost:3001/asesoramiento/contadoSinPagos');
+                const response = await fetch('http://localhost:3001/asesoramiento/contadoSinPagos',{ timeout: 5000 });
                 if (!response.ok) {
                     throw new Error('Error al obtener los datos');
                 }

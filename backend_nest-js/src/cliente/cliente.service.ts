@@ -254,6 +254,8 @@ export class ClienteService {
             
         }catch(err){
             new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
+        }finally{
+            await queryRunner.release();
         }
     }
 
