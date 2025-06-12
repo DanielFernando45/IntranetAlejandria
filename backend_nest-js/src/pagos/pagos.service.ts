@@ -11,6 +11,7 @@ import { listServiciosDto } from './dto/listDtos/list-servicios.dto';
 import { ClienteService } from 'src/cliente/cliente.service';
 import { listPagosEstudianteDto } from './dto/listDtos/list-pagos-estudiante.dto';
 import { listPagosAdminDto } from './dto/listDtos/list-pagos-admin.dto';
+import { Tipo_Servicio } from 'src/asesoramiento/entities/asesoramiento.entity';
 
 @Injectable()
 export class PagosService {
@@ -256,10 +257,9 @@ export class PagosService {
   }
   
   async getPagosByTipo(tipo:tipoPago):Promise<listPagosAdminDto[]>{
-    const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo},relations:['asesoramiento'],select:(['id','asesoramiento'])})
+    const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo,tipo_servicio:tipoServicio.ASESORIA},relations:['asesoramiento'],select:(['id','asesoramiento'])})
     
     const listPagos=await Promise.all(datosPago.map(async(pago)=>{
-      console.log(new Date())
       let delegado=await this.clienteService.getDelegado(pago.asesoramiento.id)
       let lastPago=await this.getUltimoPago(pago.id)
       if(!delegado)throw new NotFoundException("Error en conseguir el delegado")

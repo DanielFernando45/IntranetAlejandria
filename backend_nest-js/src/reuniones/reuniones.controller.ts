@@ -48,6 +48,11 @@ export class ReunionesController {
     return this.reunionesService.listTerminados(id)
   }
 
+  @Get('allReuniones/:id')
+  allReunionesAsesor(@Param('id',ParseIntPipe) id:number){
+    return this.reunionesService.listReunionesByAsesor(id)
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reunionesService.remove(+id);
