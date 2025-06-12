@@ -23,8 +23,14 @@ export class Reunion {
     @Column({ nullable: true })
     enlace_zoom: string;
 
+    @Column({ nullable:true })
+    zoom_password:string;
+
     @Column({ nullable: true })
     enlace_video: string;
+
+    @Column({nullable:true})
+    video_password:string;
 
     @Column({ nullable: true })
     meetingId: string;

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, ParseIntPipe} from '@nestjs/common';
 import { ReunionesService } from './reuniones.service';
 import { CreateReunionDto } from './dto/create-reunion.dto';
 import { UpdateReunioneDto } from './dto/update-reunione.dto';
@@ -31,19 +31,26 @@ export class ReunionesController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.reunionesService.findAll();
+  @Post("webhook")
+  async handleZoomWebHook(@Body() body:any,@Headers() headers:any){
+    console.log("📥 Webhook recibido", body.event);
+    await this.reunionesService.handleRecordingCompleted(body)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reunionesService.findOne(+id);
+
+  @Get('/espera/:id')
+  listReunionesEspera(@Param('id',ParseIntPipe) id: number) {
+    return this.reunionesService.listEspera(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReunioneDto: UpdateReunioneDto) {
-    return this.reunionesService.update(+id, updateReunioneDto);
+  @Get('/terminados/:id')
+  listReunionesTerminados(@Param('id',ParseIntPipe) id: number) {
+    return this.reunionesService.listTerminados(id)
+  }
+
+  @Get('allReuniones/:id')
+  allReunionesAsesor(@Param('id',ParseIntPipe) id:number){
+    return this.reunionesService.listReunionesByAsesor(id)
   }
 
   @Delete(':id')

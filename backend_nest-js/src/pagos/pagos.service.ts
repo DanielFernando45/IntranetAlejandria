@@ -11,6 +11,7 @@ import { listServiciosDto } from './dto/listDtos/list-servicios.dto';
 import { ClienteService } from 'src/cliente/cliente.service';
 import { listPagosEstudianteDto } from './dto/listDtos/list-pagos-estudiante.dto';
 import { listPagosAdminDto } from './dto/listDtos/list-pagos-admin.dto';
+import { Tipo_Servicio } from 'src/asesoramiento/entities/asesoramiento.entity';
 
 @Injectable()
 export class PagosService {
@@ -165,12 +166,13 @@ export class PagosService {
       const pago=await queryRunner.manager.findOneByOrFail(Pago,{informacion_pago:{id}})
       
 
-      if(body.id_asesoramiento && body.pago_total){
-        infoPago.asesoramiento.id=body.id_asesoramiento
-        infoPago.pago_total=body.pago_total     
+      if(body.fecha_pago && body.pago_total && body.titulo){
+        infoPago.pago_total=body.pago_total
+        infoPago.titulo=body.titulo     
       }
       if(body.pago_total) pago.monto=body.pago_total
       if(body.fecha_pago) pago.fecha_pago=body.fecha_pago
+      if(body.titulo) pago.nombre=body.titulo
 
 
       await queryRunner.manager.save(infoPago)
@@ -255,10 +257,9 @@ export class PagosService {
   }
   
   async getPagosByTipo(tipo:tipoPago):Promise<listPagosAdminDto[]>{
-    const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo},relations:['asesoramiento'],select:(['id','asesoramiento'])})
+    const datosPago=await this.informacionRepo.find({where:{tipo_pago:tipo,tipo_servicio:tipoServicio.ASESORIA},relations:['asesoramiento'],select:(['id','asesoramiento'])})
     
     const listPagos=await Promise.all(datosPago.map(async(pago)=>{
-      console.log(new Date())
       let delegado=await this.clienteService.getDelegado(pago.asesoramiento.id)
       let lastPago=await this.getUltimoPago(pago.id)
       if(!delegado)throw new NotFoundException("Error en conseguir el delegado")
