@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import LayoutApp from '../../layout/LayoutApp'
 
 const PagosEstudiante = () => {
+  const [pagos,setPagos] = useState([]);
+
+  
+  
   return (
     <LayoutApp>
       <main className='ml-5 mr-20 bg-white rounded-[20px]  h-[658px] p-10'>

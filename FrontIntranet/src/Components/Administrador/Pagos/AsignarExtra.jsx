@@ -112,6 +112,7 @@ const AsignarExtra = ({ close }) => {
             if (response.ok) {
                 alert('Servicio extra agregado correctamente');
                 close();
+                window.location.reload();
             } else {
                 throw new Error('Error al agregar el servicio');
             }

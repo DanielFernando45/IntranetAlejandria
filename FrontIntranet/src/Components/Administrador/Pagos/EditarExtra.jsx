@@ -12,6 +12,7 @@ const EditarExtra = ({ closeEdit, servicio }) => {
     const dropdownRef = useRef(null);
 
     const [formData, setFormData] = useState({
+        titulo:'',
         pago_total: '',
         fecha_pago: '',
         id_asesoramiento: ''
@@ -20,6 +21,7 @@ const EditarExtra = ({ closeEdit, servicio }) => {
     useEffect(() => {
         if (servicio) {
             setFormData({
+                titulo:servicio.titulo,
                 pago_total: servicio.pago_total,
                 fecha_pago: servicio.fecha_pago?.split("T")[0] || '',
                 id_asesoramiento: servicio.id_asesoramiento

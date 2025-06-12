@@ -9,8 +9,14 @@ const ServiciosExtra = () => {
     const [edit, setEdit] = useState(false);
     const [servicios, setServicios] = useState([]);
     const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [servicioToDelete, setServicioToDelete] = useState(null);
 
     useEffect(() => {
+        cargarServicios();
+    }, []);
+
+    const cargarServicios = () => {
         axios.get('http://localhost:3001/pagos/listServicios')
             .then((res) => {
                 setServicios(res.data)
@@ -18,12 +24,38 @@ const ServiciosExtra = () => {
             .catch(error => {
                 console.error('Error al cargar los datos', error);
             });
-    }, []);
+    };
 
-    const formatearFecha = (fecha) => {
-        if (!fecha || fecha === "Por asignar") return "Por Asignar";
-        const date = new Date(fecha);
-        return date.toLocaleDateString("es-PE");
+    const formatearFecha = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-4)}`;
+    };
+
+    const handleDeleteClick = (servicio) => {
+        setServicioToDelete(servicio);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = () => {
+        if (!servicioToDelete) return;
+        
+        axios.delete(`http://localhost:3001/pagos/delete/${servicioToDelete.id}`)
+            .then(() => {
+                // Actualizar la lista de servicios después de eliminar
+                cargarServicios();
+                setShowDeleteModal(false);
+                setServicioToDelete(null);
+            })
+            .catch(error => {
+                console.error('Error al eliminar el servicio', error);
+                setShowDeleteModal(false);
+            });
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteModal(false);
+        setServicioToDelete(null);
     };
 
     return (
@@ -39,7 +71,7 @@ const ServiciosExtra = () => {
 
                 <div className='mt-10'>
                     <div className="flex justify-between text-[#495D72] font-medium p-[6px] pr-10 rounded-md gap-6">
-                        <div className="w-[40px] flex justify-center">IdAser.</div>
+                        <div className="w-[40px] flex justify-center">IdPago</div>
                         <div className="w-[300px] flex justify-start">Delegado/Cliente</div>
                         <div className="w-[210px] flex justify-start">Servicio Extra</div>
                         <div className="w-[160px] flex justify-center">Fecha Pago</div>
@@ -47,6 +79,7 @@ const ServiciosExtra = () => {
                         <div className="w-[280px] flex justify-center ">Accion</div>
                     </div>
                     {servicios.map((servicio, index) => (
+                        
                         <div 
                           key={servicio.id} 
                           className={`flex justify-between text-[#2B2829] font-normal p-[6px] pr-10 rounded-md gap-6 ${index % 2===0 ? 'bg-white':'bg-[#E9E7E7]'}`}>
@@ -64,7 +97,11 @@ const ServiciosExtra = () => {
                                     className="w-[140px] font-medium rounded-md px-3 py-1 bg-[#1C1C34] flex justify-center text-white text-[14px]">
                                     Editar
                                 </button>
-                                <button className="w-[140px] font-medium rounded-md px-3 py-1 bg-[#E32323] flex justify-center text-white text-[14px]">Eliminar</button>
+                                <button 
+                                    onClick={() => handleDeleteClick(servicio)}
+                                    className="w-[140px] font-medium rounded-md px-3 py-1 bg-[#E32323] flex justify-center text-white text-[14px]">
+                                    Eliminar
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -72,6 +109,30 @@ const ServiciosExtra = () => {
             </div>
             {open && <AsignarExtra close={() => setOpen(false)} />}
             {edit && <EditarExtra closeEdit={() => setEdit(false)} servicio={servicioSeleccionado} />}
+            
+            {/* Modal de confirmación para eliminar */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg max-w-md w-full">
+                        <h3 className="text-xl font-bold mb-4">Confirmar Eliminación</h3>
+                        <p className="mb-6">¿Estás seguro que deseas eliminar el servicio "{servicioToDelete?.titulo}"?</p>
+                        <div className="flex justify-end gap-4">
+                            <button
+                                onClick={cancelDelete}
+                                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     )
 }
