@@ -524,6 +524,7 @@ export class AsesoramientoService {
         'tra.nombre AS tipo_trabajo',
       ]
       )
+      .where('infoPago.id IS NOT NULL')
       .getRawMany()
 
     

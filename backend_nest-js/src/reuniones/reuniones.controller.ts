@@ -1,15 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, ParseIntPipe} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, ParseIntPipe, Res, Query} from '@nestjs/common';
 import { ReunionesService } from './reuniones.service';
 import { CreateReunionDto } from './dto/create-reunion.dto';
 import { UpdateReunioneDto } from './dto/update-reunione.dto';
 import {Response} from 'express'
 import { ZoomMeetingService } from './zoom.meeting.service';
+import { Estado_reunion } from './entities/reunion.entity';
 
 @Controller('reuniones')
 export class ReunionesController {
   constructor(private readonly reunionesService: ReunionesService,
-              private readonly zoomService:ZoomMeetingService,
-              
+              private readonly zoomService:ZoomMeetingService,            
             ){}
 
   @Post('crear-reunion')
@@ -19,8 +19,7 @@ export class ReunionesController {
     return {
       "message":"Reunion creada correctamente",
       reunion
-    }
-    
+    }  
   }
 
   @Delete("eliminar-reunion/:id")
@@ -37,7 +36,6 @@ export class ReunionesController {
     await this.reunionesService.handleRecordingCompleted(body)
   }
 
-
   @Get('/espera/:id')
   listReunionesEspera(@Param('id',ParseIntPipe) id: number) {
     return this.reunionesService.listEspera(id);
@@ -48,13 +46,22 @@ export class ReunionesController {
     return this.reunionesService.listTerminados(id)
   }
 
-  @Get('allReuniones/:id')
-  allReunionesAsesor(@Param('id',ParseIntPipe) id:number){
-    return this.reunionesService.listReunionesByAsesor(id)
+  @Get('allReunionesProximas/:id')
+  allReunionesProximas(@Param('id',ParseIntPipe) id:number){
+    const estado=Estado_reunion.ESPERA
+    return this.reunionesService.listReunionesByAsesor(id,estado)
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reunionesService.remove(+id);
+  @Get('allReunionesAnteriores/:id')
+  allReunionesAnteriores(@Param('id',ParseIntPipe) id:number){
+    const estado=Estado_reunion.TERMINADO
+    return this.reunionesService.listReunionesByAsesor(id,estado)
   }
+
+  @Get('zoom')
+  redirectZoom(@Query('link') link:string,@Res() res:Response){
+    res.redirect(`${link}`)
+  }
+
+  
 }

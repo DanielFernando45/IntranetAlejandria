@@ -167,15 +167,46 @@ export class AsuntosService {
       return arregloAsuntos
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} asunto`;
+  async listarFechasEntregas(id:number){
+    const fechasEntregaProceso=await this.asuntoRepo.find({where:{asesoramiento:{id},estado:Estado_asunto.PROCESO},select:['fecha_terminado']})
+    if(fechasEntregaProceso.length===0)throw new NotFoundException("No se encontro fechas proximas para ese id asesoramiento")
+    
+   let fechasEntrega:object[]=[]
+    for(let fecha of fechasEntregaProceso){
+      const objectFecha={"fecha_entrega":`${fecha.fecha_terminado.toISOString()}`}
+      fechasEntrega.push(objectFecha)
+    }
+      return fechasEntrega
   }
 
-  update(id: number, updateAsuntoDto: UpdateAsuntoDto) {
-    return `This action updates a #${id} asunto`;
-  }
+  async asuntosCalendario(id_asesoramiento:number,fecha:Date){
+    const asuntosByFecha=await this.asuntoRepo.find({where:{asesoramiento:{id:id_asesoramiento}},select:['estado','fecha_entregado','fecha_revision','fecha_terminado','titulo','id']})
+    const arregloEnvio:object[]=[]
 
-  remove(id: number) {
-    return `This action removes a #${id} asunto`;
+    const responseAsuntos=asuntosByFecha.map((asunto)=>{
+      if(asunto.estado===Estado_asunto.ENTREGADO && asunto.fecha_entregado===fecha){
+        return({
+          "id":`${asunto.id}`,
+          "titulo":`${asunto.titulo}`,
+          "fecha y hora":`${asunto.fecha_entregado}`,
+          "estado":`${asunto.estado}`
+        })
+      }
+      if(asunto.estado===Estado_asunto.PROCESO && asunto.fecha_revision===fecha){
+        return({
+          "id":`${asunto.id}`,
+          "titulo":`${asunto.titulo}`,
+          "message":"Esta en revision por el asesor"
+        })
+      }
+      if(asunto.estado===Estado_asunto.TERMINADO && asunto.fecha_terminado===fecha){
+        return({
+          "id":`${asunto.id}`,
+          "titulo":`${asunto.titulo}`,
+          "fecha y hora":`${asunto.fecha_entregado}`,
+          "estado":`${asunto.estado}`
+        })
+      }
+    })
   }
 }

@@ -34,13 +34,7 @@ export class DocumentosController {
     return this.documentosService.findDocuments(id,subido_por);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDocumentoDto: UpdateDocumentoDto) {
-    return this.documentosService.update(+id, updateDocumentoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.documentosService.remove(+id);
-  }
+  
+  
+  
 }

@@ -104,7 +104,7 @@ export class ReunionesService {
     return terminados
   }
 
-  async listReunionesByAsesor(id:number){
+  async listReunionesByAsesor(id:number,estado:Estado_reunion){
     const reunionesByAsesor=await this.reunionRepo
       .createQueryBuilder('re')
       .innerJoin('re.asesoramiento','as')
@@ -112,20 +112,16 @@ export class ReunionesService {
       .innerJoin('pr.asesor','asesor')
       .select(['re.id AS ID','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace'])
       .where('asesor.id= :id',{id})
+      .andWhere('re.estado= :estado',{estado})
       .getRawMany()
 
       return reunionesByAsesor
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} reunione`;
+  async getReunionesByFecha(id_asesoramiento:number,fecha:Date){
+    const getReuniones=await this.reunionRepo.find({where:{asesoramiento:{id:id_asesoramiento},fecha_reunion:fecha}})
+    if(getReuniones.length===0)return null
+    return getReuniones
   }
-
-  update(id: number, updateReunioneDto: UpdateReunioneDto) {
-    return `This action updates a #${id} reunione`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} reunione`;
-  }
+  
 }
