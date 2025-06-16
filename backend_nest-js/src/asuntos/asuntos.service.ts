@@ -179,34 +179,59 @@ export class AsuntosService {
       return fechasEntrega
   }
 
-  async asuntosCalendario(id_asesoramiento:number,fecha:Date){
-    const asuntosByFecha=await this.asuntoRepo.find({where:{asesoramiento:{id:id_asesoramiento}},select:['estado','fecha_entregado','fecha_revision','fecha_terminado','titulo','id']})
-    const arregloEnvio:object[]=[]
+  async asuntosCalendario(id_asesoramiento: number, fecha: Date) {
+  const asuntosByFecha = await this.asuntoRepo.find({
+    where: { asesoramiento: { id: id_asesoramiento } },
+    select: ['estado', 'fecha_entregado', 'fecha_revision', 'fecha_terminado', 'titulo', 'id']
+  });
 
-    const responseAsuntos=asuntosByFecha.map((asunto)=>{
-      if(asunto.estado===Estado_asunto.ENTREGADO && asunto.fecha_entregado===fecha){
-        return({
-          "id":`${asunto.id}`,
-          "titulo":`${asunto.titulo}`,
-          "fecha y hora":`${asunto.fecha_entregado}`,
-          "estado":`${asunto.estado}`
-        })
+  const mismaFecha = (a: Date | null | undefined, b: Date) =>
+    a instanceof Date &&
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+
+  const responseAsuntos = asuntosByFecha
+    .map((asunto) => {
+      if (asunto.estado === Estado_asunto.ENTREGADO && mismaFecha(asunto.fecha_entregado, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          "fecha y hora": asunto.fecha_entregado,
+          estado: asunto.estado
+        };
       }
-      if(asunto.estado===Estado_asunto.PROCESO && asunto.fecha_revision===fecha){
-        return({
-          "id":`${asunto.id}`,
-          "titulo":`${asunto.titulo}`,
-          "message":"Esta en revision por el asesor"
-        })
+
+      if (asunto.estado === Estado_asunto.PROCESO && mismaFecha(asunto.fecha_revision, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          message: "Esta en revisión por el asesor"
+        };
       }
-      if(asunto.estado===Estado_asunto.TERMINADO && asunto.fecha_terminado===fecha){
-        return({
-          "id":`${asunto.id}`,
-          "titulo":`${asunto.titulo}`,
-          "fecha y hora":`${asunto.fecha_entregado}`,
-          "estado":`${asunto.estado}`
-        })
+
+      if (asunto.estado === Estado_asunto.PROCESO && mismaFecha(asunto.fecha_terminado, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          message: "Fecha estimada de envio del asesor"
+        };
       }
+
+      if (asunto.estado === Estado_asunto.TERMINADO && mismaFecha(asunto.fecha_terminado, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          "fecha y hora": asunto.fecha_entregado,
+          estado: asunto.estado
+        };
+      }
+
+      return null;
     })
-  }
+    .filter(Boolean); // elimina los nulls
+
+      console.log(responseAsuntos);
+      return responseAsuntos;
+    }
 }

@@ -541,4 +541,20 @@ export class AsesoramientoService {
 
     return listAsesoramientoAndDelegado
   }
+
+  async getAsesoramientoByAsesor(id_asesor:number){
+    const idAsesores=await this.asesoramientoRepo
+      .createQueryBuilder('ases')
+      .innerJoin('ases.procesosasesoria','pro')
+      .innerJoinAndSelect('pro.asesor','asesor')
+      .select('DISTINCT ases.id','id')
+      .where('asesor.id = :id',{id:id_asesor})
+      .getRawMany()
+    
+    const ids=idAsesores.map(r=>r.id)
+
+    console.log(ids)
+
+    return ids
+  }
 }
