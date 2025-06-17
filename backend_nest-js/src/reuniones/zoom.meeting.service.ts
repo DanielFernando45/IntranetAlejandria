@@ -26,7 +26,6 @@ export class ZoomMeetingService{
                     meeting_authentication: false,
                     authentication_option: "", // Vacío para evitar autenticación
                     approval_type: 1, // No requiere aprobación
-                    registration_type: 1, // Desactiva registro
                     close_registration: true, // Cierra registro
                     // ↓↓↓ Nuevo parámetro crítico ↓↓↓
                     enforce_login: false, // Permite acceso sin cuenta Zoom

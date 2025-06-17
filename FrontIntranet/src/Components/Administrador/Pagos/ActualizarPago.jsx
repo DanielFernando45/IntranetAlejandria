@@ -72,6 +72,7 @@ const ActualizarPago = ({ onClose, pagoData }) => {
                 setExito(false);
                 alert('Servicio actualizado correctamente');
                 onClose();
+                window.location.reload()
             }, 1000);
                 
         } catch (error) {

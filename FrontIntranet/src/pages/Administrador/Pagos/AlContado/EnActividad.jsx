@@ -31,7 +31,7 @@ const EnActividad = () => {
     const formatearFecha = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
-        return `${date.getDate() + 1 }/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-4)}`;
+        return `${date.getDate()+1 }/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-4)}`;
     };
 
     const handleEditarClick = (cliente) => {
@@ -76,7 +76,7 @@ const EnActividad = () => {
             ))
             alert('Servicio actualizado correctamente');
             setEditar(false)
-            
+            window.location.reload()
         } catch (err) {
             console.error("Error al actualizar el pago:", err)
         }
