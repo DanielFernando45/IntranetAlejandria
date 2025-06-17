@@ -126,15 +126,4 @@ if (index === -1) {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} documento`;
-  }
-
-  update(id: number, updateDocumentoDto: UpdateDocumentoDto) {
-    return `This action updates a #${id} documento`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} documento`;
-  }
 }

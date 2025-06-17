@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class ContraseñasReuniones1746554350105 implements MigrationInterface {
-    name = 'ContraseñasReuniones1746554350105'
+export class Soporte1746554350105 implements MigrationInterface {
+    name = 'Soporte1746554350105'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`usuarios\` (\`id\` int NOT NULL AUTO_INCREMENT, \`username\` varchar(255) NOT NULL, \`password\` varchar(255) NOT NULL, \`role\` enum ('admin', 'asesor', 'estudiante') NOT NULL, \`estado\` tinyint NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -23,6 +23,7 @@ export class ContraseñasReuniones1746554350105 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`noticia\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`tutorial\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`reunion\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`fecha_reunion\` timestamp NOT NULL, \`estado\` enum ('espera', 'terminado') NOT NULL DEFAULT 'espera', \`enlace_zoom\` varchar(255) NULL, \`zoom_password\` varchar(255) NULL, \`enlace_video\` varchar(255) NULL, \`video_password\` varchar(255) NULL, \`meetingId\` varchar(255) NULL, \`zoomUuid\` varchar(255) NOT NULL, \`fecha_creacion\` timestamp NOT NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`soporte\` (\`id\` int NOT NULL AUTO_INCREMENT, \`asunto\` enum ('Error_en_entrega_y_revision', 'Error_en_reuniones', 'Error_en_calendario', 'Error_en_recursos', 'Otro') NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`estado\` enum ('espera', 'finalizado') NOT NULL DEFAULT 'espera', \`fecha_envio\` datetime NOT NULL, \`fecha_revision\` datetime NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`admin\` ADD CONSTRAINT \`FK_d6655cf5853701ab8ac2d7d4d35\` FOREIGN KEY (\`usuarioId\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`pago\` ADD CONSTRAINT \`FK_6d27019b9d8ee3c2a2bd5cff213\` FOREIGN KEY (\`id_informacion_pago\`) REFERENCES \`informacion_pagos\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`informacion_pagos\` ADD CONSTRAINT \`FK_15ac0b8eeb544b1a4b1fedcb162\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -39,9 +40,11 @@ export class ContraseñasReuniones1746554350105 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`documento\` ADD CONSTRAINT \`FK_a549abd88ad576aa9b315a56725\` FOREIGN KEY (\`id_asunto\`) REFERENCES \`asunto\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`asunto\` ADD CONSTRAINT \`FK_d94dbc00a1ba0f63437a4c08314\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`reunion\` ADD CONSTRAINT \`FK_c571dc653fcb46e946ed80121d9\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`soporte\` ADD CONSTRAINT \`FK_ff56ee8ac6c4a2dfa4b6e7cfa5f\` FOREIGN KEY (\`id_asesoramiento\`) REFERENCES \`asesoramiento\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE \`soporte\` DROP FOREIGN KEY \`FK_ff56ee8ac6c4a2dfa4b6e7cfa5f\``);
         await queryRunner.query(`ALTER TABLE \`reunion\` DROP FOREIGN KEY \`FK_c571dc653fcb46e946ed80121d9\``);
         await queryRunner.query(`ALTER TABLE \`asunto\` DROP FOREIGN KEY \`FK_d94dbc00a1ba0f63437a4c08314\``);
         await queryRunner.query(`ALTER TABLE \`documento\` DROP FOREIGN KEY \`FK_a549abd88ad576aa9b315a56725\``);
@@ -58,6 +61,7 @@ export class ContraseñasReuniones1746554350105 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`informacion_pagos\` DROP FOREIGN KEY \`FK_15ac0b8eeb544b1a4b1fedcb162\``);
         await queryRunner.query(`ALTER TABLE \`pago\` DROP FOREIGN KEY \`FK_6d27019b9d8ee3c2a2bd5cff213\``);
         await queryRunner.query(`ALTER TABLE \`admin\` DROP FOREIGN KEY \`FK_d6655cf5853701ab8ac2d7d4d35\``);
+        await queryRunner.query(`DROP TABLE \`soporte\``);
         await queryRunner.query(`DROP TABLE \`reunion\``);
         await queryRunner.query(`DROP TABLE \`tutorial\``);
         await queryRunner.query(`DROP TABLE \`noticia\``);

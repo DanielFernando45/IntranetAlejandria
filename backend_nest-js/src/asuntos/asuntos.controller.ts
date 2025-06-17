@@ -94,4 +94,9 @@ export class AsuntosController {
   // remove(@Param('id') id: string) {
   //   return this.asuntosService.remove(+id);
   // }
+
+  @Get('fechasEstimadas/:id')
+  fechasEstimadas(@Param('id',ParseIntPipe) id:number){
+    return this.asuntosService.listarFechasEntregas(id)
+  }
 }

@@ -3,7 +3,7 @@ import { CreateReunionDto } from './dto/create-reunion.dto';
 import { UpdateReunioneDto } from './dto/update-reunione.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Estado_reunion, Reunion } from './entities/reunion.entity';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { ZoomMeetingService } from './zoom.meeting.service';
 import { DateTime } from 'luxon'
 import { AsesorService } from 'src/asesor/asesor.service';
@@ -89,7 +89,7 @@ export class ReunionesService {
 
   async listEspera(id:number){
     const enEspera=await this.reunionRepo.find({where:{asesoramiento:{id},estado:Estado_reunion.ESPERA},
-                                                select:['meetingId','titulo','fecha_reunion','enlace_zoom','enlace_video']})
+                                                select:['meetingId','titulo','fecha_reunion','enlace_zoom','zoom_password']})
     if(enEspera.length===0)throw new NotFoundException("No se encontro reuniones para ese asesoramiento")
 
     return enEspera
@@ -97,35 +97,39 @@ export class ReunionesService {
 
   async listTerminados(id:number){
     const terminados=await this.reunionRepo.find({where:{asesoramiento:{id},estado:Estado_reunion.TERMINADO},
-                                                  select:['meetingId','titulo','fecha_reunion','enlace_zoom','enlace_video']})
+                                                  select:['meetingId','titulo','fecha_reunion','enlace_video','video_password']})
 
     if(terminados.length===0)throw new NotFoundException("No se encontro reuniones terminadas")
 
     return terminados
   }
 
-  async listReunionesByAsesor(id:number){
+  async listReunionesByAsesor(id:number,estado:Estado_reunion){
     const reunionesByAsesor=await this.reunionRepo
       .createQueryBuilder('re')
       .innerJoin('re.asesoramiento','as')
       .innerJoin('as.procesosasesoria','pr')
-      .innerJoin('pr.asesor','asesor')
-      .select(['re.id AS ID','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace'])
+      .innerJoinAndSelect('pr.asesor','asesor')
+      .select(['re.id AS ID','asesor.nombre AS nombre','asesor.apellido AS apellido','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace'])
       .where('asesor.id= :id',{id})
+      .andWhere('re.estado= :estado',{estado})
       .getRawMany()
 
       return reunionesByAsesor
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} reunione`;
-  }
+  async getReunionesByFecha(id_asesoramiento:number,fecha:Date){
+    const start = new Date(fecha);
+    start.setHours(0, 0, 0, 0);
 
-  update(id: number, updateReunioneDto: UpdateReunioneDto) {
-    return `This action updates a #${id} reunione`;
+    const end = new Date(start);
+    end.setDate(end.getDate() + 1);
+    
+    const getReuniones=await this.reunionRepo.find({where:{asesoramiento:{id:id_asesoramiento},fecha_reunion:Between(start,end)}})
+    
+    console.log(getReuniones)
+    if(getReuniones.length===0)return null
+    return getReuniones
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} reunione`;
-  }
+  
 }

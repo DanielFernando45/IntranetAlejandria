@@ -167,15 +167,71 @@ export class AsuntosService {
       return arregloAsuntos
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} asunto`;
+  async listarFechasEntregas(id:number){
+    const fechasEntregaProceso=await this.asuntoRepo.find({where:{asesoramiento:{id},estado:Estado_asunto.PROCESO},select:['fecha_terminado']})
+    if(fechasEntregaProceso.length===0)throw new NotFoundException("No se encontro fechas proximas para ese id asesoramiento")
+    
+   let fechasEntrega:object[]=[]
+    for(let fecha of fechasEntregaProceso){
+      const objectFecha={"fecha_entrega":`${fecha.fecha_terminado.toISOString()}`}
+      fechasEntrega.push(objectFecha)
+    }
+      return fechasEntrega
   }
 
-  update(id: number, updateAsuntoDto: UpdateAsuntoDto) {
-    return `This action updates a #${id} asunto`;
-  }
+  async asuntosCalendario(id_asesoramiento: number, fecha: Date) {
+  const asuntosByFecha = await this.asuntoRepo.find({
+    where: { asesoramiento: { id: id_asesoramiento } },
+    select: ['estado', 'fecha_entregado', 'fecha_revision', 'fecha_terminado', 'titulo', 'id']
+  });
 
-  remove(id: number) {
-    return `This action removes a #${id} asunto`;
-  }
+  const mismaFecha = (a: Date | null | undefined, b: Date) =>
+    a instanceof Date &&
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+
+  const responseAsuntos = asuntosByFecha
+    .map((asunto) => {
+      if (asunto.estado === Estado_asunto.ENTREGADO && mismaFecha(asunto.fecha_entregado, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          "fecha y hora": asunto.fecha_entregado,
+          estado: asunto.estado
+        };
+      }
+
+      if (asunto.estado === Estado_asunto.PROCESO && mismaFecha(asunto.fecha_revision, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          message: "Esta en revisión por el asesor"
+        };
+      }
+
+      if (asunto.estado === Estado_asunto.PROCESO && mismaFecha(asunto.fecha_terminado, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          message: "Fecha estimada de envio del asesor"
+        };
+      }
+
+      if (asunto.estado === Estado_asunto.TERMINADO && mismaFecha(asunto.fecha_terminado, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          "fecha y hora": asunto.fecha_entregado,
+          estado: asunto.estado
+        };
+      }
+
+      return null;
+    })
+    .filter(Boolean); // elimina los nulls
+
+      console.log(responseAsuntos);
+      return responseAsuntos;
+    }
 }
