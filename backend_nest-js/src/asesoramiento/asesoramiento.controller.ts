@@ -4,6 +4,7 @@ import { UpdateAsesoramientoDto } from './dto/update-asesoramiento.dto';
 import { AsesoramientoUpdateWrpDTO, AsesoramientoWrpDTO } from './dto/asesoramientoadd.wrpdto';
 import { clientesExtraDTO } from 'src/procesos_asesoria/dto/clientes_extra.dto';
 import { FechasValuePipe } from 'src/common/pipes/parse-fecha.pipe';
+import { Estado_Asesoria } from './entities/asesoramiento.entity';
 
 @Controller('asesoramiento')
 export class AsesoramientoController {
@@ -66,5 +67,17 @@ export class AsesoramientoController {
   @Delete('delete/:id')
   finalizado(@Param('id',ParseIntPipe) id: number) {
     return this.asesoramientoService.remove(id);
+  }
+
+  @Get('misAsesoriasActivas/:id')
+  gestionAsesoria(@Param('id',ParseIntPipe) id:number){
+    const estado=Estado_Asesoria.ACTIVO
+    return this.asesoramientoService.gestionAsesorias(id,estado)
+  }
+
+  @Get('misAsesoriasInactivas/:id')
+  asesoriaDesactivadas(@Param('id',ParseIntPipe) id:number){
+    const estado=Estado_Asesoria.DESACTIVADO
+    return this.asesoramientoService.gestionAsesorias(id,estado)
   }
 }

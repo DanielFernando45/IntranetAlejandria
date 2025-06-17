@@ -553,8 +553,36 @@ export class AsesoramientoService {
     
     const ids=idAsesores.map(r=>r.id)
 
-    console.log(ids)
-
     return ids
+  }
+
+  async gestionAsesorias(id:number,estado:Estado_Asesoria){
+    const listAsesorias=await this.asesoramientoRepo
+      .createQueryBuilder('asesoramiento')
+      .innerJoin('asesoramiento.procesosasesoria','pro')
+      .innerJoinAndSelect('asesoramiento.tipoTrabajo','tipoTrabajo')
+      .innerJoinAndSelect('pro.asesor','asesor')
+      .select(['DISTINCT asesoramiento.id AS id','asesoramiento.profesion_asesoria AS profesion_asesoria',
+        'tipoTrabajo.nombre AS tipotrabajo','asesoramiento.fecha_inicio AS fecha_inicio','asesoramiento.especialidad AS especialidad'])
+      .where('asesor.id= :id',{id})
+      .andWhere('asesoramiento.estado= :estado',{estado})
+      .getRawMany()
+  
+    if(listAsesorias.length===0)throw new NotFoundException("No presenta asesoria desactivadas")
+      
+    const responseAsesorias=await Promise.all(listAsesorias.map(async(asesoria)=>{
+      const delegado=await this.clienteService.getDelegado(asesoria.id)
+      return({
+        "id":asesoria.id,
+        "delegado":delegado,
+        "profesion_asesoria":asesoria.profesion_asesoria,
+        "tipo_trabajo":asesoria.tipoTrabajo,
+        "fecha_inicio":asesoria.fecha_inicio,
+        "fecha_fin":asesoria.fecha_fin,
+        "especialidad":asesoria.especialidad
+      })
+    }))
+
+    return responseAsesorias
   }
 }

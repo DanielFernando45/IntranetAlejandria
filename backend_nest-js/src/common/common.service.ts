@@ -50,22 +50,21 @@ export class CommonService{
     async listarTodoEventosAsesor(fecha:string,id_asesor:number){
         const filtro_fecha=new Date(fecha)
         const listAsesoramientos=await this.asesoramientoService.getAsesoramientoByAsesor(id_asesor)
-        let eventos
-        const reuniones=await Promise.all(listAsesoramientos.map(async(asesoramiento)=>{
+        
+        const reuniones=(await Promise.all(listAsesoramientos.map(async(asesoramiento)=>{
             return this.reunionService.getReunionesByFecha(asesoramiento.id,filtro_fecha)
-        }))
+        }))).flat()
 
-        const asuntos=await Promise.all(listAsesoramientos.map(async(asesoramiento)=>{
+        const asuntos=(await Promise.all(listAsesoramientos.map(async(asesoramiento)=>{
             return this.asuntoService.asuntosCalendario(asesoramiento.id,filtro_fecha)
-        }))
+        }))).flat()
+        
         if(asuntos.every(item=>item===null) && reuniones.every(item => item===null)) return {"message":"No hay eventos concertados"}
         
-        if(asuntos.every(item=>item===null)){
-            eventos=[...reuniones]
-        }
+        if (asuntos.length === 0) return reuniones;
 
-        eventos = reuniones.every(item => item===null) ? [...asuntos] : [...reuniones,...asuntos]
+        if (reuniones.length === 0) return asuntos;
 
-        return eventos
+        return [...reuniones, ...asuntos];
     }
 }
