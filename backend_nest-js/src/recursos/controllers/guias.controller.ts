@@ -23,7 +23,7 @@ export class GuiasController{
         return this.guiaService.deleteGuia(id)
     }
 
-    @Get('list')
+    @Get('all')
     getGuias(){
         return this.guiaService.listGuias()
     }
