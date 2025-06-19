@@ -12,11 +12,14 @@ import { Guia } from './entities/guia.entity';
 import { Noticia } from './entities/noticia.entity';
 import { Herramienta } from './entities/herramienta.entity';
 import { Tutorial } from './entities/tutorial.entity';
+import { Solucion } from './entities/solucion.entity';
+import { SolucionesController } from './controllers/soluciones.controller';
+import { SolucionesService } from './services/soluciones.service';
 
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Guia,Noticia,Herramienta,Tutorial])],
-  controllers: [GuiasController,HerramientasController,NoticiasController,TutorialesController],
-  providers: [GuiasService,HerramientasService,NoticiasService,TutorialesService],
+  imports:[TypeOrmModule.forFeature([Guia,Noticia,Herramienta,Tutorial,Solucion])],
+  controllers: [GuiasController,HerramientasController,NoticiasController,TutorialesController,SolucionesController],
+  providers: [GuiasService,HerramientasService,NoticiasService,TutorialesService,SolucionesService],
 })
 export class RecursosModule {}

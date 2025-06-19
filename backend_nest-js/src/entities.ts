@@ -14,9 +14,10 @@ import { ProcesosAsesoria } from "./procesos_asesoria/entities/procesos_asesoria
 import { Guia } from "./recursos/entities/guia.entity";
 import { Herramienta } from "./recursos/entities/herramienta.entity";
 import { Noticia } from "./recursos/entities/noticia.entity";
+import { Solucion } from "./recursos/entities/solucion.entity";
 import { Tutorial } from "./recursos/entities/tutorial.entity";
 import { Reunion } from "./reuniones/entities/reunion.entity";
 import { Soporte } from "./soportes/entities/soporte.entity";
 import { Usuario } from "./usuario/usuario.entity";
 
-export const Entities=[Admin,Asesor,Cliente,Usuario,TipoContrato,TipoTrabajo,AreaAsesor,GradoAcademico,ProcesosAsesoria,Asesoramiento,Documento,Asunto,Reunion,Pago,Informacion_Pagos,Guia,Herramienta,Noticia,Tutorial,Soporte]
+export const Entities=[Admin,Asesor,Cliente,Usuario,TipoContrato,TipoTrabajo,AreaAsesor,GradoAcademico,ProcesosAsesoria,Asesoramiento,Documento,Asunto,Reunion,Pago,Informacion_Pagos,Guia,Herramienta,Noticia,Tutorial,Soporte,Solucion]

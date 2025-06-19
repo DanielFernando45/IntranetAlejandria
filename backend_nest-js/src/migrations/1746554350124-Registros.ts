@@ -168,7 +168,6 @@ export class Registros1746554350124 implements MigrationInterface {
                 (2,'Justificacion.pdf','http://localhost:3001/files/product/401ff9ea-a846-4847-b6f3-8c176a5ed28a.pdf','estudiante','2025-05-01 10:00:00',1),
                 (3,'Antecedentes.xslx','http://localhost:3001/files/product/5db587a8-3961-4f6f-a071-aa7ab9ee2783.vnd.openxmlformats-officedocument.spreadsheetml.sheet','estudiante','2025-05-02 10:00:00',4),
                 (4,'Tesis_parcial.mp4','http://localhost:3001/files/product/0c6bb221-0624-438f-a7e4-95ff3b2d1414.mp4','estudiante','2025-05-10 09:00:00',2),
-                (5,'Revision_Antecedentes.pptx','http://localhost:3001/files/product/f80ce8fc-af74-43dd-90e2-45fac1d1b4e0.vnd.openxmlformats-officedocument.presentationml.presentation','asesor','2025-05-10 14:00:00',4),
                 (6,'Justificacion_Corregida.jpeg','http://localhost:3001/files/product/105dfa71-32df-4adc-b89b-864669734213.jpeg','estudiante','2025-05-11 09:00:00',5),
                 (7,'Revision_Introduccion.png','http://localhost:3001/files/product/493111ef-7525-414f-891f-becb81f7aaf4.png','asesor','2025-05-14 16:00:00',1),
                 (8,'Revision_Justificacion.webp','http://localhost:3001/files/product/3c2eb1e4-91ef-411b-94c2-7f88fa0f87f5.webp','asesor','2025-05-14 16:00:00',1),
@@ -179,6 +178,45 @@ export class Registros1746554350124 implements MigrationInterface {
                 (13,'Entrega_Metodologia_v2.pdf','http://localhost:3001/files/product/5974b5e0-cab0-470c-be12-0e1179d0b98f.pdf','estudiante','2025-05-23 11:30:00',7),
                 (14,'Metricas_Metodologia.docx','http://localhost:3001/files/product/9d2ba25a-123b-40ba-9b38-966d422dc6ca.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-23 11:30:00',7);
             `);
+
+            await queryRunner.query(`
+                INSERT INTO Alejandria.informacion_pagos(id,titulo,pago_total,tipo_pago,tipo_servicio,numero_cuotas,fecha_creado,id_asesoramiento)
+                VALUES
+                (1,"Pago por cuotas",1200,"cuotas","asesoria",3,"2025-05-12 12:00:00",1),
+                (2,"Pago total",1000,"contado","asesoria",1,"2025-06-15 10:00:00",2),
+                (3,"Pago por cuotas",1100,"cuotas","asesoria",2,"2025-06-24 10:00:00",2),
+                (4,"Servicio Turnitin",70,"contado","otros",1,"2025-06-11 10:00:00",2),
+                (5,"Pago total",1050,"contado","asesoria",1,"2025-06-22 10:00:00",1);
+              `);
+
+            await queryRunner.query(`
+                INSERT INTO Alejandria.pago(id,nombre,monto,fecha_pago,estado_pago,id_informacion_pago)
+                VALUES
+                (1,"Cuota 1",500,"2025-05-12 13:21:00","pagado",1),
+                (2,"Cuota 2",400,"2025-06-13 13:10:00","pagado",1),
+                (3,"Cuota 3",300,null,"por_pagar",1),
+                (4,"Pago total",1000,"2025-06-14 11:00:00","pagado",2),
+                (5,"Cuota 1",600,"2025-06-23 10:00:00","pagado",3),
+                (6,"Cuota 2",500,null,"por_pagar",3),
+                (7,"Servicio turnitin",70,"2025-06-10 12:24:10","pagado",4),
+                (8,"Pago total",11050,"2025-06-21 11:23:22","pagado",5); 
+              `)
+            await queryRunner.query(`
+              INSERT INTO Alejandria.reunion(
+                  id, titulo, fecha_reunion, estado, enlace_zoom, zoom_password,
+                  enlace_video, video_password, meetingId, zoomUuid, fecha_creacion, id_asesoramiento
+              )
+              VALUES
+              (1, 'Reunión inicial', '2025-06-01 10:00:00', 'espera', 'https://zoom.us/j/2134423qe2', '3443242',
+                  NULL, NULL, '4532498', '4jt4n644', '2025-05-28 09:00:00', 1),
+              (2, 'Seguimiento 1', '2025-06-08 11:00:00', 'terminado', 'https://zoom.us/j/56ytdsfd454', '2543662',
+                  'https://zoom.us/recording/1fe23442', '876465', '21232141', '4hth34231', '2025-05-30 15:00:00', 1),
+              (3, 'Reunión asesoramiento', '2025-06-15 12:00:00', 'espera', 'https://zoom.us/j/42523243def', '8324972',
+                  NULL, NULL, '5634234', '43n5o345n1', '2025-06-01 17:30:00', 2),
+              (4, 'Asesoría técnica', '2025-06-20 14:30:00', 'terminado', 'https://zoom.us/j/34ygh2h2567', '9896644',
+                  'https://zoom.us/recording/384fh0310', '4832091', '91232819', 'gf7x8f8gx62', '2025-06-10 10:00:00', 2);
+            `);
+
         }
     
         public async down(queryRunner: QueryRunner): Promise<void> {

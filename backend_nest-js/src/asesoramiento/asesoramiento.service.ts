@@ -568,7 +568,7 @@ export class AsesoramientoService {
       .andWhere('asesoramiento.estado= :estado',{estado})
       .getRawMany()
   
-    if(listAsesorias.length===0)throw new NotFoundException("No presenta asesoria desactivadas")
+    if(listAsesorias.length===0)throw new NotFoundException("No presenta asesorias")
       
     const responseAsesorias=await Promise.all(listAsesorias.map(async(asesoria)=>{
       const delegado=await this.clienteService.getDelegado(asesoria.id)

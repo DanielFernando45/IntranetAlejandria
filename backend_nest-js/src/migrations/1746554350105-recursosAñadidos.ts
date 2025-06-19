@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Soporte1746554350105 implements MigrationInterface {
-    name = 'Soporte1746554350105'
+export class RecursosAñadidos1746554350105 implements MigrationInterface {
+    name = 'RecursosAñadidos1746554350105'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`usuarios\` (\`id\` int NOT NULL AUTO_INCREMENT, \`username\` varchar(255) NOT NULL, \`password\` varchar(255) NOT NULL, \`role\` enum ('admin', 'asesor', 'estudiante') NOT NULL, \`estado\` tinyint NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -21,6 +21,7 @@ export class Soporte1746554350105 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`guia\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`herramienta\` (\`id\` int NOT NULL AUTO_INCREMENT, \`nombre\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`noticia\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`url_imagen\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`solucion\` (\`id\` int NOT NULL AUTO_INCREMENT, \`preguntas\` varchar(255) NOT NULL, \`respuestas\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`tutorial\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`enlace\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`reunion\` (\`id\` int NOT NULL AUTO_INCREMENT, \`titulo\` varchar(255) NOT NULL, \`fecha_reunion\` timestamp NOT NULL, \`estado\` enum ('espera', 'terminado') NOT NULL DEFAULT 'espera', \`enlace_zoom\` varchar(255) NULL, \`zoom_password\` varchar(255) NULL, \`enlace_video\` varchar(255) NULL, \`video_password\` varchar(255) NULL, \`meetingId\` varchar(255) NULL, \`zoomUuid\` varchar(255) NOT NULL, \`fecha_creacion\` timestamp NOT NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`soporte\` (\`id\` int NOT NULL AUTO_INCREMENT, \`asunto\` enum ('Error_en_entrega_y_revision', 'Error_en_reuniones', 'Error_en_calendario', 'Error_en_recursos', 'Otro') NOT NULL, \`descripcion\` varchar(255) NOT NULL, \`estado\` enum ('espera', 'finalizado') NOT NULL DEFAULT 'espera', \`fecha_envio\` datetime NOT NULL, \`fecha_revision\` datetime NULL, \`id_asesoramiento\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -64,6 +65,7 @@ export class Soporte1746554350105 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE \`soporte\``);
         await queryRunner.query(`DROP TABLE \`reunion\``);
         await queryRunner.query(`DROP TABLE \`tutorial\``);
+        await queryRunner.query(`DROP TABLE \`solucion\``);
         await queryRunner.query(`DROP TABLE \`noticia\``);
         await queryRunner.query(`DROP TABLE \`herramienta\``);
         await queryRunner.query(`DROP TABLE \`guia\``);
