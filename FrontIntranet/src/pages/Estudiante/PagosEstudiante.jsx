@@ -98,7 +98,7 @@ const PagosEstudiante = () => {
               <div className='flex flex-row justify-between p-2'>
                 <div className='flex justify-center w-[170px]'>Título</div>
                 <div className='flex justify-center w-[80px]'>Monto</div>
-                <div className='flex justify-center w-[160px]'>Fecha de pago</div>
+                <div className='flex justify-center w-[250px]'>Fecha de pago</div>
                 <div className='flex justify-center w-[100px]'>Estado</div>
               </div>
               
@@ -110,7 +110,7 @@ const PagosEstudiante = () => {
                   >
                     <div className='flex justify-center w-[170px]'>{pago.titulo}</div>
                     <div className='flex justify-center w-[80px]'>S/{pago.monto}</div>
-                    <div className='flex justify-center w-[160px]'>{formatDate(pago.fecha_pago)}</div>
+                    <div className='flex justify-center w-[250px]'>{formatDate(pago.fecha_pago)}</div>
                     <div className={`flex justify-center w-[100px] ${
                       pago.estado_pago === 'pagado' ? 'text-[#1DEE43] border-[#1DEE43]' : 'text-[#EE1D1D] border-[#EE1D1D]'
                     } border rounded-lg`}>
@@ -119,7 +119,7 @@ const PagosEstudiante = () => {
                   </div>
                 ))
               ) : (
-                <div className='text-center py-4'>No hay pagos de asesoría registrados</div>
+                <div className='text-center py-4 bg-[#E9E7E7] rounded-xl'>No hay pagos de asesoría registrados</div>
               )}
             </div>
             
@@ -174,7 +174,7 @@ const PagosEstudiante = () => {
                 </div>
               ))
             ) : (
-              <div className='text-center py-4'>No hay otros pagos registrados</div>
+              <div className='text-center py-4 bg-[#E9E7E7] rounded-xl'>No hay otros pagos registrados</div>
             )}
           </div>
         </div>
