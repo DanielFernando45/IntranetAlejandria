@@ -15,5 +15,5 @@ export class Guia{
     url_imagen:string;
 
     @Column()
-    enlace:string;
+    doc_url:string;
 }
