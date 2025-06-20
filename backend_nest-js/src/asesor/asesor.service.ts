@@ -162,8 +162,8 @@ export class AsesorService {
         await queryRunner.connect()
         await queryRunner.startTransaction()
     try{
-        const delegadoYAsesoria=this.procesosAsesoriaService.getDelegadoAndIdAsesoramiento(id_asesor,queryRunner.manager)
-        queryRunner.commitTransaction()
+        const delegadoYAsesoria=await this.procesosAsesoriaService.getDelegadoAndIdAsesoramiento(id_asesor,queryRunner.manager)
+        await queryRunner.commitTransaction()
         return delegadoYAsesoria
     }catch(err){
         await queryRunner.rollbackTransaction()
