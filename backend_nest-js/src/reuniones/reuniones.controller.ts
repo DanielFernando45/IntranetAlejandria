@@ -22,8 +22,8 @@ export class ReunionesController {
   }
 
   @Delete("eliminar-reunion/:id")
-  async createReunion(@Param('id') meetingId:string,@Body() body:{id_asesor:number}) {
-    const eliminated=await this.reunionesService.deleteReunion(meetingId,body.id_asesor)
+  async createReunion(@Param('id',ParseIntPipe) id:number,@Body() body:{id_asesor:number}) {
+    const eliminated=await this.reunionesService.deleteReunion(id,body.id_asesor)
     return {
       "message":`${eliminated}`
     }
