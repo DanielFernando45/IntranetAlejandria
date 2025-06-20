@@ -9,6 +9,7 @@ import { DateTime } from 'luxon'
 import { AsesorService } from 'src/asesor/asesor.service';
 import { ZoomAuthService } from './zoom.auth.service';
 import axios from 'axios';
+import { ClienteService } from 'src/cliente/cliente.service';
 
 @Injectable()
 export class ReunionesService {
@@ -16,6 +17,7 @@ export class ReunionesService {
     private readonly zoomMeetingService:ZoomMeetingService,
     private readonly asesorService:AsesorService,
     private readonly zoomAuthService:ZoomAuthService,
+    private clienteService:ClienteService,
 
     @InjectRepository(Reunion)
     private reunionRepo:Repository<Reunion>
@@ -109,13 +111,25 @@ export class ReunionesService {
       .createQueryBuilder('re')
       .innerJoin('re.asesoramiento','as')
       .innerJoin('as.procesosasesoria','pr')
-      .innerJoinAndSelect('pr.asesor','asesor')
-      .select(['re.id AS ID','asesor.nombre AS nombre','asesor.apellido AS apellido','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace'])
+      .innerJoin('pr.asesor','asesor')
+      .select(['DISTINCT re.id AS id','as.id AS id_asesoramiento','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace','re.meetingId as meetingId'])
       .where('asesor.id= :id',{id})
       .andWhere('re.estado= :estado',{estado})
       .getRawMany()
 
-      return reunionesByAsesor
+    const response=await Promise.all(reunionesByAsesor.map(async(reunion)=>{
+      const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
+      return({
+        "id":reunion.id,
+        "delegado":delegado,
+        "asesoramiento_id":reunion.id_asesoramiento,
+        "titulo":reunion.titulo,
+        "fecha_reunion":reunion.fecha_reunion,
+        "enlace":reunion.enlace,
+        "meetingId":reunion.meetingId
+      })
+    }))
+      return response
   }
 
   async getReunionesByFecha(id_asesoramiento:number,fecha:Date){

@@ -9,7 +9,7 @@ import { AsesorModule } from 'src/asesor/asesor.module';
 import { ClienteModule } from 'src/cliente/cliente.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Reunion]),AsesorModule],
+  imports:[TypeOrmModule.forFeature([Reunion]),AsesorModule,ClienteModule],
   controllers: [ReunionesController],
   providers: [ReunionesService,ZoomAuthService,ZoomMeetingService],
   exports:[ReunionesService]
