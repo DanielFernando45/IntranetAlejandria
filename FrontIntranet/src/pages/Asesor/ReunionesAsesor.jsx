@@ -1,16 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LayoutApp from '../../layout/LayoutApp'
 import Zoom from "../../assets/images/zoom.svg";
 import agregar from '../../assets/icons/pluss.svg';
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
 const ReunionesAsesor = () => {
+
+  const [asesorias, setAsesorias] = useState([]);
+  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const isProximo = location.pathname.includes("proximo");
   const isAnteriores = location.pathname.includes("anteriores");
 
+  useEffect(() => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      const id = user.id;
+
+      fetch(`http://localhost:3001/asesor/asesoramientosYDelegado/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          const asesoriasArray = Object.values(data).map(item => ({
+            id: item.id_asesoramiento,
+            profesion: item.profesion_asesoria,
+            delegado: item.delegado
+          }));
+          setAsesorias(asesoriasArray);
+
+          if (asesoriasArray.length > 0) {
+            const primeraAsesoriaId = asesoriasArray[0].id;
+            setSelectedAsesoriaId(primeraAsesoriaId);
+
+          }
+        })
+        .catch(error => console.error('Error al obtener asesorías:', error));
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const asesoriaId = e.target.value;
+    setSelectedAsesoriaId(asesoriaId);
+  }
 
   return (
     <LayoutApp>
@@ -23,12 +57,14 @@ const ReunionesAsesor = () => {
               <h1 className="font-medium text-[20px]">
                 Reuniones
               </h1>
-              <select className="border border-black rounded-l-lg" name="" id="">
-                <option value="">Filtrar por alumno</option>
-                <option value="">Juan Lopez</option>
-                <option value="">Sofia Anaya</option>
-                <option value="">Alonso Valencia</option>
-                <option value="">Omar Vargas</option>
+              <select
+                className="border-2 rounded-md px-2 border-black "
+                onChange={handleChange}
+                value={selectedAsesoriaId || ''}
+              >
+                {asesorias.map((asesoria, index) => (
+                  <option key={index} value={asesoria.id}>{asesoria.delegado}</option>
+                ))}
               </select>
             </div>
 
@@ -50,9 +86,9 @@ const ReunionesAsesor = () => {
             </div>
           </div>
 
-          
+
           <div className="mt-4">
-            <Outlet/>
+            <Outlet context={{ selectedAsesoriaId, asesorias }} />
           </div>
 
         </div>
