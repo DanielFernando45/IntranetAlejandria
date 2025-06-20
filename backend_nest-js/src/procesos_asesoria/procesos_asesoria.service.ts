@@ -98,7 +98,7 @@ export class ProcesosAsesoriaService {
       return listAll
 
     }catch(err){
-      return new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
+      throw new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
     }
   }
   
