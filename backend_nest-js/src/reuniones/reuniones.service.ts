@@ -114,28 +114,46 @@ export class ReunionesService {
   }
 
   async listReunionesByAsesor(id:number,estado:Estado_reunion){
+    let response
     const reunionesByAsesor=await this.reunionRepo
       .createQueryBuilder('re')
       .innerJoin('re.asesoramiento','as')
       .innerJoin('as.procesosasesoria','pr')
       .innerJoin('pr.asesor','asesor')
-      .select(['DISTINCT re.id AS id','as.id AS id_asesoramiento','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace','re.meetingId as meetingId'])
+      .select(['DISTINCT re.id AS id','as.id AS id_asesoramiento','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace','re.enlace_video AS enlace_video','re.video_password AS video_password','re.meetingId as meetingId'])
       .where('asesor.id= :id',{id})
       .andWhere('re.estado= :estado',{estado})
       .getRawMany()
 
-    const response=await Promise.all(reunionesByAsesor.map(async(reunion)=>{
-      const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
-      return({
-        "id":reunion.id,
-        "delegado":delegado,
-        "asesoramiento_id":reunion.id_asesoramiento,
-        "titulo":reunion.titulo,
-        "fecha_reunion":reunion.fecha_reunion,
-        "enlace":reunion.enlace,
-        "meetingId":reunion.meetingId
-      })
-    }))
+    if(estado===Estado_reunion.ESPERA){
+      response=await Promise.all(reunionesByAsesor.map(async(reunion)=>{
+        const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
+        return({
+          "id":reunion.id,
+          "delegado":delegado,
+          "asesoramiento_id":reunion.id_asesoramiento,
+          "titulo":reunion.titulo,
+          "fecha_reunion":reunion.fecha_reunion,
+          "enlace":reunion.enlace,
+          "meetingId":reunion.meetingId
+        })
+      }))
+    }
+    if(estado===Estado_reunion.TERMINADO){
+      response=await Promise.all(reunionesByAsesor.map(async(reunion)=>{
+        const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
+        return({
+          "id":reunion.id,
+          "delegado":delegado,
+          "asesoramiento_id":reunion.id_asesoramiento,
+          "titulo":reunion.titulo,
+          "fecha_reunion":reunion.fecha_reunion,
+          "enlace_video":reunion.enlace_video,
+          "password_video":reunion.video_password,
+          "meetingId":reunion.meetingId
+        })
+      }))
+    }
       return response
   }
 
