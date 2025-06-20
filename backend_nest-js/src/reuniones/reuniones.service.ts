@@ -61,17 +61,24 @@ export class ReunionesService {
     return "Se agrego la reunion satisfactoriamente"
   }
 
-  async deleteReunion(meetingId:string,id_asesor:number){
+  async deleteReunion(id:number,id_asesor:number){
     const credenciales=await this.asesorService.getCredentialsBySector(id_asesor)
     console.log(credenciales)
+    const reunion=await this.reunionRepo.findOne({where:{id},select:['meetingId']})
+    if(!reunion)throw new NotFoundException("No se encontro la reunion")
     const token=await this.zoomAuthService.getAccessToken(credenciales.client_id,credenciales.client_secret,credenciales.client_account_id)
-      console.log(meetingId)
-      const response=await axios.delete(`https://api.zoom.us/v2/meetings/${meetingId}`,{
+      try{
+      const response=await axios.delete(`https://api.zoom.us/v2/meetings/${reunion.meetingId}`,{
         headers:{
           Authorization:`Bearer ${token}`
         }
-      })
-      return response
+      })}catch(err){
+        throw new InternalServerErrorException(`No se pudo eliminar las reunion con meetingId ${reunion.meetingId}`)
+      }
+    const deleted=await this.reunionRepo.delete({id})
+    if(deleted.affected===0) throw new NotFoundException("No se elimino ningun registro")
+    
+    return "Se elimino correctamente"
   }
 
   async handleRecordingCompleted(data:any){
