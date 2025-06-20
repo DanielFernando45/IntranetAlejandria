@@ -158,20 +158,16 @@ export class AsesorService {
     }
 
     async getAsesoramientoyDelegado(id_asesor:number){
-        try{
         const queryRunner=this.dataSource.createQueryRunner()
         await queryRunner.connect()
         await queryRunner.startTransaction()
-        
-
-        
-        // const listDelegadosYAsesoramiento=Promise.all(listAsesoramiento.map(async(asesoramientoId)=>{
-        //     return this.procesosAsesoriaService.getDelegadoAndIdAsesoramiento(asesoramientoId.id,queryRunner.manager) 
-        // }))
-        
+        try{
         return this.procesosAsesoriaService.getDelegadoAndIdAsesoramiento(id_asesor,queryRunner.manager)
     }catch(err){
+        await queryRunner.rollbackTransaction()
         return new InternalServerErrorException(`Error ${err.message}`)
+    }finally{
+        await queryRunner.release()
     }
     }
 
