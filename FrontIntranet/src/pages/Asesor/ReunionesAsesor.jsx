@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import LayoutApp from '../../layout/LayoutApp'
-import Zoom from "../../assets/images/zoom.svg";
-import agregar from '../../assets/icons/pluss.svg';
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
 const ReunionesAsesor = () => {

@@ -24,9 +24,9 @@ export class ZoomMeetingService{
                 settings:{
                     waiting_room: false,
                     meeting_authentication: false,
-                    authentication_option: "", // Vacío para evitar autenticación
-                    approval_type: 1, // No requiere aprobación
-                    close_registration: true, // Cierra registro
+                    //authentication_option: "", // Vacío para evitar autenticación
+                    approval_type: 2, // No requiere aprobación
+                    //close_registration: true, // Cierra registro
                     // ↓↓↓ Nuevo parámetro crítico ↓↓↓
                     enforce_login: false, // Permite acceso sin cuenta Zoom
                     join_before_host: true, // Permite unión sin anfitrión
