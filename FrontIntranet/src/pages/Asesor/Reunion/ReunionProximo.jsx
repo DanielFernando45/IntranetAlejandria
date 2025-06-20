@@ -71,7 +71,7 @@ const ReunionProximo = () => {
       });
       
       // Actualizar la lista de reuniones después de eliminar
-      setReuniones(reuniones.filter(reunion => reunion.meetingId !== meetingToDelete));
+      setReuniones(reuniones.filter(reunion => reunion.id !== meetingToDelete));
       setShowConfirmModal(false);
     } catch (err) {
       console.error('Error al eliminar la reunión:', err);
@@ -120,7 +120,7 @@ const ReunionProximo = () => {
                     <p className="font-medium">{reunion.delegado}</p>
                     <button 
                       className='p-1'
-                      onClick={() => handleDeleteClick(reunion.meetingId)}
+                      onClick={() => handleDeleteClick(reunion.id)}
                     >
                       <img src={eliminar} className='w-12' alt="Eliminar reunión" />
                     </button>
