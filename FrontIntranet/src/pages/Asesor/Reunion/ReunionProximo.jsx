@@ -41,19 +41,15 @@ const ReunionProximo = () => {
 
   // Función para formatear la fecha
   const formatFecha = (fechaString) => {
-    const fecha = new Date(fechaString);
-    const opcionesMes = { month: 'long' };
-    const mes = new Intl.DateTimeFormat('es-ES', opcionesMes).format(fecha);
-    const dia = fecha.getDate();
-    const horas = fecha.getHours();
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    const ampm = horas >= 12 ? 'PM' : 'AM';
-    const horas12 = horas % 12 || 12;
-
+   const date = new Date(fechaString);
+    const options = { month: 'long' };
+    // Extraer directamente la hora y minutos de la cadena ISO
+    const timePart = fechaString.split('T')[1].substring(0, 5);
+    
     return {
-      mes: mes.charAt(0).toUpperCase() + mes.slice(1),
-      dia,
-      hora: `${horas12}:${minutos} ${ampm}`
+        month: new Intl.DateTimeFormat('es-ES', options).format(date),
+        day: date.getUTCDate(),
+        time: timePart
     };
   };
 
@@ -109,9 +105,9 @@ const ReunionProximo = () => {
             <div key={index} className="flex w-[350px]  items-center">
 
               <div className="flex flex-col justify-center items-center rounded-l-xl h-full w-[104px] bg-[#1C1C34] p-4 text-white">
-                <p>{fechaFormateada.mes}</p>
-                <h1 className="text-[30px]">{fechaFormateada.dia}</h1>
-                <p className="text-[12px]">{fechaFormateada.hora}</p>
+                <p>{fechaFormateada.month}</p>
+                <h1 className="text-[30px]">{fechaFormateada.day}</h1>
+                <p className="text-[12px]">{fechaFormateada.time}</p>
               </div>
 
               <div className="flex flex-col w-full h-full border bg-[#F0EFEF] border-[#AAA3A5] p-4 justify-between rounded-r-xl gap-5">

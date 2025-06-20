@@ -64,14 +64,15 @@ const ReunionesEstudiante = () => {
         const options = { month: 'long' };
         return {
             month: new Intl.DateTimeFormat('es-ES', options).format(date),
-            day: date.getDate(),
-            time: date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+            day: date.getUTCDate(),  // Usar getUTCDate para mantener consistencia
+            time: date.toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'UTC'  // Forzar a usar UTC para la hora
+            })
         };
     };
 
-    const truncateText = (text, maxLength) => {
-        return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
-    };
 
     return (
         <LayoutApp>
@@ -120,16 +121,16 @@ const ReunionesEstudiante = () => {
                                                 <div className="flex flex-col justify-between w-full h-full border border-[#AAA3A5] bg-[#F0EFEF] p-4 rounded-b-xl sm:rounded-r-xl sm:rounded-bl-none">
                                                     <span className="flex flex-col gap-[6px]">
                                                         <p className="font-medium">{reunion.titulo}</p>
-                                                        <h1 className="text-[#666666]">Meeting ID: {reunion.meetingId}</h1>
+                                                        <h1 className="text-[#666666]">Codigo: {reunion.meetingId}</h1>
                                                     </span>
                                                     <div className="w-full px-5">
                                                         <button className="flex gap-4 justify-between px-1 h-12 items-center text-white rounded-2xl bg-[#1271ED]">
-                                                            <a href={reunion.enlace_zoom} target="_blank" rel="noopener noreferrer">
+                                                            <a href={reunion.enlace_zoom} target="_blank">
                                                                 <p className="font-medium">Enlace Zoom</p>
                                                             </a>
                                                             <img src={Zoom} alt="Zoom" className="w-6 h-6" />
                                                         </button>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -163,7 +164,7 @@ const ReunionesEstudiante = () => {
                                                 <div className="flex flex-col justify-between w-full h-full border border-[#AAA3A5] bg-[#F0EFEF] p-4 rounded-b-xl sm:rounded-r-xl sm:rounded-bl-none">
                                                     <span className="flex flex-col gap-[6px]">
                                                         <p className="font-medium">{reunion.titulo}</p>
-                                                        <h1 className="text-[#666666]">Meeting ID: {reunion.meetingId}</h1>
+                                                        <h1 className="text-[#666666]">Codigo: {reunion.meetingId}</h1>
                                                     </span>
                                                     <div className="w-full px-5">
                                                         <button className="flex gap-4 justify-between px-5 h-12 items-center text-white rounded-2xl bg-[#1271ED]">
@@ -172,7 +173,7 @@ const ReunionesEstudiante = () => {
                                                             </a>
                                                             <img src={Zoom} alt="Zoom" className="w-6 h-6" />
                                                         </button>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>

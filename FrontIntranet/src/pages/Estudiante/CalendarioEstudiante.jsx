@@ -9,6 +9,54 @@ const CalendarioEstudiante = () => {
   const [calendarDays, setCalendarDays] = useState([]);
   const [monthName, setMonthName] = useState('');
   const [dayName, setDayName] = useState('');
+  const [asesorias, setAsesorias] = useState([]);
+  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
+  const [eventosDia, setEventosDia] = useState([]);
+
+  useEffect(() => {
+    const usuario = localStorage.getItem('user');
+    if (usuario) {
+      const user = JSON.parse(usuario);
+      const id = user.id;
+
+      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          const asesoriasArray = Object.values(data).map(item => ({
+            id: item.id,
+            profesion: item.profesion_asesoria
+          }));
+          setAsesorias(asesoriasArray);
+
+          if (asesoriasArray.length > 0) {
+            const primeraAsesoriaId = asesoriasArray[0].id;
+            setSelectedAsesoriaId(primeraAsesoriaId);
+          }
+        })
+        .catch(error => console.error('Error al obtener asesorías:', error));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedAsesoriaId) {
+      fetchEventosDia();
+    }
+  }, [selectedAsesoriaId, selectedYear, selectedMonth, selectedDay]);
+
+  const fetchEventosDia = () => {
+    const fechaSeleccionada = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+    fetch(`http://localhost:3001/common/listar-calendario/${selectedAsesoriaId}/${fechaSeleccionada}`)
+      .then(res => res.json())
+      .then(data => {
+        setEventosDia(data);
+      })
+      .catch(error => console.error('Error al obtener eventos del día:', error));
+  };
+
+  const handleChange = (e) => {
+    const asesoriaId = e.target.value;
+    setSelectedAsesoriaId(asesoriaId);
+  }
 
   const months = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -83,6 +131,73 @@ const CalendarioEstudiante = () => {
     }
   };
 
+  const addOneHour = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    date.setUTCHours(date.getUTCHours() + 1);
+    return date.toISOString();
+  };
+
+  const formatTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    const displayHours = hours % 12 || 12;
+    return `${displayHours}:${String(minutes).padStart(2, '0')}${ampm}`;
+  };
+
+  const renderEventos = () => {
+    if (eventosDia.length === 0) {
+      return (
+        <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
+          <div className='flex flex-col gap-1'>
+            <h2 className='text-[25px] font-bold text-[#575051]'>No hay eventos programados</h2>
+          </div>
+        </div>
+      );
+    }
+
+    return eventosDia.map((evento, index) => {
+      if (evento.fecha_reunion) {
+        // Evento de reunión
+        return (
+          <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
+            <div className='flex items-start pt-1'>
+              <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
+            </div>
+            <div className='flex flex-col justify-between'>
+              <p className='text-[#575051] font-medium'>
+                {formatTime(evento.fecha_reunion)} - {formatTime(addOneHour(evento.fecha_reunion))}
+              </p>
+
+              <div className='flex gap-2 items-center text-[20px]'>
+                {evento.enlace_zoom && (
+                  <a href={evento.enlace_zoom} target="_blank" rel="noopener noreferrer">
+                    <img src={Zoom} alt="Zoom" className='w-10' />
+                  </a>
+                )}
+                <p className='text-[#82777A]'>{evento.titulo}</p>
+              </div>
+            </div>
+          </div>
+        );
+      } else {
+        // Evento de mensaje
+        return (
+          <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
+            <div className='flex items-start pt-1'>
+              <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
+            </div>
+            <div className='flex flex-col gap-1'>
+              <h2 className='text-[25px] font-bold text-[#575051]'>{evento.titulo}</h2>
+              <p className='text-[#82777A]'>{evento.message}</p>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
   const renderCalendarDays = () => {
     const weeks = [];
     for (let i = 0; i < calendarDays.length; i += 7) {
@@ -144,12 +259,16 @@ const CalendarioEstudiante = () => {
                 ))}
               </select>
 
-              <select className='border border-[#1C1C34] rounded-lg w-[240px] h-[35px] font-semibold text-[#575051]'>
-                <option value="">Seleccione alumno(s)</option>
-                <option value="">Dana Ortiz</option>
-                <option value="">Alex Alberto</option>
-                <option value="">Rodolfo Alfred</option>
+              <select
+                onChange={handleChange}
+                value={selectedAsesoriaId || ''}
+                className='border rounded-t-md border-[#b4a6aa]'
+              >
+                {asesorias.map((asesoria, index) => (
+                  <option key={index} value={asesoria.id}>{asesoria.profesion}</option>
+                ))}
               </select>
+
             </div>
           </div>
 
@@ -177,41 +296,7 @@ const CalendarioEstudiante = () => {
           </div>
 
           <div className='flex flex-col gap-4 overflow-y-auto max-h-[500px]'>
-            <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-              <div className='flex items-start pt-1'>
-                <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-[#575051] font-medium'>10:00am - 12:00am</p>
-                <h2 className='text-[25px] font-bold text-[#575051]'>John Mobbin</h2>
-                <div className='flex gap-2 items-center'>
-                  <img src={Zoom} alt="Zoom" className='w-4 h-4' />
-                  <p className='text-[#82777A]'>Avance de IV Capitulo</p>
-                </div>
-              </div>
-            </div>
-
-            <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-              <div className='flex items-start pt-1'>
-                <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-[#575051] font-medium'>12:00am</p>
-                <h2 className='text-[25px] font-bold text-[#575051]'>Entrega de avance</h2>
-                <p className='text-[#82777A]'>Fecha limite: 28 de {monthName}</p>
-              </div>
-            </div>
-
-            <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-              <div className='flex items-start pt-1'>
-                <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-[#575051] font-medium'>12:00am</p>
-                <h2 className='text-[25px] font-bold text-[#575051]'>Entrega de avance</h2>
-                <p className='text-[#82777A]'>Fecha limite: 28 de {monthName}</p>
-              </div>
-            </div>
+            {renderEventos()}
           </div>
         </div>
       </main>
@@ -219,4 +304,4 @@ const CalendarioEstudiante = () => {
   );
 }
 
-export default CalendarioEstudiante
+export default CalendarioEstudiante;
