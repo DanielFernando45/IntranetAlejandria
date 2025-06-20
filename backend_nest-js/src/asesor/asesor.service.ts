@@ -161,11 +161,13 @@ export class AsesorService {
         const queryRunner=this.dataSource.createQueryRunner()
         await queryRunner.connect()
         await queryRunner.startTransaction()
-        try{
-        return this.procesosAsesoriaService.getDelegadoAndIdAsesoramiento(id_asesor,queryRunner.manager)
+    try{
+        const delegadoYAsesoria=this.procesosAsesoriaService.getDelegadoAndIdAsesoramiento(id_asesor,queryRunner.manager)
+        queryRunner.commitTransaction()
+        return delegadoYAsesoria
     }catch(err){
         await queryRunner.rollbackTransaction()
-        return new InternalServerErrorException(`Error ${err.message}`)
+        throw new InternalServerErrorException(`Error ${err.message}`)
     }finally{
         await queryRunner.release()
     }
