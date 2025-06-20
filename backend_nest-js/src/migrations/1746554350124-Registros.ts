@@ -217,28 +217,110 @@ export class Registros1746554350124 implements MigrationInterface {
                   'https://zoom.us/recording/384fh0310', '4832091', '91232819', 'gf7x8f8gx62', '2025-06-10 10:00:00', 2);
             `);
 
+            await queryRunner.query(`
+              INSERT INTO Alejandria.herramienta(id,nombre,descripcion,url_imagen,enlace)
+              VALUES
+              (1, 'Python', 'Python en una herramienta indispensable en el entorno de datos', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png', 'https://www.python.org'),
+              (2, 'Grammarly', 'Asistente de escritura para corrección gramatical y estilo.', 'https://cdn.prod.website-files.com/605dd4e52b25d35391c43725/64738ba877020dbeb73fb5ad_644e4b039c872640ca89a054_grammarly-1.svg', 'https://www.grammarly.com'),
+              (3, 'Zotero', 'Gestor de referencias bibliográficas y recursos académicos.', 'https://i0.wp.com/www.infotecarios.com/wp-content/uploads/z-logo1.png?fit=1024%2C1024&ssl=1', 'https://www.zotero.org'),
+              (4, 'Mendeley', 'Organizador de investigaciones y gestor de referencias.', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Mendeley_Logo_Vertical.png/960px-Mendeley_Logo_Vertical.png', 'https://www.mendeley.com'),
+              (5, 'Notion', 'Aplicación para tomar notas, organizar tareas y trabajo colaborativo.', 'https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png', 'https://www.notion.so');
+            `)
+
+            await queryRunner.query(`
+              INSERT INTO Alejandria.guia(id, titulo, descripcion, url_imagen, doc_url)
+              VALUES
+                (1, 'Guía de Normas APA', 'Instrucciones para citar y referenciar con el formato APA.', 'https://www.todoliteratura.es/fotos/1/Formato-APA.jpg', 'https://example.com/docs/guia_apa.pdf'),
+                (2, 'Guía de Tesis', 'Pasos y estructura para elaborar una tesis universitaria.', 'https://universoabierto.org/wp-content/uploads/2017/12/guia-elaborar-tesis-ebook-universia.jpg', 'https://example.com/docs/guia_tesis.pdf'),
+                (3, 'Guía de Turnitin', 'Manual para el uso correcto de Turnitin.', 'https://vrip.unmsm.edu.pe/wp-content/uploads/2025/03/png-turnitin.png', 'https://example.com/docs/guia_turnitin.pdf'),
+                (4, 'Guía de Presentaciones', 'Consejos para realizar presentaciones efectivas.', 'https://venngage-wordpress-es.s3.amazonaws.com/uploads/2023/09/diseno-de-presentaciones.png', 'https://example.com/docs/guia_presentaciones.pdf'),
+                (5, 'Guía de Investigación', 'Orientaciones para la planificación y ejecución de investigaciones.', 'https://investigacion.pucp.edu.pe/wp-content/uploads/2024/04/GUIiA-DE-INVESTIGACIOiN-EN-SOCIALES-560x778.jpg', 'https://example.com/docs/guia_investigacion.pdf');  
+            `)
+
+            await queryRunner.query(`
+              INSERT INTO Alejandria.noticia(id, titulo, descripcion, url_imagen)
+              VALUES
+                (1, 'Nuevo convenio con universidades internacionales', 'Se ha firmado un acuerdo de colaboración con instituciones académicas extranjeras para fomentar el intercambio estudiantil.', 'https://numdea.com/wp-content/uploads/2020/01/en-que-consiste-convenio-colectivo.jpg'),
+                (2, 'Concurso de investigación 2025', 'Abierta la convocatoria para el concurso anual de investigación. Participa y gana premios.', 'https://cdn.palbincdn.com/images/blog/gallery/como-crear-tu-propio-concurso-online-en-10-pasos.png'),
+                (3, 'Actualización en el reglamento de tesis', 'La universidad ha publicado cambios importantes en el reglamento para trabajos de titulación.', 'https://medicina.unmsm.edu.pe/wp-content/uploads/2021/12/reglamentos.png'),
+                (4, 'Webinar sobre redacción académica', 'Este 30 de junio se llevará a cabo un webinar gratuito sobre técnicas de redacción para tesis.', 'https://hacertfg.com/wp-content/uploads/2024/01/Redaccion-Academica.webp'),
+                (5, 'Nuevo portal de biblioteca digital', 'Accede a miles de libros y revistas académicas desde cualquier lugar con el nuevo portal.', 'https://www.sydle.com/blog/assets/post/biblioteca-digital-63e521409e3c274f1050e336/capa%20biblioteca%20digital.png');
+            `);
+            await queryRunner.query(`
+              INSERT INTO Alejandria.solucion(id, preguntas, respuestas)
+              VALUES
+                (1, '¿Cómo puedo acceder al sistema de gestión académica?', 'Debes ingresar con tu usuario institucional en https://AlejandriaIntranet.edu.pe'),
+                (2, '¿Dónde encuentro ejemplos de tesis aprobadas?', 'En la biblioteca digital o en la sección de recursos del portal académico.'),
+                (3, '¿Qué formato debo usar para entregar mi tesis?', 'El formato requerido es PDF en letra Times New Roman, tamaño 12, con interlineado 1.5.'),
+                (4, '¿Cómo solicito un asesor académico?', 'Debes llenar el formulario disponible en la plataforma y esperar la asignación.'),
+                (5, '¿Puedo entregar mi tesis después del plazo?', 'Solo con una justificación válida y autorización de la coordinación académica.');
+            `);
+            await queryRunner.query(`
+              INSERT INTO Alejandria.tutorial(id, titulo, enlace)
+              VALUES
+                (1, 'Cómo registrar tu tesis en línea', 'https://www.youtube.com/watch?v=Fe4AK7Cmxdc'),
+                (2, 'Uso básico de Turnitin', 'https://www.youtube.com/watch?v=JIni_yDo5pg'),
+                (3, 'Gestión de referencias con Zotero', 'https://www.youtube.com/watch?v=9GUWKEsC_ls'),
+                (4, 'Normas APA', 'https://www.youtube.com/watch?v=ATqDrQv71ps'),
+                (5, '¿Que es LateX?', 'https://www.youtube.com/watch?v=bOIQ5Uphz6Y&t=21s');
+            `);
+
+            await queryRunner.query(`
+              INSERT INTO Alejandria.soporte(
+                id, asunto, descripcion, estado, fecha_envio, fecha_revision, id_asesoramiento
+              )
+              VALUES
+                (1, 'Error_en_entrega_y_revision', 'No puedo subir mi archivo final a la plataforma.', 'espera', '2025-06-01 10:30:00', NULL, 1),
+                (2, 'Error_en_reuniones', 'Mi reunión no fue registrada en el sistema.', 'finalizado', '2025-06-03 12:45:00', '2025-06-05 09:00:00', 2),
+                (3, 'Error_en_calendario', 'Las fechas del calendario académico no coinciden con las asignadas.', 'espera', '2025-06-07 14:15:00', NULL, 1),
+                (4, 'Error_en_recursos', 'No tengo acceso a los recursos del módulo 3.', 'finalizado', '2025-06-08 16:00:00', '2025-06-10 10:30:00', 2),
+                (5, 'Otro', 'Tengo dudas sobre el proceso de titulación.', 'espera', '2025-06-10 11:20:00', NULL, 1);
+            `);
         }
     
         public async down(queryRunner: QueryRunner): Promise<void> {
-          await queryRunner.query(`DELETE FROM Alejandria.procesos_asesoria WHERE id IN (1,2)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.documento WHERE id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.asunto WHERE id IN (1,2,3,4,5,6,7)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.pago WHERE id IN (1,2,3,4,5,6,7,8)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.informacion_pagos WHERE id IN (1,2,3,4,5)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.reunion WHERE id IN (1,2,3,4)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.herramienta WHERE id IN (1,2,3,4,5)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.guia WHERE id IN (1,2,3,4,5)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.noticia WHERE id IN (1,2,3,4,5)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.solucion WHERE id IN (1,2,3,4,5)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.tutorial WHERE id IN (1,2,3,4,5)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.soporte WHERE id IN (1,2,3,4,5)`);
+
+          await queryRunner.query(`DELETE FROM Alejandria.procesos_asesoria WHERE id IN (1,2,3,4,5,6)`);
     
           // Eliminar asesoramientos
-          await queryRunner.query(`DELETE FROM Alejandria.asesoramiento WHERE id = 1`);
+          await queryRunner.query(`DELETE FROM Alejandria.asesoramiento WHERE id IN (1,2)`);
         
           // Eliminar registros de admin
-          await queryRunner.query(`DELETE FROM Alejandria.admin WHERE usuarioId IN (4, 15, 16)`);
+          await queryRunner.query(`DELETE FROM Alejandria.admin WHERE usuarioId IN (21, 22, 23)`);
         
           // Eliminar registros de asesor
-          await queryRunner.query(`DELETE FROM Alejandria.asesor WHERE usuarioId IN (2, 11, 12, 13, 14)`);
+          await queryRunner.query(`DELETE FROM Alejandria.asesor WHERE usuarioId IN (11, 12, 13, 14,15,16,17,18,19,20)`);
         
           // Eliminar registros de cliente
-          await queryRunner.query(`DELETE FROM Alejandria.cliente WHERE usuarioId IN (1, 3, 5, 6, 7, 8, 9, 10)`);
+          await queryRunner.query(`DELETE FROM Alejandria.cliente WHERE usuarioId IN (1,2, 3,4, 5, 6, 7, 8, 9, 10)`);
         
           // Eliminar usuarios
           await queryRunner.query(`DELETE FROM Alejandria.usuarios WHERE id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)`);
         
           // Eliminar tipo_contrato
-          await queryRunner.query(`DELETE FROM Alejandria.tipo_contrato WHERE id = 1`);
+          await queryRunner.query(`DELETE FROM Alejandria.tipo_contrato WHERE id IN (1,2,3,4,5,6,7,8)`);
         
           // Eliminar area_asesor
           await queryRunner.query(`DELETE FROM Alejandria.area_asesor WHERE id IN (1, 2, 3, 4, 5)`);
@@ -247,6 +329,28 @@ export class Registros1746554350124 implements MigrationInterface {
           await queryRunner.query(`DELETE FROM Alejandria.grado_academico WHERE id IN (1, 2, 3, 4, 5)`);
         
           // Eliminar tipo_trabajo
-          await queryRunner.query(`DELETE FROM Alejandria.tipo_trabajo WHERE id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)`);
+          await queryRunner.query(`DELETE FROM Alejandria.tipo_trabajo WHERE id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.documento WHERE id IN (1,2,3,4,5,6,7,8,9,11,12,13,14)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.asunto WHERE id IN (1,2,3,4,5,6,7)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.pago WHERE id IN (1,2,3,4,5,6,7,8)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.informacion_pagos WHERE id IN (1,2,3,4,5)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.reunion WHERE id IN (1,2,3,4)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.herramienta WHERE id IN (1,2,3,4,5)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.guia WHERE id IN (1,2,3,4,5)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.noticia WHERE id IN (1,2,3,4,5)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.solucion WHERE id IN (1,2,3,4,5)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.tutorial WHERE id IN (1,2,3,4,5)`);
+
+          // await queryRunner.query(`DELETE FROM Alejandria.soporte WHERE id IN (1,2,3,4,5)`);
         }
 }

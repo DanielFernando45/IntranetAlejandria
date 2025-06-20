@@ -9,6 +9,5 @@ export class Tutorial{
     titulo:string;
 
     @Column()
-    enlace:string;
-    
+    enlace:string
 }

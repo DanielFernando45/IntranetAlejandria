@@ -15,5 +15,5 @@ export class CreateGuiaDto{
 
     @IsNotEmpty()
     @IsString()
-    enlace:string
+    doc_url:string
 }

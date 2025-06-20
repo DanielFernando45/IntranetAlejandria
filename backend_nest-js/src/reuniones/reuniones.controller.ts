@@ -1,8 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, ParseIntPipe, Res, Query} from '@nestjs/common';
 import { ReunionesService } from './reuniones.service';
 import { CreateReunionDto } from './dto/create-reunion.dto';
-import { UpdateReunioneDto } from './dto/update-reunione.dto';
-import {Response} from 'express'
+import {Response} from 'express';
 import { ZoomMeetingService } from './zoom.meeting.service';
 import { Estado_reunion } from './entities/reunion.entity';
 
@@ -62,6 +61,4 @@ export class ReunionesController {
   redirectZoom(@Query('link') link:string,@Res() res:Response){
     res.redirect(`${link}`)
   }
-
-  
 }
