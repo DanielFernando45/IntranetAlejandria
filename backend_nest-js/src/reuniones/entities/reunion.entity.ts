@@ -44,5 +44,5 @@ export class Reunion {
     @ManyToOne(() => Asesoramiento)
     @JoinColumn({name:"id_asesoramiento"})
     asesoramiento: Asesoramiento;
-    
+
 }

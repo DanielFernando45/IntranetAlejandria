@@ -248,7 +248,7 @@ export class ClienteService {
         
             const listAsesoramientoId=await queryRunner.manager.findOne(ProcesosAsesoria,{where:{asesoramiento:{id:id_asesoramiento}},relations:['cliente']})
             if (!listAsesoramientoId) throw new NotFoundException(`No se encontraron asesoramientos con el ID ${id_asesoramiento}`);
-
+            
             const nombreDelegado=`${listAsesoramientoId.cliente.nombre} ${listAsesoramientoId.cliente.apellido}`
             await queryRunner.commitTransaction()
             return nombreDelegado

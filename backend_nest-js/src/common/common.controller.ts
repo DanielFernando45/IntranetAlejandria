@@ -1,5 +1,6 @@
 import { Controller, Get, Param, ParseDatePipe, ParseIntPipe } from "@nestjs/common";
 import { CommonService } from './common.service';
+import { UserRole } from "src/usuario/usuario.entity";
 
 
 @Controller('common')
@@ -11,13 +12,21 @@ export class CommonController{
         return this.commonService.listarTiposTrabajo()
     }
 
-    @Get('listar-calendario/:id/:fecha')
+    @Get('calendario_estudiante/:id/:fecha')
     listarEventosCalendario(@Param('id',ParseIntPipe) id:number,@Param('fecha') fecha:string){
-        return this.commonService.listarSegunFecha(id,fecha)
+        const stakeholder=UserRole.ESTUDIANTE
+        return this.commonService.listarSegunFecha(id,fecha,stakeholder)
+    }
+
+    @Get('calendario_asesor/:id/:fecha')
+    listarEventosAsesor(@Param('id',ParseIntPipe) id:number,@Param('fecha') fecha:string){
+        const stakeholder=UserRole.ASESOR
+        return this.commonService.listarSegunFecha(id,fecha,stakeholder)
     }
 
     @Get('allEventosAsesor/:fecha/:id_asesor')
     listarTodosEventos(@Param('fecha') fecha:string,@Param('id_asesor',ParseIntPipe) id_asesor:number){
-        return this.commonService.listarTodoEventosAsesor(fecha,id_asesor)
+        const stakeholder=UserRole.ASESOR
+        return this.commonService.listarTodoEventosAsesor(fecha,id_asesor,stakeholder)
     }
 }

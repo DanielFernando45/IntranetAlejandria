@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateAsuntoDto } from './dto/create-asunto.dto';
-import { UpdateAsuntoDto } from './dto/update-asunto.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Asunto, Estado_asunto } from './entities/asunto.entity';
@@ -9,11 +8,16 @@ import { Asesoramiento } from 'src/asesoramiento/entities/asesoramiento.entity';
 import { ChangeToProcess } from './dto/change-to-process.dto';
 import { archivosDataDto } from './dto/archivos-data.dto';
 import { listFinished } from './dto/list-finished.dto';
+import { UserRole } from 'src/usuario/usuario.entity';
+import { ClienteService } from 'src/cliente/cliente.service';
+import { AsesorService } from '../asesor/asesor.service';
 
 @Injectable()
 export class AsuntosService {
   constructor(
     private readonly documentosService:DocumentosService,
+    private readonly clienteService:ClienteService,
+    private readonly asesorService:AsesorService,
 
     @InjectRepository(Asunto)
     private asuntoRepo:Repository<Asunto>,
@@ -179,7 +183,7 @@ export class AsuntosService {
       return fechasEntrega
   }
 
-  async asuntosCalendario(id_asesoramiento: number, fecha: Date) {
+  async asuntosCalendarioEstudiante(id_asesoramiento: number, fecha: Date) {
   const asuntosByFecha = await this.asuntoRepo.find({
     where: { asesoramiento: { id: id_asesoramiento } },
     select: ['estado', 'fecha_entregado', 'fecha_revision', 'fecha_terminado', 'titulo', 'id']
@@ -190,6 +194,7 @@ export class AsuntosService {
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
+  const delegado=await this.clienteService.getDelegado(id_asesoramiento)
 
   const responseAsuntos = asuntosByFecha
     .map((asunto) => {
@@ -197,7 +202,8 @@ export class AsuntosService {
         return {
           id: `${asunto.id}`,
           titulo: asunto.titulo,
-          "fecha y hora": asunto.fecha_entregado,
+          delegado:delegado,
+          fecha_y_hora: asunto.fecha_entregado,
           estado: asunto.estado
         };
       }
@@ -206,6 +212,8 @@ export class AsuntosService {
         return {
           id: `${asunto.id}`,
           titulo: asunto.titulo,
+          delegado:delegado,
+          fecha_revision:asunto.fecha_revision,
           message: "Esta en revisión por el asesor"
         };
       }
@@ -214,6 +222,8 @@ export class AsuntosService {
         return {
           id: `${asunto.id}`,
           titulo: asunto.titulo,
+          delegado:delegado,
+          fecha_terminado:asunto.fecha_terminado,
           message: "Fecha estimada de envio del asesor"
         };
       }
@@ -222,16 +232,52 @@ export class AsuntosService {
         return {
           id: `${asunto.id}`,
           titulo: asunto.titulo,
+          delegado:delegado,
           "fecha y hora": asunto.fecha_entregado,
           estado: asunto.estado
         };
       }
 
       return null;
-    })
-    .filter(Boolean); // elimina los nulls
+    }).filter(Boolean); // elimina los nulls
 
       console.log(responseAsuntos);
       return responseAsuntos;
     }
+
+  
+  
+  async asuntosCalendarioAsesor(id_asesoramiento: number, fecha: Date){
+    const asuntosByFecha = await this.asuntoRepo.find({
+      where: { asesoramiento: { id: id_asesoramiento } },
+      select: ['estado', 'fecha_entregado', 'fecha_revision', 'fecha_terminado', 'titulo', 'id']
+    });
+
+  const mismaFecha = (a: Date | null | undefined, b: Date) =>
+    a instanceof Date &&
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+  const asesor=await this.asesorService.getDatosAsesorByAsesoramiento(id_asesoramiento)
+  const nombre_asesor=`${asesor.nombre} ${asesor.apellido}`
+
+  const responseAsuntos = asuntosByFecha
+    .map((asunto) => {
+      if (asunto.estado === Estado_asunto.ENTREGADO && mismaFecha(asunto.fecha_entregado, fecha)) {
+        return {
+          id: `${asunto.id}`,
+          titulo: asunto.titulo,
+          asesor:nombre_asesor,
+          fecha_y_hora: asunto.fecha_entregado,
+          estado: asunto.estado
+        };
+      }
+
+      return null;
+    }).filter(Boolean); // elimina los nulls
+
+      console.log(responseAsuntos);
+      return responseAsuntos;
+    }
+  
 }

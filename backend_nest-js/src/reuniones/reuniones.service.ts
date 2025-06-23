@@ -10,6 +10,7 @@ import { AsesorService } from 'src/asesor/asesor.service';
 import { ZoomAuthService } from './zoom.auth.service';
 import axios from 'axios';
 import { ClienteService } from 'src/cliente/cliente.service';
+import { UserRole } from 'src/usuario/usuario.entity';
 
 @Injectable()
 export class ReunionesService {
@@ -157,7 +158,7 @@ export class ReunionesService {
       return response
   }
 
-  async getReunionesByFecha(id_asesoramiento:number,fecha:Date){
+  async getReunionesByFecha(id_asesoramiento:number,fecha:Date,stakeholder:UserRole){
     const start = new Date(fecha);
     start.setHours(0, 0, 0, 0);
 
@@ -166,9 +167,34 @@ export class ReunionesService {
     
     const getReuniones=await this.reunionRepo.find({where:{asesoramiento:{id:id_asesoramiento},fecha_reunion:Between(start,end)}})
     
-    console.log(getReuniones)
-    if(getReuniones.length===0)return null
-    return getReuniones
+    const listReunionesWithAsesor=await Promise.all(getReuniones.map(async(reunion)=>{
+      if(stakeholder===UserRole.ESTUDIANTE){
+        const asesor=await this.asesorService.getDatosAsesorByAsesoramiento(id_asesoramiento)
+      return ({
+        id_reunion:reunion.id,
+        asesor_nombre:asesor.nombre,
+        asesor_apellido:asesor.apellido,
+        titulo:reunion.titulo,
+        enlace:reunion.enlace_zoom,
+        fecha:reunion.fecha_reunion,
+        contraseña:reunion.zoom_password
+      })
+      }
+
+      if(stakeholder===UserRole.ASESOR){
+        const delegado=await this.clienteService.getDelegado(id_asesoramiento)
+        return ({
+        id_reunion:reunion.id,
+        delegado:delegado,
+        titulo:reunion.titulo,
+        enlace:reunion.enlace_zoom,
+        fecha:reunion.fecha_reunion,
+        contraseña:reunion.zoom_password
+      })
+      }
+    }))
+    
+    return listReunionesWithAsesor
   }
   
 }
