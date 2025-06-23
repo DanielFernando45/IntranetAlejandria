@@ -5,6 +5,7 @@ import { TipoTrabajo } from "./entidades/tipoTrabajo.entity";
 import { AsuntosService } from "src/asuntos/asuntos.service";
 import { ReunionesService } from "src/reuniones/reuniones.service";
 import { AsesoramientoService } from "src/asesoramiento/asesoramiento.service";
+import { UserRole } from "src/usuario/usuario.entity";
 
 
 @Injectable()
@@ -34,29 +35,29 @@ export class CommonService{
         }
     }
 
-    async listarSegunFecha(id:number,fecha:string){
+    async listarSegunFecha(id:number,fecha:string,stakeholder:UserRole){
         //const filtro=fecha.split('T')[0]
         const filtro_fecha=new Date(fecha)
         
 
-        const reuniones=await this.reunionService.getReunionesByFecha(id,filtro_fecha)
-        const asuntos=await this.asuntoService.asuntosCalendario(id,filtro_fecha)
+        const reuniones=await this.reunionService.getReunionesByFecha(id,filtro_fecha,stakeholder)
+        const asuntos=await this.asuntoService.asuntosCalendarioEstudiante(id,filtro_fecha)
         
         const eventos = reuniones === null ? [...asuntos] : [...reuniones, ...asuntos];
 
         return eventos;
     }
 
-    async listarTodoEventosAsesor(fecha:string,id_asesor:number){
+    async listarTodoEventosAsesor(fecha:string,id_asesor:number,stakeholder:UserRole){
         const filtro_fecha=new Date(fecha)
         const listAsesoramientos=await this.asesoramientoService.getAsesoramientoByAsesor(id_asesor)
         
         const reuniones=(await Promise.all(listAsesoramientos.map(async(asesoramiento)=>{
-            return this.reunionService.getReunionesByFecha(asesoramiento.id,filtro_fecha)
+            return this.reunionService.getReunionesByFecha(asesoramiento.id,filtro_fecha,stakeholder)
         }))).flat()
 
         const asuntos=(await Promise.all(listAsesoramientos.map(async(asesoramiento)=>{
-            return this.asuntoService.asuntosCalendario(asesoramiento.id,filtro_fecha)
+            return this.asuntoService.asuntosCalendarioAsesor(asesoramiento.id,filtro_fecha)
         }))).flat()
         
         if(asuntos.every(item=>item===null) && reuniones.every(item => item===null)) return {"message":"No hay eventos concertados"}
@@ -67,4 +68,5 @@ export class CommonService{
 
         return [...reuniones, ...asuntos];
     }
+
 }

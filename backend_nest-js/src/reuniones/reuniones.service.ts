@@ -10,6 +10,7 @@ import { AsesorService } from 'src/asesor/asesor.service';
 import { ZoomAuthService } from './zoom.auth.service';
 import axios from 'axios';
 import { ClienteService } from 'src/cliente/cliente.service';
+import { UserRole } from 'src/usuario/usuario.entity';
 
 @Injectable()
 export class ReunionesService {
@@ -114,32 +115,50 @@ export class ReunionesService {
   }
 
   async listReunionesByAsesor(id:number,estado:Estado_reunion){
+    let response
     const reunionesByAsesor=await this.reunionRepo
       .createQueryBuilder('re')
       .innerJoin('re.asesoramiento','as')
       .innerJoin('as.procesosasesoria','pr')
       .innerJoin('pr.asesor','asesor')
-      .select(['DISTINCT re.id AS id','as.id AS id_asesoramiento','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace','re.meetingId as meetingId'])
+      .select(['DISTINCT re.id AS id','as.id AS id_asesoramiento','re.titulo AS titulo','re.fecha_reunion AS fecha_reunion','re.enlace_zoom AS enlace','re.enlace_video AS enlace_video','re.video_password AS video_password','re.meetingId as meetingId'])
       .where('asesor.id= :id',{id})
       .andWhere('re.estado= :estado',{estado})
       .getRawMany()
 
-    const response=await Promise.all(reunionesByAsesor.map(async(reunion)=>{
-      const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
-      return({
-        "id":reunion.id,
-        "delegado":delegado,
-        "asesoramiento_id":reunion.id_asesoramiento,
-        "titulo":reunion.titulo,
-        "fecha_reunion":reunion.fecha_reunion,
-        "enlace":reunion.enlace,
-        "meetingId":reunion.meetingId
-      })
-    }))
+    if(estado===Estado_reunion.ESPERA){
+      response=await Promise.all(reunionesByAsesor.map(async(reunion)=>{
+        const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
+        return({
+          "id":reunion.id,
+          "delegado":delegado,
+          "asesoramiento_id":reunion.id_asesoramiento,
+          "titulo":reunion.titulo,
+          "fecha_reunion":reunion.fecha_reunion,
+          "enlace":reunion.enlace,
+          "meetingId":reunion.meetingId
+        })
+      }))
+    }
+    if(estado===Estado_reunion.TERMINADO){
+      response=await Promise.all(reunionesByAsesor.map(async(reunion)=>{
+        const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
+        return({
+          "id":reunion.id,
+          "delegado":delegado,
+          "asesoramiento_id":reunion.id_asesoramiento,
+          "titulo":reunion.titulo,
+          "fecha_reunion":reunion.fecha_reunion,
+          "enlace_video":reunion.enlace_video,
+          "password_video":reunion.video_password,
+          "meetingId":reunion.meetingId
+        })
+      }))
+    }
       return response
   }
 
-  async getReunionesByFecha(id_asesoramiento:number,fecha:Date){
+  async getReunionesByFecha(id_asesoramiento:number,fecha:Date,stakeholder:UserRole){
     const start = new Date(fecha);
     start.setHours(0, 0, 0, 0);
 
@@ -148,9 +167,34 @@ export class ReunionesService {
     
     const getReuniones=await this.reunionRepo.find({where:{asesoramiento:{id:id_asesoramiento},fecha_reunion:Between(start,end)}})
     
-    console.log(getReuniones)
-    if(getReuniones.length===0)return null
-    return getReuniones
+    const listReunionesWithAsesor=await Promise.all(getReuniones.map(async(reunion)=>{
+      if(stakeholder===UserRole.ESTUDIANTE){
+        const asesor=await this.asesorService.getDatosAsesorByAsesoramiento(id_asesoramiento)
+      return ({
+        id_reunion:reunion.id,
+        asesor_nombre:asesor.nombre,
+        asesor_apellido:asesor.apellido,
+        titulo:reunion.titulo,
+        enlace:reunion.enlace_zoom,
+        fecha:reunion.fecha_reunion,
+        contraseña:reunion.zoom_password
+      })
+      }
+
+      if(stakeholder===UserRole.ASESOR){
+        const delegado=await this.clienteService.getDelegado(id_asesoramiento)
+        return ({
+        id_reunion:reunion.id,
+        delegado:delegado,
+        titulo:reunion.titulo,
+        enlace:reunion.enlace_zoom,
+        fecha:reunion.fecha_reunion,
+        contraseña:reunion.zoom_password
+      })
+      }
+    }))
+    
+    return listReunionesWithAsesor
   }
   
 }
