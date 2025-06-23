@@ -9,6 +9,40 @@ const CalendarioAsesor = () => {
   const [calendarDays, setCalendarDays] = useState([]);
   const [monthName, setMonthName] = useState('');
   const [dayName, setDayName] = useState('');
+  const [asesorias, setAsesorias] = useState([]);
+  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
+
+  useEffect(() => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      const id = user.id;
+
+      fetch(`http://localhost:3001/asesor/asesoramientosYDelegado/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          const asesoriasArray = Object.values(data).map(item => ({
+            id: item.id_asesoramiento,
+            profesion: item.profesion_asesoria,
+            delegado: item.delegado
+          }));
+          setAsesorias(asesoriasArray);
+
+          if (asesoriasArray.length > 0) {
+            const primeraAsesoriaId = asesoriasArray[0].id;
+            setSelectedAsesoriaId(primeraAsesoriaId);
+
+          }
+        })
+        .catch(error => console.error('Error al obtener asesorías:', error));
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const asesoriaId = e.target.value;
+    setSelectedAsesoriaId(asesoriaId);
+  }
+
 
   const months = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -144,11 +178,15 @@ const CalendarioAsesor = () => {
                 ))}
               </select>
 
-              <select className='border border-[#1C1C34] rounded-lg w-[240px] h-[35px] font-semibold text-[#575051]'>
-                <option value="">Seleccione alumno(s)</option>
-                <option value="">Dana Ortiz</option>
-                <option value="">Alex Alberto</option>
-                <option value="">Rodolfo Alfred</option>
+              <select
+                className="border-2 rounded-md px-2 border-black "
+                onChange={handleChange}
+                value={selectedAsesoriaId || ''}
+              >
+                <option >Todos tus Clientes</option>
+                {asesorias.map((asesoria, index) => (
+                  <option key={index} value={asesoria.id}>{asesoria.delegado}</option>
+                ))}
               </select>
             </div>
           </div>
