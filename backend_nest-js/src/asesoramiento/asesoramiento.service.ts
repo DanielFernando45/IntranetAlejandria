@@ -563,7 +563,7 @@ export class AsesoramientoService {
       .innerJoinAndSelect('asesoramiento.tipoTrabajo','tipoTrabajo')
       .innerJoinAndSelect('pro.asesor','asesor')
       .select(['DISTINCT asesoramiento.id AS id','asesoramiento.profesion_asesoria AS profesion_asesoria',
-        'tipoTrabajo.nombre AS tipotrabajo','asesoramiento.fecha_inicio AS fecha_inicio','asesoramiento.especialidad AS especialidad'])
+        'tipoTrabajo.nombre AS tipotrabajo','asesoramiento.fecha_inicio AS fecha_inicio','asesoramiento.fecha_fin AS fecha_fin','asesoramiento.especialidad AS especialidad'])
       .where('asesor.id= :id',{id})
       .andWhere('asesoramiento.estado= :estado',{estado})
       .getRawMany()
@@ -576,7 +576,7 @@ export class AsesoramientoService {
         "id":asesoria.id,
         "delegado":delegado,
         "profesion_asesoria":asesoria.profesion_asesoria,
-        "tipo_trabajo":asesoria.tipoTrabajo,
+        "tipo_trabajo":asesoria.tipotrabajo,
         "fecha_inicio":asesoria.fecha_inicio,
         "fecha_fin":asesoria.fecha_fin,
         "especialidad":asesoria.especialidad
@@ -584,5 +584,11 @@ export class AsesoramientoService {
     }))
 
     return responseAsesorias
+  }
+  
+  async fecha_vencimiento_contrato(id){
+    const fechaVencimiento=await this.asesoramientoRepo.findOne({where:{id},select:['fecha_fin']})
+    if(!fechaVencimiento) throw new NotFoundException("No se encontro un asesoramiento con ese id")
+    return fechaVencimiento
   }
 }

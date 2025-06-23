@@ -68,4 +68,5 @@ export class CommonService{
 
         return [...reuniones, ...asuntos];
     }
+
 }

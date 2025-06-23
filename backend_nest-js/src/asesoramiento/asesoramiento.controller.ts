@@ -80,4 +80,9 @@ export class AsesoramientoController {
     const estado=Estado_Asesoria.DESACTIVADO
     return this.asesoramientoService.gestionAsesorias(id,estado)
   }
+
+  @Get('vencimiento/:id')
+  fechaVencimiento(@Param('id',ParseIntPipe) id:number){
+    return this.asesoramientoService.fecha_vencimiento_contrato(id)
+  }
 }

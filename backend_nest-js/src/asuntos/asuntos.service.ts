@@ -22,7 +22,7 @@ export class AsuntosService {
     @InjectRepository(Asunto)
     private asuntoRepo:Repository<Asunto>,
 
-    @InjectDataSource()
+     @InjectDataSource()
     private readonly dataSource:DataSource
   ){}
   async create(createAsuntoDto: CreateAsuntoDto,listaNombreyUrl:archivosDataDto[],id_asesoramiento:number) {
