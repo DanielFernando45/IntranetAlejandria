@@ -267,14 +267,14 @@ export class Registros1746554350124 implements MigrationInterface {
 
             await queryRunner.query(`
               INSERT INTO Alejandria.soporte(
-                id, asunto, descripcion, estado, fecha_envio, fecha_revision, id_asesoramiento
+                id, asunto, descripcion, estado, fecha_envio, fecha_revision, id_cliente
               )
               VALUES
                 (1, 'Error_en_entrega_y_revision', 'No puedo subir mi archivo final a la plataforma.', 'espera', '2025-06-01 10:30:00', NULL, 1),
                 (2, 'Error_en_reuniones', 'Mi reunión no fue registrada en el sistema.', 'finalizado', '2025-06-03 12:45:00', '2025-06-05 09:00:00', 2),
-                (3, 'Error_en_calendario', 'Las fechas del calendario académico no coinciden con las asignadas.', 'espera', '2025-06-07 14:15:00', NULL, 1),
-                (4, 'Error_en_recursos', 'No tengo acceso a los recursos del módulo 3.', 'finalizado', '2025-06-08 16:00:00', '2025-06-10 10:30:00', 2),
-                (5, 'Otro', 'Tengo dudas sobre el proceso de titulación.', 'espera', '2025-06-10 11:20:00', NULL, 1);
+                (3, 'Error_en_calendario', 'Las fechas del calendario académico no coinciden con las asignadas.', 'espera', '2025-06-07 14:15:00', NULL, 3),
+                (4, 'Error_en_recursos', 'No tengo acceso a los recursos del módulo 3.', 'finalizado', '2025-06-08 16:00:00', '2025-06-10 10:30:00', 4),
+                (5, 'Otro', 'Tengo dudas sobre el proceso de titulación.', 'espera', '2025-06-10 11:20:00', NULL, 5);
             `);
         }
     

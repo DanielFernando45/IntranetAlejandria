@@ -10,34 +10,34 @@ import { ClienteService } from 'src/cliente/cliente.service';
 export class SoportesService {
   constructor(
     private readonly clienteService:ClienteService,
-
+    
     @InjectRepository(Soporte)
     private soporteRepo:Repository<Soporte>
   ){}
   async create(createSoporteDto: CreateSoporteDto) {
-    const newSoporte=this.soporteRepo.create({...createSoporteDto,asesoramiento:{id:createSoporteDto.id_asesoramiento},estado:AsuntoEstado.ESPERA,fecha_envio:new Date()})
+    const newSoporte=this.soporteRepo.create({...createSoporteDto,cliente:{id:createSoporteDto.id_cliente},estado:AsuntoEstado.ESPERA,fecha_envio:new Date()})
     await this.soporteRepo.save(newSoporte)
     return 'Se agrego correctamente';
   }
-
+  
   async findByEstado(estado_asunto:AsuntoEstado) {
-    const listaSoporte=await this.soporteRepo.find({where:{estado:estado_asunto},relations:['asesoramiento']})
+    const listaSoporte=await this.soporteRepo.find({where:{estado:estado_asunto},relations:['cliente']})
     if(listaSoporte.length===0)throw new NotFoundException("No se encontraron formularios con ese estado")
     
-    const listaAsunto=await Promise.all(listaSoporte.map(async(support)=>{
-      const delegado=await this.clienteService.getDelegado(support.asesoramiento.id)
+    const listaFinal=listaSoporte.map((support)=>{
+      //const delegado=await this.clienteService.getDelegado(support.asesoramiento.id)
       return({
         "id_soporte":support.id,
         "asunto":support.asunto,
         "descripcion":support.descripcion,
         "fecha_envio":support.fecha_envio,
         "fecha_revision":support.fecha_revision,
-        "delegado":delegado
+        "cliente":`${support.cliente.nombre} ${support.cliente.apellido}`
       })
-    }))
-    return listaAsunto;
+    })
+    return listaFinal;
   }
-
+  
   async findOne(id: number) {
     const oneSoporte=await this.soporteRepo.findOneByOrFail({id})
       .catch(()=>{
@@ -45,7 +45,7 @@ export class SoportesService {
       })
     return oneSoporte;
   }
-
+  
   async update(id: number, updateSoporteDto: UpdateSoporteDto) {
     return `This action updates a #${id} soporte`;
   }
@@ -55,16 +55,16 @@ export class SoportesService {
       .catch(()=>{
         throw new BadRequestException("El asunto no fue encontrado")
       })
-
+  
     if(changed.estado!==AsuntoEstado.ESPERA)throw new BadRequestException("Este asunto ya esta finalizado")
     changed.estado=AsuntoEstado.FINALIZADO
     changed.fecha_revision=new Date()
-
+  
     await this.soporteRepo.save(changed)
-
+  
     return "Se finalizo correctamente"
   }
-
+  
   async remove(id: number) {
     try{
     const deleted=await this.soporteRepo.findOneByOrFail({id})

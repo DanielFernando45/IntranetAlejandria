@@ -21,5 +21,5 @@ export class CreateSoporteDto {
 
     @IsNotEmpty()
     @IsNumber()
-    id_asesoramiento:number;
+    id_cliente:number;
 }

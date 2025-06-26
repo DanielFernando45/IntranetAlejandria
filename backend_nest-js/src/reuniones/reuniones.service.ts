@@ -165,7 +165,7 @@ export class ReunionesService {
     const end = new Date(start);
     end.setDate(end.getDate() + 1);
     
-    const getReuniones=await this.reunionRepo.find({where:{asesoramiento:{id:id_asesoramiento},fecha_reunion:Between(start,end)}})
+    const getReuniones=await this.reunionRepo.find({where:{asesoramiento:{id:id_asesoramiento},estado:Estado_reunion.ESPERA,fecha_reunion:Between(start,end)}})
     
     const listReunionesWithAsesor=await Promise.all(getReuniones.map(async(reunion)=>{
       if(stakeholder===UserRole.ESTUDIANTE){
