@@ -1,4 +1,4 @@
-import { Asesoramiento } from "src/asesoramiento/entities/asesoramiento.entity";
+import { Cliente } from "src/cliente/cliente.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum AsuntoError{
@@ -34,7 +34,7 @@ export class Soporte {
     @Column({nullable:true})
     fecha_revision:Date;
 
-    @ManyToOne(()=>Asesoramiento)
-    @JoinColumn({name:"id_asesoramiento"})
-    asesoramiento:Asesoramiento;
+    @ManyToOne(()=>Cliente)
+    @JoinColumn({name:"id_cliente"})
+    cliente:Cliente;
 }

@@ -255,7 +255,7 @@ export class ClienteService {
             
         }catch(err){
             await queryRunner.rollbackTransaction()
-            new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
+            throw new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
         }finally{
             await queryRunner.release();
         }
