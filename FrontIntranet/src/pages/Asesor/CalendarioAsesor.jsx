@@ -11,6 +11,8 @@ const CalendarioAsesor = () => {
   const [dayName, setDayName] = useState('');
   const [asesorias, setAsesorias] = useState([]);
   const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
+  const [eventosDia, setEventosDia] = useState([]);
+  const [fechaVencimiento, setFechaVencimiento] = useState(null);
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
@@ -31,18 +33,49 @@ const CalendarioAsesor = () => {
           if (asesoriasArray.length > 0) {
             const primeraAsesoriaId = asesoriasArray[0].id;
             setSelectedAsesoriaId(primeraAsesoriaId);
-
           }
         })
         .catch(error => console.error('Error al obtener asesorías:', error));
     }
   }, []);
 
+  useEffect(() => {
+    if (selectedAsesoriaId) {
+      fetchEventosDia();
+      fetchFechaVencimiento();
+    }
+  }, [selectedAsesoriaId, selectedYear, selectedMonth, selectedDay]);
+
+  const fetchFechaVencimiento = () => {
+    fetch(`http://localhost:3001/asesoramiento/vencimiento/${selectedAsesoriaId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.fecha_fin) {
+          const fecha = new Date(data.fecha_fin);
+          setFechaVencimiento({
+            day: fecha.getUTCDate(),
+            month: fecha.getUTCMonth(),
+            year: fecha.getUTCFullYear()
+          });
+        }
+      })
+      .catch(error => console.error('Error al obtener fecha de vencimiento:', error));
+  };
+
+  const fetchEventosDia = () => {
+    const fechaSeleccionada = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+    fetch(`http://localhost:3001/common/calendario_asesor/${selectedAsesoriaId}/${fechaSeleccionada}`)
+      .then(res => res.json())
+      .then(data => {
+        setEventosDia(data);
+      })
+      .catch(error => console.error('Error al obtener eventos del día:', error));
+  };
+
   const handleChange = (e) => {
     const asesoriaId = e.target.value;
     setSelectedAsesoriaId(asesoriaId);
-  }
-
+  };
 
   const months = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -53,7 +86,7 @@ const CalendarioAsesor = () => {
 
   useEffect(() => {
     generateCalendar();
-  }, [selectedMonth, selectedYear]);
+  }, [selectedMonth, selectedYear, fechaVencimiento]);
 
   const generateCalendar = () => {
     const firstDay = new Date(selectedYear, selectedMonth, 1);
@@ -78,13 +111,19 @@ const CalendarioAsesor = () => {
     // Días del mes actual
     for (let i = 1; i <= totalDays; i++) {
       const date = new Date(selectedYear, selectedMonth, i);
+      const isVencimiento = fechaVencimiento && 
+                           i === fechaVencimiento.day && 
+                           selectedMonth === fechaVencimiento.month && 
+                           selectedYear === fechaVencimiento.year;
+      
       days.push({
         day: i,
         currentMonth: true,
         date: date,
         isToday: i === new Date().getDate() &&
           selectedMonth === new Date().getMonth() &&
-          selectedYear === new Date().getFullYear()
+          selectedYear === new Date().getFullYear(),
+        isVencimiento: isVencimiento
       });
     }
 
@@ -117,6 +156,89 @@ const CalendarioAsesor = () => {
     }
   };
 
+  const formatTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    // Obtenemos las horas y minutos directamente (UTC)
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    // Formateamos a 2 dígitos cada componente
+    const formattedHours = String(hours).padStart(2, '0');
+    const formattedMinutes = String(minutes).padStart(2, '0');
+    return `${formattedHours}:${formattedMinutes}`;
+  };
+
+  const addOneHour = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    date.setUTCHours(date.getUTCHours() + 1);
+    return date.toISOString();
+  };
+
+  const renderEventos = () => {
+    if (eventosDia.length === 0) {
+      return (
+        <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
+          <div className='flex flex-col gap-1'>
+            <h2 className='text-[25px] font-bold text-[#575051]'>No hay eventos programados</h2>
+          </div>
+        </div>
+      );
+    }
+
+    return eventosDia.map((evento, index) => {
+      if (evento.fecha) {
+        // Evento de reunión
+        return (
+          <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
+            <div className='flex items-start pt-1'>
+              <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
+            </div>
+            <div className='flex flex-col gap-1'>
+              <p className='text-[#575051] font-medium'>
+                {formatTime(evento.fecha)} - {formatTime(addOneHour(evento.fecha))}
+              </p>
+              <h2 className='text-[25px] font-bold text-[#575051]'>{evento.delegado}</h2>
+              <div className='flex gap-2 items-center'>
+                {evento.enlace && (
+                  <a href={evento.enlace} target="_blank" rel="noopener noreferrer">
+                    <img src={Zoom} alt="Zoom" className='w-4 h-4' />
+                  </a>
+                )}
+                <p className='text-[#82777A]'>{evento.titulo}</p>
+              </div>
+            </div>
+          </div>
+        );
+      } else if (evento.fecha_terminado) {
+        // Evento de mensaje con fecha
+        return (
+          <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
+            <div className='flex items-start pt-1'>
+              <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
+            </div>
+            <div className='flex flex-col gap-1'>
+              <h2 className='text-[25px] font-bold text-[#575051]'>{evento.titulo}</h2>
+              <p className='text-[#82777A]'>{evento.message}</p>
+              <p className='text-[#575051] font-medium'>{formatTime(evento.fecha_terminado)}</p>
+            </div>
+          </div>
+        );
+      } else {
+        // Evento de mensaje sin fecha
+        return (
+          <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
+            <div className='flex items-start pt-1'>
+              <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
+            </div>
+            <div className='flex flex-col gap-1'>
+              <h2 className='text-[25px] font-bold text-[#575051]'>{evento.titulo}</h2>
+              <p className='text-[#82777A]'>{evento.message}</p>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
   const renderCalendarDays = () => {
     const weeks = [];
     for (let i = 0; i < calendarDays.length; i += 7) {
@@ -128,6 +250,7 @@ const CalendarioAsesor = () => {
         {week.map((dayData, dayIndex) => {
           const isSelected = dayData.currentMonth && dayData.day === selectedDay;
           const isToday = dayData.isToday;
+          const isVencimiento = dayData.isVencimiento;
 
           return (
             <div
@@ -135,7 +258,7 @@ const CalendarioAsesor = () => {
               onClick={() => handleDayClick(dayData.day, dayData.currentMonth)}
               className={`
                 flex justify-center items-center rounded-full w-[85px] h-[85px] text-[25px] 
-                cursor-pointer transition-colors duration-200
+                cursor-pointer transition-colors duration-200 relative
                 ${dayData.currentMonth ?
                   isSelected ? 'bg-[#4BD7F5] text-white' :
                     isToday ? 'border-2 border-[#4BD7F5] text-[#4BD7F5]' :
@@ -144,6 +267,11 @@ const CalendarioAsesor = () => {
               `}
             >
               {dayData.day}
+              {isVencimiento && (
+                <div className="relative bottom-1 w-2 h-2 rounded-full  text-[10px] font-semibold text-red-500">
+                  <p className='absolute  top-7 right-[-10px]'>Contrato Finalizado</p>
+                  </div>
+              )}
             </div>
           );
         })}
@@ -179,11 +307,11 @@ const CalendarioAsesor = () => {
               </select>
 
               <select
-                className="border-2 rounded-md px-2 border-black "
+                className="border-2 rounded-md px-2 border-black"
                 onChange={handleChange}
                 value={selectedAsesoriaId || ''}
               >
-                <option >Todos tus Clientes</option>
+                <option value="">Todos tus Clientes</option>
                 {asesorias.map((asesoria, index) => (
                   <option key={index} value={asesoria.id}>{asesoria.delegado}</option>
                 ))}
@@ -215,41 +343,7 @@ const CalendarioAsesor = () => {
           </div>
 
           <div className='flex flex-col gap-4 overflow-y-auto max-h-[500px]'>
-            <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-              <div className='flex items-start pt-1'>
-                <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-[#575051] font-medium'>10:00am - 12:00am</p>
-                <h2 className='text-[25px] font-bold text-[#575051]'>John Mobbin</h2>
-                <div className='flex gap-2 items-center'>
-                  <img src={Zoom} alt="Zoom" className='w-4 h-4' />
-                  <p className='text-[#82777A]'>Avance de IV Capitulo</p>
-                </div>
-              </div>
-            </div>
-
-            <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-              <div className='flex items-start pt-1'>
-                <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-[#575051] font-medium'>12:00am</p>
-                <h2 className='text-[25px] font-bold text-[#575051]'>Entrega de avance</h2>
-                <p className='text-[#82777A]'>Fecha limite: 28 de {monthName}</p>
-              </div>
-            </div>
-
-            <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-              <div className='flex items-start pt-1'>
-                <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-[#575051] font-medium'>12:00am</p>
-                <h2 className='text-[25px] font-bold text-[#575051]'>Entrega de avance</h2>
-                <p className='text-[#82777A]'>Fecha limite: 28 de {monthName}</p>
-              </div>
-            </div>
+            {renderEventos()}
           </div>
         </div>
       </main>

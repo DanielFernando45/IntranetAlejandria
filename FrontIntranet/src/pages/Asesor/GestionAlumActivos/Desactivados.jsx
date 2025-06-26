@@ -72,7 +72,7 @@ const Desactivados = () => {
           <div className="w-[300px] flex">{asesoria.delegado}</div>
           <div className="w-[250px] flex justify-center">{asesoria.profesion_asesoria}</div>
           <div className="w-[180px] flex justify-center">{formatDate(asesoria.fecha_inicio)}</div>
-          <div className="w-[180px] flex justify-center">-</div> {/* No hay fecha de vencimiento en la API */}
+          <div className="w-[180px] flex justify-center">{formatDate(asesoria.fecha_fin)}</div> {/* No hay fecha de vencimiento en la API */}
           <div className="w-[300px] flex justify-center">{asesoria.especialidad}</div>
           <div className="w-[150px] rounded-md px-3 border-[#1C1C34] border flex justify-center text-[#1C1C34] cursor-not-allowed">
             Finalizada

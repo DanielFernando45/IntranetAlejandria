@@ -45,7 +45,7 @@ const CalendarioEstudiante = () => {
 
   const fetchEventosDia = () => {
     const fechaSeleccionada = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
-    fetch(`http://localhost:3001/common/listar-calendario/${selectedAsesoriaId}/${fechaSeleccionada}`)
+    fetch(`http://localhost:3001/common/calendario_estudiante/${selectedAsesoriaId}/${fechaSeleccionada}`)
       .then(res => res.json())
       .then(data => {
         setEventosDia(data);
@@ -131,6 +131,12 @@ const CalendarioEstudiante = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', options);
+  };
+
   const addOneHour = (dateTimeString) => {
     const date = new Date(dateTimeString);
     date.setUTCHours(date.getUTCHours() + 1);
@@ -158,7 +164,7 @@ const CalendarioEstudiante = () => {
     }
 
     return eventosDia.map((evento, index) => {
-      if (evento.fecha_reunion) {
+      if (evento.fecha) {
         // Evento de reunión
         return (
           <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
@@ -167,16 +173,20 @@ const CalendarioEstudiante = () => {
             </div>
             <div className='flex flex-col justify-between'>
               <p className='text-[#575051] font-medium'>
-                {formatTime(evento.fecha_reunion)} - {formatTime(addOneHour(evento.fecha_reunion))}
+                {formatTime(evento.fecha)} - {formatTime(addOneHour(evento.fecha))}
               </p>
 
-              <div className='flex gap-2 items-center text-[20px]'>
-                {evento.enlace_zoom && (
-                  <a href={evento.enlace_zoom} target="_blank" rel="noopener noreferrer">
-                    <img src={Zoom} alt="Zoom" className='w-10' />
-                  </a>
-                )}
-                <p className='text-[#82777A]'>{evento.titulo}</p>
+              <div className='flex flex-col gap-2  text-[20px]'>
+                <h2 className='text-[25px] font-bold text-[#575051] '>Asesor(a): {evento.asesor_nombre}</h2>
+                <div className='flex items-center gap-5'>
+                  {evento.enlace && (
+                    <a href={evento.enlace_zoom} target="_blank" rel="noopener noreferrer">
+                      <img src={Zoom} alt="Zoom" className='w-10' />
+                    </a>
+                  )}
+                  <p className='text-[#82777A]'>{evento.titulo}</p>
+                </div>
+
               </div>
             </div>
           </div>
@@ -189,8 +199,11 @@ const CalendarioEstudiante = () => {
               <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
             </div>
             <div className='flex flex-col gap-1'>
+              <p className='text-[#575051] font-medium'>
+                {formatTime(evento.fecha_terminado)}
+              </p>
               <h2 className='text-[25px] font-bold text-[#575051]'>{evento.titulo}</h2>
-              <p className='text-[#82777A]'>{evento.message}</p>
+              <p className='text-[#82777A]'>Fecha limite: {formatDate(evento.fecha_terminado)}</p>
             </div>
           </div>
         );
