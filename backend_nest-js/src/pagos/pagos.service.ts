@@ -203,7 +203,7 @@ export class PagosService {
       let delegado=await this.clienteService.getDelegado(info.idAsesoramiento)
       return({
         "id":info.id,
-        "delegado":`${delegado}`,
+        "delegado":`${delegado.nombre_delegado}`,
         "titulo":info.titulo,
         "pago_total":info.pago_total,
         "fecha_pago":info.fecha_pago
@@ -247,7 +247,7 @@ export class PagosService {
       if(!delegado) throw new NotFoundException()
         return({
           "id_infopago":pago.id,
-          "delegado":delegado,
+          "delegado":delegado.nombre_delegado,
           "contrato":tipo,
           "pagos":pago.pagos.reverse()
         })
@@ -265,7 +265,7 @@ export class PagosService {
       if(!delegado)throw new NotFoundException("Error en conseguir el delegado")
       return({
         "id_infoPago":pago.id,
-        "delegado":delegado,
+        "delegado":delegado.nombre_delegado,
         "contrato":tipo,
         "fecha_ultimo_pago":lastPago.fecha_pago,
         "ultimo_monto":lastPago.monto

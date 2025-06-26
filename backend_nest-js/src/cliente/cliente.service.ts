@@ -243,23 +243,25 @@ export class ClienteService {
         const queryRunner=this.dataSource.createQueryRunner()
         await queryRunner.connect()
         await queryRunner.startTransaction()
-
+            
         try{
-        
             const listAsesoramientoId=await queryRunner.manager.findOne(ProcesosAsesoria,{where:{asesoramiento:{id:id_asesoramiento}},relations:['cliente']})
             if (!listAsesoramientoId) throw new NotFoundException(`No se encontraron asesoramientos con el ID ${id_asesoramiento}`);
-
-            const nombreDelegado=`${listAsesoramientoId.cliente.nombre} ${listAsesoramientoId.cliente.apellido}`
-            await queryRunner.commitTransaction()
-            return nombreDelegado
             
+            const nombreDelegado=`${listAsesoramientoId.cliente.nombre} ${listAsesoramientoId.cliente.apellido}`
+            const delegado={
+                "id":listAsesoramientoId.cliente.id,
+                "nombre_delegado":nombreDelegado
+            }
+            await queryRunner.commitTransaction()
+            return delegado
         }catch(err){
             await queryRunner.rollbackTransaction()
             throw new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
         }finally{
             await queryRunner.release()
-        }
-    }
+        }   
+    }       
 
     
 

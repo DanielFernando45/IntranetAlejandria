@@ -202,7 +202,7 @@ export class AsuntosService {
         return {
           id: `${asunto.id}`,
           titulo: asunto.titulo,
-          delegado:delegado,
+          delegado:delegado.nombre_delegado,
           fecha_y_hora: asunto.fecha_entregado,
           estado: asunto.estado
         };
