@@ -184,11 +184,11 @@ export class Registros1746554350124 implements MigrationInterface {
                 VALUES
                 (1,"Pago por cuotas",1200,"cuotas","asesoria",3,"2025-05-12 12:00:00",1),
                 (2,"Pago total",1000,"contado","asesoria",1,"2025-06-15 10:00:00",2),
-                (3,"Pago por cuotas",1100,"cuotas","asesoria",2,"2025-06-24 10:00:00",2),
-                (4,"Servicio Turnitin",70,"contado","otros",1,"2025-06-11 10:00:00",2),
-                (5,"Pago total",1050,"contado","asesoria",1,"2025-06-22 10:00:00",1);
-              `);
-
+                (3,"Sericio Revision completo",1100,"contado","otros",1,"2025-06-24 10:00:00",2),
+                (4,"Servicio Turnitin",70,"contado","otros",1,"2025-06-11 10:00:00",1);
+                `);
+                //(5,"Pago total",1050,"contado","asesoria",1,"2025-06-22 10:00:00",1);
+                
             await queryRunner.query(`
                 INSERT INTO Alejandria.pago(id,nombre,monto,fecha_pago,estado_pago,id_informacion_pago)
                 VALUES
@@ -196,12 +196,12 @@ export class Registros1746554350124 implements MigrationInterface {
                 (2,"Cuota 2",400,"2025-06-13 13:10:00","pagado",1),
                 (3,"Cuota 3",300,null,"por_pagar",1),
                 (4,"Pago total",1000,"2025-06-14 11:00:00","pagado",2),
-                (5,"Cuota 1",600,"2025-06-23 10:00:00","pagado",3),
-                (6,"Cuota 2",500,null,"por_pagar",3),
-                (7,"Servicio turnitin",70,"2025-06-10 12:24:10","pagado",4),
-                (8,"Pago total",11050,"2025-06-21 11:23:22","pagado",5); 
-              `)
-            await queryRunner.query(`
+                (5,"Sericio Revision completo",1100,"2025-06-23 10:00:00","pagado",3),
+                (6,"Servicio turnitin",70,"2025-06-10 12:24:10","pagado",4);
+                `)
+                //(6,"Cuota 2",500,null,"por_pagar",3),
+                //(8,"Pago total",1200,"2025-06-21 11:23:22","pagado",5); 
+                await queryRunner.query(`
               INSERT INTO Alejandria.reunion(
                   id, titulo, fecha_reunion, estado, enlace_zoom, zoom_password,
                   enlace_video, video_password, meetingId, zoomUuid, fecha_creacion, id_asesoramiento
