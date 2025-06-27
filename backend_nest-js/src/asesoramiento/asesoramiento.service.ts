@@ -505,7 +505,7 @@ export class AsesoramientoService {
       return(
         {
           "id_asesoramiento":asesoramiento.id,
-          "delegado":delegado,
+          "delegado":delegado.nombre_delegado,
           "tipo_contrato":asesoramiento.tipo_contrato,
           "tipo_trabajo":asesoramiento.tipo_trabajo,
           "profesion_asesoria":asesoramiento.profesion_asesoria
@@ -533,7 +533,7 @@ export class AsesoramientoService {
       return(
         {
           "id_asesoramiento":asesoramiento.id,
-          "delegado":delegado,
+          "delegado":delegado.nombre_delegado,
           "tipo_trabajo":asesoramiento.tipo_trabajo,
         }
       )
@@ -574,7 +574,7 @@ export class AsesoramientoService {
       const delegado=await this.clienteService.getDelegado(asesoria.id)
       return({
         "id":asesoria.id,
-        "delegado":delegado,
+        "delegado":delegado.nombre_delegado,
         "profesion_asesoria":asesoria.profesion_asesoria,
         "tipo_trabajo":asesoria.tipotrabajo,
         "fecha_inicio":asesoria.fecha_inicio,

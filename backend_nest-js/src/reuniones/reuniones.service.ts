@@ -131,7 +131,7 @@ export class ReunionesService {
         const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
         return({
           "id":reunion.id,
-          "delegado":delegado,
+          "delegado":delegado.nombre_delegado,
           "asesoramiento_id":reunion.id_asesoramiento,
           "titulo":reunion.titulo,
           "fecha_reunion":reunion.fecha_reunion,
@@ -145,7 +145,7 @@ export class ReunionesService {
         const delegado=await this.clienteService.getDelegado(reunion.id_asesoramiento)
         return({
           "id":reunion.id,
-          "delegado":delegado,
+          "delegado":delegado.nombre_delegado,
           "asesoramiento_id":reunion.id_asesoramiento,
           "titulo":reunion.titulo,
           "fecha_reunion":reunion.fecha_reunion,
@@ -185,7 +185,7 @@ export class ReunionesService {
         const delegado=await this.clienteService.getDelegado(id_asesoramiento)
         return ({
         id_reunion:reunion.id,
-        delegado:delegado,
+        delegado:delegado.nombre_delegado,
         titulo:reunion.titulo,
         enlace:reunion.enlace_zoom,
         fecha:reunion.fecha_reunion,
