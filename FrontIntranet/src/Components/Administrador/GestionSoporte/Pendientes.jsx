@@ -80,7 +80,7 @@ const Pendientes = () => {
                         <div className="w-[180px] flex justify-center">
                             {ticket.fecha_envio ? new Date(ticket.fecha_envio).toLocaleDateString() : 'Pendiente'}
                         </div>
-                        <div className="w-[250px] flex justify-center">{ticket.delegado}</div>
+                        <div className="w-[250px] flex justify-center">{ticket.cliente}</div>
                         <div className="w-[350px] flex justify-center space-x-2">
                             <button
                                 onClick={() => handleResolveClick(ticket.id_soporte)}

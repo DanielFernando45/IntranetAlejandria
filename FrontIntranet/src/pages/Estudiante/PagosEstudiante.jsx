@@ -38,10 +38,13 @@ const PagosEstudiante = () => {
       // Obtener pagos de asesoría
       fetch(`http://localhost:3001/pagos/misAsesorias/${selectedAsesoriaId}`)
         .then(res => res.json())
-        .then(data => setPagosAsesoria(data))
+        .then(data => {
+          console.log('Datos de asesorías recibidos:', data); // Para depuración
+          setPagosAsesoria(data);
+        })
         .catch(error => console.error('Error al obtener pagos de asesoría:', error));
 
-      // Obtener pagos de servicios
+      // Obtener pagos de servicios (solo visualización)
       fetch(`http://localhost:3001/pagos/misServicios/${selectedAsesoriaId}`)
         .then(res => res.json())
         .then(data => setPagosServicios(data))
@@ -55,6 +58,11 @@ const PagosEstudiante = () => {
   }
 
   const formatDate = (dateString) => {
+    // Filtramos fechas inválidas (como 1969-12-31)
+    if (!dateString || dateString.includes('1969-12-31')) {
+      return 'Fecha no definida';
+    }
+    
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
       day: 'numeric',
@@ -64,15 +72,51 @@ const PagosEstudiante = () => {
   }
 
   const calcularTotalDeuda = () => {
-    const total = [...pagosAsesoria, ...pagosServicios].reduce((sum, pago) => sum + pago.monto, 0);
-    return total;
+    try {
+      // Solo consideramos pagos de asesoría con título "Cuota" y fecha válida
+      const cuotasValidas = pagosAsesoria
+        .filter(pago => 
+          pago.titulo && 
+          pago.titulo.includes('Cuota') && 
+          pago.fecha_pago && 
+          !pago.fecha_pago.includes('1969-12-31')
+        );
+      
+      const total = cuotasValidas.reduce((sum, pago) => {
+        const monto = parseFloat(pago.monto) || 0;
+        return sum + monto;
+      }, 0);
+      
+      return total.toFixed(2);
+    } catch (error) {
+      console.error('Error al calcular total de deuda:', error);
+      return '0.00';
+    }
   }
 
   const calcularDeudaPendiente = () => {
-    const pendiente = [...pagosAsesoria, ...pagosServicios]
-      .filter(pago => pago.estado_pago === 'pendiente')
-      .reduce((sum, pago) => sum + pago.monto, 0);
-    return pendiente;
+    try {
+      // Solo consideramos cuotas pendientes con fecha válida
+      const pendientes = pagosAsesoria
+        .filter(pago => 
+          pago.estado_pago && 
+          pago.estado_pago.toLowerCase() === 'pendiente' &&
+          pago.titulo && 
+          pago.titulo.includes('Cuota') &&
+          pago.fecha_pago && 
+          !pago.fecha_pago.includes('1969-12-31')
+        );
+      
+      const totalPendiente = pendientes.reduce((sum, pago) => {
+        const monto = parseFloat(pago.monto) || 0;
+        return sum + monto;
+      }, 0);
+      
+      return totalPendiente.toFixed(2);
+    } catch (error) {
+      console.error('Error al calcular deuda pendiente:', error);
+      return '0.00';
+    }
   }
 
   if (loading) {
@@ -108,13 +152,14 @@ const PagosEstudiante = () => {
                     key={index} 
                     className={`flex flex-row justify-between ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-2 rounded-lg`}
                   >
-                    <div className='flex justify-center w-[170px]'>{pago.titulo}</div>
-                    <div className='flex justify-center w-[80px]'>S/{pago.monto}</div>
+                    <div className='flex justify-center w-[170px]'>{pago.titulo || 'Sin título'}</div>
+                    <div className='flex justify-center w-[80px]'>S/{(parseFloat(pago.monto) || 0).toFixed(2)}</div>
                     <div className='flex justify-center w-[250px]'>{formatDate(pago.fecha_pago)}</div>
                     <div className={`flex justify-center w-[100px] ${
-                      pago.estado_pago === 'pagado' ? 'text-[#1DEE43] border-[#1DEE43]' : 'text-[#EE1D1D] border-[#EE1D1D]'
+                      pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 
+                      'text-[#1DEE43] border-[#1DEE43]' : 'text-[#EE1D1D] border-[#EE1D1D]'
                     } border rounded-lg`}>
-                      {pago.estado_pago === 'pagado' ? 'Pagado' : 'Pendiente'}
+                      {pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 'Pagado' : 'Pendiente'}
                     </div>
                   </div>
                 ))
@@ -146,7 +191,7 @@ const PagosEstudiante = () => {
           </div>
           
           <div className='w-full'>
-            <h1 className='text-[20px] font-bold'>Otros Pagos</h1>
+            <h1 className='text-[20px] font-bold'>Otros Pagos (no considerados en deuda)</h1>
           </div>
 
           <div className='w-full'>
@@ -163,13 +208,14 @@ const PagosEstudiante = () => {
                   key={index} 
                   className={`flex flex-row justify-between ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-2 rounded-lg`}
                 >
-                  <div className='flex justify-center w-[300px]'>{pago.titulo}</div>
-                  <div className='flex justify-center w-[80px]'>S/{pago.monto}</div>
+                  <div className='flex justify-center w-[300px]'>{pago.titulo || 'Sin título'}</div>
+                  <div className='flex justify-center w-[80px]'>S/{(parseFloat(pago.monto) || 0).toFixed(2)}</div>
                   <div className='flex justify-center w-[160px]'>{formatDate(pago.fecha_pago)}</div>
                   <div className={`flex justify-center w-[100px] ${
-                    pago.estado_pago === 'pagado' ? 'text-[#1DEE43] border-[#1DEE43]' : 'text-[#EE1D1D] border-[#EE1D1D]'
+                    pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 
+                    'text-[#1DEE43] border-[#1DEE43]' : 'text-[#EE1D1D] border-[#EE1D1D]'
                   } border rounded-lg`}>
-                    {pago.estado_pago === 'pagado' ? 'Pagado' : 'Pendiente'}
+                    {pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 'Pagado' : 'Pendiente'}
                   </div>
                 </div>
               ))
