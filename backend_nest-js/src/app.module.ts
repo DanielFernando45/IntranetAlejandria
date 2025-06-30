@@ -20,6 +20,7 @@ import { ReunionesModule } from './reuniones/reuniones.module';
 import { RecursosModule } from './recursos/recursos.module';
 import { PagosModule } from './pagos/pagos.module';
 import { SoportesModule } from './soportes/soportes.module';
+import { BackblazeModule } from './backblaze/backblaze.module';
 
 let puerto:number
 
@@ -53,7 +54,7 @@ if(process.env.DB_PORT){
     AdminModule,
     ClienteModule, 
     AsesorModule, MailModule, AsesoramientoModule, ProcesosAsesoriaModule
-    ,CommonModule, AsuntosModule, DocumentosModule, ReunionesModule, RecursosModule, PagosModule, SoportesModule],
+    ,CommonModule, AsuntosModule, DocumentosModule, ReunionesModule, RecursosModule, PagosModule, SoportesModule, BackblazeModule],
   controllers: [AppController],
   providers: [AppService],
 })

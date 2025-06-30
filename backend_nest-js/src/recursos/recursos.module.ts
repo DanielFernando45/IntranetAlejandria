@@ -15,10 +15,11 @@ import { Tutorial } from './entities/tutorial.entity';
 import { Solucion } from './entities/solucion.entity';
 import { SolucionesController } from './controllers/soluciones.controller';
 import { SolucionesService } from './services/soluciones.service';
+import { BackblazeModule } from 'src/backblaze/backblaze.module';
 
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Guia,Noticia,Herramienta,Tutorial,Solucion])],
+  imports:[TypeOrmModule.forFeature([Guia,Noticia,Herramienta,Tutorial,Solucion]),BackblazeModule],
   controllers: [GuiasController,HerramientasController,NoticiasController,TutorialesController,SolucionesController],
   providers: [GuiasService,HerramientasService,NoticiasService,TutorialesService,SolucionesService],
 })
