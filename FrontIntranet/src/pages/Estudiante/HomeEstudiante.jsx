@@ -1,3 +1,4 @@
+
 import LayoutApp from "../../layout/LayoutApp";
 import portada from "../../assets/images/portadaMobile.png"
 import flechaVer from "../../assets/icons/flechaMorada.svg"
@@ -5,7 +6,6 @@ import flechaAzul from "../../assets/icons/arrowAzul.svg"
 import NoticiaUno from "../../assets/images/NoticiaAsesor.png"
 import FeclaIzqui from "../../assets/icons/arrow-left.svg"
 import FechaDerec from "../../assets/icons/arrow-right.svg"
-import Descargas from "../../assets/icons/Descargas.svg"
 import Zoom from "../../assets/images/zoom.svg"
 import DocsAsesor from "../Estudiante/EntregasEnvio/EnvioAsesor"
 import { useState, useEffect } from "react";
@@ -59,9 +59,12 @@ const HomeEstudiante = () => {
             <h2 className="lg:text-[38px] md:text-[8px] mn:text-[15px] text-[15px] font-semibold mt-2 md:mt-1 ">
               Bienvenido Fernando Guzman al Intranet de asesoría de tesis
             </h2>
-            <p className="lg:text-[22px] text-[10px] md:text-[4px] text-[#B5B5B5] absolute top-[110px] mn:top-[110px] md:top-[70px] ">
-              Aquí encontraras toda la información para tu  asesoría de tesis
-            </p>
+            <div className="absolute w-[140px] h-[85px] top-[1px]">
+                <p className="lg:text-[22px] text-[10px] md:text-[4px] text-[#B5B5B5] absolute top-[110px] mn:top-[110px] md:top-[70px] ">
+                Aquí encontraras toda la información para tu  asesoría de tesis
+              </p>
+            </div>
+            
           </div>
 
           <img

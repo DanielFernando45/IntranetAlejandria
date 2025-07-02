@@ -23,6 +23,9 @@ const ListarAsignados = () => {
   const [asesoramientos, setAsesoramientos] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [asesoramientoToDelete, setAsesoramientoToDelete] = useState(null);
+  const [showEstadoModal, setShowEstadoModal] = useState(false);
+  const [asesoramientoToChange, setAsesoramientoToChange] = useState(null);
+  const [newEstado, setNewEstado] = useState(null);
 
   useEffect(() => {
     fetchAsesoramientos();
@@ -32,12 +35,44 @@ const ListarAsignados = () => {
     axios.get("http://localhost:3001/asesoramiento/listar")
       .then((res) => {
         setAsesoramientos(res.data);
+        // Inicializar estados locales
+        const initialEstados = {};
+        res.data.forEach(a => {
+          initialEstados[a.id_asesoramiento] = a.estado === "activo";
+        });
+        setEstadoLocal(initialEstados);
       })
       .catch((err) => console.error("Error al obtener asesoramientos:", err));
   };
 
   const toggleEstadoVisual = (id) => {
-    setEstadoLocal(prev => ({ ...prev, [id]: !prev[id] }));
+    const currentEstado = estadoLocal[id];
+    setAsesoramientoToChange(id);
+    setNewEstado(!currentEstado);
+    setShowEstadoModal(true);
+  };
+
+  const confirmEstadoChange = () => {
+    if (!asesoramientoToChange) return;
+    
+    const nuevoEstado = newEstado ? "activo" : "inactivo";
+    
+    axios.patch(`http://localhost:3001/asesoramiento/estado/${asesoramientoToChange}`, { estado: nuevoEstado })
+      .then(() => {
+        // Actualizar el estado local después de la confirmación del servidor
+        setEstadoLocal(prev => ({ ...prev, [asesoramientoToChange]: newEstado }));
+        setShowEstadoModal(false);
+      })
+      .catch(err => {
+        console.error("Error al cambiar estado del asesoramiento:", err);
+        setShowEstadoModal(false);
+      });
+  };
+
+  const cancelEstadoChange = () => {
+    setAsesoramientoToChange(null);
+    setNewEstado(null);
+    setShowEstadoModal(false);
   };
 
   const toggleClientes = (index) => {
@@ -62,7 +97,6 @@ const ListarAsignados = () => {
     
     axios.delete(`http://localhost:3001/asesoramiento/delete/${asesoramientoToDelete}`)
       .then(() => {
-        // Actualizar la lista después de eliminar
         fetchAsesoramientos();
         setShowDeleteModal(false);
       })
@@ -77,7 +111,6 @@ const ListarAsignados = () => {
     setShowDeleteModal(false);
   }
 
-  // Función para obtener todos los estudiantes de un asesoramiento
   const obtenerEstudiantes = (asesoramiento) => {
     const estudiantes = [];
     for (let i = 2; i <= 5; i++) {
@@ -91,6 +124,30 @@ const ListarAsignados = () => {
 
   return (
     <div>
+      {/* Modal de confirmación de cambio de estado */}
+      {showEstadoModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 className="text-lg font-semibold mb-4">Confirmar Cambio de Estado</h3>
+            <p>¿Estás seguro que deseas cambiar el estado a {newEstado ? "Activado" : "Desactivado"}?</p>
+            <div className="flex justify-end gap-4 mt-6">
+              <button 
+                onClick={cancelEstadoChange}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmEstadoChange}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Modal de confirmación de eliminación */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

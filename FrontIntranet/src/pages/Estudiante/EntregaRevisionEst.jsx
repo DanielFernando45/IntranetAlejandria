@@ -2,7 +2,7 @@ import LayoutApp from "../../layout/LayoutApp";
 import { useState, useEffect } from "react";
 import flechaAzul from "../../assets/icons/arrowAzul.svg"
 import plus from "../../assets/icons/IconEstudiante/add.svg"
-import EnvioArchivo from "../../Components/EnvioArchivos";
+import EnvioArchivo from "../../Components/Cliente/EnvioArchivos";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import MisEnvios from '../../pages/Estudiante/EntregasEnvio/MisEnviosCli'
 import EnvioAsesor from '../../pages/Estudiante/EntregasEnvio/EnvioAsesor'
@@ -12,22 +12,21 @@ const EntregaRevisionEst = () => {
   const [asesorias, setAsesorias] = useState([]);
   const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
   const [docEnvio, setEnvio] = useState("MisEnvios");
-
-
+  const [showNewAdvanceButton, setShowNewAdvanceButton] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const isTerminados = location.pathname.includes("terminados");
-  const isPendientes = location.pathname.includes("pendientes")
+  const isPendientes = location.pathname.includes("pendientes");
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
     if (userString) {
       const user = JSON.parse(userString);
-      const id = user.id;
+      const userId = user.id;
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+      fetch(`http://localhost:3001/cliente/miAsesoramiento/${userId}`)
         .then(res => res.json())
         .then(data => {
           const asesoriasArray = Object.values(data).map(item => ({
@@ -39,30 +38,54 @@ const EntregaRevisionEst = () => {
           if (asesoriasArray.length > 0) {
             const primeraAsesoriaId = asesoriasArray[0].id;
             setSelectedAsesoriaId(primeraAsesoriaId);
-
+            
+            // Verificar si el usuario es el asesor de esta asesoría
+            checkIfUserIsAdvisor(primeraAsesoriaId, userId);
           }
         })
         .catch(error => console.error('Error al obtener asesorías:', error));
     }
   }, []);
 
+  const checkIfUserIsAdvisor = (asesoriaId, userId) => {
+    fetch(`http://localhost:3001/cliente/idClienteByAsesoramiento/${asesoriaId}`)
+      .then(res => res.json())
+      .then(data => {
+        // Comparar el ID del asesor con el ID del usuario
+        setShowNewAdvanceButton(data.id === userId);
+      })
+      .catch(error => {
+        console.error('Error al verificar asesor:', error);
+        setShowNewAdvanceButton(false);
+      });
+  };
+
   const handleChange = (e) => {
     const asesoriaId = e.target.value;
     setSelectedAsesoriaId(asesoriaId);
+    
+    // Verificar si el usuario es el asesor cuando cambia la selección
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      checkIfUserIsAdvisor(asesoriaId, user.id);
+    }
   }
-
-  
 
   return (
     <LayoutApp>
       <main className="flex flex-col gap-3 mx-5 items-start p-5">
 
         <div className="flex ml-8 justify-between w-full">
-          <button className="flex justify-between px-3 rounded-lg bg-white w-[180px] items-center font-medium" 
-            onClick={() => setShowModal(true)}>
-            <p>Nuevo Avance</p>
-            <img className="" src={plus} alt="" />
-          </button>
+          {showNewAdvanceButton && (
+            <button className="flex justify-between px-3 rounded-lg bg-white w-[180px] items-center font-medium" 
+              onClick={() => setShowModal(true)}>
+              <p>Nuevo Avance</p>
+              <img className="" src={plus} alt="" />
+            </button>
+          )}
+          {!showNewAdvanceButton && <div className="w-[180px]"></div>} {/* Espacio reservado para mantener el layout */}
+          
           <select
             className='border-2 rounded-md px-2 border-black'
             onChange={handleChange}
@@ -106,10 +129,7 @@ const EntregaRevisionEst = () => {
 
           <div>
             <Outlet context={selectedAsesoriaId} />
-
           </div>
-
-
         </div>
 
         <div className="flex flex-col gap-[10px] ml-8 p-[20px] w-full  bg-white rounded-[10px]">
@@ -147,10 +167,7 @@ const EntregaRevisionEst = () => {
               )
             }
           </div>
-
-
         </div>
-
 
         <EnvioArchivo
           show={showModal}
@@ -159,8 +176,7 @@ const EntregaRevisionEst = () => {
         />
       </main>
     </LayoutApp>
-
   )
-
 }
+
 export default EntregaRevisionEst;

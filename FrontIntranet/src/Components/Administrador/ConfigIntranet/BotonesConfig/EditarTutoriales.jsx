@@ -8,6 +8,26 @@ const EditarTutoriales = ({ close, tutorialId }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [youtubeEmbedUrl, setYoutubeEmbedUrl] = useState(null);
+
+  // Extraer el ID del video de YouTube cuando cambia el enlace
+  useEffect(() => {
+    if (formData.enlace.includes('youtube.com') || formData.enlace.includes('youtu.be')) {
+      const videoId = extractYoutubeId(formData.enlace);
+      if (videoId) {
+        setYoutubeEmbedUrl(`https://www.youtube.com/embed/${videoId}`);
+      }
+    } else {
+      setYoutubeEmbedUrl(null);
+    }
+  }, [formData.enlace]);
+
+  const extractYoutubeId = (url) => {
+    // Extraer ID para diferentes formatos de URL de YouTube
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
   useEffect(() => {
     const fetchTutorial = async () => {
@@ -31,6 +51,14 @@ const EditarTutoriales = ({ close, tutorialId }) => {
           titulo: data.titulo || '',
           enlace: data.enlace || ''
         });
+
+        // Si ya existe un enlace, generar la URL de embed
+        if (data.enlace) {
+          const videoId = extractYoutubeId(data.enlace);
+          if (videoId) {
+            setYoutubeEmbedUrl(`https://www.youtube.com/embed/${videoId}`);
+          }
+        }
       } catch (err) {
         console.error('Error al cargar el tutorial:', err);
         setError(`Error al cargar el tutorial: ${err.message}`);
@@ -113,7 +141,7 @@ const EditarTutoriales = ({ close, tutorialId }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#F0EFEF] p-6 rounded-lg w-1/4">
+      <div className="bg-[#F0EFEF] p-6 rounded-lg w-1/3">
         <h2 className="text-xl font-medium mb-4 text-[#2B2829]">Editar Tutorial</h2>
         
         {error && (
@@ -135,15 +163,33 @@ const EditarTutoriales = ({ close, tutorialId }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Enlace</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Enlace de YouTube</label>
             <input
               type="url"
               name="enlace"
               value={formData.enlace}
               onChange={handleChange}
+              placeholder="https://www.youtube.com/watch?v=..."
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
+            {youtubeEmbedUrl && (
+              <div className="mt-4">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">Vista previa:</h3>
+                <div className="aspect-w-16 aspect-h-9">
+                  <iframe
+                    src={youtubeEmbedUrl}
+                    title="Vista previa del video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-48 rounded"
+                  ></iframe>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Esta es una vista previa del video que se actualizará</p>
+              </div>
+            )}
+            <p className="text-xs text-gray-500 mt-1">Solo enlaces de YouTube son soportados</p>
           </div>
           <div className="flex justify-between">
             <button

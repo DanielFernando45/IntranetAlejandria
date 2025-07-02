@@ -4,11 +4,12 @@ const EditarNoticias = ({ close, noticiaId }) => {
   const [formData, setFormData] = useState({
     titulo: '',
     descripcion: '',
-    url_imagen: ''
+    url_imagen: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [imagePreview, setImagePreview] = useState(null);
 
   // Cargar los datos actuales de la noticia al montar el componente
   useEffect(() => {
@@ -33,8 +34,13 @@ const EditarNoticias = ({ close, noticiaId }) => {
         setFormData({
           titulo: data.titulo || '',
           descripcion: data.descripcion || '',
-          url_imagen: data.url_imagen || ''
+          url_imagen: data.url_imagen || null
         });
+
+        // Si ya existe una imagen, establecer la previsualización
+        if (data.url_imagen) {
+          setImagePreview(data.url_imagen);
+        }
       } catch (err) {
         console.error('Error al cargar la noticia:', err);
         setError(`Error al cargar la noticia: ${err.message}`);
@@ -54,22 +60,54 @@ const EditarNoticias = ({ close, noticiaId }) => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validar que sea una imagen
+    if (!file.type.match('image.*')) {
+      setError('Por favor, selecciona un archivo de imagen válido (JPEG, PNG, GIF)');
+      return;
+    }
+
+    // Crear previsualización de la imagen
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Actualizar el estado con el archivo
+    setFormData(prev => ({
+      ...prev,
+      url_imagen: file
+    }));
+    setError(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('titulo', formData.titulo);
+      formDataToSend.append('descripcion', formData.descripcion);
+      
+      // Adjuntar la imagen si es un archivo nuevo
+      if (formData.url_imagen instanceof File) {
+        formDataToSend.append('imagen', formData.url_imagen);
+      } else {
+        // Si es una URL existente
+        formDataToSend.append('url_imagen', formData.url_imagen);
+      }
+
       const response = await fetch(`http://localhost:3001/recursos/noticias/update/${noticiaId}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+        body: formDataToSend
       });
 
-      location.reload();
-      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
@@ -77,6 +115,7 @@ const EditarNoticias = ({ close, noticiaId }) => {
         );
       }
 
+      location.reload();
       close(); // Cerrar el modal si todo sale bien
     } catch (err) {
       console.error('Error al actualizar la noticia:', err);
@@ -150,15 +189,25 @@ const EditarNoticias = ({ close, noticiaId }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL de la Imagen</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
             <input
-              type="url"
+              type="file"
               name="url_imagen"
-              value={formData.url_imagen}
-              onChange={handleChange}
+              onChange={handleImageChange}
+              accept="image/*"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
             />
+            {imagePreview && (
+              <div className="mt-2">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">Vista previa:</h3>
+                <img 
+                  src={imagePreview} 
+                  alt="Vista previa de la imagen" 
+                  className="max-h-40 rounded object-cover"
+                />
+                <p className="text-xs text-gray-500 mt-1">Formatos aceptados: JPEG, PNG, GIF</p>
+              </div>
+            )}
           </div>
           <div className="flex justify-between">
             <button

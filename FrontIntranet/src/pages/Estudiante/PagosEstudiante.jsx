@@ -58,7 +58,6 @@ const PagosEstudiante = () => {
   }
 
   const formatDate = (dateString) => {
-    // Filtramos fechas inválidas (como 1969-12-31)
     if (!dateString || dateString.includes('1969-12-31')) {
       return 'Fecha no definida';
     }
@@ -71,41 +70,38 @@ const PagosEstudiante = () => {
     });
   }
 
-  const calcularTotalDeuda = () => {
+  // Función para calcular el total de todas las cuotas (sin importar estado)
+  const calcularTotalCuotas = () => {
     try {
-      // Solo consideramos pagos de asesoría con título "Cuota" y fecha válida
-      const cuotasValidas = pagosAsesoria
-        .filter(pago => 
-          pago.titulo && 
-          pago.titulo.includes('Cuota') && 
-          pago.fecha_pago && 
-          !pago.fecha_pago.includes('1969-12-31')
-        );
+      // Filtramos solo los pagos que son cuotas (titulo incluye "Cuota")
+      const cuotas = pagosAsesoria.filter(pago => 
+        pago.titulo && pago.titulo.includes('Cuota')
+      );
       
-      const total = cuotasValidas.reduce((sum, pago) => {
+      // Sumamos todos los montos de las cuotas
+      const total = cuotas.reduce((sum, pago) => {
         const monto = parseFloat(pago.monto) || 0;
         return sum + monto;
       }, 0);
       
       return total.toFixed(2);
     } catch (error) {
-      console.error('Error al calcular total de deuda:', error);
+      console.error('Error al calcular total de cuotas:', error);
       return '0.00';
     }
   }
 
+  // Función para calcular el total de cuotas pendientes
   const calcularDeudaPendiente = () => {
     try {
-      // Solo consideramos cuotas pendientes con fecha válida
-      const pendientes = pagosAsesoria
-        .filter(pago => 
-          pago.estado_pago && 
-          pago.estado_pago.toLowerCase() === 'pendiente' &&
-          pago.titulo && 
-          pago.titulo.includes('Cuota') &&
-          pago.fecha_pago && 
-          !pago.fecha_pago.includes('1969-12-31')
-        );
+      // Filtramos cuotas pendientes (estado_pago es "por_pagar" o "pendiente")
+      const pendientes = pagosAsesoria.filter(pago => 
+        pago.titulo && 
+        pago.titulo.includes('Cuota') &&
+        pago.estado_pago && 
+        (pago.estado_pago.toLowerCase() === 'por_pagar' || 
+         pago.estado_pago.toLowerCase() === 'pendiente')
+      );
       
       const totalPendiente = pendientes.reduce((sum, pago) => {
         const monto = parseFloat(pago.monto) || 0;
@@ -115,6 +111,29 @@ const PagosEstudiante = () => {
       return totalPendiente.toFixed(2);
     } catch (error) {
       console.error('Error al calcular deuda pendiente:', error);
+      return '0.00';
+    }
+  }
+
+  // Función para calcular el total de cuotas pagadas
+  const calcularTotalPagado = () => {
+    try {
+      // Filtramos cuotas pagadas
+      const pagados = pagosAsesoria.filter(pago => 
+        pago.titulo && 
+        pago.titulo.includes('Cuota') &&
+        pago.estado_pago && 
+        pago.estado_pago.toLowerCase() === 'pagado'
+      );
+      
+      const totalPagado = pagados.reduce((sum, pago) => {
+        const monto = parseFloat(pago.monto) || 0;
+        return sum + monto;
+      }, 0);
+      
+      return totalPagado.toFixed(2);
+    } catch (error) {
+      console.error('Error al calcular total pagado:', error);
       return '0.00';
     }
   }
@@ -159,7 +178,8 @@ const PagosEstudiante = () => {
                       pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 
                       'text-[#1DEE43] border-[#1DEE43]' : 'text-[#EE1D1D] border-[#EE1D1D]'
                     } border rounded-lg`}>
-                      {pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 'Pagado' : 'Pendiente'}
+                      {pago.estado_pago === 'por_pagar' ? 'Por pagar' : 
+                       pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 'Pagado' : 'Pendiente'}
                     </div>
                   </div>
                 ))
@@ -180,18 +200,22 @@ const PagosEstudiante = () => {
               </select>
 
               <div className='flex justify-between'>
-                <h2>Deuda total:</h2>
-                <h2 className='text-[#82777A]'>S/.{calcularTotalDeuda()}</h2>
+                <h2>Total cuotas:</h2>
+                <h2 className='text-[#82777A]'>S/.{calcularTotalCuotas()}</h2>
               </div>
               <div className='flex justify-between'>
-                <h2>Deuda pendiente:</h2>
-                <h2 className='text-[#82777A]'>S/.{calcularDeudaPendiente()}</h2>
+                <h2>Total pagado:</h2>
+                <h2 className='text-[#1DEE43]'>S/.{calcularTotalPagado()}</h2>
+              </div>
+              <div className='flex justify-between'>
+                <h2>Por pagar:</h2>
+                <h2 className='text-[#EE1D1D]'>S/.{calcularDeudaPendiente()}</h2>
               </div>
             </div>
           </div>
           
           <div className='w-full'>
-            <h1 className='text-[20px] font-bold'>Otros Pagos (no considerados en deuda)</h1>
+            <h1 className='text-[20px] font-bold'>Pagos de Servicios</h1>
           </div>
 
           <div className='w-full'>
@@ -215,7 +239,8 @@ const PagosEstudiante = () => {
                     pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 
                     'text-[#1DEE43] border-[#1DEE43]' : 'text-[#EE1D1D] border-[#EE1D1D]'
                   } border rounded-lg`}>
-                    {pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 'Pagado' : 'Pendiente'}
+                    {pago.estado_pago === 'por_pagar' ? 'Por pagar' : 
+                     pago.estado_pago && pago.estado_pago.toLowerCase() === 'pagado' ? 'Pagado' : 'Pendiente'}
                   </div>
                 </div>
               ))

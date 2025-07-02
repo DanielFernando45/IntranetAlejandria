@@ -4,18 +4,71 @@ const AgregarGuias = ({ close }) => {
   const [formData, setFormData] = useState({
     titulo: '',
     descripcion: '',
-    url_imagen: '',
-    doc_url: ''
+    url_imagen: null,
+    doc_url: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [pdfName, setPdfName] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Manejar campos de texto normales
+    if (name === 'titulo' || name === 'descripcion') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    const file = files[0];
+
+    if (!file) return;
+
+    if (name === 'url_imagen') {
+      // Validar que sea una imagen
+      if (!file.type.match('image.*')) {
+        setError('Por favor, selecciona un archivo de imagen válido (JPG, PNG, GIF)');
+        return;
+      }
+
+      // Crear previsualización de la imagen
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
+
+      // Actualizar el estado con el archivo
+      setFormData(prev => ({
+        ...prev,
+        [name]: file
+      }));
+      setError(null);
+    }
+
+    if (name === 'doc_url') {
+      // Validar que sea un PDF
+      if (file.type !== 'application/pdf') {
+        setError('Por favor, selecciona un archivo PDF válido');
+        return;
+      }
+
+      // Mostrar nombre del PDF
+      setPdfName(file.name);
+
+      // Actualizar el estado con el archivo
+      setFormData(prev => ({
+        ...prev,
+        [name]: file
+      }));
+      setError(null);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -24,19 +77,28 @@ const AgregarGuias = ({ close }) => {
     setError(null);
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('titulo', formData.titulo);
+      formDataToSend.append('descripcion', formData.descripcion);
+      
+      // Adjuntar archivos si existen
+      if (formData.url_imagen) {
+        formDataToSend.append('imagen', formData.url_imagen);
+      }
+      if (formData.doc_url) {
+        formDataToSend.append('documento', formData.doc_url);
+      }
+
       const response = await fetch('http://localhost:3001/recursos/guias/add', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+        body: formDataToSend
       });
 
-      location.reload();
       if (!response.ok) {
         throw new Error('Error al agregar la guía');
       }
 
+      location.reload();
       close();
     } catch (err) {
       setError(err.message);
@@ -81,30 +143,51 @@ const AgregarGuias = ({ close }) => {
               required
             />
           </div>
+          
+          {/* Campo para subir imagen */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL de la Imagen</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
             <input
-              type="url"
+              type="file"
               name="url_imagen"
-              value={formData.url_imagen}
-              onChange={handleChange}
-              placeholder='https://ejemplo.com/imagen.jpg'
+              onChange={handleFileChange}
+              accept="image/*"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
+            {imagePreview && (
+              <div className="mt-2">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">Vista previa:</h3>
+                <img 
+                  src={imagePreview} 
+                  alt="Vista previa de la imagen" 
+                  className="max-h-40 rounded"
+                />
+                <p className="text-xs text-gray-500 mt-1">Formatos aceptados: JPG, PNG, GIF</p>
+              </div>
+            )}
           </div>
+          
+          {/* Campo para subir PDF */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL del Documento PDF</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Documento PDF</label>
             <input
-              type="url"
+              type="file"
               name="doc_url"
-              value={formData.doc_url}
-              onChange={handleChange}
-              placeholder='https://ejemplo.com/documento.pdf'
+              onChange={handleFileChange}
+              accept="application/pdf"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
+            {pdfName && (
+              <div className="mt-2">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">Documento seleccionado:</h3>
+                <p className="text-sm text-gray-700">{pdfName}</p>
+                <p className="text-xs text-gray-500 mt-1">Solo se aceptan archivos PDF</p>
+              </div>
+            )}
           </div>
+
           <div className="flex justify-between">
             <button
               type="submit"

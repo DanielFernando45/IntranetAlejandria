@@ -4,12 +4,14 @@ const EditarGuias = ({ close, guiaId }) => {
   const [formData, setFormData] = useState({
     titulo: '',
     descripcion: '',
-    url_imagen: '',
-    doc_url: ''
+    url_imagen: null,
+    doc_url: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [pdfPreview, setPdfPreview] = useState(null);
 
   useEffect(() => {
     const fetchGuia = async () => {
@@ -32,9 +34,13 @@ const EditarGuias = ({ close, guiaId }) => {
         setFormData({
           titulo: data.titulo || '',
           descripcion: data.descripcion || '',
-          url_imagen: data.url_imagen || '',
-          doc_url: data.doc_url || ''
+          url_imagen: data.url_imagen || null,
+          doc_url: data.doc_url || null
         });
+
+        // Si hay URLs existentes, establecer las previsualizaciones
+        if (data.url_imagen) setImagePreview(data.url_imagen);
+        if (data.doc_url) setPdfPreview(data.doc_url);
       } catch (err) {
         console.error('Error al cargar la guía:', err);
         setError(`Error al cargar la guía: ${err.message}`);
@@ -48,10 +54,60 @@ const EditarGuias = ({ close, guiaId }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Manejar campos de texto normales
+    if (name === 'titulo' || name === 'descripcion') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+      return;
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    const file = files[0];
+
+    if (!file) return;
+
+    if (name === 'url_imagen') {
+      // Validar que sea una imagen
+      if (!file.type.match('image.*')) {
+        setError('Por favor, selecciona un archivo de imagen válido');
+        return;
+      }
+
+      // Crear previsualización de la imagen
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target.result);
+      };
+      reader.readAsDataURL(file);
+
+      // Actualizar el estado con el archivo
+      setFormData(prev => ({
+        ...prev,
+        [name]: file
+      }));
+    }
+
+    if (name === 'doc_url') {
+      // Validar que sea un PDF
+      if (file.type !== 'application/pdf') {
+        setError('Por favor, selecciona un archivo PDF válido');
+        return;
+      }
+
+      // Crear previsualización del PDF (mostramos solo el nombre)
+      setPdfPreview(file.name);
+
+      // Actualizar el estado con el archivo
+      setFormData(prev => ({
+        ...prev,
+        [name]: file
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -60,16 +116,28 @@ const EditarGuias = ({ close, guiaId }) => {
     setError(null);
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('titulo', formData.titulo);
+      formDataToSend.append('descripcion', formData.descripcion);
+      
+      // Solo adjuntar los archivos si son nuevos (no URLs)
+      if (formData.url_imagen instanceof File) {
+        formDataToSend.append('imagen', formData.url_imagen);
+      } else {
+        formDataToSend.append('url_imagen', formData.url_imagen);
+      }
+      
+      if (formData.doc_url instanceof File) {
+        formDataToSend.append('documento', formData.doc_url);
+      } else {
+        formDataToSend.append('doc_url', formData.doc_url);
+      }
+
       const response = await fetch(`http://localhost:3001/recursos/guias/update/${guiaId}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+        body: formDataToSend
       });
 
-      location.reload();
-      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
@@ -77,6 +145,7 @@ const EditarGuias = ({ close, guiaId }) => {
         );
       }
 
+      location.reload();
       close();
     } catch (err) {
       console.error('Error al actualizar la guía:', err);
@@ -149,28 +218,68 @@ const EditarGuias = ({ close, guiaId }) => {
               required
             />
           </div>
+          
+          {/* Campo para subir imagen */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL de la Imagen</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
             <input
-              type="url"
+              type="file"
               name="url_imagen"
-              value={formData.url_imagen}
-              onChange={handleChange}
+              onChange={handleFileChange}
+              accept="image/*"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
             />
+            {imagePreview && (
+              <div className="mt-2">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">Vista previa:</h3>
+                {typeof imagePreview === 'string' && imagePreview.startsWith('http') ? (
+                  <img 
+                    src={imagePreview} 
+                    alt="Vista previa de la imagen actual" 
+                    className="max-h-40 rounded"
+                  />
+                ) : (
+                  <img 
+                    src={imagePreview} 
+                    alt="Vista previa de la nueva imagen" 
+                    className="max-h-40 rounded"
+                  />
+                )}
+                <p className="text-xs text-gray-500 mt-1">Formatos aceptados: JPG, PNG, GIF</p>
+              </div>
+            )}
           </div>
+          
+          {/* Campo para subir PDF */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL del Documento PDF</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Documento PDF</label>
             <input
-              type="url"
+              type="file"
               name="doc_url"
-              value={formData.doc_url}
-              onChange={handleChange}
+              onChange={handleFileChange}
+              accept="application/pdf"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
             />
+            {pdfPreview && (
+              <div className="mt-2">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">Documento seleccionado:</h3>
+                {typeof pdfPreview === 'string' && pdfPreview.startsWith('http') ? (
+                  <a 
+                    href={pdfPreview} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Ver documento actual
+                  </a>
+                ) : (
+                  <p className="text-sm text-gray-700">{pdfPreview}</p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">Solo se aceptan archivos PDF</p>
+              </div>
+            )}
           </div>
+
           <div className="flex justify-between">
             <button
               type="submit"

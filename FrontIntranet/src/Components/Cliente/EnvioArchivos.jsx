@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import agregar from "../assets/icons/IconEstudiante/add.svg";
-import eliminar from "../assets/icons/delete.svg";
+import agregar from "../../assets/icons/IconEstudiante/add.svg";
+import eliminar from "../../assets/icons/delete.svg";
 
 const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
   const [asunto, setAsunto] = useState('');
@@ -18,8 +18,6 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
     'text/plain', 'application/vnd.ms-powerpoint',
     'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    // Videos
-    'video/mp4', 'video/webm', 'video/ogg',
     // Imágenes
     'image/jpeg', 'image/png', 'image/gif', 'image/webp',
     // Comprimidos

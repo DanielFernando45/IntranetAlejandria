@@ -4,18 +4,70 @@ const AgregarHerramientas = ({ close }) => {
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
-    url_imagen: '',
+    url_imagen: null,
     enlace: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [websitePreview, setWebsitePreview] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    if (name === 'enlace') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+      
+      // Generar previsualización del enlace
+      if (value) {
+        try {
+          const url = new URL(value);
+          setWebsitePreview({
+            domain: url.hostname,
+            favicon: `https://www.google.com/s2/favicons?domain=${url.hostname}`
+          });
+        } catch {
+          setWebsitePreview(null);
+        }
+      } else {
+        setWebsitePreview(null);
+      }
+      return;
+    }
+    
+    // Manejo normal para otros campos de texto
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validar que sea una imagen
+    if (!file.type.match('image.*')) {
+      setError('Por favor, selecciona un archivo de imagen válido (JPEG, PNG, GIF)');
+      return;
+    }
+
+    // Crear previsualización de la imagen
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Actualizar el estado con el archivo
+    setFormData(prev => ({
+      ...prev,
+      url_imagen: file
+    }));
+    setError(null);
   };
 
   const handleSubmit = async (e) => {
@@ -24,19 +76,26 @@ const AgregarHerramientas = ({ close }) => {
     setError(null);
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('nombre', formData.nombre);
+      formDataToSend.append('descripcion', formData.descripcion);
+      formDataToSend.append('enlace', formData.enlace);
+      
+      // Adjuntar la imagen si existe
+      if (formData.url_imagen) {
+        formDataToSend.append('imagen', formData.url_imagen);
+      }
+
       const response = await fetch('http://localhost:3001/recursos/herramientas/add', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
+        body: formDataToSend
       });
 
-      location.reload();
       if (!response.ok) {
         throw new Error('Error al agregar la herramienta');
       }
 
+      location.reload();
       close();
     } catch (err) {
       setError(err.message);
@@ -81,18 +140,32 @@ const AgregarHerramientas = ({ close }) => {
               required
             />
           </div>
+          
+          {/* Campo para subir imagen */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL de la Imagen</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
             <input
-              type="url"
+              type="file"
               name="url_imagen"
-              value={formData.url_imagen}
-              onChange={handleChange}
-              placeholder='https://ejemplo.com/imagen.png'
+              onChange={handleImageChange}
+              accept="image/*"
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
+            {imagePreview && (
+              <div className="mt-2">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">Vista previa:</h3>
+                <img 
+                  src={imagePreview} 
+                  alt="Vista previa de la imagen" 
+                  className="max-h-40 rounded object-contain"
+                />
+                <p className="text-xs text-gray-500 mt-1">Formatos aceptados: JPEG, PNG, GIF</p>
+              </div>
+            )}
           </div>
+          
+          {/* Campo para enlace web */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">Enlace a la herramienta</label>
             <input
@@ -104,7 +177,18 @@ const AgregarHerramientas = ({ close }) => {
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
+            {websitePreview && (
+              <div className="mt-2 flex items-center p-2 border rounded bg-gray-50">
+                <img 
+                  src={websitePreview.favicon} 
+                  alt="Favicon" 
+                  className="w-4 h-4 mr-2"
+                />
+                <span className="text-sm text-gray-700">{websitePreview.domain}</span>
+              </div>
+            )}
           </div>
+
           <div className="flex justify-between">
             <button
               type="submit"

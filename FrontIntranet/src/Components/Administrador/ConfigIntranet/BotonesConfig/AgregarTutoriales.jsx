@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const AgregarTutoriales = ({ close }) => {
   const [formData, setFormData] = useState({
@@ -7,6 +7,26 @@ const AgregarTutoriales = ({ close }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [youtubeEmbedUrl, setYoutubeEmbedUrl] = useState(null);
+
+  // Extraer el ID del video de YouTube cuando cambia el enlace
+  useEffect(() => {
+    if (formData.enlace.includes('youtube.com') || formData.enlace.includes('youtu.be')) {
+      const videoId = extractYoutubeId(formData.enlace);
+      if (videoId) {
+        setYoutubeEmbedUrl(`https://www.youtube.com/embed/${videoId}`);
+      }
+    } else {
+      setYoutubeEmbedUrl(null);
+    }
+  }, [formData.enlace]);
+
+  const extractYoutubeId = (url) => {
+    // Extraer ID para diferentes formatos de URL de YouTube
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,7 +88,7 @@ const AgregarTutoriales = ({ close }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Enlace</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Enlace de YouTube</label>
             <input
               type="url"
               name="enlace"
@@ -78,6 +98,23 @@ const AgregarTutoriales = ({ close }) => {
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
+            {youtubeEmbedUrl && (
+              <div className="mt-4">
+                <h3 className="text-sm font-medium text-gray-700 mb-1">Vista previa:</h3>
+                <div className="aspect-w-16 aspect-h-9">
+                  <iframe
+                    src={youtubeEmbedUrl}
+                    title="Vista previa del video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-48 rounded"
+                  ></iframe>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Esta es una vista previa del video que se añadirá</p>
+              </div>
+            )}
+            <p className="text-xs text-gray-500 mt-1">Solo enlaces de YouTube son soportados</p>
           </div>
           <div className="flex justify-between">
             <button
