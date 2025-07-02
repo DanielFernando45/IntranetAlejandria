@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { BlackbazeService } from './backblaze.service';
+import { BackbazeService } from './backblaze.service';
 
 @Module({
-    exports:[BlackbazeService],
-    providers:[BlackbazeService]
+    exports:[BackbazeService],
+    providers:[BackbazeService]
 })
 export class BackblazeModule {}

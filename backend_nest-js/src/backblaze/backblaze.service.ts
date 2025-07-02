@@ -1,9 +1,9 @@
 import { Injectable ,OnModuleInit} from "@nestjs/common";
-import * as B2 from "backblaze-b2"
+import * as B2 from 'backblaze-b2';
 
 @Injectable()
-export class BlackbazeService implements OnModuleInit{
-    private b2:B2
+export class BackbazeService implements OnModuleInit{
+    private b2:any;
     private isAuthorized=false
 
     constructor(){
@@ -15,12 +15,12 @@ export class BlackbazeService implements OnModuleInit{
 
     async onModuleInit() {
         if(!this.isAuthorized){
-            await this.b2.authorized();
+            await this.b2.authorize();
             this.isAuthorized=true
         }
     }
 
-    getClient():B2{
+    getClient(){
         return this.b2
     }
 }
