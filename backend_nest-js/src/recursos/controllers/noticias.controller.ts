@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { NoticiasService } from "../services/noticias.service";
 import { CreateNoticiaDto } from "../dto/noticias-dto/create-noticia.dto";
 import { UpdateNoticiaDto } from "../dto/noticias-dto/update-noticia.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { fileFilter } from "../helper/fileFilter.helper";
 
 @Controller('recursos/noticias')
 export class NoticiasController{
@@ -13,13 +15,25 @@ export class NoticiasController{
     }
 
     @Post('add')
-    añadir(@Body() body:CreateNoticiaDto){
-        return this.noticiasService.create(body)
+    @UseInterceptors(FileInterceptor('url_imagen',{
+        fileFilter:fileFilter,
+        limits:{
+            fileSize:1024*1025*10
+        }
+    }))
+    añadir(@Body() body:CreateNoticiaDto,@UploadedFile() file:Express.Multer.File){
+        return this.noticiasService.create(body,file)
     }
 
     @Patch('update/:id')
-    update(@Param('id',ParseIntPipe) id:number,@Body() body:UpdateNoticiaDto){
-        return this.noticiasService.update(id,body)
+    @UseInterceptors(FileInterceptor('url_imagen',{
+        fileFilter:fileFilter,
+        limits:{
+            fileSize:1024*1025*10
+        }
+    }))
+    update(@Param('id',ParseIntPipe) id:number,@Body() body:UpdateNoticiaDto,@UploadedFile() file:Express.Multer.File){
+        return this.noticiasService.update(id,body,file)
     }
 
     @Delete('delete/:id')

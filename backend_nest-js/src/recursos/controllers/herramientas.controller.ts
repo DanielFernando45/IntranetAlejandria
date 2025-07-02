@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { HerramientasService } from "../services/herramientas.service";
 import { CreateHerramientaDto } from "../dto/herramientas-dto/create-herramientas.dto";
 import { UpdateHerramientasDto } from "../dto/herramientas-dto/update-herramientas.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { fileFilter } from "../helper/fileFilter.helper";
 
 
 @Controller('recursos/herramientas')
@@ -9,13 +11,25 @@ export class HerramientasController{
     constructor(private herramientaService:HerramientasService){}
     
         @Post('add')
-        añadirHerramientas(@Body() body:CreateHerramientaDto){
-            return this.herramientaService.postHerramienta(body)
+        @UseInterceptors(FileInterceptor('url_imagen',{
+                fileFilter:fileFilter,
+                limits:{
+                    fileSize:1024*1025*10
+                }
+        }))
+        añadirHerramientas(@Body() body:CreateHerramientaDto,@UploadedFile() file:Express.Multer.File){
+            return this.herramientaService.postHerramienta(body,file)
         }
     
         @Patch('update/:id')
-        actualizarHerramientas(@Param('id',ParseIntPipe) id:number,@Body() body:UpdateHerramientasDto){
-            return this.herramientaService.patchHerramienta(id,body)
+        @UseInterceptors(FileInterceptor('url_imagen',{
+                fileFilter:fileFilter,
+                limits:{
+                    fileSize:1024*1025*10
+                }
+        }))
+        actualizarHerramientas(@Param('id',ParseIntPipe) id:number,@Body() body:UpdateHerramientasDto,@UploadedFile() file: Express.Multer.File){
+            return this.herramientaService.patchHerramienta(id,body,file)
         }
         
         @Delete('delete/:id')
