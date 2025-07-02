@@ -9,11 +9,11 @@ export class CreateGuiaDto{
     @IsString()
     descripcion:string;
 
-    @IsNotEmpty()
-    @IsString()
-    url_imagen:string;
+    // @IsNotEmpty()
+    // @IsString()
+    // url_imagen:string;
 
-    @IsNotEmpty()
-    @IsString()
-    doc_url:string
+    // @IsNotEmpty()
+    // @IsString()
+    // doc_url:string
 }

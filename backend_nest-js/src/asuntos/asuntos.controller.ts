@@ -28,7 +28,7 @@ export class AsuntosController {
       filename:fileNamer,
     }),
     limits:{
-      fileSize:1024*1025*100,
+      fileSize:1024*1025*30,
     }
   }))
   async addAsuntoinAsesoramiento(@UploadedFiles() files:Express.Multer.File[],@Body() createAsuntoDto: CreateAsuntoDto ,@Param('id_asesoramiento',ParseIntPipe) id_asesoramiento:number) {

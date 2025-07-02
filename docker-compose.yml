@@ -34,6 +34,10 @@ services:
       - S2_CLIENT_ID=${SECTOR2_CLIENT_ID}
       - S2_CLIENT_SECRET=${SECTOR2_CLIENT_SECRET}
       - S2_ACCOUNT_ID=${SECTOR2_ACCOUNT_ID}
+      - B2_KEY_ID=${B2_KEY_ID}
+      - B2_APP_KEY=${B2_APP_KEY}
+      - BUCKET_ID=${BUCKET_ID}
+      - BUCKET_NAME=${BUCKET_NAME}
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - mysqldb

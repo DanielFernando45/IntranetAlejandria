@@ -19,7 +19,7 @@ export const fileFilter=(req:Express.Request,file:Express.Multer.File,callback:F
     'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     // Videos
-    'video/mp4', 'video/webm', 'video/ogg',
+    //'video/mp4', 'video/webm', 'video/ogg',
     // Imágenes
     'image/jpeg', 'image/png', 'image/gif', 'image/webp',
     // Comprimidos
