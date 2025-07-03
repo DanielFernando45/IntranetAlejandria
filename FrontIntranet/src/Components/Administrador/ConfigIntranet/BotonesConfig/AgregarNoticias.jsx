@@ -48,7 +48,7 @@ const AgregarNoticias = ({ close }) => {
       const formDataToSend = new FormData();
       formDataToSend.append('titulo', formData.titulo);
       formDataToSend.append('descripcion', formData.descripcion);
-      formDataToSend.append('imagen', formData.url_imagen);
+      formDataToSend.append('url_imagen', formData.url_imagen);
 
       const response = await fetch('http://localhost:3001/recursos/noticias/add', {
         method: 'POST',

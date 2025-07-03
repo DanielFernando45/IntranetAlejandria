@@ -6,27 +6,31 @@ import flechaAzul from "../../assets/icons/arrowAzul.svg"
 import NoticiaUno from "../../assets/images/NoticiaAsesor.png"
 import FeclaIzqui from "../../assets/icons/arrow-left.svg"
 import FechaDerec from "../../assets/icons/arrow-right.svg"
-import Zoom from "../../assets/images/zoom.svg"
+import Zoom from "../../assets/icons/IconEstudiante/ZoomLink.svg";
 import DocsAsesor from "../Estudiante/EntregasEnvio/EnvioAsesor"
 import { useState, useEffect } from "react";
 
 const NoticiasRecientes = [
-  { imagen: NoticiaUno, texto: "Reunión de asesores el viernes a las 3 PM" },
-  { imagen: NoticiaUno, texto: "Nueva guía sobre redacción de tesis disponible." },
-  { imagen: NoticiaUno, texto: "Ebook para elaborar tu Marco Teorico" },
-  { imagen: NoticiaUno, texto: "Ebook para elaborar tu Marco Teorico" },
-  { imagen: NoticiaUno, texto: "Ebook para elaborar tu Marco Teorico" },
-]
-
+  { id: 1, imagen: NoticiaUno, texto: "Reunión de asesores el viernes a las 3 PM" },
+  { id: 2, imagen: NoticiaUno, texto: "Nueva guía sobre redacción de tesis disponible." },
+  { id: 3, imagen: NoticiaUno, texto: "Ebook para elaborar tu Marco Teorico" },
+  { id: 4, imagen: NoticiaUno, texto: "Taller de metodología de investigación" },
+  { id: 5, imagen: NoticiaUno, texto: "Convocatoria para presentación de avances" },
+  { id: 6, imagen: NoticiaUno, texto: "Seminario de redacción académica" },
+];
 
 const HomeEstudiante = () => {
+  const [asesorias, setAsesorias] = useState([]);
+  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState('');
+  const [proximasReuniones, setProximasReuniones] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleItems, setVisibleItems] = useState(1);
 
-  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
-
+  // Obtener asesorías del usuario
   useEffect(() => {
-    const userString = localStorage.getItem('user');
-    if (userString) {
-      const user = JSON.parse(userString);
+    const usuario = localStorage.getItem('user');
+    if (usuario) {
+      const user = JSON.parse(usuario);
       const id = user.id;
 
       fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
@@ -36,16 +40,87 @@ const HomeEstudiante = () => {
             id: item.id,
             profesion: item.profesion_asesoria
           }));
+          setAsesorias(asesoriasArray);
 
           if (asesoriasArray.length > 0) {
             const primeraAsesoriaId = asesoriasArray[0].id;
             setSelectedAsesoriaId(primeraAsesoriaId);
-
           }
         })
         .catch(error => console.error('Error al obtener asesorías:', error));
     }
   }, []);
+
+  useEffect(() => {
+    if (selectedAsesoriaId) {
+      fetch(`http://localhost:3001/reuniones/espera/${selectedAsesoriaId}`)
+        .then(res => res.json())
+        .then(data => {
+          setProximasReuniones(data);
+        })
+        .catch(error => console.error('Error al obtener reuniones próximas:', error));
+    }
+  }, [selectedAsesoriaId])
+
+  const handleChange = (e) => {
+    const asesoriaId = e.target.value;
+    setSelectedAsesoriaId(asesoriaId);
+  }
+  // Ajustar elementos visibles según el tamaño de pantalla
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width >= 1920) setVisibleItems(6);
+      else if (width >= 1536) setVisibleItems(5);
+      else if (width >= 1280) setVisibleItems(4);
+      else if (width >= 900) setVisibleItems(3);
+      else if (width >= 600) setVisibleItems(2);
+      else setVisibleItems(1);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Función para manejar el click en ver noticia
+  const handleVerNoticia = (id) => {
+    console.log(`Ver noticia con ID: ${id}`);
+    // Aquí puedes implementar la navegación o mostrar un modal
+  };
+
+  // Función para navegar manualmente
+  const navigate = (direction) => {
+    if (direction === 'prev') {
+      setCurrentIndex(prev => (prev - 1 + NoticiasRecientes.length) % NoticiasRecientes.length);
+    } else {
+      setCurrentIndex(prev => (prev + 1) % NoticiasRecientes.length);
+    }
+  };
+
+  // Función para obtener los elementos visibles con rotación circular
+  const getVisibleNoticias = () => {
+    const items = [];
+    for (let i = 0; i < visibleItems; i++) {
+      const index = (currentIndex + i) % NoticiasRecientes.length;
+      items.push(NoticiasRecientes[index]);
+    }
+    return items;
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { month: 'long' };
+    return {
+      month: new Intl.DateTimeFormat('es-ES', options).format(date),
+      day: date.getUTCDate(),  // Usar getUTCDate para mantener consistencia
+      time: date.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'UTC'  // Forzar a usar UTC para la hora
+      })
+    };
+  };
 
   return (
     <LayoutApp>
@@ -60,11 +135,11 @@ const HomeEstudiante = () => {
               Bienvenido Fernando Guzman al Intranet de asesoría de tesis
             </h2>
             <div className="absolute w-[140px] h-[85px] top-[1px]">
-                <p className="lg:text-[22px] text-[10px] md:text-[4px] text-[#B5B5B5] absolute top-[110px] mn:top-[110px] md:top-[70px] ">
+              <p className="lg:text-[22px] text-[10px] md:text-[4px] text-[#B5B5B5] absolute top-[110px] mn:top-[110px] md:top-[70px] ">
                 Aquí encontraras toda la información para tu  asesoría de tesis
               </p>
             </div>
-            
+
           </div>
 
           <img
@@ -76,111 +151,137 @@ const HomeEstudiante = () => {
         </div>
 
         {/*Noticias, Envios Asesor*/}
-        <div className="flex justify-between md:flex-row flex-col">
+        <div className="flex justify-between md:flex-row flex-col mt-2">
 
           <div className="w-full flex flex-col gap-6">
+
             <section>
-              <h2 className=" mb-5 text-2xl font-bold">Noticias Recientes</h2>
-              <div className="flex justify-between w-full">
-                <div className="flex items-center ">
-                  <a className=" " href=""> <img src={FeclaIzqui} alt="" /></a>
-                </div>
-                <div className="flex justify-between gap-5">
-                  {NoticiasRecientes.map((link) => {
-                    return (
-                      <div className=" bg-[#1C1C34] w-[192px] h-[204px] rounded-[10px]">
-                        <img className="w-[192px] h-[115px]" src={link.imagen} alt="" />
+              <h2 className="mb-2 text-[12px] font-semibold">Noticias Recientes</h2>
+
+              <div className="flex justify-between w-full items-center">
+                <button
+                  onClick={() => navigate('prev')}
+                  className="p-2 hover:bg-[#1C1C34] rounded-full transition-colors"
+                >
+                  <img src={FeclaIzqui} alt="Anterior" />
+                </button>
+
+                <div className="flex overflow-hidden justify-center flex-1">
+                  <div className="flex gap-4">
+                    {getVisibleNoticias().map((noticia, index) => (
+                      <div
+                        key={`${noticia.id}-${index}`}
+                        className="bg-[#1C1C34] w-[192px] h-[204px] rounded-[10px] overflow-hidden hover:scale-105 transition-transform duration-300 flex-shrink-0"
+                      >
+                        <img
+                          className="w-full h-[115px] object-cover"
+                          src={noticia.imagen}
+                          alt={`Noticia ${noticia.id}`}
+                        />
                         <div className="m-4 gap-[13px]">
-                          <p className="text-white  text-[12px]">{link.texto}</p>
-                          <span className="flex justify-end gap-1 items-center">
-                            <a className=" text-[#7373B4] text-[12px] " href="">ver</a>
-                            <img src={flechaVer} alt="" />
+                          <p className="text-white text-[12px] line-clamp-3">{noticia.texto}</p>
+                          <span className="flex justify-end gap-1 items-center mt-2">
+                            <button
+                              className="text-[#7373B4] text-[12px] hover:text-white transition-colors"
+                              onClick={() => handleVerNoticia(noticia.id)}
+                            >
+                              ver
+                            </button>
+                            <img src={flechaVer} alt="Ver noticia" className="w-3 h-3" />
                           </span>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-                <div className="flex items-center">
-                  <a className=" w-6 h-6" href=""> <img src={FechaDerec} alt="" /></a>
+                    ))}
+                  </div>
                 </div>
 
+                <button
+                  onClick={() => navigate('next')}
+                  className="p-2 hover:bg-[#1C1C34] rounded-full transition-colors"
+                >
+                  <img src={FechaDerec} alt="Siguiente" />
+                </button>
               </div>
             </section>
 
-            <div>
-              <DocsAsesor idAsesoramiento={selectedAsesoriaId}></DocsAsesor>
-            </div>
+            <select
+              onChange={handleChange}
+              value={selectedAsesoriaId || ''}
+              className='border rounded-t-md border-[#b4a6aa] text-[10px]'
+            >
+              <option value="">Servicios</option>
 
+              {asesorias.map((asesoria, index) => (
+                <option key={index} value={asesoria.id}>{asesoria.profesion}</option>
+              ))}
+            </select>
+
+            <div>
+              <div className="flex justify-between">
+                <h1 className="text-[12px] font-semibold">Envios Asesor</h1>
+                <span className="text-[8px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+                  <a href="">Ver todo</a>
+                  <img src={flechaAzul} alt="" className="w-4" />
+                </span>
+              </div>
+              <DocsAsesor
+                key={selectedAsesoriaId}
+                idAsesoramiento={selectedAsesoriaId}
+              />
+            </div>
 
           </div>
 
-          <div className="ml-[84px] flex flex-col gap-5">
+          <div className=" flex flex-col gap-5">
 
             <div className=" mt-5 flex justify-between ">
-              <h2 className="text-2xl font-bold">Reuniones</h2>
-              <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+              <h2 className="text-[12px] font-bold">Reuniones</h2>
+              <span className="text-[8px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
                 <a href="">Ver todo</a>
-                <img src={flechaAzul} alt="" />
+                <img src={flechaAzul} alt="" className="w-4" />
               </span>
             </div>
 
-            <div className="flex w-[310px] h-[150px] items-center ">
-              <div className="flex flex-col justify-center items-center rounded-l-xl h-full w-[104px] bg-[#17162E] p-4 text-white">
-                <p>Marzo</p>
-                <h1 className="text-[30px]">2</h1>
-                <p>12:00 PM</p>
-              </div>
-              <div className="flex flex-col   w-full h-full bg-white p-4 justify-between rounded-r-xl">
-                <span className="flex flex-col gap-[6px]">
-                  <p className="font-medium">Alumno</p>
-                  <h1 className="text-[#666666]">Jose de la Fuente mancilla</h1>
-                </span>
-                <span className="flex justify-between">
-                  <p className="font-medium">Enlace</p>
-                  <img src={Zoom} alt="" />
-                </span>
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-wrap justify-start gap-6">
+                {proximasReuniones.map((reunion, index) => {
+                  const formattedDate = formatDate(reunion.fecha_reunion);
+                  return (
+                    <div key={index} className="flex  flex-row w-full   items-center text-[10px]">
 
+                      <div className={`flex flex-col justify-between items-center rounded-l-xl 
+                        w-[100px]  h-[120px]  bg-[#17162E] p-4 text-white`}
+                      >
+                        <span className="flex flex-col items-center">
+                          <p>{formattedDate.month}</p>
+                          <h1 className="text-[16px]">{formattedDate.day}</h1>
+                        </span>
+                        
+                        <p className="text-[10px]">{formattedDate.time}</p>
+                      </div>
+                      <div className="flex flex-col justify-between w-full h-full border border-[#AAA3A5] bg-[#F0EFEF] p-4
+                           rounded-r-xl">
+                        <span className="flex flex-col gap-[6px]">
+                          <p className="font-medium">{reunion.titulo}</p>
+                          <h1 className="text-[#666666]">Codigo: {reunion.meetingId}</h1>
+                        </span>
+                        <div className="w-full ">
+                          <button className="flex gap-4 justify-between px-1 py-1 items-center text-white rounded-2xl bg-[#1271ED]">
+                            <a href={reunion.enlace_zoom} target="_blank">
+                              <p className="font-medium"> Zoom</p>
+                            </a>
+                            <img src={Zoom} alt="Zoom" className="w-6 h-6" />
+                          </button>
+
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="flex w-[310px] h-[150px] items-center ">
-              <div className="flex flex-col justify-center items-center rounded-l-xl h-full w-[104px] bg-[#054755] p-4 text-white">
-                <p>Marzo</p>
-                <h1 className="text-[30px]">2</h1>
-                <p>12:00 PM</p>
-              </div>
-              <div className="flex flex-col   w-full h-full bg-white p-4 justify-between rounded-r-xl">
-                <span className="flex flex-col gap-[6px]">
-                  <p className="font-medium">Alumno</p>
-                  <h1 className="text-[#666666]">Jose de la Fuente mancilla</h1>
-                </span>
-                <span className="flex justify-between">
-                  <p className="font-medium">Enlace</p>
-                  <img src={Zoom} alt="" />
-                </span>
 
-              </div>
-            </div>
-
-            <div className="flex w-[310px] h-[150px] items-center ">
-              <div className="flex flex-col justify-center items-center rounded-l-xl h-full w-[104px] bg-[#0A8EAA] p-4 text-white">
-                <p>Marzo</p>
-                <h1 className="text-[30px]">2</h1>
-                <p>12:00 PM</p>
-              </div>
-              <div className="flex flex-col   w-full h-full bg-white p-4 justify-between rounded-r-xl">
-                <span className="flex flex-col gap-[6px]">
-                  <p className="font-medium">Alumno</p>
-                  <h1 className="text-[#666666]">Jose de la Fuente mancilla</h1>
-                </span>
-                <span className="flex justify-between">
-                  <p className="font-medium">Enlace</p>
-                  <img src={Zoom} alt="" />
-                </span>
-
-              </div>
-            </div>
 
           </div>
 

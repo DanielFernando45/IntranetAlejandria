@@ -76,11 +76,11 @@ const ReunionesEstudiante = () => {
 
     return (
         <LayoutApp>
-            <main className="flex justify-center p-10">
+            <main className="flex justify-center ">
                 <div className="flex flex-col gap-[40px] lg:ml-1 p-[20px]  w-full  bg-white rounded-[20px] ">
 
                     <div className="flex flex-col gap-[12px]">
-                        <div className="flex justify-between">
+                        <div className="flex justify-between flex-col sm:flex-row ">
                             <h1 className="font-medium text-[20px]">Reuniones</h1>
                             <select
                                 onChange={handleChange}

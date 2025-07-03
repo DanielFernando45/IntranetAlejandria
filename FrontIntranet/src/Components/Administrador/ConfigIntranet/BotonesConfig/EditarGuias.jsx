@@ -39,7 +39,7 @@ const EditarGuias = ({ close, guiaId }) => {
         });
 
         // Si hay URLs existentes, establecer las previsualizaciones
-        if (data.url_imagen) setImagePreview(data.url_imagen);
+        if (data.imagen) setImagePreview(data.imagen);
         if (data.doc_url) setPdfPreview(data.doc_url);
       } catch (err) {
         console.error('Error al cargar la guía:', err);

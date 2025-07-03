@@ -91,11 +91,11 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
     return (
       <div className="flex flex-col">
         <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
-          <div className="w-[300px] flex">Titulo</div>
-          <div className="w-[102px] flex justify-center">Estado</div>
-          <div className="w-[100px] flex justify-center">Fecha</div>
-          <div className="w-[250px] flex justify-center">Archivo</div>
-          <div className="w-[65px] rounded-md px-3 flex justify-center">Descargas</div>
+          <div className="w-[100px] flex text-[8px]">Titulo</div>
+          <div className="w-[102px] justify-center hidden">Estado</div>
+          <div className="w-[100px] flex justify-center text-[8px]">Fecha</div>
+          <div className="w-[250px] justify-center hidden">Archivo</div>
+          <div className="w-[65px] rounded-md px-3 flex justify-center text-[8px]">Descargas</div>
         </div>
   
         {misEnvios.map((envio, index) => {
@@ -104,20 +104,20 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
           
           return (
             <React.Fragment key={envio.id_asunto || index}>
-              <div className="flex justify-between text-[#2B2829] font-normal mt-2 bg-[#E9E7E7] p-[6px] rounded-md items-center">
-                <div className="w-[300px] flex">{envio.asunto}</div>
-                <div className='text-white bg-[#353563] rounded px-3'>{envio.estado}</div>
-                <div className="w-[100px] flex justify-center">{formatDate(envio.fecha)}</div>
-                <div className="w-[250px] flex justify-center">
+              <div className="flex justify-between text-[#2B2829] font-normal  bg-[#E9E7E7] p-[6px] rounded-md items-center">
+                <div className="w-[100px] flex text-[8px]">{envio.asunto}</div>
+                <div className='text-white bg-[#353563] rounded px-3 hidden '>{envio.estado}</div>
+                <div className="w-[100px] flex justify-center text-[8px]">{formatDate(envio.fecha)}</div>
+                <div className="w-[250px] justify-center hidden">
                   {hasDocuments ? documents[0].name : 'No hay archivos'}
                 </div>
-                <div className="w-[65px] flex justify-center">
+                <div className="w-[65px] flex justify-center ">
                   {hasDocuments && (
                     <button onClick={() => toggleOpen(index)} className="transition-transform duration-300">
                       <img
                         src={arrowIcon}
                         alt="toggle"
-                        className={`transform transition-transform duration-300 ${openItems[index] ? 'rotate-180' : 'rotate-0'}`}
+                        className={`w-[10px] transform transition-transform duration-300 ${openItems[index] ? 'rotate-180' : 'rotate-0'}`}
                       />
                     </button>
                   )}
@@ -125,19 +125,19 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
               </div>
   
               {openItems[index] && hasDocuments && (
-                <div className="bg-white shadow-md rounded-md p-4 my-2">
+                <div className="bg-white shadow-md rounded-md p-1 my-1">
                   {documents.slice(0).map((doc, docIndex) => (
                     <div key={docIndex} className="flex justify-between items-center py-2 border-b last:border-b-0">
-                      <div className="w-[300px] flex">{envio.asunto}</div>
-                      <div className="w-[102px]">{envio.estado}</div>
-                      <div className="w-[100px] flex justify-center">May 22,2025</div>
-                      <div className="w-[250px] flex justify-center">{doc.name}</div>
-                      <div className="w-[65px] flex justify-center">
+                      <div className="w-[100px] flex text-[8px]">{envio.asunto}</div>
+                      <div className="w-[102px] hidden ">{envio.estado}</div>
+                      <div className="w-[100px] flex justify-center text-[8px]">May 22,2025</div>
+                      <div className="w-[250px] justify-center hidden">{doc.name}</div>
+                      <div className="w-[65px] flex justify-center text-[8px]">
                         <button 
                           onClick={() => handleDownload(doc.pathFile, doc.name)}
                           className="transition-transform duration-300 hover:scale-110"
                         >
-                          <img src={descargar} alt="Descargar" />
+                          <img src={descargar} alt="Descargar" className='w-[10px]' />
                         </button>
                       </div>
                     </div>

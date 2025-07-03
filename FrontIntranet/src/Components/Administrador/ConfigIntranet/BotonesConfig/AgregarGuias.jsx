@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 
 const AgregarGuias = ({ close }) => {
   const [formData, setFormData] = useState({
-    titulo: '',
-    descripcion: '',
+    titulo:'',
+    descripcion:'',
     url_imagen: null,
     doc_url: null
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -83,10 +84,10 @@ const AgregarGuias = ({ close }) => {
       
       // Adjuntar archivos si existen
       if (formData.url_imagen) {
-        formDataToSend.append('imagen', formData.url_imagen);
+        formDataToSend.append('url_imagen', formData.url_imagen);
       }
       if (formData.doc_url) {
-        formDataToSend.append('documento', formData.doc_url);
+        formDataToSend.append('doc_url', formData.doc_url);
       }
 
       const response = await fetch('http://localhost:3001/recursos/guias/add', {
