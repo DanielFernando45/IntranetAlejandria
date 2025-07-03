@@ -9,7 +9,7 @@ export class CreateNoticiaDto{
     @IsString()
     descripcion:string;
 
-    @IsNotEmpty()
-    @IsString()
-    url_imagen:string
+    // @IsNotEmpty()
+    // @IsString()
+    // url_imagen:string
 }

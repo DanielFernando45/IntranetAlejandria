@@ -9,9 +9,9 @@ export class CreateHerramientaDto {
     @IsString()
     descripcion: string;
 
-    @IsNotEmpty()
-    @IsString()
-    url_imagen: string;
+    // @IsNotEmpty()
+    // @IsString()
+    // url_imagen: string;
 
     @IsNotEmpty()
     @IsString()
