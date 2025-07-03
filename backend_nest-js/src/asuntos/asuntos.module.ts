@@ -9,9 +9,10 @@ import { ProcesosAsesoriaModule } from 'src/procesos_asesoria/procesos_asesoria.
 import { AsesorModule } from 'src/asesor/asesor.module';
 import { ClienteService } from 'src/cliente/cliente.service';
 import { ClienteModule } from 'src/cliente/cliente.module';
+import { BackblazeModule } from 'src/backblaze/backblaze.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Asunto]),DocumentosModule,AsesorModule,ClienteModule,ProcesosAsesoriaModule,forwardRef(() =>AsuntosModule)],
+  imports:[TypeOrmModule.forFeature([Asunto]),DocumentosModule,AsesorModule,ClienteModule,ProcesosAsesoriaModule,forwardRef(() =>AsuntosModule),BackblazeModule],
   controllers: [AsuntosController],
   providers: [AsuntosService],
   exports:[AsuntosService]

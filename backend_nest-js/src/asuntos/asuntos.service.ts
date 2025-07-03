@@ -11,6 +11,8 @@ import { listFinished } from './dto/list-finished.dto';
 import { UserRole } from 'src/usuario/usuario.entity';
 import { ClienteService } from 'src/cliente/cliente.service';
 import { AsesorService } from '../asesor/asesor.service';
+import { BackbazeService } from 'src/backblaze/backblaze.service';
+import { DIRECTORIOS } from 'src/backblaze/directorios.enum';
 
 @Injectable()
 export class AsuntosService {
@@ -18,6 +20,7 @@ export class AsuntosService {
     private readonly documentosService:DocumentosService,
     private readonly clienteService:ClienteService,
     private readonly asesorService:AsesorService,
+    private readonly backblazeService:BackbazeService,
 
     @InjectRepository(Asunto)
     private asuntoRepo:Repository<Asunto>,
@@ -25,7 +28,7 @@ export class AsuntosService {
      @InjectDataSource()
     private readonly dataSource:DataSource
   ){}
-  async create(createAsuntoDto: CreateAsuntoDto,listaNombreyUrl:archivosDataDto[],id_asesoramiento:number) {
+  async create(createAsuntoDto: CreateAsuntoDto,files:Express.Multer.File[],id_asesoramiento:number) {
     const queryRunner=this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()
@@ -34,11 +37,16 @@ export class AsuntosService {
     const existAsesoramiento=queryRunner.manager.findOne(Asesoramiento,{where:{id:id_asesoramiento}})
     if(!existAsesoramiento) throw new Error("No existe este asesoramiento")
     const newAsunt=queryRunner.manager.create(Asunto,{...createAsuntoDto,asesoramiento:{id:id_asesoramiento},estado:Estado_asunto.ENTREGADO,fecha_entregado:new Date()})
-    
     const {id}=await queryRunner.manager.save(newAsunt)
+    
+    const listNombres=await Promise.all(files.map(async(file)=>{
+      return await this.backblazeService.uploadFile(file,DIRECTORIOS.DOCUMENTOS)
+    }))
 
-    await Promise.all(listaNombreyUrl.map(async(nombreyUrl)=>{
-      await this.documentosService.addedDocumentByClient(nombreyUrl.nombreDocumento,nombreyUrl.secureUrl,id,queryRunner.manager)
+    await Promise.all(listNombres.map(async(nameFile)=>{
+      const nombre=nameFile.split("/")[1]
+      const directorio=`${nameFile}`
+      await this.documentosService.addedDocumentByClient(nombre,directorio,id,queryRunner.manager)
     }))
     
     await queryRunner.commitTransaction()
@@ -61,7 +69,7 @@ export class AsuntosService {
     return `Se actualizo las filas estado y fecha_revision del id:${id}`;
   }
 
-  async finishAsunt(id:number,cambio_asunto:string,dataFiles:archivosDataDto[]){
+  async finishAsunt(id:number,cambio_asunto:string,files:Express.Multer.File[]){
     const queryRunner=this.dataSource.createQueryRunner()
     await queryRunner.connect()
     await queryRunner.startTransaction()
@@ -73,8 +81,13 @@ export class AsuntosService {
       if(validateAsunt.fecha_revision>fecha_actual) throw new BadRequestException("Estan mal las fechas")
       const finishedAsunt=await queryRunner.manager.update(Asunto,{id},{titulo:cambio_asunto,estado:Estado_asunto.TERMINADO,fecha_terminado:fecha_actual})
       
-      await Promise.all(dataFiles.map(async(data)=>{
-        await this.documentosService.finallyDocuments(id,data,queryRunner.manager)
+      const listNames=await Promise.all(files.map(async(file)=>{
+        return await this.backblazeService.uploadFile(file,DIRECTORIOS.DOCUMENTOS)
+      }))
+      await Promise.all(listNames.map(async(data)=>{
+        const nombre=data.split("/")[1]
+        const fileData={nombreDocumento:`${nombre}`,directorio:`${data}`}
+        await this.documentosService.finallyDocuments(id,fileData,queryRunner.manager)
       }))
                       
       await queryRunner.commitTransaction()
@@ -166,8 +179,6 @@ export class AsuntosService {
         idUsados.push(documento.id_asunto)
       }  
       }
-    
-    
       return arregloAsuntos
   }
 
@@ -207,7 +218,7 @@ export class AsuntosService {
           estado: asunto.estado
         };
       }
-
+    
       if (asunto.estado === Estado_asunto.PROCESO && mismaFecha(asunto.fecha_revision, fecha)) {
         return {
           id: `${asunto.id}`,
@@ -217,7 +228,7 @@ export class AsuntosService {
           message: "Esta en revisión por el asesor"
         };
       }
-
+    
       if (asunto.estado === Estado_asunto.PROCESO && mismaFecha(asunto.fecha_terminado, fecha)) {
         return {
           id: `${asunto.id}`,
@@ -227,7 +238,7 @@ export class AsuntosService {
           message: "Fecha estimada de envio del asesor"
         };
       }
-
+    
       if (asunto.estado === Estado_asunto.TERMINADO && mismaFecha(asunto.fecha_terminado, fecha)) {
         return {
           id: `${asunto.id}`,
@@ -244,7 +255,7 @@ export class AsuntosService {
       console.log(responseAsuntos);
       return responseAsuntos;
     }
-
+  
   
   
   async asuntosCalendarioAsesor(id_asesoramiento: number, fecha: Date){
@@ -252,7 +263,7 @@ export class AsuntosService {
       where: { asesoramiento: { id: id_asesoramiento } },
       select: ['estado', 'fecha_entregado', 'fecha_revision', 'fecha_terminado', 'titulo', 'id']
     });
-
+  
   const mismaFecha = (a: Date | null | undefined, b: Date) =>
     a instanceof Date &&
     a.getFullYear() === b.getFullYear() &&
@@ -260,7 +271,7 @@ export class AsuntosService {
     a.getDate() === b.getDate();
   const asesor=await this.asesorService.getDatosAsesorByAsesoramiento(id_asesoramiento)
   const nombre_asesor=`${asesor.nombre} ${asesor.apellido}`
-
+  
   const responseAsuntos = asuntosByFecha
     .map((asunto) => {
       if (asunto.estado === Estado_asunto.ENTREGADO && mismaFecha(asunto.fecha_entregado, fecha)) {
@@ -272,7 +283,7 @@ export class AsuntosService {
           estado: asunto.estado
         };
       }
-
+  
       return null;
     }).filter(Boolean); // elimina los nulls
 

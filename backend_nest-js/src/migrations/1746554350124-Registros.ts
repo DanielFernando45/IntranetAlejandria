@@ -164,19 +164,19 @@ export class Registros1746554350124 implements MigrationInterface {
             await queryRunner.query(`
                 INSERT INTO Alejandria.documento(id,nombre, ruta, subido_por, created_at, id_asunto)
                 VALUES
-                (1,'Introduccion.docx','http://localhost:3001/files/product/013ae2a4-7064-4564-9be5-587d9e0960c9.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-01 10:00:00',1),
-                (2,'Justificacion.pdf','http://localhost:3001/files/product/401ff9ea-a846-4847-b6f3-8c176a5ed28a.pdf','estudiante','2025-05-01 10:00:00',1),
-                (3,'Antecedentes.xslx','http://localhost:3001/files/product/5db587a8-3961-4f6f-a071-aa7ab9ee2783.vnd.openxmlformats-officedocument.spreadsheetml.sheet','estudiante','2025-05-02 10:00:00',4),
-                (4,'Tesis_parcial.mp4','http://localhost:3001/files/product/0c6bb221-0624-438f-a7e4-95ff3b2d1414.mp4','estudiante','2025-05-10 09:00:00',2),
-                (6,'Justificacion_Corregida.jpeg','http://localhost:3001/files/product/105dfa71-32df-4adc-b89b-864669734213.jpeg','estudiante','2025-05-11 09:00:00',5),
-                (7,'Revision_Introduccion.png','http://localhost:3001/files/product/493111ef-7525-414f-891f-becb81f7aaf4.png','asesor','2025-05-14 16:00:00',1),
-                (8,'Revision_Justificacion.webp','http://localhost:3001/files/product/3c2eb1e4-91ef-411b-94c2-7f88fa0f87f5.webp','asesor','2025-05-14 16:00:00',1),
-                (9,'Documento_Final.gif','http://localhost:3001/files/product/a1d4105c-8653-42c7-86d6-ec8c76706854.gif','estudiante','2025-05-20 11:30:00',3),
-                (10,'Objetivos_Generales.rar','http://localhost:3001/files/product/3e18078b-36ed-4e02-82d5-1105e5576b93.vnd.rar','estudiante','2025-05-22 11:30:00',6),
-                (11,'Objetivos_Especificos.zip','http://localhost:3001/files/product/73d80ca0-6a46-46d9-b5ce-a024df5a0053.zip','estudiante','2025-05-22 11:30:00',6),
-                (12,'Metodologia_1ra_parte.7z', 'http://localhost:3001/files/product/09949cfc-6cd8-4394-bbd7-ce0ccdcd8291.x-7z-compressed','estudiante','2025-05-23 11:30:00',7),
-                (13,'Entrega_Metodologia_v2.pdf','http://localhost:3001/files/product/5974b5e0-cab0-470c-be12-0e1179d0b98f.pdf','estudiante','2025-05-23 11:30:00',7),
-                (14,'Metricas_Metodologia.docx','http://localhost:3001/files/product/9d2ba25a-123b-40ba-9b38-966d422dc6ca.vnd.openxmlformats-officedocument.wordprocessingml.document','estudiante','2025-05-23 11:30:00',7);
+                (1,'Introduccion.docx','documentos/1751557549104-TRABAJOINDIVIDUAL_1748533065552.docx','estudiante','2025-05-01 10:00:00',1),
+                (2,'Justificacion.pdf','documentos/1751560728723-Downloads.rar','estudiante','2025-05-01 10:00:00',1),
+                (3,'Antecedentes.xslx','documentos/1751557549104-TRABAJOINDIVIDUAL_1748533065552.docx','estudiante','2025-05-02 10:00:00',4),
+                (4,'Tesis_parcial.mp4','documentos/1751558207347-Alternativas-de-Seguridad-para-eCommerce-Samsung.pptx','estudiante','2025-05-10 09:00:00',2),
+                (6,'Justificacion_Corregida.jpeg','documentos/1751560819207-reunion-de-asesores-juridicos.jpeg','estudiante','2025-05-11 09:00:00',5),
+                (7,'Revision_Introduccion.png','documentos/1751558207347-Alternativas-de-Seguridad-para-eCommerce-Samsung.pptx','asesor','2025-05-14 16:00:00',1),
+                (8,'Revision_Justificacion.webp','documentos/1751557549104-TRABAJOINDIVIDUAL_1748533065552.docx','asesor','2025-05-14 16:00:00',1),
+                (9,'Documento_Final.gif','documentos/1751560819207-reunion-de-asesores-juridicos.jpeg,'estudiante','2025-05-20 11:30:00',3),
+                (10,'Objetivos_Generales.rar','documentos/1751558207347-Alternativas-de-Seguridad-para-eCommerce-Samsung.pptx','estudiante','2025-05-22 11:30:00',6),
+                (11,'Objetivos_Especificos.zip','documentos/1751557549104-TRABAJOINDIVIDUAL_1748533065552.docx','estudiante','2025-05-22 11:30:00',6),
+                (12,'Metodologia_1ra_parte.7z', 'documentos/1751558207347-Alternativas-de-Seguridad-para-eCommerce-Samsung.pptx','estudiante','2025-05-23 11:30:00',7),
+                (13,'Entrega_Metodologia_v2.pdf','documentos/1751560728723-Downloads.rar','estudiante','2025-05-23 11:30:00',7),
+                (14,'Metricas_Metodologia.docx','documentos/1751557549104-TRABAJOINDIVIDUAL_1748533065552.docx','estudiante','2025-05-23 11:30:00',7);
             `);
 
             await queryRunner.query(`
@@ -220,31 +220,31 @@ export class Registros1746554350124 implements MigrationInterface {
             await queryRunner.query(`
               INSERT INTO Alejandria.herramienta(id,nombre,descripcion,url_imagen,enlace)
               VALUES
-              (1, 'Python', 'Python en una herramienta indispensable en el entorno de datos', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png', 'https://www.python.org'),
-              (2, 'Grammarly', 'Asistente de escritura para corrección gramatical y estilo.', 'https://cdn.prod.website-files.com/605dd4e52b25d35391c43725/64738ba877020dbeb73fb5ad_644e4b039c872640ca89a054_grammarly-1.svg', 'https://www.grammarly.com'),
-              (3, 'Zotero', 'Gestor de referencias bibliográficas y recursos académicos.', 'https://i0.wp.com/www.infotecarios.com/wp-content/uploads/z-logo1.png?fit=1024%2C1024&ssl=1', 'https://www.zotero.org'),
-              (4, 'Mendeley', 'Organizador de investigaciones y gestor de referencias.', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Mendeley_Logo_Vertical.png/960px-Mendeley_Logo_Vertical.png', 'https://www.mendeley.com'),
-              (5, 'Notion', 'Aplicación para tomar notas, organizar tareas y trabajo colaborativo.', 'https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png', 'https://www.notion.so');
+              (1, 'Python', 'Python en una herramienta indispensable en el entorno de datos', 'herramientas/1751556432230-docker.jpg', 'https://www.python.org'),
+              (2, 'Grammarly', 'Asistente de escritura para corrección gramatical y estilo.', 'herramientas/1751555803727-gato png.pngg', 'https://www.grammarly.com'),
+              (3, 'Zotero', 'Gestor de referencias bibliográficas y recursos académicos.', 'herramientas/1751556432230-docker.jpg', 'https://www.zotero.org'),
+              (4, 'Mendeley', 'Organizador de investigaciones y gestor de referencias.', 'herramientas/1751555803727-gato png.png', 'https://www.mendeley.com'),
+              (5, 'Notion', 'Aplicación para tomar notas, organizar tareas y trabajo colaborativo.', 'herramientas/1751556432230-docker.jpg', 'https://www.notion.so');
             `)
 
             await queryRunner.query(`
               INSERT INTO Alejandria.guia(id, titulo, descripcion, url_imagen, doc_url)
               VALUES
-                (1, 'Guía de Normas APA', 'Instrucciones para citar y referenciar con el formato APA.', 'https://www.todoliteratura.es/fotos/1/Formato-APA.jpg', 'https://example.com/docs/guia_apa.pdf'),
-                (2, 'Guía de Tesis', 'Pasos y estructura para elaborar una tesis universitaria.', 'https://universoabierto.org/wp-content/uploads/2017/12/guia-elaborar-tesis-ebook-universia.jpg', 'https://example.com/docs/guia_tesis.pdf'),
-                (3, 'Guía de Turnitin', 'Manual para el uso correcto de Turnitin.', 'https://vrip.unmsm.edu.pe/wp-content/uploads/2025/03/png-turnitin.png', 'https://example.com/docs/guia_turnitin.pdf'),
-                (4, 'Guía de Presentaciones', 'Consejos para realizar presentaciones efectivas.', 'https://venngage-wordpress-es.s3.amazonaws.com/uploads/2023/09/diseno-de-presentaciones.png', 'https://example.com/docs/guia_presentaciones.pdf'),
-                (5, 'Guía de Investigación', 'Orientaciones para la planificación y ejecución de investigaciones.', 'https://investigacion.pucp.edu.pe/wp-content/uploads/2024/04/GUIiA-DE-INVESTIGACIOiN-EN-SOCIALES-560x778.jpg', 'https://example.com/docs/guia_investigacion.pdf');  
+                (1, 'Guía de Normas APA', 'Instrucciones para citar y referenciar con el formato APA.', 'guias/1751392571185-gato jpeg.jpg', 'guias/1751475279015-SPRINGS BACKEND.xlsx'),
+                (2, 'Guía de Tesis', 'Pasos y estructura para elaborar una tesis universitaria.', 'guias/1751395426554-normas-apa.jpg', 'guias/1751475206320-00500751048IS10S11120419SESION9(2).pptx'),
+                (3, 'Guía de Turnitin', 'Manual para el uso correcto de Turnitin.', 'guias/1751472102002-gato webp.webp', 'guias/1751475279015-SPRINGS BACKEND.xlsx'),
+                (4, 'Guía de Presentaciones', 'Consejos para realizar presentaciones efectivas.', 'guias/1751470518112-Modelado de BD 1.6.jpg', 'guias/1751475206320-00500751048IS10S11120419SESION9(2).pptx'),
+                (5, 'Guía de Investigación', 'Orientaciones para la planificación y ejecución de investigaciones.', 'guias/1751393134168-leon.jpg', 'guias/1751475279015-SPRINGS BACKEND.xlsx');  
             `)
 
             await queryRunner.query(`
               INSERT INTO Alejandria.noticia(id, titulo, descripcion, url_imagen)
               VALUES
-                (1, 'Nuevo convenio con universidades internacionales', 'Se ha firmado un acuerdo de colaboración con instituciones académicas extranjeras para fomentar el intercambio estudiantil.', 'https://numdea.com/wp-content/uploads/2020/01/en-que-consiste-convenio-colectivo.jpg'),
-                (2, 'Concurso de investigación 2025', 'Abierta la convocatoria para el concurso anual de investigación. Participa y gana premios.', 'https://cdn.palbincdn.com/images/blog/gallery/como-crear-tu-propio-concurso-online-en-10-pasos.png'),
-                (3, 'Actualización en el reglamento de tesis', 'La universidad ha publicado cambios importantes en el reglamento para trabajos de titulación.', 'https://medicina.unmsm.edu.pe/wp-content/uploads/2021/12/reglamentos.png'),
-                (4, 'Webinar sobre redacción académica', 'Este 30 de junio se llevará a cabo un webinar gratuito sobre técnicas de redacción para tesis.', 'https://hacertfg.com/wp-content/uploads/2024/01/Redaccion-Academica.webp'),
-                (5, 'Nuevo portal de biblioteca digital', 'Accede a miles de libros y revistas académicas desde cualquier lugar con el nuevo portal.', 'https://www.sydle.com/blog/assets/post/biblioteca-digital-63e521409e3c274f1050e336/capa%20biblioteca%20digital.png');
+                (1, 'Nuevo convenio con universidades internacionales', 'Se ha firmado un acuerdo de colaboración con instituciones académicas extranjeras para fomentar el intercambio estudiantil.', 'noticias/1751556041292-reunion asesores.webp'),
+                (2, 'Concurso de investigación 2025', 'Abierta la convocatoria para el concurso anual de investigación. Participa y gana premios.', 'noticias/1751556041292-reunion asesores.webp'),
+                (3, 'Actualización en el reglamento de tesis', 'La universidad ha publicado cambios importantes en el reglamento para trabajos de titulación.', 'noticias/1751556041292-reunion asesores.webp'),
+                (4, 'Webinar sobre redacción académica', 'Este 30 de junio se llevará a cabo un webinar gratuito sobre técnicas de redacción para tesis.', 'noticias/1751556041292-reunion asesores.webp'),
+                (5, 'Nuevo portal de biblioteca digital', 'Accede a miles de libros y revistas académicas desde cualquier lugar con el nuevo portal.', 'noticias/1751556041292-reunion asesores.webp');
             `);
             await queryRunner.query(`
               INSERT INTO Alejandria.solucion(id, preguntas, respuestas)

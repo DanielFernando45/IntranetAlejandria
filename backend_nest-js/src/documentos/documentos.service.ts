@@ -9,11 +9,12 @@ import { join } from 'path';
 import { existsSync } from 'fs';
 import { archivosDataDto } from 'src/asuntos/dto/archivos-data.dto';
 import { asuntoFileDto } from './dto/asunto.files.dto';
+import { BackbazeService } from 'src/backblaze/backblaze.service';
 
 @Injectable()
 export class DocumentosService {
   constructor(
-  
+    private readonly backblazeService:BackbazeService,
 
     @InjectRepository(Documento)
     private documentoRepo:Repository<Documento>
@@ -68,18 +69,17 @@ export class DocumentosService {
         .getRawMany()
         
       if(listDocuments.length===0)throw new NotFoundException("No se encontro el documento")
-    
-    
+      const arreglo: asuntoFileDto[] = [];
 
-    const arreglo: asuntoFileDto[] = [];
+      
+      for (const document of listDocuments) {
+      const ruta_documento=await this.backblazeService.getSignedUrl(document['ruta'])
+      const asunto = document['asunto'];
+      const idAsunto = document['id_asunto'];
 
-    listDocuments.forEach((document) => {
-    const asunto = document['asunto'];
-    const idAsunto = document['id_asunto'];
-
-    let index = arreglo.findIndex((item: any) => item['id_asunto'] === idAsunto);
-    
-   let estado = document['estado'] || 'null';
+      let index = arreglo.findIndex((item: any) => item['id_asunto'] === idAsunto);
+      
+      let estado = document['estado'] || 'null';
 let fecha: string;
 
 if (estado === 'terminado') {
@@ -100,17 +100,17 @@ if (index === -1) {
     estado,
     fecha, // ✅ ya lo tienes
     nombreDoc1: document['nombre'],
-    ruta1: document['ruta'],
+    ruta1: ruta_documento,
   });
     } else {
       
       const count = Object.keys(arreglo[index]).filter((key) => key.startsWith('nombreDoc')).length + 1;
 
       arreglo[index][`nombreDoc${count}`] = document['nombre'];
-      arreglo[index][`ruta${count}`] = document['ruta'];
+      arreglo[index][`ruta${count}`] = ruta_documento;
       
     }
-  });
+  };
 
   return arreglo;
 
@@ -118,7 +118,7 @@ if (index === -1) {
 
   async finallyDocuments(id:number,dataFiles:archivosDataDto,manager:EntityManager){
     try{
-      const newDocument=manager.create(Documento,{nombre:dataFiles.nombreDocumento,ruta:dataFiles.secureUrl,subido_por:Subido.ASESOR,created_at:new Date(),asunto:{id}})
+      const newDocument=manager.create(Documento,{nombre:dataFiles.nombreDocumento,ruta:dataFiles.directorio,subido_por:Subido.ASESOR,created_at:new Date(),asunto:{id}})
       const response=await manager.save(newDocument)
       return response
     }catch(err){

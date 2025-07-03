@@ -7,5 +7,5 @@ export class archivosDataDto{
 
     @IsString()
     @IsNotEmpty()
-    secureUrl:string
+    directorio:string
 }

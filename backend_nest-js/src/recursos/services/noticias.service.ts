@@ -26,6 +26,7 @@ export class NoticiasService{
     
             return({
                 "id":noticia.id,
+                "titulo":noticia.titulo,
                 "descripcion":noticia.descripcion,
                 "url_imagen":noticia.url_imagen,
                 "imagen":linkImagen,
