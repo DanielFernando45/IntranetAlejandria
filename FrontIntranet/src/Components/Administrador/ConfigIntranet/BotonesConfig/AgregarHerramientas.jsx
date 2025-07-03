@@ -83,7 +83,7 @@ const AgregarHerramientas = ({ close }) => {
       
       // Adjuntar la imagen si existe
       if (formData.url_imagen) {
-        formDataToSend.append('imagen', formData.url_imagen);
+        formDataToSend.append('url_imagen', formData.url_imagen);
       }
 
       const response = await fetch('http://localhost:3001/recursos/herramientas/add', {

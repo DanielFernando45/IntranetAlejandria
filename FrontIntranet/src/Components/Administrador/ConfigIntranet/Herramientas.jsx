@@ -13,10 +13,28 @@ const Herramientas = () => {
         fetchHerramientas();
     }, []);
 
+    // Función para extraer el nombre del archivo de una URL
+    const extraerNombreArchivo = (url) => {
+        if (!url) return '';
+        try {
+            const urlObj = new URL(url);
+            const pathParts = urlObj.pathname.split('/');
+            return pathParts[pathParts.length - 1];
+        } catch (e) {
+            const parts = url.split('/');
+            return parts[parts.length - 1];
+        }
+    };
+
     const fetchHerramientas = () => {
         axios.get("http://localhost:3001/recursos/herramientas/all")
             .then((res) => {
-                setHerramientas(res.data);
+                // Modificar las herramientas para incluir nombre de archivo
+                const herramientasModificadas = res.data.map(herramienta => ({
+                    ...herramienta,
+                    nombre_imagen: extraerNombreArchivo(herramienta.url_imagen)
+                }));
+                setHerramientas(herramientasModificadas);
             })
             .catch((err) => console.error("Error al obtener herramientas:", err));
     };
@@ -48,7 +66,7 @@ const Herramientas = () => {
                     <div className="w-[50px] flex justify-center">ID</div>
                     <div className="w-[200px] flex justify-center">Nombre</div>
                     <div className="w-[400px] flex justify-center">Descripción</div>
-                    <div className="w-[200px] flex justify-center">URL imagen</div>
+                    <div className="w-[200px] flex justify-center">Imagen</div>
                     <div className="w-[200px] flex justify-center">Enlace</div>
                     <div className="w-[110px] flex justify-center">Editar</div>
                     <div className="w-[110px] flex justify-center">Eliminar</div>
@@ -63,10 +81,18 @@ const Herramientas = () => {
                     >
                         <div className="w-[50px] flex justify-center">{herramienta.id}</div>
                         <div className="w-[200px] flex justify-start">{herramienta.nombre}</div>
-                        <div className="w-[400px] flex justify-start truncate">{herramienta.descripcion}</div>
-                        <div className="w-[200px] flex justify-center truncate">{herramienta.url_imagen}</div>
+                        <div className="w-[400px] flex justify-start ">{herramienta.descripcion}</div>
+                        <div className="w-[200px] flex justify-start  text-[10px]" title={herramienta.url_imagen}>
+                            {herramienta.nombre_imagen}
+                        </div>
                         <div className="w-[200px] flex justify-center">
-                            <a href={herramienta.enlace} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                            <a 
+                                href={herramienta.enlace} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="text-blue-500 hover:underline"
+                                title={herramienta.enlace}
+                            >
                                 Visitar sitio
                             </a>
                         </div>

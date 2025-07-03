@@ -16,9 +16,31 @@ const Noticias = () => {
     const fetchNoticias = () => {
         axios.get("http://localhost:3001/recursos/noticias/all")
             .then((res) => {
-                setNoticias(res.data);
+                // Modificar las noticias para extraer solo el nombre del archivo
+                const noticiasModificadas = res.data.map(noticia => ({
+                    ...noticia,
+                    nombre_archivo: extraerNombreArchivo(noticia.url_imagen)
+                }));
+                setNoticias(noticiasModificadas);
             })
             .catch((err) => console.error("Error al obtener noticias:", err));
+    };
+
+    // Función para extraer el nombre del archivo de una URL
+    const extraerNombreArchivo = (url) => {
+        try {
+            // Crear un objeto URL (maneja correctamente las URLs complejas)
+            const urlObj = new URL(url);
+            // Obtener el pathname y dividirlo por /
+            const pathParts = urlObj.pathname.split('/');
+            // Devolver el último segmento que contiene el nombre del archivo
+            return pathParts[pathParts.length - 1];
+        } catch (e) {
+            // Si falla la creación del objeto URL (por ejemplo, URL malformada)
+            // Intentar un enfoque más simple
+            const parts = url.split('/');
+            return parts[parts.length - 1];
+        }
     };
 
     const handleEditar = (id) => {
@@ -50,7 +72,7 @@ const Noticias = () => {
                     <div className="w-[50px] flex justify-center">ID</div>
                     <div className="w-[400px] flex justify-center">Titulo</div>
                     <div className="w-[550px] flex justify-center">Descripcion</div>
-                    <div className="w-[200px] flex justify-center">URL imagen</div>
+                    <div className="w-[200px] flex justify-center">Archivo</div>
                     <div className="w-[110px] flex justify-center">Editar</div>
                     <div className="w-[110px] flex justify-center">Eliminar</div>
                 </div>
@@ -65,10 +87,12 @@ const Noticias = () => {
                         <div className="w-[50px] flex justify-center">{noticia.id}</div>
                         <div className="w-[400px] flex justify-start">{noticia.titulo}</div>
                         <div className="w-[550px] flex justify-start">{noticia.descripcion}</div>
-                        <div className="w-[200px] flex justify-start truncate">{noticia.url_imagen}</div>
+                        <div className="w-[200px] flex justify-start  text-[11px]" title={noticia.url_imagen}>
+                            {noticia.nombre_archivo}
+                        </div>
                         <button
                             onClick={() => handleEditar(noticia.id)}
-                            className="w-[110px] rounded-md px-3 py-1 bg-[#1C1C34] flex justify-center items-center text-white"
+                            className="w-[110px] rounded-md px-3 py-1  bg-[#1C1C34] flex justify-center items-center text-white"
                         >
                             Editar
                         </button>

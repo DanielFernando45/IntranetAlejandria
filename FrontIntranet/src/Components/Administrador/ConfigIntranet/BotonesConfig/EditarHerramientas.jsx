@@ -40,7 +40,7 @@ const EditarHerramientas = ({ close, herramientaId }) => {
 
         // Establecer previsualizaciones iniciales
         if (data.url_imagen) {
-          setImagePreview(data.url_imagen);
+          setImagePreview(data.imagen);
         }
         if (data.enlace) {
           try {

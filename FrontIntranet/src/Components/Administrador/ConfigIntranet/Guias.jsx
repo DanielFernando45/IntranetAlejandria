@@ -13,10 +13,29 @@ const Guias = () => {
         fetchGuias();
     }, []);
 
+    // Función para extraer el nombre del archivo de una URL
+    const extraerNombreArchivo = (url) => {
+        if (!url) return '';
+        try {
+            const urlObj = new URL(url);
+            const pathParts = urlObj.pathname.split('/');
+            return pathParts[pathParts.length - 1];
+        } catch (e) {
+            const parts = url.split('/');
+            return parts[parts.length - 1];
+        }
+    };
+
     const fetchGuias = () => {
         axios.get("http://localhost:3001/recursos/guias/all")
             .then((res) => {
-                setGuias(res.data);
+                // Modificar las guías para incluir nombres de archivo
+                const guiasModificadas = res.data.map(guia => ({
+                    ...guia,
+                    nombre_imagen: extraerNombreArchivo(guia.url_imagen),
+                    nombre_documento: extraerNombreArchivo(guia.doc_url)
+                }));
+                setGuias(guiasModificadas);
             })
             .catch((err) => console.error("Error al obtener guías:", err));
     };
@@ -48,8 +67,8 @@ const Guias = () => {
                     <div className="w-[50px] flex justify-center">ID</div>
                     <div className="w-[250px] flex justify-center">Título</div>
                     <div className="w-[400px] flex justify-center">Descripción</div>
-                    <div className="w-[200px] flex justify-center">URL imagen</div>
-                    <div className="w-[200px] flex justify-center">Documento PDF</div>
+                    <div className="w-[200px] flex justify-center">Imagen</div>
+                    <div className="w-[200px] flex justify-center">Documento</div>
                     <div className="w-[110px] flex justify-center">Editar</div>
                     <div className="w-[110px] flex justify-center">Eliminar</div>
                 </div>
@@ -63,11 +82,19 @@ const Guias = () => {
                     >
                         <div className="w-[50px] flex justify-center">{guia.id}</div>
                         <div className="w-[250px] flex justify-start">{guia.titulo}</div>
-                        <div className="w-[400px] flex justify-start truncate">{guia.descripcion}</div>
-                        <div className="w-[200px] flex justify-center truncate">{guia.url_imagen}</div>
-                        <div className="w-[200px] flex justify-center truncate">
-                            <a href={guia.doc_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                Ver documento
+                        <div className="w-[400px] flex justify-start ">{guia.descripcion}</div>
+                        <div className="w-[200px] flex justify-start text-[11px]" title={guia.url_imagen}>
+                            {guia.nombre_imagen}
+                        </div>
+                        <div className="w-[200px] flex justify-start text-[11px]">
+                            <a 
+                                href={guia.documento} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="text-blue-500 hover:underline"
+                                title={guia.documento}
+                            >
+                                {guia.nombre_documento || "Ver documento"}
                             </a>
                         </div>
                         <button
