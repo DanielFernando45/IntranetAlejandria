@@ -23,10 +23,6 @@ export class AsuntosController {
   @UseGuards(JwtAuthGuard,IsDelegadoGuard)
   @UseInterceptors(FilesInterceptor('files',10,{
     fileFilter,
-    storage:diskStorage({
-      destination:'./static/documents',
-      filename:fileNamer,
-    }),
     limits:{
       fileSize:1024*1025*30,
     }
@@ -34,12 +30,12 @@ export class AsuntosController {
   async addAsuntoinAsesoramiento(@UploadedFiles() files:Express.Multer.File[],@Body() createAsuntoDto: CreateAsuntoDto ,@Param('id_asesoramiento',ParseIntPipe) id_asesoramiento:number) {
     if(!files || files.length===0)throw new BadRequestException("No se ha enviado archivos")
     try{
-      const listaNombresyUrl=files.map((item)=>{
-      return {nombreDocumento:item.originalname,secureUrl:`${HOST_API}/files/product/${item.filename}`}
-    })
-    console.log(listaNombresyUrl)
+    //   const listaNombresyUrl=files.map((item)=>{
+    //   return {nombreDocumento:item.originalname,secureUrl:`${HOST_API}/files/product/${item.filename}`}
+    // })
+    // console.log(listaNombresyUrl)
       
-    const response=await this.asuntosService.create(createAsuntoDto,listaNombresyUrl,id_asesoramiento)
+    const response=await this.asuntosService.create(createAsuntoDto,files,id_asesoramiento)
     return response
     }catch(err){
       throw new InternalServerErrorException("Error al agregar los archivos")
@@ -54,22 +50,20 @@ export class AsuntosController {
   @Patch("finished/:id")
   @UseInterceptors(FilesInterceptor('files',10,{
     fileFilter,
-    storage:diskStorage({
-      destination:'./static/documents',
-      filename:fileNamer
-    })
+    limits:{
+      fileSize:1024*1025*30,
+    }
   }))
   async finishAsunto(@Param('id',ParseIntPipe) id:number,@Body() cambioAsunto:UpdateAsuntoDto,@UploadedFiles() files:Express.Multer.File[]){
 
     if(!files || files.length===0)throw new BadRequestException("No se ha enviado archivos")
     try{
-    const listaNombresyUrl=files.map((item)=>{
-      return {nombreDocumento:item.originalname,secureUrl:`${HOST_API}/files/product/${item.filename}`}
-    })
+    // const listaNombresyUrl=files.map((item)=>{
+    //   return {nombreDocumento:item.originalname,secureUrl:`${HOST_API}/files/product/${item.filename}`}
+    // })
     const newTitulo=cambioAsunto.titulo
     if(!newTitulo)throw new BadRequestException("Falta agregar el titulo")
-    // console.log(listaNombresyUrl)
-    return await this.asuntosService.finishAsunt(id,newTitulo,listaNombresyUrl)
+    return await this.asuntosService.finishAsunt(id,newTitulo,files)
     }catch(err){
       return new InternalServerErrorException(`Error en el controlador, ${err.message}`)
     }
