@@ -76,6 +76,7 @@ export class HerramientasService{
                     "id":herramienta.id,
                     "nombre":herramienta.nombre,
                     "descripcion":herramienta.descripcion,
+                    "enlace":herramienta.enlace,
                     "url_imagen":herramienta.url_imagen,
                     "imagen":linkImagen,
                 })
