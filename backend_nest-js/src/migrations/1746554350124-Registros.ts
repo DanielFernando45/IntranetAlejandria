@@ -171,7 +171,7 @@ export class Registros1746554350124 implements MigrationInterface {
                 (6,'Justificacion_Corregida.jpeg','documentos/1751560819207-reunion-de-asesores-juridicos.jpeg','estudiante','2025-05-11 09:00:00',5),
                 (7,'Revision_Introduccion.png','documentos/1751558207347-Alternativas-de-Seguridad-para-eCommerce-Samsung.pptx','asesor','2025-05-14 16:00:00',1),
                 (8,'Revision_Justificacion.webp','documentos/1751557549104-TRABAJOINDIVIDUAL_1748533065552.docx','asesor','2025-05-14 16:00:00',1),
-                (9,'Documento_Final.gif','documentos/1751560819207-reunion-de-asesores-juridicos.jpeg,'estudiante','2025-05-20 11:30:00',3),
+                (9,'Documento_Final.gif','documentos/1751560819207-reunion-de-asesores-juridicos.jpeg','estudiante','2025-05-20 11:30:00',3),
                 (10,'Objetivos_Generales.rar','documentos/1751558207347-Alternativas-de-Seguridad-para-eCommerce-Samsung.pptx','estudiante','2025-05-22 11:30:00',6),
                 (11,'Objetivos_Especificos.zip','documentos/1751557549104-TRABAJOINDIVIDUAL_1748533065552.docx','estudiante','2025-05-22 11:30:00',6),
                 (12,'Metodologia_1ra_parte.7z', 'documentos/1751558207347-Alternativas-de-Seguridad-para-eCommerce-Samsung.pptx','estudiante','2025-05-23 11:30:00',7),

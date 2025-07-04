@@ -45,12 +45,12 @@ const MisEnvios = ({ idAsesoramiento }) => {
   const getDocuments = (envio) => {
     const documents = [];
     let i = 1;
-    
+
     while (envio[`nombreDoc${i}`] && envio[`ruta${i}`]) {
       // Extraer el pathFile de la URL (última parte después de /)
       const urlParts = envio[`ruta${i}`].split('/');
       const pathFile = urlParts[urlParts.length - 1];
-      
+
       documents.push({
         name: envio[`nombreDoc${i}`],
         url: envio[`ruta${i}`],
@@ -58,31 +58,22 @@ const MisEnvios = ({ idAsesoramiento }) => {
       });
       i++;
     }
-    
+
     return documents;
   };
 
-  // Función para descargar archivos usando la nueva API
-  const handleDownload = async (pathFile, filename) => {
+  // Función para descargar archivos directamente desde la URL proporcionada
+  const handleDownload = async (url, filename) => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/documentos/download/${pathFile}`,
-        {
-          responseType: 'blob' // Importante para descargar archivos
-        }
-      );
-      
       // Crear un enlace temporal para descargar el archivo
-      const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
-      
+
       // Limpiar
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error al descargar el archivo:', error);
       alert('Error al descargar el archivo');
@@ -102,7 +93,7 @@ const MisEnvios = ({ idAsesoramiento }) => {
       {misEnvios.map((envio, index) => {
         const documents = getDocuments(envio);
         const hasDocuments = documents.length > 0;
-        
+
         return (
           <React.Fragment key={envio.id_asunto || index}>
             <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
@@ -134,7 +125,7 @@ const MisEnvios = ({ idAsesoramiento }) => {
                     <div className="w-[100px] flex justify-center">{formatDate(envio.fecha)}</div>
                     <div className="w-[250px] flex justify-center">{doc.name}</div>
                     <div className="w-[65px] flex justify-center">
-                      <button 
+                      <button
                         onClick={() => handleDownload(doc.pathFile, doc.name)}
                         className="transition-transform duration-300 hover:scale-110"
                       >

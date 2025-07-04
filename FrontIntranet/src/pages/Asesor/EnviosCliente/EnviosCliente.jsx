@@ -63,18 +63,10 @@ const [envioCliente, setEnvioCliente] = useState([]);
     return documents;
   };
 
-  // Función para descargar archivos usando la nueva API
-  const handleDownload = async (pathFile, filename) => {
+  // Función para descargar archivos directamente desde la URL proporcionada
+  const handleDownload = async (url, filename) => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/documentos/download/${pathFile}`,
-        {
-          responseType: 'blob' // Importante para descargar archivos
-        }
-      );
-      
       // Crear un enlace temporal para descargar el archivo
-      const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
@@ -83,7 +75,6 @@ const [envioCliente, setEnvioCliente] = useState([]);
       
       // Limpiar
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error al descargar el archivo:', error);
       alert('Error al descargar el archivo');

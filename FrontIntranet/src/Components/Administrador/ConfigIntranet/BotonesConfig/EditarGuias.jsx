@@ -122,16 +122,12 @@ const EditarGuias = ({ close, guiaId }) => {
       
       // Solo adjuntar los archivos si son nuevos (no URLs)
       if (formData.url_imagen instanceof File) {
-        formDataToSend.append('imagen', formData.url_imagen);
-      } else {
         formDataToSend.append('url_imagen', formData.url_imagen);
-      }
+      } 
       
       if (formData.doc_url instanceof File) {
-        formDataToSend.append('documento', formData.doc_url);
-      } else {
         formDataToSend.append('doc_url', formData.doc_url);
-      }
+      } 
 
       const response = await fetch(`http://localhost:3001/recursos/guias/update/${guiaId}`, {
         method: 'PATCH',

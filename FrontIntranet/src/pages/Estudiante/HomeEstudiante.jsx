@@ -124,18 +124,18 @@ const HomeEstudiante = () => {
 
   return (
     <LayoutApp>
-      <main className="mx-1">
+      <main className="mx-1 sm:mx-8">
 
         {/*Portada */}
-        <div className=" flex items-center relative flex-col md:flex-row bg-[#17162E] text-white rounded-2xl mn:w-[280px] md:w-[320px] md:h-[96px] shadow-lg ">
+        <div className=" flex items-center relative flex-col md:flex-row bg-[#17162E] text-white rounded-2xl  md:w-[320px] md:h-[96px] shadow-lg ">
 
-          <div className="flex flex-col  lg:w-2/3 p-4 lg:pl-14 pt-6 mn:pt-1 w-full md:h-full md:pt-5">
-            <p className="mn:text-[12px] md:text-[5px] text-[12px] lg:text-[22px] text-[#B5B5B5] ">12 de Febrero , 2025</p>
-            <h2 className="lg:text-[38px] md:text-[8px] mn:text-[15px] text-[15px] font-semibold mt-2 md:mt-1 ">
+          <div className="flex flex-col p-4 mn:p-9 w-full md:h-full md:pt-5">
+            <p className="text-[12px] sm:text-[18px] lg:text-[22px] text-[#B5B5B5] ">12 de Febrero , 2025</p>
+            <h2 className="lg:text-[38px]  text-[15px] sm:text-[25px] font-semibold mt-2 md:mt-1 ">
               Bienvenido Fernando Guzman al Intranet de asesoría de tesis
             </h2>
-            <div className="absolute w-[140px] h-[85px] top-[1px]">
-              <p className="lg:text-[22px] text-[10px] md:text-[4px] text-[#B5B5B5] absolute top-[110px] mn:top-[110px] md:top-[70px] ">
+            <div className="absolute w-[140px] h-[85px] top-[1px] sm:top-[70px] sm:w-[200px]">
+              <p className="lg:text-[22px] text-[10px] sm:text-[15px] text-[#B5B5B5] absolute top-[110px]  md:top-[70px] ">
                 Aquí encontraras toda la información para tu  asesoría de tesis
               </p>
             </div>
@@ -156,7 +156,7 @@ const HomeEstudiante = () => {
           <div className="w-full flex flex-col gap-6">
 
             <section>
-              <h2 className="mb-2 text-[12px] font-semibold">Noticias Recientes</h2>
+              <h2 className="mb-2 text-[12px] sm:text-[18px] font-semibold">Noticias Recientes</h2>
 
               <div className="flex justify-between w-full items-center">
                 <button
@@ -179,7 +179,7 @@ const HomeEstudiante = () => {
                           alt={`Noticia ${noticia.id}`}
                         />
                         <div className="m-4 gap-[13px]">
-                          <p className="text-white text-[12px] line-clamp-3">{noticia.texto}</p>
+                          <p className="text-white text-[11px] line-clamp-3">{noticia.texto}</p>
                           <span className="flex justify-end gap-1 items-center mt-2">
                             <button
                               className="text-[#7373B4] text-[12px] hover:text-white transition-colors"
@@ -207,7 +207,7 @@ const HomeEstudiante = () => {
             <select
               onChange={handleChange}
               value={selectedAsesoriaId || ''}
-              className='border rounded-t-md border-[#b4a6aa] text-[10px]'
+              className='border rounded-t-md border-[#b4a6aa] text-[10px] sm:text-[13px] text-center'
             >
               <option value="">Servicios</option>
 
@@ -218,8 +218,8 @@ const HomeEstudiante = () => {
 
             <div>
               <div className="flex justify-between">
-                <h1 className="text-[12px] font-semibold">Envios Asesor</h1>
-                <span className="text-[8px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+                <h1 className="text-[12px] sm:text-[18px] font-semibold">Envios Asesor</h1>
+                <span className="text-[8px] sm:text-[11px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
                   <a href="">Ver todo</a>
                   <img src={flechaAzul} alt="" className="w-4" />
                 </span>
@@ -235,8 +235,8 @@ const HomeEstudiante = () => {
           <div className=" flex flex-col gap-5">
 
             <div className=" mt-5 flex justify-between ">
-              <h2 className="text-[12px] font-bold">Reuniones</h2>
-              <span className="text-[8px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+              <h2 className="text-[12px] sm:text-[18px] font-bold">Reuniones</h2>
+              <span className="text-[8px] sm:text-[11px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
                 <a href="">Ver todo</a>
                 <img src={flechaAzul} alt="" className="w-4" />
               </span>
@@ -247,26 +247,26 @@ const HomeEstudiante = () => {
                 {proximasReuniones.map((reunion, index) => {
                   const formattedDate = formatDate(reunion.fecha_reunion);
                   return (
-                    <div key={index} className="flex  flex-row w-full   items-center text-[10px]">
+                    <div key={index} className="flex  flex-row w-full   items-center ">
 
-                      <div className={`flex flex-col justify-between items-center rounded-l-xl 
-                        w-[100px]  h-[120px]  bg-[#17162E] p-4 text-white`}
+                      <div className={`flex flex-col justify-between items-center rounded-l-xl text-[10px] sm:text-[15px]
+                        w-[100px] sm:w-[140px]  h-[120px] sm:h-[180px]  bg-[#17162E] p-4 text-white`}
                       >
                         <span className="flex flex-col items-center">
                           <p>{formattedDate.month}</p>
-                          <h1 className="text-[16px]">{formattedDate.day}</h1>
+                          <h1 className="text-[16px] sm:text-[22px]">{formattedDate.day}</h1>
                         </span>
                         
                         <p className="text-[10px]">{formattedDate.time}</p>
                       </div>
-                      <div className="flex flex-col justify-between w-full h-full border border-[#AAA3A5] bg-[#F0EFEF] p-4
+                      <div className="flex flex-col justify-between w-full h-full border border-[#AAA3A5] bg-[#FFFFFF] p-4 sm:p-6
                            rounded-r-xl">
                         <span className="flex flex-col gap-[6px]">
-                          <p className="font-medium">{reunion.titulo}</p>
-                          <h1 className="text-[#666666]">Codigo: {reunion.meetingId}</h1>
+                          <p className="font-medium text-[10px] sm:text-[16px]">{reunion.titulo}</p>
+                          <h1 className="text-[#666666] text-[10px] sm:text-[14px]">Codigo: {reunion.meetingId}</h1>
                         </span>
-                        <div className="w-full ">
-                          <button className="flex gap-4 justify-between px-1 py-1 items-center text-white rounded-2xl bg-[#1271ED]">
+                        <div className=" pr-8">
+                          <button className="flex w-full justify-between px-5 py-1 items-center text-white rounded-2xl bg-[#1271ED]">
                             <a href={reunion.enlace_zoom} target="_blank">
                               <p className="font-medium"> Zoom</p>
                             </a>

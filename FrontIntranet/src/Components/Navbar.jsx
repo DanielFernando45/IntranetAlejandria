@@ -32,16 +32,16 @@ const Navbar = ({ user }) => {
   };
 
   return (
-    <nav className="bg-white fixed top-0 left-[20px]  w-full flex h-[56px] px-7 justify-between items-center shadow-md z-10">
-      <img src={logoaleja} alt="Logo Aleja" className=" w-24" />
+    <nav className="bg-white fixed top-0 left-[20px]  w-full flex h-[56px] sm:h-[65px] px-7 justify-between items-center shadow-md z-10">
+      <img src={logoaleja} alt="Logo Aleja" className="w-24 sm:w-[170px]" />
 
       <div className="inline-flex items-center gap-2 relative">
-        <img src={perfil} alt="Icono de perfil" className="w-6" />
+        <img src={perfil} alt="Icono de perfil" className="w-6 sm:w-9" />
 
         <div className="flex gap-2 items-center">
           <div className="flex flex-col ">
-            <span className="font-medium text-[8px]">{user?.nombre}</span>
-            <span className="  text-gray-500 capitalize text-[7px]">{user?.role}</span>
+            <span className="font-medium text-[8px] sm:text-[10px]">{user?.nombre}</span>
+            <span className="  text-gray-500 capitalize text-[7px] sm:text-[9px]">{user?.role}</span>
           </div>
 
           <button onClick={toggleMenu}>

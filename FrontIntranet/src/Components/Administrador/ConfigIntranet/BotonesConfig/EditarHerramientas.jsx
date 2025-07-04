@@ -135,8 +135,6 @@ const EditarHerramientas = ({ close, herramientaId }) => {
       
       // Adjuntar la imagen si es un archivo nuevo o la URL existente
       if (formData.url_imagen instanceof File) {
-        formDataToSend.append('imagen', formData.url_imagen);
-      } else if (formData.url_imagen) {
         formDataToSend.append('url_imagen', formData.url_imagen);
       }
 

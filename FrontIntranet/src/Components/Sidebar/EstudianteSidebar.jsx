@@ -72,7 +72,7 @@ const EstudianteSidebar = () => {
       <nav
         className={`fixed left-0 top-0  
             ${isMobile
-            ? (isExpanded ? "w-[266px] h-full" : "w-[50px] h-[56px] shadow-md")
+            ? (isExpanded ? "w-[266px] h-full" : "w-[50px] h-[56px] sm:h-[65px] shadow-md")
             : (isExpanded ? "w-[266px] h-full" : "w-[100px] h-full")
           } flex-shrink-0 bg-white z-30 transition-[width] duration-500 ease-in-out overflow-hidden`}
       >
@@ -84,7 +84,7 @@ const EstudianteSidebar = () => {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-start pt-2">
+          <div className="flex flex-col items-center pt-2 sm:pt-3">
             <button onClick={toggleMenu} className="p-2">
               <img src={MenuRetraido} alt="Toggle Menu" className="w-5" />
             </button>
