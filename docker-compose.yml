@@ -26,6 +26,7 @@ services:
       - DB_NAME=${MYSQL_DATABASE_ENV}
       - DB_USER=${MYSQL_ROOT_ENV}
       - DB_PASSWORD=${MYSQL_PASSWORD_ENV}
+      - JWT_SECRET=${JWT_SECRET}
       - S1_EMAIL=${SECTOR1_EMAIL}
       - S1_CLIENT_ID=${SECTOR1_CLIENT_ID}
       - S1_CLIENT_SECRET=${SECTOR1_CLIENT_SECRET}
@@ -38,6 +39,8 @@ services:
       - B2_APP_KEY=${B2_APP_KEY}
       - BUCKET_ID=${BUCKET_ID}
       - BUCKET_NAME=${BUCKET_NAME}
+      - GMAIL=${GMAIL}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORD}
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - mysqldb

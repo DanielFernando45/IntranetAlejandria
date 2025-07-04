@@ -91,7 +91,8 @@ export class AuthService {
 
   async sendMailPassword(email:string){
     const url_codified=this.jwtService.sign({email},{expiresIn:'15min'})
-    const url=`https://localhost:3000/api/auth/recover-password/${url_codified}`
+    //Cambiarlo por el dominio y endpoint de la api
+    const url=`http://localhost:3000/auth/recover-password/${url_codified}`
 
     await this.mailService.sendResetPasswordEmail(email,url)
 
