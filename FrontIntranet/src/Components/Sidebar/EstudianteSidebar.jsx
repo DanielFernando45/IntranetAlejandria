@@ -72,7 +72,7 @@ const EstudianteSidebar = () => {
       <nav
         className={`fixed left-0 top-0  
             ${isMobile
-            ? (isExpanded ? "w-[266px] h-full" : "w-[50px] h-[56px] sm:h-[65px] shadow-md")
+            ? (isExpanded ? "w-[266px] h-full" : "w-[50px] h-[56px] md:w-[80px] sm:h-[65px] md:h-[85px] shadow-md")
             : (isExpanded ? "w-[266px] h-full" : "w-[100px] h-full")
           } flex-shrink-0 bg-white z-30 transition-[width] duration-500 ease-in-out overflow-hidden`}
       >

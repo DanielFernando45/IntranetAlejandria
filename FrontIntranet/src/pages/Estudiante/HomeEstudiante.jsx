@@ -127,7 +127,7 @@ const HomeEstudiante = () => {
       <main className="mx-1 sm:mx-8">
 
         {/*Portada */}
-        <div className=" flex items-center relative flex-col md:flex-row bg-[#17162E] text-white rounded-2xl  md:w-[320px] md:h-[96px] shadow-lg ">
+        <div className=" flex items-center relative flex-col  bg-[#17162E] text-white rounded-2xl  shadow-lg ">
 
           <div className="flex flex-col p-4 mn:p-9 w-full md:h-full md:pt-5">
             <p className="text-[12px] sm:text-[18px] lg:text-[22px] text-[#B5B5B5] ">12 de Febrero , 2025</p>
@@ -145,7 +145,7 @@ const HomeEstudiante = () => {
           <img
             src={portada}
             alt="Graduación"
-            className="rounded-b-xl w-full h-full md:h-24 md:rounded-r-xl object-cover  "
+            className="rounded-b-xl w-full h-full  object-cover  "
           />
 
         </div>
@@ -207,7 +207,7 @@ const HomeEstudiante = () => {
             <select
               onChange={handleChange}
               value={selectedAsesoriaId || ''}
-              className='border rounded-t-md border-[#b4a6aa] text-[10px] sm:text-[13px] text-center'
+              className='border rounded-t-md border-[#b4a6aa] text-[10px] sm:text-[13px] text-center '
             >
               <option value="">Servicios</option>
 
