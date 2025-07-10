@@ -29,10 +29,10 @@ const LayoutApp = ({ children }) => {
   };
 
   return (
-    <div>
+    <div className="overflow-hidden">
       {renderSidebar()}
       <Navbar user={user} />
-      <div className="lg:ml-[100px]  mt-[50px] sm:mt-[65px] md:mt-[80px] p-4 md:p-1 "> {/* Ajuste de margen para layout */}
+      <div className="mt-[50px] sm:mt-[65px] md:mt-[100px] p-4 md:p-4 xl:ml-[100px] xl:p-1 "> {/* Ajuste de margen para layout */}
         {children}
       </div>
     </div>

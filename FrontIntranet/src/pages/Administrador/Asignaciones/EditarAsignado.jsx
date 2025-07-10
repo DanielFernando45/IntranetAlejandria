@@ -59,7 +59,7 @@ const EditarAsignado = () => {
 
       // Establecer datos del formulario
       setFormData({
-        profesion_asesoria: data.tipo_trabajo,
+ 
         tipo_servicio: data.a_tipo_servicio || "",
         id_contrato: data.id_contrato,
         id_tipo_trabajo: data.id_tipo_trabajo,
@@ -260,6 +260,7 @@ const EditarAsignado = () => {
           }
         }
       );
+      console.log(id)
       alert('Asesoría modificada correctamente');
       Atras();
     } catch (error) {
@@ -458,14 +459,14 @@ const EditarAsignado = () => {
                 >
                   <option value={0} disabled>Seleccionar</option>
                   <option value={1}>Proyecto Bachillerato</option>
-                  <option value={2}>Tesis</option>
-                  <option value={3}>Tesis Maestría</option>
-                  <option value={4}>Tesis Doctorado</option>
-                  <option value={5}>Plan de negocios</option>
-                  <option value={6}>Revisión sistemática</option>
-                  <option value={7}>Suficiencia profesional</option>
-                  <option value={8}>Estudio de prefactibilidad</option>
-                  <option value={9}>Articulo Cientifico</option>
+                  <option value={2}>Tesis Pregrado</option>
+                  <option value={4}>Tesis Maestría</option>
+                  <option value={5}>Tesis Doctorado</option>
+                  <option value={6}>Plan de negocios</option>
+                  <option value={7}>Revisión sistemática</option>
+                  <option value={8}>Articulo Cientifico</option>
+                  <option value={9}>Estudio de prefactibilidad</option>
+                  <option value={10}>Suficiencia personal</option>
                 </select>
               </div>
             </div>
