@@ -33,13 +33,13 @@ const LINKS = [
 
 const EstudianteSidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1280);
   const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 900);
-      if (window.innerWidth >= 900) {
+      setIsMobile(window.innerWidth < 1280);
+      if (window.innerWidth >= 1280) {
         setIsExpanded(false);
       }
     };
@@ -77,16 +77,16 @@ const EstudianteSidebar = () => {
           } flex-shrink-0 bg-white z-30 transition-[width] duration-500 ease-in-out overflow-hidden`}
       >
         {!isMobile || isExpanded ? (
-          <div className="flex flex-col items-center gap-[30px] py-5 px-5">
+          <div className="flex flex-col items-center  gap-[30px] py-5 px-5">
             <img src={LogoAleja} alt="Logo" />
             <button onClick={toggleMenu}  >
               <img src={isExpanded ? Menu : MenuRetraido} alt="Toggle Menu"  />
             </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center pt-2 sm:pt-3">
+          <div className="flex flex-col items-center pt-2 sm:pt-3 md:pt-[20px]">
             <button onClick={toggleMenu} className="p-2">
-              <img src={MenuRetraido} alt="Toggle Menu" className="w-5" />
+              <img src={MenuRetraido} alt="Toggle Menu" className="w-5 md:w-6" />
             </button>
           </div>
         )}

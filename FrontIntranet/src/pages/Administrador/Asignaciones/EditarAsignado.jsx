@@ -275,6 +275,7 @@ const EditarAsignado = () => {
           }
         }
       );
+      console.log(id)
       alert('Asesoría modificada correctamente');
       Atras();
     } catch (error) {
@@ -480,14 +481,7 @@ const EditarAsignado = () => {
                   className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'
                 >
                   <option value={0} disabled>Seleccionar</option>
-                  {
-                    tipoTrabajos.data && tipoTrabajos.data.map(contrato => (
-                      <option key={contrato.id} value={contrato.id}>
-                        {contrato.nombre}
-                      </option>
-                    ))
-                  }
-                  {/* <option value={1}>Proyecto Bachillerato</option>
+                  <option value={1}>Proyecto Bachillerato</option>
                   <option value={2}>Tesis</option>
                   <option value={3}>Tesis Maestría</option>
                   <option value={4}>Tesis Doctorado</option>
@@ -495,7 +489,7 @@ const EditarAsignado = () => {
                   <option value={6}>Revisión sistemática</option>
                   <option value={7}>Suficiencia profesional</option>
                   <option value={8}>Estudio de prefactibilidad</option>
-                  <option value={9}>Articulo Cientifico</option> */}
+                  <option value={9}>Articulo Cientifico</option>
                 </select>
               </div>
             </div>

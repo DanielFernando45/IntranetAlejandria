@@ -82,11 +82,11 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
   return (
     <div className="flex flex-col">
       <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
-        <div className="w-[120px] flex text-[8px] sm:text-[12px]">Titulo</div>
-        <div className="w-[102px] justify-center hidden">Estado</div>
-        <div className="w-[100px] flex justify-center text-[8px] sm:text-[12px]">Fecha</div>
-        <div className="w-[250px] justify-center hidden">Archivo</div>
-        <div className="w-[65px] rounded-md px-3 flex justify-center text-[8px] sm:text-[12px]">Descargas</div>
+        <div className="w-[160px] flex text-[8px] sm:text-[12px] lg:text-[17px]">Titulo</div>
+        <div className="w-[102px] justify-center hidden lg:text-[17px] 1xl:flex">Estado</div>
+        <div className="w-[100px] flex justify-center text-[8px] sm:text-[12px] lg:text-[17px]">Fecha</div>
+        <div className="w-[250px] justify-center hidden md:flex md:text-[12px] lg:text-[17px]">Archivo</div>
+        <div className="w-[100px] rounded-md px-3 flex justify-center text-[8px] sm:text-[12px] lg:text-[17px]">Descargas</div>
       </div>
 
       {misEnvios.map((envio, index) => {
@@ -96,13 +96,13 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
         return (
           <React.Fragment key={envio.id_asunto || index}>
             <div className="flex justify-between text-[#2B2829] font-normal  bg-[#E9E7E7] p-[6px] rounded-md items-center">
-              <div className="w-[120px] flex text-[8px] sm:text-[12px]">{envio.asunto}</div>
-              <div className='text-white bg-[#353563] rounded px-3 hidden '>{envio.estado}</div>
-              <div className="w-[100px] flex justify-center text-[8px] sm:text-[12px]">{formatDate(envio.fecha)}</div>
-              <div className="w-[250px] justify-center hidden">
+              <div className="w-[160px] flex text-[8px] sm:text-[12px] lg:text-[14px]">{envio.asunto}</div>
+              <div className='text-white bg-[#353563] rounded px-3 hidden lg:text-[14px] 1xl:flex '>{envio.estado}</div>
+              <div className="w-[100px] flex justify-center text-[8px] sm:text-[12px] lg:text-[14px]">{formatDate(envio.fecha)}</div>
+              <div className="w-[250px] justify-center hidden md:flex md:text-[10px] lg:text-[14px]">
                 {hasDocuments ? documents[0].name : 'No hay archivos'}
               </div>
-              <div className="w-[65px]  flex justify-center ">
+              <div className="w-[100px]  flex justify-center ">
                 {hasDocuments && (
                   <button onClick={() => toggleOpen(index)} className="transition-transform duration-300">
                     <img
@@ -119,11 +119,11 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
               <div className="bg-white shadow-md rounded-md p-1 my-1">
                 {documents.slice(0).map((doc, docIndex) => (
                   <div key={docIndex} className="flex justify-between items-center py-1 border-b last:border-b-0">
-                    <div className="w-[100px] flex text-[8px] sm:text-[10px]">{envio.asunto}</div>
-                    <div className="w-[102px] hidden ">{envio.estado}</div>
+                    <div className="w-[160px] flex text-[8px] sm:text-[10px]">{envio.asunto}</div>
+                    <div className="w-[102px] hidden 1xl:flex 1xl:justify-center sm:text-[10px] ">{envio.estado}</div>
                     <div className="w-[100px] flex justify-center text-[8px] sm:text-[10px]">{formatDate(envio.fecha)}</div>
-                    <div className="w-[250px] justify-center hidden">{doc.name}</div>
-                    <div className="w-[65px] flex justify-center text-[8px] sm:text-[10px]">
+                    <div className="w-[250px] justify-center hidden md:flex md:text-[10px]">{doc.name}</div>
+                    <div className="w-[100px] flex justify-center text-[8px] sm:text-[10px]">
                       <button
                         onClick={() => handleDownload(doc.pathFile, doc.name)}
                         className="transition-transform duration-300 hover:scale-110"

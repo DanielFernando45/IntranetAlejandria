@@ -35,7 +35,8 @@ const Navbar = ({ user }) => {
   };
 
   return (
-    <nav className="bg-white fixed top-0 left-[20px]  w-full flex h-[56px] sm:h-[65px] md:h-[85px] px-7 justify-between items-center shadow-md z-10">
+    <nav className="bg-white fixed top-0 left-[20px]  w-full flex h-[56px] sm:h-[65px] md:h-[85px] px-7 md:px-10 md:pl-[65px] justify-between items-center shadow-md z-10">
+    
       <img src={logoaleja} alt="Logo Aleja" className="w-24 sm:w-[170px]" />
 
       <div className="inline-flex items-center gap-2 relative">

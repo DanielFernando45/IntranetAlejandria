@@ -97,7 +97,7 @@ const EntregaRevisionEst = () => {
           </select>
         </div>
 
-        <div className="flex flex-col gap-[10px] ml-8 px-[40px] py-5 w-full h-[400px] bg-white rounded-[10px]">
+        <div className="flex flex-col gap-[10px] ml-8 px-[40px] py-5 w-full  bg-white rounded-[10px]">
           <div className="flex flex-col gap-[12px]">
 
             <div className=" mt-5 flex justify-between">
