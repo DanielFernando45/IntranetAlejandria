@@ -3,5 +3,6 @@ export enum DIRECTORIOS{
     GUIAS="guias",
     HERRAMIENTAS="herramientas",
     NOTICIAS="noticias",
-    DOCUMENTOS="documentos"
+    DOCUMENTOS="documentos",
+    SEMINARIOS="seminarios",
 }

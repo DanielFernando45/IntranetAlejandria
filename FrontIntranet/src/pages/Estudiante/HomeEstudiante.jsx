@@ -9,6 +9,9 @@ import FechaDerec from "../../assets/icons/arrow-right.svg"
 import Zoom from "../../assets/icons/IconEstudiante/ZoomLink.svg";
 import DocsAsesor from "../Estudiante/EntregasEnvio/EnvioAsesor"
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { asesoriasService } from "../../services/asesoriasService";
+import { useSelector } from "react-redux";
 
 const NoticiasRecientes = [
   { id: 1, imagen: NoticiaUno, texto: "Reunión de asesores el viernes a las 3 PM" },
@@ -20,36 +23,23 @@ const NoticiasRecientes = [
 ];
 
 const HomeEstudiante = () => {
-  const [asesorias, setAsesorias] = useState([]);
+  // const [asesorias, setAsesorias] = useState([]);
   const [selectedAsesoriaId, setSelectedAsesoriaId] = useState('');
   const [proximasReuniones, setProximasReuniones] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleItems, setVisibleItems] = useState(1);
+  // const usuario = localStorage.getItem('user');
+  const user = useSelector((state) => state.auth.user);
+  const id = user.id;
 
   // Obtener asesorías del usuario
-  useEffect(() => {
-    const usuario = localStorage.getItem('user');
-    if (usuario) {
-      const user = JSON.parse(usuario);
-      const id = user.id;
+  const { data: asesorias, isLoading, isError, error, ref } = useQuery({
+    queryKey: ['asesorias'],
+    queryFn: () => asesoriasService.asesoriasPorEstudiante(id),
+    refetchOnWindowFocus: false,
+  });
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
-        .then(res => res.json())
-        .then(data => {
-          const asesoriasArray = Object.values(data).map(item => ({
-            id: item.id,
-            profesion: item.profesion_asesoria
-          }));
-          setAsesorias(asesoriasArray);
-
-          if (asesoriasArray.length > 0) {
-            const primeraAsesoriaId = asesoriasArray[0].id;
-            setSelectedAsesoriaId(primeraAsesoriaId);
-          }
-        })
-        .catch(error => console.error('Error al obtener asesorías:', error));
-    }
-  }, []);
+  console.log("Asesorias", asesorias);
 
   useEffect(() => {
     if (selectedAsesoriaId) {
@@ -122,6 +112,15 @@ const HomeEstudiante = () => {
     };
   };
 
+  if (isLoading) return <div role="status" className="max-w-sm animate-pulse">
+    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
+    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
+    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
+    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
+    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
+    <span className="sr-only">Loading...</span>
+  </div>;
   return (
     <LayoutApp>
       <main className="mx-1 sm:mx-8">
@@ -210,10 +209,17 @@ const HomeEstudiante = () => {
               className='border rounded-t-md border-[#b4a6aa] text-[10px] sm:text-[13px] text-center '
             >
               <option value="">Servicios</option>
+              {
+                asesorias.isEmpty ?
+                  <option value="" disabled>No hay asesorías disponibles</option>
+                  :
+                  Object.values(asesorias).map((asesoria, index) => (
+                    <option key={index} value={asesoria.id}>
+                      {asesoria.profesion_asesoria}
+                    </option>
+                  ))
+              }
 
-              {asesorias.map((asesoria, index) => (
-                <option key={index} value={asesoria.id}>{asesoria.profesion}</option>
-              ))}
             </select>
 
             <div>
@@ -256,7 +262,7 @@ const HomeEstudiante = () => {
                           <p>{formattedDate.month}</p>
                           <h1 className="text-[16px] sm:text-[22px]">{formattedDate.day}</h1>
                         </span>
-                        
+
                         <p className="text-[10px]">{formattedDate.time}</p>
                       </div>
                       <div className="flex flex-col justify-between w-full h-full border border-[#AAA3A5] bg-[#FFFFFF] p-4 sm:p-6
@@ -282,7 +288,10 @@ const HomeEstudiante = () => {
             </div>
 
 
-
+            <video controls width="600">
+              <source src={'https://f004.backblazeb2.com/file/IntranetAlejandria/seminarios/1752009785811-clase-de-ramos.mp4?Authorization=3_20250708214008_3cac7e2fb113747277f9fd06_1dca5d8a9dd38c3f0e7c1432ca40ab7ec1f75478_004_20250708224008_0043_dnld'} type="video/mp4" />
+              Tu navegador no soporta el tag de video.
+            </video>
           </div>
 
         </div>

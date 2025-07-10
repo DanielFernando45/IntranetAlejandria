@@ -54,9 +54,9 @@ const ListarAsignados = () => {
 
   const confirmEstadoChange = () => {
     if (!asesoramientoToChange) return;
-    
+
     const nuevoEstado = newEstado ? "activo" : "inactivo";
-    
+
     axios.patch(`http://localhost:3001/asesoramiento/estado/${asesoramientoToChange}`, { estado: nuevoEstado })
       .then(() => {
         // Actualizar el estado local después de la confirmación del servidor
@@ -94,7 +94,7 @@ const ListarAsignados = () => {
 
   const confirmDelete = () => {
     if (!asesoramientoToDelete) return;
-    
+
     axios.delete(`http://localhost:3001/asesoramiento/delete/${asesoramientoToDelete}`)
       .then(() => {
         fetchAsesoramientos();
@@ -112,13 +112,7 @@ const ListarAsignados = () => {
   }
 
   const obtenerEstudiantes = (asesoramiento) => {
-    const estudiantes = [];
-    for (let i = 2; i <= 5; i++) {
-      const key = `estudiante${i}`;
-      if (asesoramiento[key]) {
-        estudiantes.push(asesoramiento[key]);
-      }
-    }
+    const estudiantes = { ...asesoramiento };
     return estudiantes;
   };
 
@@ -131,13 +125,13 @@ const ListarAsignados = () => {
             <h3 className="text-lg font-semibold mb-4">Confirmar Cambio de Estado</h3>
             <p>¿Estás seguro que deseas cambiar el estado a {newEstado ? "Activado" : "Desactivado"}?</p>
             <div className="flex justify-end gap-4 mt-6">
-              <button 
+              <button
                 onClick={cancelEstadoChange}
                 className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
               >
                 Cancelar
               </button>
-              <button 
+              <button
                 onClick={confirmEstadoChange}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-blue-700"
               >
@@ -147,7 +141,7 @@ const ListarAsignados = () => {
           </div>
         </div>
       )}
-      
+
       {/* Modal de confirmación de eliminación */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -155,13 +149,13 @@ const ListarAsignados = () => {
             <h3 className="text-lg font-semibold mb-4">Confirmar Eliminación</h3>
             <p>¿Estás seguro que deseas eliminar este asesoramiento? Esta acción no se puede deshacer.</p>
             <div className="flex justify-end gap-4 mt-6">
-              <button 
+              <button
                 onClick={cancelDelete}
                 className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
               >
                 Cancelar
               </button>
-              <button 
+              <button
                 onClick={confirmDelete}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
               >
@@ -171,7 +165,7 @@ const ListarAsignados = () => {
           </div>
         </div>
       )}
-      
+
       <div className="flex flex-col">
         <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
           <div className="w-[80px] flex justify-center">IdAsesoria</div>
@@ -184,31 +178,45 @@ const ListarAsignados = () => {
           <div className="w-[200px] flex justify-center ml-3">Acción</div>
           <div className='w-[40px]'></div>
         </div>
-        {asesoramientos.map((a, index) => {
-          const estudiantes = obtenerEstudiantes(a);
-          const tieneEstudiantes = estudiantes.length > 0;
-          const mostrarFlecha = estudiantes.length > 1;
+        {asesoramientos.map((item, index) => {
+          const tieneEstudiantes = item.estudiantes.length > 0;
+          const mostrarFlecha = item.estudiantes.length > 1;
           const mostrarTodos = expandedRows[index];
-          const primerCliente = tieneEstudiantes ? 
-            (estudiantes.length > 1 && !mostrarTodos ? `${estudiantes[0]}...` : estudiantes[0]) 
+          const primerCliente = tieneEstudiantes ?
+            (item.estudiantes.length > 1 && !mostrarTodos ? `${item.estudiantes[0].estudiante}...` : item.delegado)
             : "----------------------";
-          const estadoActual = estadoLocal[a.id_asesoramiento] ?? (a.estado === "activo");
-
+          const estadoActual = estadoLocal[item.id_asesoramiento] ?? (item.estado === "activo");
+          {
+            item.estudiantes.map((estudiante, i) => {
+              console.log(estudiante.estudiante);
+            })
+          }
           return (
-            <div key={a.id_asesoramiento} className={`flex justify-between items-center text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
-              <div className="w-[80px] flex justify-center mx-2">{a.id_asesoramiento}</div>
-              <div className="w-[350px] flex justify-center">{a.delegado || "----------------------"}</div>
-              <div className="w-[250px] flex justify-center">{a.tipo_trabajo}</div>
-              <div className="w-[180px] flex justify-center">{formatFecha(a.fecha_inicio)}</div>
+            <div key={item.id_asesoramiento} className={`flex justify-between items-center text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
+              <div className="w-[80px] flex justify-center mx-2">{item.id_asesoramiento}</div>
+              <div className="w-[350px] flex justify-center">{item.delegado || "----------------------"}</div>
+              <div className="w-[250px] flex justify-center">{item.tipo_trabajo}</div>
+              <div className="w-[180px] flex justify-center">{formatFecha(item.fecha_inicio)}</div>
               <div className="w-[350px] flex flex-col justify-center items-center mx-3">
-                <div>{primerCliente}</div>
-                {mostrarTodos && estudiantes.slice(1).map((estudiante, i) => (
-                  <div key={i}>{estudiante}</div>
-                ))}
+                {
+                  tieneEstudiantes && item.estudiantes.length == 1 ? (
+                    <div>{item.estudiantes[0].estudiante}</div>
+                  ) : (
+                    <div className="flex flex-col">
+                      {mostrarTodos ? (
+                        item.estudiantes.map((estudiante, i) => (
+                          <div key={i}>{estudiante.estudiante}</div>
+                        ))
+                      ) : (
+                        <div>{primerCliente}</div>
+                      )}
+                    </div>
+                  )
+                }
               </div>
-              <div className="w-[310px] flex justify-center">{a.asesor}</div>
+              <div className="w-[310px] flex justify-center">{item.asesor}</div>
               <div className="w-[60px] text-[8px] flex flex-col items-center">
-                <button onClick={() => toggleEstadoVisual(a.id_asesoramiento)}
+                <button onClick={() => toggleEstadoVisual(item.id_asesoramiento)}
                   className={`w-[60px] h-[25px] font-semibold rounded-3xl border border-black flex items-center transition-all duration-[700ms] ease-in-out ${estadoActual ? 'justify-end pr-1' : 'justify-start pl-1'}`}>
                   <img
                     className='h-[20px] w-[20px] transition-transform duration-[700ms] ease-in-out'
@@ -219,10 +227,10 @@ const ListarAsignados = () => {
                 {estadoActual ? 'Activado' : 'Desactivado'}
               </div>
               <div className="flex w-[200px] gap-1 items-center justify-center text-white ml-3">
-                <button onClick={() => handleEditarAsesoria(a.id_asesoramiento)} className='bg-[#1C1C34] w-[100px] rounded-md px-3 py-1 flex justify-center'>
+                <button onClick={() => handleEditarAsesoria(item.id_asesoramiento)} className='bg-[#1C1C34] w-[100px] rounded-md px-3 py-1 flex justify-center'>
                   Editar
                 </button>
-                <button onClick={() => handleDeleteClick(a.id_asesoramiento)}>
+                <button onClick={() => handleDeleteClick(item.id_asesoramiento)}>
                   <img src={eliminar} alt="Eliminar" className="hover:opacity-70" />
                 </button>
               </div>

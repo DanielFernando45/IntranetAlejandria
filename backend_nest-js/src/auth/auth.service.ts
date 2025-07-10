@@ -78,6 +78,10 @@ export class AuthService {
       datos=getInfoCliente
     }
 
+    if( user.estado === false ) {
+      throw new NotFoundException("El usuario está inactivo, por favor contacta al administrador");
+    }
+
     return {
       access_token: this.jwtService.sign(payload),
       id_usuario:user.id,

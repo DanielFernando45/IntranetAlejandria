@@ -1,6 +1,6 @@
 // src/components/Navbar.jsx
 import { useContext, useState } from "react";
-import { AuthContext } from "../context/authContext";
+// import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 
 import logoaleja from "../assets/images/LogoAlejandriaSIN.png";
@@ -13,16 +13,19 @@ import micontrato from "../assets/icons/miContrato.svg";
 import miasesor from "../assets/icons/miAsesor.svg";
 import candadoblack from "../assets/icons/candadoPass.svg";
 import cerrarsesion from "../assets/icons/cerrarSesion.svg";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/auth/authSlice";
 
 const Navbar = ({ user }) => {
-  const { logout } = useContext(AuthContext);
+  // const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout())
     navigate('/');
   };
 

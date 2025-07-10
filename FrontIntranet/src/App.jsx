@@ -9,8 +9,6 @@ import { AuthProvider } from './context/authContext';
 
 export const App = () => {
   return (
-    <AuthProvider>
-      
       <BrowserRouter>
         <Suspense
           fallback={
@@ -30,9 +28,5 @@ export const App = () => {
           </Routes>
         </Suspense>
     </BrowserRouter>
-
-    </AuthProvider>
-    
-
   );
 };

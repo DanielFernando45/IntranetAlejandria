@@ -1,17 +1,19 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { AuthContext } from '../context/authContext';
 import LogoBlanco from '../assets/icons/Login/LogoAlejandria.svg';
 import LogoUsuario from '../assets/icons/Login/user.svg';
 import Candado from '../assets/icons/Login/passlock.svg';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../store/auth/authSlice';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const  {login}  = useContext(AuthContext);
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,9 +25,11 @@ const Login = () => {
       });
 
       const { access_token, datos_usuario } = res.data;
+      console.log('Datos del usuario:', datos_usuario);
+      dispatch(loginSuccess(datos_usuario))
 
       // Guardamos en AuthContext
-      login({ ...datos_usuario, access_token });
+      // login({ ...datos_usuario, access_token });
 
       // Redirigimos según el rol
       switch (datos_usuario.role) {

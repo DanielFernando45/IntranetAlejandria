@@ -91,8 +91,6 @@ const RouterApp = () => {
       </Route>
 
 
-
-
       {/* RUTAS ASESOR */}
       <Route element={<ProtectedRoutes allowedRoles={['asesor']} />}>
         <Route path="/asesor/home" element={<HomeAsesor />} />

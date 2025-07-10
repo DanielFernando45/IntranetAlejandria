@@ -11,6 +11,11 @@ export class CommonController{
     async listTrabajos(){
         return this.commonService.listarTiposTrabajo()
     }
+// 
+    @Get("listar-tipoContratos")
+    async listarContratos(){
+        return this.commonService.listarTipoContratos()
+    }
 
     @Get('calendario_estudiante/:id/:fecha')
     listarEventosCalendario(@Param('id',ParseIntPipe) id:number,@Param('fecha') fecha:string){

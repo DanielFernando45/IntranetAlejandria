@@ -4,6 +4,8 @@ import Buscar from "../../../Components/Administrador/GestionarUsuario/Buscar";
 import axios from "axios";
 import LayoutApp from '../../../layout/LayoutApp';
 import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query';
+import { trabajosService } from '../../../services/trabajosService';
 
 const EditarAsignado = () => {
   const { id } = useParams();
@@ -17,6 +19,18 @@ const EditarAsignado = () => {
   const [asesorSeleccionadoId, setAsesorSeleccionadoId] = useState(0);
   const [mostrarEspecialidad, setMostrarEspecialidad] = useState(false);
   const [cargando, setCargando] = useState(true);
+
+  const { data: tipoTrabajos } = useQuery({
+    queryKey: ['tipoTrabajos'],
+    queryFn: trabajosService.tiposTrabajos
+  })
+
+  const { data: tipoContratos } = useQuery({
+    queryKey: ['tipoContratos'],
+    queryFn: trabajosService.tiposContratos
+  })
+
+  console.log("Tipo Contratos:", tipoContratos);
 
   // Estados para los datos del formulario
   const [formData, setFormData] = useState({
@@ -59,7 +73,7 @@ const EditarAsignado = () => {
 
       // Establecer datos del formulario
       setFormData({
-        profesion_asesoria: data.tipo_trabajo,
+        profesion_asesoria: data.profesion_asesoria || "",
         tipo_servicio: data.a_tipo_servicio || "",
         id_contrato: data.id_contrato,
         id_tipo_trabajo: data.id_tipo_trabajo,
@@ -251,6 +265,7 @@ const EditarAsignado = () => {
     }
 
     try {
+      console.log(payload)
       await axios.patch(
         `http://localhost:3001/asesoramiento/update/${id}`,
         payload,
@@ -415,19 +430,27 @@ const EditarAsignado = () => {
                 <p>Tipo de contrato:</p>
                 <select
                   name="id_contrato"
-                  value={formData.id_contrato}
+                  value={formData.id_contrato || ""}
                   onChange={handleNumberInputChange}
                   className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'
                 >
-                  <option value={0} disabled>Seleccionar</option>
-                  <option value={1}>Contado/Avance/Individual</option>
+                  <option value="" defaultValue>Seleccionar</option>
+
+                  {
+                    tipoContratos.data && tipoContratos.data.map(contrato => (
+                      <option key={contrato.id} value={contrato.id}>
+                        {contrato.nombre}
+                      </option>
+                    ))
+                  }
+                  {/* <option value={1}>Contado/Avance/Individual</option>
                   <option value={2}>Contado/Plazo/Individual</option>
                   <option value={3}>Contado/Avance/Grupal</option>
                   <option value={4}>Contado/Plazo/Grupal</option>
                   <option value={5}>Cuotas/Avance/Individual</option>
                   <option value={6}>Cuotas/Plazo/Individual</option>
                   <option value={7}>Cuotas/Avance/Grupal</option>
-                  <option value={8}>Cuotas/Plazo/Grupal</option>
+                  <option value={8}>Cuotas/Plazo/Grupal</option> */}
                 </select>
               </div>
             </div>
@@ -457,7 +480,14 @@ const EditarAsignado = () => {
                   className='border border-[#575051] rounded-lg px-[14px] w-[300px] h-9'
                 >
                   <option value={0} disabled>Seleccionar</option>
-                  <option value={1}>Proyecto Bachillerato</option>
+                  {
+                    tipoTrabajos.data && tipoTrabajos.data.map(contrato => (
+                      <option key={contrato.id} value={contrato.id}>
+                        {contrato.nombre}
+                      </option>
+                    ))
+                  }
+                  {/* <option value={1}>Proyecto Bachillerato</option>
                   <option value={2}>Tesis</option>
                   <option value={3}>Tesis Maestría</option>
                   <option value={4}>Tesis Doctorado</option>
@@ -465,7 +495,7 @@ const EditarAsignado = () => {
                   <option value={6}>Revisión sistemática</option>
                   <option value={7}>Suficiencia profesional</option>
                   <option value={8}>Estudio de prefactibilidad</option>
-                  <option value={9}>Articulo Cientifico</option>
+                  <option value={9}>Articulo Cientifico</option> */}
                 </select>
               </div>
             </div>
