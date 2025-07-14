@@ -21,11 +21,6 @@ export class AsesoramientoController {
     return this.asesoramientoService.listAsesoriasSinpagos(tipo_contrato)
   }
 
-  @Get('obtenerDatosTrabajo')
-  obtenerDatosTrabajo(){
-    return this.asesoramientoService.obtenerDatosTrabajo()
-  }
-
   @Get('contadoSinPagos')
   listarContadosSinPagos(){
     const tipo_contrato='contado'

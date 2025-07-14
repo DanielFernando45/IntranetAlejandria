@@ -11,7 +11,6 @@ import { listServiciosDto } from './dto/listDtos/list-servicios.dto';
 import { ClienteService } from 'src/cliente/cliente.service';
 import { listPagosEstudianteDto } from './dto/listDtos/list-pagos-estudiante.dto';
 import { listPagosAdminDto } from './dto/listDtos/list-pagos-admin.dto';
-import { Tipo_Servicio } from 'src/asesoramiento/entities/asesoramiento.entity';
 
 @Injectable()
 export class PagosService {

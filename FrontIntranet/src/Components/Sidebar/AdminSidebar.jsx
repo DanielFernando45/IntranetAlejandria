@@ -9,6 +9,7 @@ import Gestion from "../../assets/icons/IconAsesor/gestionAlum.svg";
 import Asignaciones from "../../assets/icons/IconAdmin/asignar.svg";
 import ConfIntranet from "../../assets/icons/IconAdmin/configurar.svg";
 import GestionSoporte from "../../assets/icons/IconAdmin/SoporteTecnico.svg";
+import InduccionIconSideBar from "../../assets/icons/IconAdmin/video-play.png";
 import Pagos from "../../assets/icons/IconEstudiante/PagosEstudiante.svg";
 
 const LINKS = [
@@ -33,6 +34,7 @@ const LINKS = [
   },
   { icono: Pagos, path: "/admin/pagos", title: "Pagos" },
   { icono: ConfIntranet, path: "/admin/confIntra", title: "Configuración de Intranet"},
+  { icono: InduccionIconSideBar, path: "/admin/inducciones", title: "Inducciones" },
   { icono: GestionSoporte, path: "/admin/soporte", title: "Gestion Soporte Tecnico" },
 ];
 

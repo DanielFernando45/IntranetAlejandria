@@ -59,6 +59,7 @@ import NuevaContraseña from '../pages/NuevaContraseña';
 import ListarEstudiante from '../pages/Administrador/GestionarUsuario/ListarEstudiante';
 import ListarAsesor from '../pages/Administrador/GestionarUsuario/ListarAsesor';
 import ConfigIntra from '../pages/Administrador/ConfigIntra';
+import Induccion from '../pages/Administrador/Induccion/Inducciones';
 
 
 const RouterApp = () => {
@@ -152,6 +153,8 @@ const RouterApp = () => {
 
         <Route path="/admin/confIntra" element={<ConfigIntra />} />
         <Route path="/admin/soporte" element={<GestionarSoporte />} />
+
+        <Route path="/admin/inducciones" element={<Induccion />} />
 
       </Route>
 

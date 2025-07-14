@@ -15,6 +15,11 @@ export class ClienteController {
         return this.clienteService.listOneClient(id)
     }
 
+    @Get('listar/:id')
+    async listAllByAsesoramiento(@Param('id', ParseIntPipe) id: number){
+        return this.clienteService.listAllByAsesoramiento(id);
+    }
+
     @Get()
     async listAll(){
         return this.clienteService.listClients();

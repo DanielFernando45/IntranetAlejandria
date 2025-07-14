@@ -444,14 +444,6 @@ const EditarAsignado = () => {
                       </option>
                     ))
                   }
-                  {/* <option value={1}>Contado/Avance/Individual</option>
-                  <option value={2}>Contado/Plazo/Individual</option>
-                  <option value={3}>Contado/Avance/Grupal</option>
-                  <option value={4}>Contado/Plazo/Grupal</option>
-                  <option value={5}>Cuotas/Avance/Individual</option>
-                  <option value={6}>Cuotas/Plazo/Individual</option>
-                  <option value={7}>Cuotas/Avance/Grupal</option>
-                  <option value={8}>Cuotas/Plazo/Grupal</option> */}
                 </select>
               </div>
             </div>

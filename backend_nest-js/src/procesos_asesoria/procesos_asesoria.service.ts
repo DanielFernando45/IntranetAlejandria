@@ -75,6 +75,24 @@ export class ProcesosAsesoriaService {
     return delegadoprocess
   }
 
+  async getDelegadoByIdAsesoramiento(id_asesoramiento: number) {
+    const delegadoByAsesoramiento = await this.procesosAsesoriaRepo
+      .createQueryBuilder('pr')
+      .innerJoin('pr.asesoramiento', 'a')
+      .innerJoinAndSelect('pr.cliente', 'c')
+      .select([
+        'c.id AS clienteId',
+        "concat(c.nombre, ' ', c.apellido) AS delegado",
+        'a.id AS asesoramientoId',
+        'pr.id AS procesoId'
+      ])
+      .where('pr.asesoramiento.id = :id', { id: id_asesoramiento })
+      .andWhere('pr.esDelegado = true')
+      .getRawOne();
+    if (!delegadoByAsesoramiento) throw new InternalServerErrorException("no hay un delegado")
+    return delegadoByAsesoramiento
+  }
+
   async getDelegadoAndIdAsesoramiento(id_asesor: number, manager: EntityManager) {
 
     try {

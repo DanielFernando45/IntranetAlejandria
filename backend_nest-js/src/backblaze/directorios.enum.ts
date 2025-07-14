@@ -5,4 +5,5 @@ export enum DIRECTORIOS{
     NOTICIAS="noticias",
     DOCUMENTOS="documentos",
     SEMINARIOS="seminarios",
+    INDUCCIONES="inducciones",
 }

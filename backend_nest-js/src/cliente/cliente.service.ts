@@ -15,254 +15,282 @@ import { CreateUserDto } from 'src/usuario/dto/create-user.dto';
 import { ClientesSinAsignar } from './dto/clientes-sin-asignar.dto';
 import { updatedByClient } from './dto/updated-by-client.dto';
 import { ProcesosAsesoria } from 'src/procesos_asesoria/entities/procesos_asesoria.entity';
+import { ProcesosAsesoriaService } from 'src/procesos_asesoria/procesos_asesoria.service';
 
 @Injectable()
 export class ClienteService {
     constructor(
-       
-        private readonly usuarioService:UsuarioService,
+
+        private readonly usuarioService: UsuarioService,
 
         @Inject(forwardRef(() => AsesoramientoService))
-        private readonly asesoramientoService:AsesoramientoService,
+        private readonly asesoramientoService: AsesoramientoService,
 
         @InjectRepository(Cliente)
         private clienteRepo: Repository<Cliente>,
 
         @InjectRepository(GradoAcademico)
         private gradoAcademicoRepo: Repository<GradoAcademico>,
-        
-        @InjectDataSource()
-        private readonly dataSource:DataSource
-    ){}
 
-    async listClients (): Promise<ListarClientesDto[]>{
-        const listofCliente=await this.clienteRepo.find({
-            select:['id','dni','nombre','apellido','fecha_creacion','carrera']})
-        
-        if(!listofCliente||listofCliente.length===0) throw new NotFoundException("No se encontro ningun cliente")
+        @InjectDataSource()
+        private readonly dataSource: DataSource
+    ) { }
+
+    async listClients(): Promise<ListarClientesDto[]> {
+        const listofCliente = await this.clienteRepo.find({
+            select: ['id', 'dni', 'nombre', 'apellido', 'fecha_creacion', 'carrera']
+        })
+
+        if (!listofCliente || listofCliente.length === 0) throw new NotFoundException("No se encontro ningun cliente")
 
         const mapedCliente = await Promise.all(
             listofCliente.map(async (cliente) => {
-            const id_cliente = cliente.id;
-            console.log(id_cliente)
-            const datos_asesoramiento = await this.asesoramientoService.findDatesByCliente(id_cliente);
-            return {
-            ...cliente,
-            datos_asesoramiento:datos_asesoramiento
-            };
-        }));
-        
+                const id_cliente = cliente.id;
+                console.log(id_cliente)
+                const datos_asesoramiento = await this.asesoramientoService.findDatesByCliente(id_cliente);
+                return {
+                    ...cliente,
+                    datos_asesoramiento: datos_asesoramiento
+                };
+            }));
+
         const validatedClients = await Promise.all(
             mapedCliente.map(async (client) => {
-              const errors = await validate(client);
-              if (errors.length > 0) {
-                throw new Error('El cliente no es válido');
-              }
-              return client;
+                const errors = await validate(client);
+                if (errors.length > 0) {
+                    throw new Error('El cliente no es válido');
+                }
+                return client;
             })
-          );
+        );
 
         return validatedClients
     }
 
-    
-    
-    async listOneClient(id:number):Promise<ListarClienteDto>{
-        const oneCliente=await this.clienteRepo.findOne({where:{id},relations: ['gradoAcademico'],select:['id','nombre','apellido','telefono','dni','carrera','gradoAcademico','universidad','pais','email','url_imagen']})
-        if(!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
-            const clienteDto: ListarClienteDto = {
-                ...oneCliente,
-                gradoAcademico:{id:oneCliente.gradoAcademico?.id,nombre:oneCliente.gradoAcademico?.nombre } ,
-            };
-            return clienteDto
+
+
+    async listOneClient(id: number): Promise<ListarClienteDto> {
+        const oneCliente = await this.clienteRepo.findOne({ where: { id }, relations: ['gradoAcademico'], select: ['id', 'nombre', 'apellido', 'telefono', 'dni', 'carrera', 'gradoAcademico', 'universidad', 'pais', 'email', 'url_imagen'] })
+        if (!oneCliente) throw new NotFoundException(`No hay un cliente con ese ${id}`)
+        const clienteDto: ListarClienteDto = {
+            ...oneCliente,
+            gradoAcademico: { id: oneCliente.gradoAcademico?.id, nombre: oneCliente.gradoAcademico?.nombre },
+        };
+        return clienteDto
     }
 
-    async crearCliente(data: CreateClienteDto){
+    async crearCliente(data: CreateClienteDto) {
 
-        let savedUser:CreateUserDto
-        try{
-        const exist=await this.clienteRepo.findOneBy({email:data.email})
-        if(exist) throw new ConflictException("Ya existe ese cliente")
-        
-        const dataUser={
-            username:data.email,
-            password:data.dni,
-            role:UserRole.ESTUDIANTE,
-            estado:true
-        }
-        savedUser=await this.usuarioService.createUserDefault(dataUser)
-        }catch(err){
+        let savedUser: CreateUserDto
+        try {
+            const exist = await this.clienteRepo.findOneBy({ email: data.email })
+            if (exist) throw new ConflictException("Ya existe ese cliente")
+
+            const dataUser = {
+                username: data.email,
+                password: data.dni,
+                role: UserRole.ESTUDIANTE,
+                estado: true
+            }
+            savedUser = await this.usuarioService.createUserDefault(dataUser)
+        } catch (err) {
             throw new Error(err.message)
         }
-        try{
+        try {
 
-        const gradoAcademicoSearch = await this.gradoAcademicoRepo.findOneBy({ id: data.gradoAcademico });
+            const gradoAcademicoSearch = await this.gradoAcademicoRepo.findOneBy({ id: data.gradoAcademico });
 
-        if (!gradoAcademicoSearch) throw new NotFoundException("Algunas entidades relacionadas no existen");
+            if (!gradoAcademicoSearch) throw new NotFoundException("Algunas entidades relacionadas no existen");
 
-        const cliente=this.clienteRepo.create({
-            dni:data.dni,
-            nombre:data.nombre,
-            apellido:data.apellido,
-            telefono:data.telefono,
-            email:data.email,
-            url_imagen:data.url_imagen || '',
-            pais:data.pais,
-            gradoAcademico:gradoAcademicoSearch,
-            universidad:data.universidad,
-            carrera:data.carrera,
-            usuario:savedUser
-        })
+            const cliente = this.clienteRepo.create({
+                dni: data.dni,
+                nombre: data.nombre,
+                apellido: data.apellido,
+                telefono: data.telefono,
+                email: data.email,
+                url_imagen: data.url_imagen || '',
+                pais: data.pais,
+                gradoAcademico: gradoAcademicoSearch,
+                universidad: data.universidad,
+                carrera: data.carrera,
+                usuario: savedUser
+            })
 
-        return await this.clienteRepo.save(cliente);
-        }catch(err){
-        throw new InternalServerErrorException(err.message)
-        }   
+            return await this.clienteRepo.save(cliente);
+        } catch (err) {
+            throw new InternalServerErrorException(err.message)
+        }
     }
 
     async clientesSinAsignar(): Promise<ClientesSinAsignar[]> {
         const clientesSinProcesos = await this.dataSource
-          .getRepository(Cliente)
-          .createQueryBuilder("c")
-          .leftJoin("c.procesosAsesoria", "p")
-          .leftJoinAndSelect("c.gradoAcademico", "grado")
-          .where("p.id IS NULL")
-          .getMany();
-      
+            .getRepository(Cliente)
+            .createQueryBuilder("c")
+            .leftJoin("c.procesosAsesoria", "p")
+            .leftJoinAndSelect("c.gradoAcademico", "grado")
+            .where("p.id IS NULL")
+            .getMany();
+
         const clientesFormateados: ClientesSinAsignar[] = clientesSinProcesos.map(cliente => ({
-          id: cliente.id,
-          nombre: cliente.nombre,
-          apellido: cliente.apellido,
-          gradoAcademico: cliente.gradoAcademico?.nombre ?? null,
-          fecha_creacion: cliente.fecha_creacion,
-          carrera: cliente.carrera
+            id: cliente.id,
+            nombre: cliente.nombre,
+            apellido: cliente.apellido,
+            gradoAcademico: cliente.gradoAcademico?.nombre ?? null,
+            fecha_creacion: cliente.fecha_creacion,
+            carrera: cliente.carrera
         }));
-      
-        return clientesFormateados;
-      }
-    
-    async listarClientesAsignar():Promise<ClientesSinAsignar[]>{
-        const clientesSinProcesos = await this.dataSource
-          .getRepository(Cliente)
-          .createQueryBuilder("c")
-          .leftJoin("c.procesosAsesoria", "p")
-          .leftJoinAndSelect("c.gradoAcademico", "grado")
-          .getMany();
-      
-        const clientesFormateados: ClientesSinAsignar[] = clientesSinProcesos.map(cliente => ({
-          id: cliente.id,
-          nombre: cliente.nombre,
-          apellido: cliente.apellido,
-          gradoAcademico: cliente.gradoAcademico?.nombre ?? null,
-          fecha_creacion: cliente.fecha_creacion,
-          carrera: cliente.carrera
-        }));
-      
+
         return clientesFormateados;
     }
 
-    async patchByClient(id:number,data:updatedByClient){
-        if(!Object.keys(data).length)throw new BadRequestException("No se envio un body para actualizar")
-        
-        const partialEntity:any={...data}
+    async listarClientesAsignar(): Promise<ClientesSinAsignar[]> {
+        const clientesSinProcesos = await this.dataSource
+            .getRepository(Cliente)
+            .createQueryBuilder("c")
+            .leftJoin("c.procesosAsesoria", "p")
+            .leftJoinAndSelect("c.gradoAcademico", "grado")
+            .getMany();
 
-        const updated=await this.clienteRepo.update(id,partialEntity)
-        if(updated.affected===0) throw new NotFoundException("No hay registro a afectar")
+        const clientesFormateados: ClientesSinAsignar[] = clientesSinProcesos.map(cliente => ({
+            id: cliente.id,
+            nombre: cliente.nombre,
+            apellido: cliente.apellido,
+            gradoAcademico: cliente.gradoAcademico?.nombre ?? null,
+            fecha_creacion: cliente.fecha_creacion,
+            carrera: cliente.carrera
+        }));
+
+        return clientesFormateados;
+    }
+
+    async patchByClient(id: number, data: updatedByClient) {
+        if (!Object.keys(data).length) throw new BadRequestException("No se envio un body para actualizar")
+
+        const partialEntity: any = { ...data }
+
+        const updated = await this.clienteRepo.update(id, partialEntity)
+        if (updated.affected === 0) throw new NotFoundException("No hay registro a afectar")
 
         return updated
-        
+
     }
 
-    async patchCliente(id:number,data:updateClienteDto){
-        if(!Object.keys(data).length)throw new BadRequestException("No se envio un body para actualizar")
-        
+    async patchCliente(id: number, data: updateClienteDto) {
+        if (!Object.keys(data).length) throw new BadRequestException("No se envio un body para actualizar")
+
         const partialEntity: any = { ...data };
 
         if (data.gradoAcademico) {
             partialEntity.gradoAcademico = { id: data.gradoAcademico };
         }
-    
-        const updated=await this.clienteRepo.update(id,partialEntity)
-        if(updated.affected===0) throw new NotFoundException("No hay registro a afectar")
-        
+
+        const updated = await this.clienteRepo.update(id, partialEntity)
+        if (updated.affected === 0) throw new NotFoundException("No hay registro a afectar")
+
         return updated
     }
 
-    async deletedCliente(id:number){
-        const queryRunner=this.dataSource.createQueryRunner()
+    async deletedCliente(id: number) {
+        const queryRunner = this.dataSource.createQueryRunner()
         await queryRunner.connect()
         await queryRunner.startTransaction()
 
         try {
-            const usuario=await queryRunner.manager.findOne(Cliente,{where:{id},relations:["usuario"]})
+            const usuario = await queryRunner.manager.findOne(Cliente, { where: { id }, relations: ["usuario"] })
             if (!usuario || !usuario.usuario) throw new NotFoundException("No se encontró el cliente o el usuario asociado");
-            const id_usuario=usuario?.usuario?.id
-            if(id_usuario===undefined) throw new NotFoundException("No se encontro el id de usuario")
-            const deleted=await queryRunner.manager.delete(Cliente,{id})
-            if(deleted.affected===0) throw new Error("No se encontró el cliente para eliminar")
-            await this.usuarioService.deleteUserWithCliente(id_usuario,queryRunner.manager)
+            const id_usuario = usuario?.usuario?.id
+            if (id_usuario === undefined) throw new NotFoundException("No se encontro el id de usuario")
+            const deleted = await queryRunner.manager.delete(Cliente, { id })
+            if (deleted.affected === 0) throw new Error("No se encontró el cliente para eliminar")
+            await this.usuarioService.deleteUserWithCliente(id_usuario, queryRunner.manager)
             await queryRunner.commitTransaction()
-            return {message:"Cliente eliminado correctamente",eliminados:deleted.affected}
+            return { message: "Cliente eliminado correctamente", eliminados: deleted.affected }
         } catch (error) {
             await queryRunner.rollbackTransaction()
             throw new InternalServerErrorException("Transacción fallida: " + error.message);
-        } finally{
+        } finally {
             await queryRunner.release()
         }
     }
 
-    async desactivateCliente(id:number){
-        
-        const cliente=await this.clienteRepo.findOne({
-            where:{id},
-            relations:['usuario'],
-            select:{ usuario: { id: true }}
+    async desactivateCliente(id: number) {
+
+        const cliente = await this.clienteRepo.findOne({
+            where: { id },
+            relations: ['usuario'],
+            select: { usuario: { id: true } }
         })
-        
-        if(!cliente) return new NotFoundException("No se encontro el cliente en la bd")
-        const id_usuario=cliente?.usuario.id
-        if(!id_usuario) throw new NotFoundException("No se encontro el id")
-        const response=await this.usuarioService.desactivateUser(id_usuario)
-        return {message:"Usuario desactivado correctamente",affectado:response}
-        }catch(err){
-            throw new BadRequestException(`Esta mal la peticion se presenta el siguiente error :${err.message}`)
+
+        if (!cliente) return new NotFoundException("No se encontro el cliente en la bd")
+        const id_usuario = cliente?.usuario.id
+        if (!id_usuario) throw new NotFoundException("No se encontro el id")
+        const response = await this.usuarioService.desactivateUser(id_usuario)
+        return { message: "Usuario desactivado correctamente", affectado: response }
+    } catch(err) {
+        throw new BadRequestException(`Esta mal la peticion se presenta el siguiente error :${err.message}`)
     }
 
-    async getAsesorias(id:number){
-        const listAsesorias=await this.asesoramientoService.asesoramientosByClient(id)
+    async getAsesorias(id: number) {
+        const listAsesorias = await this.asesoramientoService.asesoramientosByClient(id)
 
         return listAsesorias
     }
-    async getContratos(id:number){
-        const contrato=await this.asesoramientoService.contratoDelAsesoramiento(id)
+    async getContratos(id: number) {
+        const contrato = await this.asesoramientoService.contratoDelAsesoramiento(id)
 
         return contrato
     }
 
-    async getDelegado(id_asesoramiento:number){
-        const queryRunner=this.dataSource.createQueryRunner()
+    async getDelegado(id_asesoramiento: number) {
+        const queryRunner = this.dataSource.createQueryRunner()
         await queryRunner.connect()
         await queryRunner.startTransaction()
-            
-        try{
-            const listAsesoramientoId=await queryRunner.manager.findOne(ProcesosAsesoria,{where:{asesoramiento:{id:id_asesoramiento}},relations:['cliente']})
+
+        try {
+            const listAsesoramientoId = await queryRunner.manager.findOne(ProcesosAsesoria, { where: { asesoramiento: { id: id_asesoramiento } }, relations: ['cliente'] })
             if (!listAsesoramientoId) throw new NotFoundException(`No se encontraron asesoramientos con el ID ${id_asesoramiento}`);
-            
-            const nombreDelegado=`${listAsesoramientoId.cliente.nombre} ${listAsesoramientoId.cliente.apellido}`
-            const delegado={
-                "id":listAsesoramientoId.cliente.id,
-                "nombre_delegado":nombreDelegado
+
+            const nombreDelegado = `${listAsesoramientoId.cliente.nombre} ${listAsesoramientoId.cliente.apellido}`
+            const delegado = {
+                "id": listAsesoramientoId.cliente.id,
+                "nombre_delegado": nombreDelegado
             }
             await queryRunner.commitTransaction()
             return delegado
-        }catch(err){
+        } catch (err) {
             await queryRunner.rollbackTransaction()
             throw new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
-        }finally{
+        } finally {
             await queryRunner.release();
         }
     }
 
-    
+    async listAllByAsesoramiento(id: number) {
+        const queryRunner = this.dataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
+
+        try {
+            const clientesByAsesoramiento = await queryRunner.manager.find(ProcesosAsesoria, { where: { asesoramiento: { id: id }, esDelegado: false }, relations: ['cliente'] })
+            if (!clientesByAsesoramiento) throw new NotFoundException(`No se encontraron clientes con el ID ${id}`);
+
+
+            const estudiantes = clientesByAsesoramiento.map( item => {
+                return {
+                    id_estudiante: item.cliente.id,
+                    estudiante: `${item.cliente.nombre} ${item.cliente.apellido}`
+                }
+            })
+
+
+            await queryRunner.commitTransaction()
+            return estudiantes
+        } catch (err) {
+            await queryRunner.rollbackTransaction()
+            throw new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
+        } finally {
+            await queryRunner.release();
+        }
+    }
 
 }

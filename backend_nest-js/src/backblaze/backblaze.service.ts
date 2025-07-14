@@ -1,89 +1,89 @@
-import { Injectable ,InternalServerErrorException,OnModuleInit} from "@nestjs/common";
+import { Injectable, InternalServerErrorException, OnModuleInit } from "@nestjs/common";
 import * as B2 from 'backblaze-b2';
 import { DataSource } from 'typeorm';
 import { DIRECTORIOS } from "./directorios.enum";
 
 @Injectable()
-export class BackbazeService{
-    private b2:any;
-    private isAuthorized=false;
-    private readonly bucketId=process.env.BUCKET_ID;
-    private readonly bucketName=process.env.BUCKET_NAME
+export class BackbazeService {
+    private b2: any;
+    private isAuthorized = false;
+    private readonly bucketId = process.env.BUCKET_ID;
+    private readonly bucketName = process.env.BUCKET_NAME
 
-    constructor(){
-        this.b2=new B2({
+    constructor() {
+        this.b2 = new B2({
             applicationKeyId: process.env.B2_KEY_ID,
             applicationKey: process.env.B2_APP_KEY,
         })
     }
 
     private async ensureAuthorized() {
-    if (!this.isAuthorized) {
-      await this.b2.authorize();
-      this.isAuthorized = true;
-    }
+        if (!this.isAuthorized) {
+            await this.b2.authorize();
+            this.isAuthorized = true;
+        }
     }
 
-    async uploadFile(file:Express.Multer.File,folder:DIRECTORIOS):Promise<string>{
+    async uploadFile(file: Express.Multer.File, folder: DIRECTORIOS, customName?: string): Promise<string> {
         await this.ensureAuthorized()
 
-        const uploadUrlResponse=await this.b2.getUploadUrl({bucketId:this.bucketId})
-        const {uploadUrl,authorizationToken}=uploadUrlResponse.data
-        
-        try{
-            const response=await this.b2.uploadFile({
+        const uploadUrlResponse = await this.b2.getUploadUrl({ bucketId: this.bucketId })
+        const { uploadUrl, authorizationToken } = uploadUrlResponse.data
+
+        try {
+            const response = await this.b2.uploadFile({
                 uploadUrl,
-                uploadAuthToken:authorizationToken,
-                fileName:`${folder}/${Date.now()}-${file.originalname}`,
+                uploadAuthToken: authorizationToken,
+                fileName: `${folder}/${Date.now()}-${customName ? customName : file.originalname}`,
                 data: file.buffer,
                 mime: file.mimetype,
             })
 
             return response.data.fileName
-        }catch(err){
+        } catch (err) {
             throw new InternalServerErrorException(`Error al subir el archivo ${file.originalname}`)
         }
     }
 
-    async getSignedUrl(fileName:string,validSeconds=3600):Promise<string>{
+    async getSignedUrl(fileName: string, validSeconds = 3600): Promise<string> {
         await this.ensureAuthorized()
 
-        const authResponse=await this.b2.authorize()
-        const downloadUrl=authResponse.data.downloadUrl
+        const authResponse = await this.b2.authorize()
+        const downloadUrl = authResponse.data.downloadUrl
 
-        const {data}=await this.b2.getDownloadAuthorization({
-            bucketId:this.bucketId,
-            fileNamePrefix:fileName,
-            validDurationInSeconds:validSeconds
+        const { data } = await this.b2.getDownloadAuthorization({
+            bucketId: this.bucketId,
+            fileNamePrefix: fileName,
+            validDurationInSeconds: validSeconds
         });
 
         const baseUrl = `${downloadUrl}/file/${this.bucketName}/${fileName}`;
         return `${baseUrl}?Authorization=${data.authorizationToken}`;
     }
 
-    async deleteFile(fileName:string):Promise<void>{
+    async deleteFile(fileName: string): Promise<void> {
         await this.ensureAuthorized()
 
-        try{
-            const {data}=await this.b2.listFileNames({
-                bucketId:this.bucketId,
-                prefix:fileName,
-                maxFileCount:1,
+        try {
+            const { data } = await this.b2.listFileNames({
+                bucketId: this.bucketId,
+                prefix: fileName,
+                maxFileCount: 1,
             })
             console.log(data)
 
-            const file=data.files[0]
+            const file = data.files[0]
 
-            if(!file){
+            if (!file) {
                 console.warn(`Archivo no encontrado en B2: ${fileName}`)
                 return;
             }
 
             await this.b2.deleteFileVersion({
-                fileName:file.fileName,
-                fileId:file.fileId
+                fileName: file.fileName,
+                fileId: file.fileId
             })
-        }catch(err){
+        } catch (err) {
             throw new InternalServerErrorException(`Error al eliminar el archivo ${fileName}`)
         }
     }

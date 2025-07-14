@@ -132,88 +132,57 @@ export class AsesoramientoService {
   }
 
   async listar() {
-    const listAsesoria = await this.asesoramientoRepo
+    // 1. Obtener asesoramientos únicos con su delegado
+    const asesoramientos = await this.asesoramientoRepo
       .createQueryBuilder('a')
       .innerJoin('a.tipoTrabajo', 't')
       .innerJoin('a.procesosasesoria', 'p')
       .innerJoin('p.cliente', 'c')
       .innerJoin('p.asesor', 'ase')
       .select([
-        'a.id',
+        'a.id AS id_asesoramiento',
+        'a.fecha_inicio AS fecha_inicio',
         'a.estado AS estado',
-        'a.fecha_inicio',
+        't.nombre AS tipo_trabajo',
+        'ase.id AS id_asesor',
+        "CONCAT(ase.nombre, ' ', ase.apellido) AS asesor",
         'c.id AS id_cliente',
-        'c.nombre AS cliente_nombre',
-        'c.apellido AS cliente_apellido',
-        'c.id AS id_asesor',
-        'ase.nombre AS asesor_nombre',
-        'ase.apellido AS asesor_apellido',
-        't.nombre AS tipo_trabajo'
+        "CONCAT(c.nombre, ' ', c.apellido) AS delegado",
       ])
-      .orderBy('a.id')
+      .where('p.esDelegado = 1')
       .getRawMany();
 
-    // Obtener los delegados por cada asesoramiento solo una vez
-    const delegadosMap = new Map<number, any>();
+    // 2. Obtener todos los estudiantes (que no son delegados)
+    const estudiantes = await this.asesoramientoRepo
+      .createQueryBuilder('a')
+      .innerJoin('a.procesosasesoria', 'p')
+      .innerJoin('p.cliente', 'c')
+      .select([
+        'a.id AS id_asesoramiento',
+        'c.id AS id_estudiante',
+        "CONCAT(c.nombre, ' ', c.apellido) AS estudiante",
+      ])
+      .where('p.esDelegado = 0')
+      .getRawMany();
 
-    for (const item of listAsesoria) {
-      if (!delegadosMap.has(item.a_id)) {
-        const delegado = await this.clienteService.getDelegado(item.a_id);
-        delegadosMap.set(item.a_id, delegado);
-      }
-    }
-    console.log("Listar asesorias", listAsesoria)
+    // 3. Agrupar estudiantes por asesoramiento
+    const estudiantesPorAsesoria = estudiantes.reduce((map, est) => {
+      if (!map[est.id_asesoramiento]) map[est.id_asesoramiento] = [];
+      map[est.id_asesoramiento].push({
+        id_estudiante: est.id_estudiante,
+        estudiante: est.estudiante,
+      });
+      return map;
+    }, {} as Record<number, any[]>);
 
-    const asesoriasMap = new Map<number, any>();
-    const listaAseroriasResultado: any[] = [];
-
-    for (const asesoria of listAsesoria) {
-      const asesoramientoId = asesoria.a_id;
-      const delegado = delegadosMap.get(asesoramientoId);
-
-      if (asesoriasMap.has(asesoramientoId)) {
-        const asesoriaExistente = asesoriasMap.get(asesoramientoId);
-
-        // Solo agregar si no es el delegado
-        if (asesoria.id_cliente !== delegado.id) {
-          const indexCliente = asesoriaExistente.estudiantes.length + 1;
-          asesoriaExistente.estudiantes.push({
-            [`id_estudiante`]: asesoria.id_cliente,
-            estudiante: `${asesoria.cliente_nombre} ${asesoria.cliente_apellido}`,
-          });
-        }
-
-      } else {
-        const estudiantes: { [key: string]: any }[] = [];
-
-        // Solo agregar a estudiantes si no es el delegado
-        if (asesoria.id_cliente !== delegado.id) {
-          estudiantes.push({
-            id_estudiante1: asesoria.id_cliente,
-            estudiante: `${asesoria.cliente_nombre} ${asesoria.cliente_apellido}`,
-          });
-        }
-
-
-        const newAsesoria = {
-          id_asesoramiento: asesoramientoId,
-          fecha_inicio: asesoria.a_fecha_inicio,
-          id_asesor: asesoria.id_asesor,
-          asesor: `${asesoria.asesor_nombre} ${asesoria.asesor_apellido}`,
-          tipo_trabajo: asesoria.tipo_trabajo,
-          estado: asesoria.estado,
-          id_delegado: delegado.id,
-          delegado: `${delegado.nombre_delegado}`,
-          estudiantes: estudiantes,
-        };
-
-        asesoriasMap.set(asesoramientoId, newAsesoria);
-        listaAseroriasResultado.push(newAsesoria);
-      }
-    }
-
-    return listaAseroriasResultado;
+    // 4. Unir la data
+    return asesoramientos.map((a) => ({
+      ...a,
+      estudiantes: estudiantesPorAsesoria[a.id_asesoramiento] || [],
+    }));
   }
+
+
 
 
   async listar_por_id(id: number) {
@@ -464,7 +433,7 @@ export class AsesoramientoService {
         .andWhere('a.estado = :estado', { estado: Estado_Asesoria.ACTIVO })
         .getRawMany();
 
-        console.log("RawAsesoramiento", RawAsesoramiento)
+      console.log("RawAsesoramiento", RawAsesoramiento)
       if (!RawAsesoramiento || RawAsesoramiento.length === 0) {
         return {
           // data: [],
@@ -628,8 +597,4 @@ export class AsesoramientoService {
     return fechaVencimiento
   }
 
-  async obtenerDatosTrabajo() {
-
-    // const listaTipoTrabajo = await this.
-  }
 }

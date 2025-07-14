@@ -22,6 +22,7 @@ import { PagosModule } from './pagos/pagos.module';
 import { SoportesModule } from './soportes/soportes.module';
 import { BackblazeModule } from './backblaze/backblaze.module';
 import { SeminariosModule } from './seminarios/seminarios.module';
+import { InduccionesModule } from './inducciones/inducciones.module';
 
 let puerto:number
 
@@ -55,7 +56,7 @@ if(process.env.DB_PORT){
     AdminModule,
     ClienteModule, 
     AsesorModule, MailModule, AsesoramientoModule, ProcesosAsesoriaModule
-    ,CommonModule, AsuntosModule, DocumentosModule, ReunionesModule, RecursosModule, PagosModule, SoportesModule, BackblazeModule, SeminariosModule],
+    ,CommonModule, AsuntosModule, DocumentosModule, ReunionesModule, RecursosModule, PagosModule, SoportesModule, BackblazeModule, SeminariosModule, InduccionesModule],
   controllers: [AppController],
   providers: [AppService],
 })
