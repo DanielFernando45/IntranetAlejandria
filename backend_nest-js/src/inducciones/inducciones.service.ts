@@ -45,6 +45,7 @@ export class InduccionesService {
             const videoUrl = await this.blackService.uploadFile(file, DIRECTORIOS.INDUCCIONES, customName);
             console.log(videoUrl);
             // 2. Crea el registro usando la URL
+           
             const newInduccion = this.induccionesRepo.create({
                 ...induccionData,
                 url: videoUrl,

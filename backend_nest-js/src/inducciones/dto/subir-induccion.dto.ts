@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Entity } from 'typeorm';
 
@@ -11,12 +11,14 @@ export class CreateInduccionDto {
   titulo: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'La URL es obligatoria' })
   url: string;
 
+  @IsString()
+  capitulo: string;
 
   // @IsNumber()
-  @IsString()
-  @IsNotEmpty({ message: 'El título es obligatorio' })
+  @IsNumber({},{message: 'El id asesoramiento tiene que ser number'})
+  @Type(() => Number)
+  @IsNotEmpty({ message: 'El id asesoramiento es obligatorio' })
   asesoramiento: number;
 }

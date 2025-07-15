@@ -60,6 +60,7 @@ import ListarEstudiante from '../pages/Administrador/GestionarUsuario/ListarEstu
 import ListarAsesor from '../pages/Administrador/GestionarUsuario/ListarAsesor';
 import ConfigIntra from '../pages/Administrador/ConfigIntra';
 import Induccion from '../pages/Administrador/Induccion/Inducciones';
+import InduccionById from '../pages/Administrador/Induccion/InduccionById';
 
 
 const RouterApp = () => {
@@ -155,6 +156,7 @@ const RouterApp = () => {
         <Route path="/admin/soporte" element={<GestionarSoporte />} />
 
         <Route path="/admin/inducciones" element={<Induccion />} />
+        <Route path="/admin/induccion/:id" element={<InduccionById />} />
 
       </Route>
 

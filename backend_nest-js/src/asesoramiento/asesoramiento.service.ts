@@ -35,7 +35,7 @@ export class AsesoramientoService {
 
     @InjectDataSource()
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async create(
     createAsesoramientoDto: CreateAsesoramientoDto,
@@ -139,9 +139,9 @@ export class AsesoramientoService {
     const solo_fechas = {
       contrato: datosAsesoramiento
         ? {
-            id: datosAsesoramiento.tipoContrato.id,
-            nombre: datosAsesoramiento.tipoContrato.nombre,
-          }
+          id: datosAsesoramiento.tipoContrato.id,
+          nombre: datosAsesoramiento.tipoContrato.nombre,
+        }
         : { message: 'Por asignar' },
       fecha_inicio: datosAsesoramiento
         ? datosAsesoramiento.fecha_inicio
@@ -199,26 +199,55 @@ export class AsesoramientoService {
 
   async listar() {
     // 1. Obtener asesoramientos únicos con su delegado
-    const asesoramientos = await this.asesoramientoRepo
-      .createQueryBuilder('a')
-      .innerJoin('a.tipoTrabajo', 't')
-      .innerJoin('a.procesosasesoria', 'p')
-      .innerJoin('p.cliente', 'c')
-      .innerJoin('p.asesor', 'ase')
-      .select([
-        'a.id AS id_asesoramiento',
-        'a.fecha_inicio AS fecha_inicio',
-        'a.estado AS estado',
-        'a.profesion_asesoria AS profesion_asesoria',
-        't.nombre AS tipo_trabajo',
-        'ase.id AS id_asesor',
-        "CONCAT(ase.nombre, ' ', ase.apellido) AS asesor",
-        'c.id AS id_delegado',
-        "CONCAT(c.nombre, ' ', c.apellido) AS delegado",
-      ])
-      .where('p.esDelegado = 1')
-      .getRawMany();
+    // const asesoramientos = await this.asesoramientoRepo
+    //   .createQueryBuilder('a')
+    //   .innerJoin('a.tipoTrabajo', 't')
+    //   .innerJoin('a.procesosasesoria', 'p')
+    //   .innerJoin('p.cliente', 'c')
+    //   .innerJoin('p.asesor', 'ase')
+    //   .innerJoin('p.area', 'ar')
+    //   .select([
+    //     'a.id AS id_asesoramiento',
+    //     'a.fecha_inicio AS fecha_inicio',
+    //     'a.estado AS estado',
+    //     'a.profesion_asesoria AS profesion_asesoria',
+    //     't.nombre AS tipo_trabajo',
+    //     'ase.id AS id_asesor',
+    //     "CONCAT(ase.nombre, ' ', ase.apellido) AS asesor",
+    //     'ar.nombre AS area',
+    //     'c.id AS id_delegado',
+    //     "CONCAT(c.nombre, ' ', c.apellido) AS delegado",
+    //   ])
+    //   .where('p.esDelegado = 1')
+    //   .getRawMany();
 
+    const asesoramientos = await this.dataSource.query(`
+      SELECT 
+      a.id AS id_asesoramiento,
+      a.fecha_inicio AS fecha_inicio,
+      a.estado AS estado,
+      a.profesion_asesoria AS profesion_asesoria,
+      t.nombre AS tipo_trabajo,
+      ase.id AS id_asesor,
+      CONCAT(ase.nombre, ' ', ase.apellido) AS asesor,
+      c.id AS id_delegado,
+      CONCAT(c.nombre, ' ', c.apellido) AS delegado,
+      ar.nombre AS area
+    FROM 
+      asesoramiento a
+    INNER JOIN 
+      tipo_trabajo t ON a.id_tipo_trabajo  = t.id
+    INNER JOIN 
+      procesos_asesoria p ON p.id_asesoramiento  = a.id
+    INNER JOIN 
+      cliente c ON p.id_cliente  = c.id
+    INNER JOIN 
+    asesor as ase ON ase.id = p.id_asesor
+    INNER JOIN 
+    area_asesor as ar ON ar.id = ase.id_area 
+    WHERE p.esDelegado = 1;
+  `);
+      console.log(asesoramientos)
     //Obtenemos los estudiantes por el id asesoramiento
     const asesoramientosWithEstudiantes = await Promise.all(
       asesoramientos.map(async (asesoramiento) => {
@@ -268,57 +297,47 @@ export class AsesoramientoService {
   }
 
   async listar_por_id(id: number) {
-    if (!id || typeof id !== 'number' || id <= 0)
-      throw new BadRequestException('ID inválido proporcionado');
-    const listOneAsesoria = await this.asesoramientoRepo
-      .createQueryBuilder('a')
-      .innerJoin('a.tipoTrabajo', 'tt')
-      .innerJoin('a.tipoContrato', 'tc')
-      .innerJoin('a.procesosasesoria', 'p')
-      .innerJoin('p.cliente', 'c')
-      .innerJoin('p.asesor', 'ase')
-      .select([
-        'a.id',
-        'a.fecha_inicio',
-        'a.fecha_fin',
-        'a.tipo_servicio',
-        'a.estado AS estado',
-        'a.profesion_asesoria AS profesion_asesoria',
-        'tt.id AS id_tipo_trabajo',
-        'tt.nombre AS tipo_trabajo',
-        'tc.id AS id_contrato',
-        'tc.nombre AS contrato',
-        'ase.id AS id_asesor',
-        'ase.nombre AS asesor_nombre',
-        'ase.apellido AS asesor_apellido',
-        'c.id AS id_delegado',
-        'c.nombre AS delegado_nombre',
-        'c.apellido AS delegado_apellido',
-      ])
-      .where('a.id=:id', { id })
-      .orderBy('p.id', 'ASC')
-      .getRawMany();
+    const asesoramientos = await this.dataSource.query(`
+      SELECT 
+      a.id AS id_asesoramiento,
+      a.fecha_inicio AS fecha_inicio,
+      a.estado AS estado,
+      a.profesion_asesoria AS profesion_asesoria,
+      t.nombre AS tipo_trabajo,
+      ase.id AS id_asesor,
+      CONCAT(ase.nombre, ' ', ase.apellido) AS asesor,
+      c.id AS id_delegado,
+      CONCAT(c.nombre, ' ', c.apellido) AS delegado,
+      ar.nombre AS area
+    FROM 
+      asesoramiento a
+    INNER JOIN 
+      tipo_trabajo t ON a.id_tipo_trabajo  = t.id
+    INNER JOIN 
+      procesos_asesoria p ON p.id_asesoramiento  = a.id
+    INNER JOIN 
+      cliente c ON p.id_cliente  = c.id
+    INNER JOIN 
+    asesor as ase ON ase.id = p.id_asesor
+    INNER JOIN 
+    area_asesor as ar ON ar.id = ase.id_area 
+    WHERE p.esDelegado = 1 and a.id = ${id};
+  `);
 
-    if (!listOneAsesoria || listOneAsesoria.length === 0)
-      throw new NotFoundException(`No se encontró asesoría con ID ${id}`);
-
-    let oneAsesoria = {};
-    if (!listOneAsesoria[0].a_id || !listOneAsesoria[0].delegado_nombre)
-      throw new NotFoundException('Datos incompletos para la asesoría');
-
-    oneAsesoria = {
-      ...listOneAsesoria[0],
-    };
-
-    for (let i = 1; i < listOneAsesoria.length; i++) {
-      (oneAsesoria[`id_estudiante${i + 1}`] = listOneAsesoria[i].id_delegado),
-        (oneAsesoria[`nombre_estudiante${i + 1}`] =
-          listOneAsesoria[i].delegado_nombre),
-        (oneAsesoria[`apellido_estudiante${i + 1}`] =
-          listOneAsesoria[i].delegado_apellido),
-        console.log(i);
-    }
-    return oneAsesoria;
+    //Obtenemos los estudiantes por el id asesoramiento
+    const asesoramientosWithEstudiantes = await Promise.all(
+      asesoramientos.map(async (asesoramiento) => {
+        const estudiantes =
+          (await this.clienteService.listAllByAsesoramiento(
+            asesoramiento.id_asesoramiento,
+          )) || [];
+        return {
+          ...asesoramiento,
+          estudiantes,
+        };
+      }),
+    );
+    return asesoramientosWithEstudiantes;
   }
 
   async listar_segun_fecha(fecha_limite: Date) {

@@ -12,6 +12,9 @@ export class Inducciones {
   titulo: string;
 
   @Column()
+  capitulo: string;
+
+  @Column()
   url: string;
 
   @ManyToOne(() => Asesoramiento, { nullable: false })
