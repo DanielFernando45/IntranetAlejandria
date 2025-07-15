@@ -474,14 +474,14 @@ const EditarAsignado = () => {
                 >
                   <option value={0} disabled>Seleccionar</option>
                   <option value={1}>Proyecto Bachillerato</option>
-                  <option value={2}>Tesis</option>
+                  <option value={2}>Tesis Pregrado</option>
                   <option value={3}>Tesis Maestría</option>
                   <option value={4}>Tesis Doctorado</option>
                   <option value={5}>Plan de negocios</option>
                   <option value={6}>Revisión sistemática</option>
-                  <option value={7}>Suficiencia profesional</option>
+                  <option value={7}>Articulo Cientifico</option>
                   <option value={8}>Estudio de prefactibilidad</option>
-                  <option value={9}>Articulo Cientifico</option>
+                  <option value={9}>Suficiencia profesional</option>
                 </select>
               </div>
             </div>

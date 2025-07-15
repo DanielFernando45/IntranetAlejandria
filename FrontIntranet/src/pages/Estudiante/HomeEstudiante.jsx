@@ -40,7 +40,7 @@ const HomeEstudiante = () => {
     refetchOnWindowFocus: false,
   });
 
-  console.log("Asesorias", asesorias);
+ 
 
   useEffect(() => {
     if (selectedAsesoriaId) {
@@ -124,6 +124,20 @@ const HomeEstudiante = () => {
     <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
     <span className="sr-only">Loading...</span>
   </div>;
+
+    const fecha = new Date();// Array de nombres de meses en español
+    const meses = [
+        'Enero', 'Febrero', 'Marzo', 'Abril',
+        'Mayo', 'Junio', 'Julio', 'Agosto',
+        'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];// Extraemos día, mes y año
+    const dia = fecha.getDate();
+    const mes = meses[fecha.getMonth()]; // Obtenemos el nombre del mes
+    const año = fecha.getFullYear();
+
+    const cliente = localStorage.getItem('user');
+    const clienteNombre = JSON.parse(cliente);    
+    
   return (
     <LayoutApp>
       <main className="mx-1 sm:mx-8 ">
@@ -132,10 +146,10 @@ const HomeEstudiante = () => {
         <div className="xl:relative xl:justify-end flex items-center relative flex-col xl:flex-row  bg-[#17162E] text-white rounded-2xl  shadow-lg ">
 
           <div className="xl:absolute flex flex-col p-4 mn:p-9 lg:p-16 w-full md:h-full md:pt-7 lg:pt-14 xl:p-10 xl:px-[55px]">
-            <p className="text-[12px] sm:text-[18px] md:text-[22px] lg:text-[35px] text-[#B5B5B5] xl:text-[20px] ">12 de Febrero , 2025</p>
+            <p className="text-[12px] sm:text-[18px] md:text-[22px] lg:text-[35px] text-[#B5B5B5] xl:text-[20px] ">{dia} de {mes}, {año}</p>
             <div className="xl:w-[620px]">
               <h2 className="  text-[15px] sm:text-[25px] md:text-[30px] lg:text-[40px] xl:text-[30px] 1xl:text-[35px] font-semibold mt-2 md:mt-1 ">
-              Bienvenido Fernando Guzman al Intranet de asesoría de tesis
+              Bienvenido {clienteNombre.nombre} al Intranet de asesoría de tesis
             </h2>
             </div>
             
@@ -273,7 +287,7 @@ const HomeEstudiante = () => {
               value={selectedAsesoriaId || ''}
               className='border rounded-t-md border-[#b4a6aa] text-[10px] sm:text-[13px] lg:text-[15px] text-center '
             >
-              <option value="">Servicios</option>
+              
               {
                 asesorias.isEmpty ?
                   <option value="" disabled>No hay asesorías disponibles</option>
@@ -328,10 +342,10 @@ const HomeEstudiante = () => {
                           <p className="text-[10px] lg:text-[18px] xl:text-[15px]">{formattedDate.time}</p>
                         </div>
 
-                        <div className="flex flex-col justify-between w-full h-full border border-[#AAA3A5] bg-[#FFFFFF] p-4 sm:p-6
+                        <div className="flex flex-col justify-between w-[235px] h-full border border-[#AAA3A5] bg-[#FFFFFF] p-4 sm:p-6
                            rounded-r-xl">
                           <span className="flex flex-col gap-[6px]">
-                            <p className="font-medium text-[10px] sm:text-[16px] lg:text-[25px] xl:text-[20px]">{reunion.titulo}</p>
+                            <p className="font-medium text-[10px] sm:text-[16px] lg:text-[25px] xl:text-[15px]">{reunion.titulo}</p>
                             <h1 className="text-[#666666] text-[10px] sm:text-[14px] lg:text-[20px] xl:text-[15px]">Codigo: {reunion.meetingId}</h1>
                           </span>
                           <div className="px-10 sm:px-24 xl:px-4">
@@ -382,7 +396,7 @@ const HomeEstudiante = () => {
                         <p className="text-[10px]">{formattedDate.time}</p>
                       </div>
 
-                      <div className="flex flex-col justify-between w-full h-full border border-[#AAA3A5] bg-[#FFFFFF] p-4 sm:p-6
+                      <div className="flex flex-col justify-between w-[235px] h-full border border-[#AAA3A5] bg-[#FFFFFF] p-4 sm:p-6
                            rounded-r-xl">
                         <span className="flex flex-col gap-[6px]">
                           <p className="font-medium text-[10px] sm:text-[16px] lg:text-[25px]">{reunion.titulo}</p>
@@ -403,7 +417,6 @@ const HomeEstudiante = () => {
                 })}
               </div>
             </div>
-
 
           </div>
 

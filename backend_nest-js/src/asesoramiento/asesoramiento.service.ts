@@ -717,14 +717,8 @@ export class AsesoramientoService {
       .innerJoin('asesoramiento.procesosasesoria', 'pro')
       .innerJoinAndSelect('asesoramiento.tipoTrabajo', 'tipoTrabajo')
       .innerJoinAndSelect('pro.asesor', 'asesor')
-      .select([
-        'DISTINCT asesoramiento.id AS id',
-        'asesoramiento.profesion_asesoria AS profesion_asesoria',
-        'tipoTrabajo.nombre AS tipotrabajo',
-        'asesoramiento.fecha_inicio AS fecha_inicio',
-        'asesoramiento.fecha_fin AS fecha_fin',
-        'asesoramiento.especialidad AS especialidad',
-      ])
+      .select(['DISTINCT asesoramiento.id AS id', 'asesoramiento.profesion_asesoria AS profesion_asesoria',
+        'tipoTrabajo.nombre AS tipotrabajo', 'asesoramiento.fecha_inicio AS fecha_inicio', 'asesoramiento.fecha_fin AS fecha_fin'])
       .where('asesor.id= :id', { id })
       .andWhere('asesoramiento.estado= :estado', { estado })
       .getRawMany();
@@ -732,20 +726,18 @@ export class AsesoramientoService {
     if (listAsesorias.length === 0)
       throw new NotFoundException('No presenta asesorias');
 
-    const responseAsesorias = await Promise.all(
-      listAsesorias.map(async (asesoria) => {
-        const delegado = await this.clienteService.getDelegado(asesoria.id);
-        return {
-          id: asesoria.id,
-          delegado: delegado.nombre_delegado,
-          profesion_asesoria: asesoria.profesion_asesoria,
-          tipo_trabajo: asesoria.tipotrabajo,
-          fecha_inicio: asesoria.fecha_inicio,
-          fecha_fin: asesoria.fecha_fin,
-          especialidad: asesoria.especialidad,
-        };
-      }),
-    );
+    const responseAsesorias = await Promise.all(listAsesorias.map(async (asesoria) => {
+      const delegado = await this.clienteService.getDelegado(asesoria.id)
+      return ({
+        "id": asesoria.id,
+        "delegado": delegado.nombre_delegado,
+        "profesion_asesoria": asesoria.profesion_asesoria,
+        "tipo_trabajo": asesoria.tipotrabajo,
+        "fecha_inicio": asesoria.fecha_inicio,
+        "fecha_fin": asesoria.fecha_fin,
+        "especialidad": asesoria.especialidad
+      })
+    }))
 
     return responseAsesorias;
   }

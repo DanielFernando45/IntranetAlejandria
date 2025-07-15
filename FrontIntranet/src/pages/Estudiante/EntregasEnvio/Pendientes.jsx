@@ -54,6 +54,9 @@ const Pendientes = () => {
             <div className="w-[250px] flex justify-center">
               {formatDate(pendiente.fecha_entrega)}
             </div>
+            <div className='text-white bg-[#054755] rounded-md px-6'>
+                  {pendiente.estado === 'entregado' ? 'Entregado' : pendiente.estado}
+                </div>
             <button 
               onClick={() => toggleOpen(pendiente.id_asunto)} 
               className="transition-transform duration-300"

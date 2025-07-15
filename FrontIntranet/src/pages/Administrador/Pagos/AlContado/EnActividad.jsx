@@ -28,11 +28,17 @@ const EnActividad = () => {
         fetchClientes()
     }, [])
 
-    const formatearFecha = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return `${date.getDate()+1 }/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-4)}`;
-    };
+    const formatearFecha = (fecha) => {
+    const date = new Date(fecha);
+    // Forzamos UTC en el formato
+    return date.toLocaleDateString("es-PE", {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
+
 
     const handleEditarClick = (cliente) => {
         setClienteEdit(cliente)

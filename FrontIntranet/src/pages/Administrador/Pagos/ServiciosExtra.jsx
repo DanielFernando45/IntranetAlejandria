@@ -26,11 +26,16 @@ const ServiciosExtra = () => {
             });
     };
 
-    const formatearFecha = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-4)}`;
-    };
+    const formatearFecha = (fecha) => {
+    const date = new Date(fecha);
+    // Forzamos UTC en el formato
+    return date.toLocaleDateString("es-PE", {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
 
     const handleDeleteClick = (servicio) => {
         setServicioToDelete(servicio);
@@ -73,7 +78,7 @@ const ServiciosExtra = () => {
                     <div className="flex justify-between text-[#495D72] font-medium p-[6px] pr-10 rounded-md gap-6">
                         <div className="w-[40px] flex justify-center">IdPago</div>
                         <div className="w-[300px] flex justify-start">Delegado/Cliente</div>
-                        <div className="w-[210px] flex justify-start">Servicio Extra</div>
+                        <div className="w-[300px] flex justify-start">Servicio Extra</div>
                         <div className="w-[160px] flex justify-center">Fecha Pago</div>
                         <div className="w-[90px] flex justify-center">Pago</div>
                         <div className="w-[280px] flex justify-center ">Accion</div>
@@ -85,7 +90,7 @@ const ServiciosExtra = () => {
                           className={`flex justify-between text-[#2B2829] font-normal p-[6px] pr-10 rounded-md gap-6 ${index % 2===0 ? 'bg-white':'bg-[#E9E7E7]'}`}>
                             <div className="w-[40px] flex justify-center">{servicio.id}</div>
                             <div className="w-[300px] flex justify-start">{servicio.delegado}</div>
-                            <div className="w-[210px] flex justify-start">{servicio.titulo}</div>
+                            <div className="w-[300px] flex justify-start">{servicio.titulo}</div>
                             <div className="w-[160px] flex justify-center">{formatearFecha(servicio.fecha_pago)}</div>
                             <div className="w-[90px] flex justify-center">S/. {servicio.pago_total}.00</div>
                             <div className='flex gap-1'>

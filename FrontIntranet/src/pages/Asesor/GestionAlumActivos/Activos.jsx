@@ -54,13 +54,11 @@ const Activos = () => {
   return (
     <div className="flex flex-col bg-white rounded-xl p-2">
       <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
-        <div className="w-[50px] flex">ID</div>
+        <div className="w-[50px] flex">IDAsesoria</div>
         <div className="w-[300px] flex">Delegado</div>
-        <div className="w-[250px] flex justify-center">Tipo Trabajo</div>
+        <div className="w-[250px] flex justify-center">Contrato Asesoria</div>
         <div className="w-[250px] flex justify-center">F.inicio</div>
         <div className="w-[250px] flex justify-center">F.vencimiento</div>
-        <div className="w-[300px] flex justify-center">Carrera</div>
-     
       </div>
       
       {asesorias.map((asesoria, index) => (
@@ -73,8 +71,7 @@ const Activos = () => {
           <div className="w-[250px] flex justify-center">{asesoria.profesion_asesoria}</div>
           <div className="w-[250px] flex justify-center">{formatDate(asesoria.fecha_inicio)}</div>
           <div className="w-[250px] flex justify-center">{formatDate(asesoria.fecha_fin)}</div> {/* No hay fecha de vencimiento en la API */}
-          <div className="w-[300px] flex justify-center">{asesoria.especialidad}</div>
-          
+         
         </div>
       ))}
     </div>

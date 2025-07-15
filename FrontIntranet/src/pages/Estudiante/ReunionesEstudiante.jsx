@@ -88,7 +88,9 @@ const ReunionesEstudiante = () => {
                                 className='border rounded-t-md border-[#b4a6aa]'
                             >
                                 {asesorias.map((asesoria, index) => (
-                                    <option key={index} value={asesoria.id}>{asesoria.profesion}</option>
+                                    <option key={index} value={asesoria.id}>
+                                        {asesoria.profesion}
+                                    </option>
                                 ))}
                             </select>
                         </div>

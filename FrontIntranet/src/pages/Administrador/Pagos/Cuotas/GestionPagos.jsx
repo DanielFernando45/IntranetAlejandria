@@ -80,11 +80,19 @@ const GestionPagos = () => {
         }
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return `${date.getDate() + 1 }/${date.getMonth() + 1}/${date.getFullYear().toString().slice(-2)}`;
-    };
+    
+
+    const formatDate = (fecha) => {
+    const date = new Date(fecha);
+    // Forzamos UTC en el formato
+    return date.toLocaleDateString("es-PE", {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
+
 
     const calculateTotal = (pagosArray) => {
         return pagosArray.reduce((total, pago) => total + pago.monto, 0);
@@ -124,7 +132,7 @@ const GestionPagos = () => {
                                 .map((pago) => (
                                     <div
                                         key={pago.id}
-                                        className={`flex flex-col h-[50px] ${pagos.indexOf(pagoInfo) % 2 === 0 ? 'bg-white' : 'bg-[#E9E7E7]'} text-[13px] rounded-3xl justify-between px-7 py-1 items-center`}
+                                        className={`flex flex-col h-[50px] ${pagos.indexOf(pagoInfo) % 2 === 0 ? 'bg-white' : 'bg-[#E9E7E7]'} text-[13px] rounded-3xl justify-between px-5 py-1 items-center`}
                                     >
                                         <p className='font-semibold'>{pago.nombre}: S/. {pago.monto}</p>
                                         {pago.estado_pago === 'pagado' ? (

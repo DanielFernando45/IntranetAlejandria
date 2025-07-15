@@ -9,11 +9,9 @@ import axios from "axios";
 
 const formatFecha = (fechaISO) => {
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-  const fecha = new Date(fechaISO);
-  const dia = fecha.getDate();
-  const mes = meses[fecha.getMonth()];
-  const anio = fecha.getFullYear();
-  return `${dia} de ${mes}, ${anio}`;
+  // Extraer directamente las partes de la cadena ISO (formato YYYY-MM-DD)
+  const [anio, mes, dia] = fechaISO.split('T')[0].split('-');
+  return `${parseInt(dia)} de ${meses[parseInt(mes) - 1]}, ${anio}`;
 };
 
 const ListarAsignados = () => {

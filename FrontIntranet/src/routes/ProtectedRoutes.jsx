@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 const ProtectedRoutes = ({ allowedRoles }) => {
 
   const auth = useSelector((state) => state.auth);
-  console.log(auth);
+
 
   return auth.isAuthenticated ? (
     allowedRoles.includes(auth.user.role) ? (

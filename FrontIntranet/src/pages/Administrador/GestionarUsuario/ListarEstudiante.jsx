@@ -27,9 +27,17 @@ const ListarEstudiante = () => {
 
   const formatearFecha = (fecha) => {
     if (!fecha || fecha === "Por asignar") return "Por Asignar";
+    
     const date = new Date(fecha);
-    return date.toLocaleDateString("es-PE");
+    // Forzamos UTC en el formato
+    return date.toLocaleDateString("es-PE", {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
   };
+  
 
   const handleBuscar = (query) => {
     const filtro = query.toLowerCase();

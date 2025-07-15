@@ -88,10 +88,13 @@ const EditarExtra = ({ closeEdit, servicio }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    titulo: formData.titulo,
                     pago_total: parseFloat(formData.pago_total),
                     fecha_pago: formData.fecha_pago ? `${formData.fecha_pago} 00:00:00` : null
                 })
             });
+            
+        window.location.reload()
 
             if (response.ok) {
                 alert('Servicio actualizado correctamente');
