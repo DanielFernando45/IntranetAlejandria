@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import LogoBlanco from '../assets/icons/Login/LogoAlejandria.svg';
-import LogoUsuario from '../assets/icons/Login/user.svg';
-import Candado from '../assets/icons/Login/passlock.svg';
-import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../store/auth/authSlice';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import LogoBlanco from "../assets/icons/Login/LogoAlejandria.svg";
+import LogoUsuario from "../assets/icons/Login/user.svg";
+import Candado from "../assets/icons/Login/passlock.svg";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../store/auth/authSlice";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -19,36 +19,35 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post('http://localhost:3001/auth/login', {
+      const res = await axios.post("http://localhost:3001/auth/login", {
         username,
-        password
+        password,
       });
 
       const { access_token, datos_usuario } = res.data;
-      console.log('Datos del usuario:', datos_usuario);
-      dispatch(loginSuccess(datos_usuario))
+      console.log("Datos del usuario:", datos_usuario);
+      dispatch(loginSuccess(datos_usuario));
 
       // Guardamos en AuthContext
       // login({ ...datos_usuario, access_token });
 
       // Redirigimos según el rol
       switch (datos_usuario.role) {
-        case 'admin':
-          navigate('/admin/gestionar-usuarios');
+        case "admin":
+          navigate("/admin/gestionar-usuarios");
           break;
-        case 'asesor':
-          navigate('/asesor/home');
+        case "asesor":
+          navigate("/asesor/home");
           break;
-        case 'estudiante':
-          navigate('/estudiante/home');
+        case "estudiante":
+          navigate("/estudiante/home");
           break;
         default:
-          navigate('/');
+          navigate("/");
       }
-
     } catch (err) {
       console.error(err);
-      setError('Usuario o contraseña incorrecta');
+      setError("Usuario o contraseña incorrecta");
     }
   };
 
@@ -87,7 +86,9 @@ const Login = () => {
               />
             </div>
 
-            {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+            {error && (
+              <p className="text-red-400 text-sm text-center">{error}</p>
+            )}
 
             <button
               type="submit"
@@ -98,7 +99,6 @@ const Login = () => {
 
             <a href="/recuperarContraseña" className="text-white text-right">
               ¿OLVIDÓ SU CONTRASEÑA?
-              
             </a>
           </div>
         </form>
