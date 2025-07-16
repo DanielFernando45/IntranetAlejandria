@@ -38,7 +38,7 @@ const Induccion = () => {
               <div className="flex flex-col">
                 <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
                   <div className="w-[40px] flex justify-center">Id</div>
-                  <div className="flex-1 flex justify-center max-w-[150px] border border-black">Delegado</div>
+                  <div className="flex-1 flex justify-center max-w-[150px]">Delegado</div>
                   <div className="flex-1 flex justify-center max-w-[200px]">
                     Profesión Asesoria
                   </div>

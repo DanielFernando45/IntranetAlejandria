@@ -6,6 +6,7 @@ import LayoutApp from '../../../layout/LayoutApp';
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
 import { trabajosService } from '../../../services/trabajosService';
+import { asesoriasService } from '../../../services/asesoriasService';
 
 const EditarAsignado = () => {
   const { id } = useParams();
@@ -20,9 +21,9 @@ const EditarAsignado = () => {
   const [mostrarEspecialidad, setMostrarEspecialidad] = useState(false);
   const [cargando, setCargando] = useState(true);
 
-  const { data: tipoTrabajos } = useQuery({
-    queryKey: ['tipoTrabajos'],
-    queryFn: trabajosService.tiposTrabajos
+  const { data: asesoriaEditar, isLoading: loadingAsesosiaEditar } = useQuery({
+    queryKey: ['asesoriaEditar'],
+    queryFn: () => asesoriasService.asesoramientoById(id)
   })
 
   const { data: tipoContratos } = useQuery({
@@ -30,7 +31,6 @@ const EditarAsignado = () => {
     queryFn: trabajosService.tiposContratos
   })
 
-  console.log("Tipo Contratos:", tipoContratos);
 
   // Estados para los datos del formulario
   const [formData, setFormData] = useState({
@@ -284,7 +284,7 @@ const EditarAsignado = () => {
     }
   };
 
-  if (cargando) {
+  if (loadingAsesosiaEditar) {
     return (
       <LayoutApp>
         <main className="flex flex-col mx-32 items-center justify-center h-screen">
@@ -304,14 +304,14 @@ const EditarAsignado = () => {
             <div className="flex flex-col gap-2">
               <div className="flex items-start gap-3">
                 <h2 className="text-[20px] font-semibold mt-1">Delegado:</h2>
-                {clientesSeleccionados.length > 0 && (
+                {/* {clientesSeleccionados.length > 0 && ( */}
                   <div className="flex items-center border gap-1 rounded px-2 py-[5px] bg-white shadow-sm">
-                    <span className="text-sm">{clientesSeleccionados[0].nombre} {clientesSeleccionados[0].apellido}</span>
-                    <button onClick={() => handleEliminarCliente(clientesSeleccionados[0].id)}>
+                    <span className="text-sm">{asesoriaEditar[0].delegado}</span>
+                    <button onClick={() => handleEliminarCliente(asesoriaEditar[0].id_delegado)}>
                       <img src={eliminar} alt="" />
                     </button>
                   </div>
-                )}
+                
               </div>
 
               {clientesSeleccionados.length > 1 && (

@@ -19,13 +19,16 @@ export class ProcesosAsesoriaService {
   ) { }
 
   async addProceso_to_Asesoramiento(clientes: clientesExtraDTO, id_asesor: number, id_asesoramiento: number, manager: EntityManager) {
+    const esDelegado = clientes.delegado;
     const clienteIds = Object.values(clientes).filter(id => typeof id === 'number' && id > 0);
     for (const clienteId of clienteIds) {
       const nuevoProceso = manager.create(ProcesosAsesoria, {
         cliente: { id: clienteId },
         asesor: { id: id_asesor },
-        asesoramiento: { id: id_asesoramiento }
+        asesoramiento: { id: id_asesoramiento },
+        esDelegado: esDelegado == clienteId
       });
+      console.log(nuevoProceso)
       await manager.insert(ProcesosAsesoria, nuevoProceso)
     }
     return true

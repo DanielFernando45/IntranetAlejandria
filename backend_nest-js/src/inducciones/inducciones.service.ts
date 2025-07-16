@@ -1,4 +1,4 @@
-import { Injectable, UseInterceptors } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException, UseInterceptors } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Inducciones } from "./entity/inducciones";
 import { Repository } from "typeorm";
@@ -45,7 +45,7 @@ export class InduccionesService {
             const videoUrl = await this.blackService.uploadFile(file, DIRECTORIOS.INDUCCIONES, customName);
             console.log(videoUrl);
             // 2. Crea el registro usando la URL
-           
+
             const newInduccion = this.induccionesRepo.create({
                 ...induccionData,
                 url: videoUrl,
@@ -55,5 +55,22 @@ export class InduccionesService {
         } catch (error) {
             throw new Error('Error al crear la inducción: ' + error.message);
         }
+    }
+
+    async deleteInduccion(id: number) {
+        const induccion = await this.induccionesRepo.findOne({ where: { id } });
+        if (!induccion) throw new NotFoundException('Inducción no encontrada');
+
+        const videoEliminado = await this.blackService.deleteFile(induccion.url);
+        if (!videoEliminado) {
+            throw new InternalServerErrorException('No se pudo eliminar el archivo del almacenamiento');
+        }
+
+        const deleteResult = await this.induccionesRepo.delete(id);
+        if (!deleteResult.affected) {
+            throw new InternalServerErrorException('Error al eliminar la inducción de la base de datos');
+        }
+
+        return { message: `Inducción con id: ${id} eliminada correctamente` };
     }
 }

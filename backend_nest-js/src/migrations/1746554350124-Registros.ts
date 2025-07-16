@@ -134,16 +134,16 @@ export class Registros1746554350124 implements MigrationInterface {
       
             // Insertar proceso de asesoría vinculando al cliente y al asesor
             await queryRunner.query(`
-                INSERT INTO Alejandria.procesos_asesoria (id, id_cliente, id_asesor,id_asesoramiento) VALUES 
-                (1, 1, 1, 1),
-                (2, 2, 1, 1);
+                INSERT INTO Alejandria.procesos_asesoria (id, id_cliente, id_asesor,id_asesoramiento,esDelegado) VALUES 
+                (1, 1, 1, 1,1),
+                (2, 2, 1, 1,0);
             `);
             await queryRunner.query(`
-                INSERT INTO Alejandria.procesos_asesoria (id, id_cliente, id_asesor,id_asesoramiento) VALUES 
-                (3, 3, 2, 2),
-                (4, 1, 2, 2),
-                (5, 2, 2, 2),
-                (6, 4, 2, 2);
+                INSERT INTO Alejandria.procesos_asesoria (id, id_cliente, id_asesor,id_asesoramiento,esDelegado) VALUES 
+                (3, 3, 2, 2,1),
+                (4, 1, 2, 2,0),
+                (5, 2, 2, 2,0),
+                (6, 4, 2, 2,0);
             `);
             await queryRunner.query(`
                 INSERT INTO Alejandria.asunto (id,titulo, estado, fecha_entregado, fecha_revision, fecha_terminado, id_asesoramiento)

@@ -61,30 +61,32 @@ export class BackbazeService {
         return `${baseUrl}?Authorization=${data.authorizationToken}`;
     }
 
-    async deleteFile(fileName: string): Promise<void> {
-        await this.ensureAuthorized()
+    async deleteFile(fileName: string): Promise<boolean> {
+        await this.ensureAuthorized();
 
         try {
             const { data } = await this.b2.listFileNames({
                 bucketId: this.bucketId,
                 prefix: fileName,
                 maxFileCount: 1,
-            })
-            console.log(data)
+            });
 
-            const file = data.files[0]
+            const file = data.files[0];
 
             if (!file) {
-                console.warn(`Archivo no encontrado en B2: ${fileName}`)
-                return;
+                console.warn(`Archivo no encontrado en B2: ${fileName}`);
+                return false; // No se encontró el archivo
             }
 
             await this.b2.deleteFileVersion({
                 fileName: file.fileName,
-                fileId: file.fileId
-            })
+                fileId: file.fileId,
+            });
+
+            return true; // Eliminado correctamente
         } catch (err) {
-            throw new InternalServerErrorException(`Error al eliminar el archivo ${fileName}`)
+            console.error(`Error al eliminar archivo ${fileName}:`, err);
+            return false; // Error durante la eliminación
         }
     }
 }
