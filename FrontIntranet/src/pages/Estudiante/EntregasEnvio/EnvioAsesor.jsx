@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import arrowIcon from '../../../assets/icons/IconEstudiante/arriba.svg'
 import descargar from '../../../assets/icons/Descargas.svg'
 import axios from 'axios';
+import documentosVacios from '../../../assets/icons/documentosVacios.png'
 
 const EnvioAsesor = ({ idAsesoramiento }) => {
   const [misEnvios, setMisEnvios] = useState([]);
@@ -138,6 +139,15 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
           </React.Fragment>
         );
       })}
+
+      {misEnvios.length === 0 && (
+        <div className="flex justify-center mt-5">
+          <div className="flex flex-col border rounded-[12px] text-[12px] justify-center items-center w-[280px] sm:w-[370px] mn:w-[335px] lg:w-full   h-[120px] sm:h-[180px] lg:h-[220px] xl:h-[200px]  5xl:h-[150px] gap-5 text-[#82777A] shadow-[0px_4px_4px_4px_rgba(0,0,0,0.25)] " >
+            <img src={documentosVacios} alt="" />
+            No hay envíos realizados
+          </div>
+        </div>
+      )}
     </div>
   );
 }
