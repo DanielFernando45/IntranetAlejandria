@@ -51,7 +51,7 @@ const InduccionById = () => {
         <LayoutApp>
             <div className="p-4 ml-[100px] xl:ml-0 relative">
 
-                <div className="bg-white p-4 relative">
+                <div className="bg-white p-4 relative rounded-xl">
                     <button onClick={ () => navigate('/admin/inducciones') } className="w-[35px] h-[35px] absolute rounded-full bg-gray-200 flex justify-center items-center right-2 top-2">
                         <img src={back} alt="back-icon" />
                     </button>

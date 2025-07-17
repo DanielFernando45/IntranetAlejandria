@@ -32,17 +32,32 @@ const Pendientes = () => {
     if (!dateString) return ''
     const date = new Date(dateString)
     const options = { month: 'short', day: 'numeric', year: 'numeric' }
-    return date.toLocaleDateString('en-US', options)
+    return date.toLocaleDateString('es-PE', options)
+  }
+
+  const formatDateExpan = (dateString) => {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    const options = { month: 'short', day: 'numeric' }
+    return date.toLocaleDateString('es-PE', options)
   }
 
   const formatTime = (dateString) => {
     if (!dateString) return ''
     const date = new Date(dateString)
-    return date.toLocaleTimeString('en-US', {
+    return date.toLocaleTimeString('es-PE', {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: true,           // <-- Esto activa el formato 12 horas
+      timeZone: 'America/Lima'
     })
+  }
+  const cortarTexto = (texto) =>{
+    const index = texto.indexOf('-');
+    if (index !== -1) {
+      return texto.substring(index + 1);     
+    }
+    return texto; // Si no se encuentra el guion, devuelve el texto original
   }
 
   return (
@@ -72,11 +87,12 @@ const Pendientes = () => {
           {openItems[pendiente.id_asunto] && (
             <div className='flex flex-col gap-2 transition-all duration-300 ease-in-out mt-5'>
               <div className='flex justify-between'>
-                <div>{pendiente.documento_0}</div>
+                <div>{cortarTexto(pendiente.documento_0)}</div>
                 <div className='flex w-[450px] gap-4'>
-                  <p>Enviado: {formatDate(pendiente.fecha_entrega)}</p>
+                  <p>Enviado: {formatDateExpan(pendiente.fecha_entrega)}</p>
+                  <p>Estimado: {formatDateExpan(pendiente.fecha_terminado)}</p>
                 </div>
-                <div>{formatTime(pendiente.fecha_entrega)}</div>
+                <div>{formatTime(pendiente.fecha_terminado)}</div>
                 <div className='text-white bg-[#054755] rounded-md px-6'>
                   {pendiente.estado === 'entregado' ? 'Entregado' : pendiente.estado}
                 </div>

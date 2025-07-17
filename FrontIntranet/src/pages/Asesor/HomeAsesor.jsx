@@ -52,7 +52,7 @@ const HomeAsesor = () => {
                     const response = await fetch(`http://localhost:3001/reuniones/allReunionesProximas/${selectedAsesoriaId}`);
                     const data = await response.json();
                     setReuniones(data);
-                    console.log(data);
+                    
                 }
             } catch (error) {
                 console.error('Error al obtener las reuniones recientes:', error);
@@ -157,7 +157,7 @@ const HomeAsesor = () => {
 
                             {reuniones.map((reunion) => (
 
-                                <div className="flex  items-center ">
+                                <div key={reunion.id}  className="flex  items-center ">
                                     <div className="flex flex-col justify-between gap-[45px] items-center rounded-l-xl h-full w-[104px] bg-[#17162E] p-4 text-white">
                                         <div className="flex flex-col justify-center items-center">
                                             <p className="text-[14px] uppercase">{formatFecha(reunion.fecha_reunion).mes}</p>

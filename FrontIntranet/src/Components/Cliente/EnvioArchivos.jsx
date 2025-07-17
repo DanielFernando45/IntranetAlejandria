@@ -8,7 +8,6 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const [authError, setAuthError] = useState(false);
   const fileInputRef = useRef(null);
 
   const tiposPermitidos = [
@@ -24,69 +23,23 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
     'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed'
   ];
 
-  // Función mejorada para verificar el token según tu localStorage
-  const verifyToken = async () => {
+  // Función simplificada para obtener el token y datos básicos del usuario
+  const getAuthData = () => {
+    const token = JSON.parse(localStorage.getItem('authToken') || '');
+    const userDataString = localStorage.getItem('user');
+    
+    let user = { role: 'estudiante' }; // Valor por defecto
+    
     try {
-      // Obtener el token - en tu caso está en authToken
-      const token = localStorage.getItem('authToken');
-      
-      // Obtener los datos del usuario - en tu caso está en 'user' pero con formato irregular
-      const userDataString = localStorage.getItem('user');
-      
-      if (!token) {
-        throw new Error('No se encontró el token de autenticación (authToken)');
-      }
-
-      if (!userDataString) {
-        throw new Error('No se encontraron los datos del usuario');
-      }
-
-      // Procesamiento especial para el string de usuario que tiene formato irregular
-      let user;
-      try {
-        // Intenta primero parsear como JSON válido
-        user = JSON.parse(userDataString);
-      } catch (e) {
-        // Si falla, intenta extraer los datos del formato irregular
-        try {
-          const idMatch = userDataString.match(/id:(\d+)/);
-          const nombreMatch = userDataString.match(/nombre:"([^"]+)"/);
-          const roleMatch = userDataString.match(/role:"([^"]+)"/);
-
-          user = {
-            id: idMatch ? parseInt(idMatch[1]) : null,
-            nombre: nombreMatch ? nombreMatch[1] : '',
-            role: roleMatch ? roleMatch[1] : 'estudiante'
-          };
-        } catch (parseError) {
-          console.error('Error al parsear datos de usuario:', parseError);
-          throw new Error('Formato inválido para los datos del usuario');
-        }
-      }
-
-      // Verificación final de los datos mínimos requeridos
-      if (!user.role) {
-        user.role = 'estudiante'; // Valor por defecto
-      }
-
-      console.log('Datos de usuario procesados:', user); // Para depuración
-
-      // Verificación básica del token
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        if (payload.exp * 1000 < Date.now()) {
-          throw new Error('Token expirado');
-        }
-      } catch (e) {
-        console.warn('Error al verificar token:', e);
-        throw new Error('Token inválido o expirado');
-      }
-
-      return { token, user };
-    } catch (error) {
-      console.error('Error en verifyToken:', error);
-      throw error;
+      // Intenta parsear como JSON o extraer datos del formato irregular
+      user = userDataString ? JSON.parse(userDataString) : user;
+    } catch (e) {
+      // Si falla, intenta extraer datos del formato irregular
+      const roleMatch = userDataString?.match(/role:"([^"]+)"/);
+      user.role = roleMatch ? roleMatch[1] : 'estudiante';
     }
+    
+    return { token, user };
   };
 
   const handleFileChange = (e) => {
@@ -119,19 +72,10 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
 
     setIsSubmitting(true);
     setSubmitError(null);
-    setAuthError(false);
 
     try {
-      // Verificar token antes de enviar (con más manejo de errores)
-      let authData;
-      try {
-        authData = await verifyToken();
-      } catch (authError) {
-        setAuthError(true);
-        throw new Error(`Problema de autenticación: ${authError.message}`);
-      }
-
-      const { token, user } = authData;
+      // Obtenemos el token y datos básicos sin validación
+      const { token, user } = getAuthData();
 
       const formData = new FormData();
       formData.append('titulo', asunto);
@@ -139,7 +83,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
 
       // Agregar cada archivo al FormData
       archivos.forEach((file) => {
-        formData.append('files', file); // Cambiado de 'files' a 'documentos' según tu endpoint
+        formData.append('files', file);
       });
 
       const response = await fetch(`http://localhost:3001/asuntos/addWithDocument/${asesoriaId}`, {
@@ -150,11 +94,6 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
         body: formData
       });
 
-      if (response.status === 401) {
-        setAuthError(true);
-        throw new Error('Token inválido o expirado. Por favor, vuelve a iniciar sesión.');
-      }
-
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || 'Error al enviar los documentos');
@@ -163,17 +102,11 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
       setSubmitSuccess(true);
       setTimeout(() => onClose(), 1000);
     } catch (error) {
-      console.error('Error completo:', error);
+      console.error('Error:', error);
       setSubmitError(error.message);
-
-      // Mensaje más específico para errores de autenticación
-      if (error.message.includes('autenticación') || error.message.includes('token')) {
-        setAuthError(true);
-      }
     } finally {
       setIsSubmitting(false);
     }
-    window.location.reload();
   };
 
   useEffect(() => {
@@ -182,7 +115,6 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
       setArchivos([]);
       setSubmitSuccess(false);
       setSubmitError(null);
-      setAuthError(false);
     }
   }, [show]);
 
@@ -204,19 +136,13 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
           <h2 className="text-xl font-medium">Agregar Asunto</h2>
         </div>
 
-        {authError && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            {submitError} Por favor, actualiza la página e intenta nuevamente.
-          </div>
-        )}
-
         {submitSuccess && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
             ¡Se envió correctamente!
           </div>
         )}
 
-        {submitError && !authError && (
+        {submitError && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
             {submitError}
           </div>

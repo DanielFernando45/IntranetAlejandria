@@ -83,17 +83,26 @@ const DocPendientes = () => {
     if (!dateString) return ''
     const date = new Date(dateString)
     const options = { month: 'short', day: 'numeric', year: 'numeric' }
-    return date.toLocaleDateString('en-US', options)
+    return date.toLocaleDateString('es-PE', options)
   }
 
   const formatTime = (dateString) => {
     if (!dateString) return ''
     const date = new Date(dateString)
-    return date.toLocaleTimeString('en-US', {
+    return date.toLocaleTimeString('es-PE', {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      
     })
+  }
+
+  const cortarTexto = (texto) =>{
+    
+    const index = texto.indexOf('-');
+    if (index !== -1) {
+      return texto.substring(index + 1);     
+    }
+    return texto; // Si no se encuentra el guion, devuelve el texto original
   }
 
   const handleSubmitAvance = async (id, titulo, files) => {
@@ -148,7 +157,7 @@ const DocPendientes = () => {
             <>
               <div className='flex flex-col transition-all duration-300 ease-in-out mt-5'>
                 <div className='flex justify-between'>
-                  <div>{pendiente.documento_0}</div>
+                  <div>{cortarTexto(pendiente.documento_0)}</div>
                   <div className='flex w-[450px] gap-4'>
                     <p>Enviado: {formatDate(pendiente.fecha_entrega)}</p>
                   </div>
@@ -169,7 +178,7 @@ const DocPendientes = () => {
                 
                 {checkedItems[pendiente.id_asunto] && pendiente.fecha_terminado && (
                   <div className='flex justify-between mt-3'>
-                    <div>{pendiente.documento_0}</div>
+                    <div>{cortarTexto(pendiente.documento_0)}</div>
                     <div className='flex w-[450px] gap-4'>
                       <p>Estimado: {formatDate(pendiente.fecha_terminado)}</p>
                     </div>

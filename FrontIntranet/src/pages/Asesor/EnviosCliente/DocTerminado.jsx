@@ -39,8 +39,8 @@ const DocTerminado = () => {
 
   return (
     <div className="flex flex-col gap-2 ">
-      {terminados.map((terminado)=>(
-        <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7]  p-[6px] rounded-md">
+      {terminados.map((terminado,index)=>(
+        <div key={index} className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7]  p-[6px] rounded-md">
             <div className="w-[300px] flex ">{terminado.titulo}</div>
             <div className="w-[300px] flex justify-center">Fecha de Entregable: {formatDate(terminado.fecha_entregado)}</div>
             <div className="w-[300px] flex justify-center">Fecha en Proceso: {formatDate(terminado.fecha_revision)}</div>

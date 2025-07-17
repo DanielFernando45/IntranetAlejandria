@@ -14,6 +14,8 @@ const RecursosEstudiante = () => {
     const [tutoriales, setTutoriales] = useState([]);
     const [guias, setGuias] = useState([]);
     const [herramientas, setHerramientas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [imagesLoaded, setImagesLoaded] = useState(false);
     
     // Estados para los modales
     const [showVideoModal, setShowVideoModal] = useState(false);
@@ -26,25 +28,54 @@ const RecursosEstudiante = () => {
     const [visibleGuias, setVisibleGuias] = useState([0, 1, 2, 3, 4]);
     const [visibleHerramientas, setVisibleHerramientas] = useState([0, 1, 2, 3, 4]);
 
+    // Función para cargar imágenes y verificar cuando están listas
+    const loadImages = async (items, imageKey) => {
+        const imagePromises = items.map(item => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = item[imageKey] || youtube;
+                img.onload = resolve;
+                img.onerror = resolve; // Resuelve incluso si hay error para no bloquear
+            });
+        });
+        await Promise.all(imagePromises);
+    };
+
     // Obtener datos de las APIs
     useEffect(() => {
-        // Obtener tutoriales
-        fetch('http://localhost:3001/recursos/tutoriales/all')
-            .then(response => response.json())
-            .then(data => setTutoriales(data))
-            .catch(error => console.error('Error fetching tutoriales:', error));
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                
+                // Obtener todos los datos en paralelo
+                const [tutorialesRes, guiasRes, herramientasRes] = await Promise.all([
+                    fetch('http://localhost:3001/recursos/tutoriales/all').then(res => res.json()),
+                    fetch('http://localhost:3001/recursos/guias/all').then(res => res.json()),
+                    fetch('http://localhost:3001/recursos/herramientas/all').then(res => res.json())
+                ]);
 
-        // Obtener guías
-        fetch('http://localhost:3001/recursos/guias/all')
-            .then(response => response.json())
-            .then(data => setGuias(data))
-            .catch(error => console.error('Error fetching guias:', error));
+                // Establecer los datos
+                setTutoriales(tutorialesRes);
+                setGuias(guiasRes);
+                setHerramientas(herramientasRes);
 
-        // Obtener herramientas
-        fetch('http://localhost:3001/recursos/herramientas/all')
-            .then(response => response.json())
-            .then(data => setHerramientas(data))
-            .catch(error => console.error('Error fetching herramientas:', error));
+                // Pre-cargar imágenes
+                await Promise.all([
+                    loadImages(tutorialesRes, 'enlace'),
+                    loadImages(guiasRes, 'imagen'),
+                    loadImages(herramientasRes, 'imagen')
+                ]);
+
+                // Todo está listo
+                setImagesLoaded(true);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, []);
 
     // Función para extraer el ID del video de YouTube
@@ -115,6 +146,105 @@ const RecursosEstudiante = () => {
             });
         }
     };
+
+    // Componente Skeleton para Tutoriales
+    const TutorialSkeleton = () => (
+        <div className="relative w-[300px]">
+            <div className="w-[300px] h-[400px] rounded-xl relative overflow-hidden bg-gray-200 animate-pulse">
+                <div className="w-full h-[283px] rounded-t-xl bg-gray-300"></div>
+                <div className="absolute bottom-0 left-0 w-full h-[116px] bg-gray-200 rounded-b-xl"></div>
+                <div className="absolute bottom-0 left-0 w-full p-6 z-10">
+                    <div className="h-5 w-3/4 bg-gray-300 rounded mb-2"></div>
+                    <div className="h-4 w-1/2 bg-gray-300 rounded"></div>
+                </div>
+                <div className="absolute top-[258px] right-[25px] bg-gray-300 h-[50px] w-[50px] rounded-full"></div>
+            </div>
+        </div>
+    );
+
+    // Componente Skeleton para Guías
+    const GuiaSkeleton = () => (
+        <div className="relative w-[262px] h-[284px] bg-gray-200 animate-pulse rounded-xl">
+            <div className="w-full h-[126px] rounded-t-xl bg-gray-300"></div>
+            <div className="w-full h-[110px] gap-[10px] py-[10px] px-[15px] bg-white">
+                <div className="h-5 w-3/4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 w-full bg-gray-200 rounded mb-1"></div>
+                <div className="h-3 w-2/3 bg-gray-200 rounded"></div>
+            </div>
+            <div className="flex h-[48px] bg-gray-300 rounded-b-xl">
+                <div className="w-1/2 border-r border-gray-400"></div>
+                <div className="w-1/2 border-l border-gray-400"></div>
+            </div>
+        </div>
+    );
+
+    // Componente Skeleton para Herramientas
+    const HerramientaSkeleton = () => (
+        <div className="relative w-[190px] h-[284px] bg-gray-200 animate-pulse rounded-xl">
+            <div className="w-full h-[126px] rounded-t-xl bg-gray-300"></div>
+            <div className="flex flex-col w-full h-[83px] gap-[4px] py-[10px] px-[10px] bg-white">
+                <div className="h-5 w-3/4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 w-full bg-gray-200 rounded mb-1"></div>
+                <div className="h-3 w-2/3 bg-gray-200 rounded"></div>
+            </div>
+            <div className="h-[33px] bg-gray-300 rounded-b-xl"></div>
+        </div>
+    );
+
+    // Componente de carga completa
+    const FullPageSkeleton = () => (
+        <div className="w-full h-screen flex flex-col gap-8 p-5">
+            <div className="flex justify-between items-center">
+                <div className="h-7 w-1/4 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-5 w-20 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="flex justify-between">
+                <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="flex gap-4">
+                    {Array(5).fill().map((_, i) => (
+                        <TutorialSkeleton key={`full-tutorial-${i}`} />
+                    ))}
+                </div>
+                <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+            
+            <div className="flex justify-between items-center mt-8">
+                <div className="h-7 w-1/4 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-5 w-20 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="flex justify-between">
+                <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="flex gap-4">
+                    {Array(5).fill().map((_, i) => (
+                        <GuiaSkeleton key={`full-guia-${i}`} />
+                    ))}
+                </div>
+                <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+            
+            <div className="flex justify-between items-center mt-8">
+                <div className="h-7 w-1/4 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-5 w-20 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="flex justify-between">
+                <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="flex gap-4">
+                    {Array(5).fill().map((_, i) => (
+                        <HerramientaSkeleton key={`full-herramienta-${i}`} />
+                    ))}
+                </div>
+                <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+        </div>
+    );
+
+    if (loading || !imagesLoaded) {
+        return (
+            <LayoutApp>
+                <FullPageSkeleton />
+            </LayoutApp>
+        );
+    }
 
     return (
         <LayoutApp>

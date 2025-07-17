@@ -62,6 +62,16 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
     return documents;
   };
 
+   const cortarTexto = (texto) =>{
+    
+    const index = texto.indexOf('-');
+    if (index !== -1) {
+      return texto.substring(index + 1);     
+    }
+    return texto; // Si no se encuentra el guion, devuelve el texto original
+  }
+
+
   // Función para descargar archivos directamente desde la URL proporcionada
   const handleDownload = async (url, filename) => {
     try {
@@ -81,7 +91,7 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
         <div className="w-[160px] flex text-[8px] sm:text-[12px] lg:text-[17px]">Titulo</div>
         <div className="w-[102px] justify-center hidden lg:text-[17px] 1xl:flex">Estado</div>
@@ -101,7 +111,7 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
               <div className='text-white bg-[#353563] rounded px-3 hidden lg:text-[14px] 1xl:flex '>{envio.estado}</div>
               <div className="w-[100px] flex justify-center text-[8px] sm:text-[12px] lg:text-[14px]">{formatDate(envio.fecha)}</div>
               <div className="w-[250px] justify-center hidden md:flex md:text-[10px] lg:text-[14px]">
-                {hasDocuments ? documents[0].name : 'No hay archivos'}
+                {hasDocuments ? cortarTexto(documents[0].name) : 'No hay archivos'}
               </div>
               <div className="w-[100px]  flex justify-center ">
                 {hasDocuments && (
@@ -123,7 +133,7 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
                     <div className="w-[160px] flex text-[8px] sm:text-[10px]">{envio.asunto}</div>
                     <div className="w-[102px] hidden 1xl:flex 1xl:justify-center sm:text-[10px] ">{envio.estado}</div>
                     <div className="w-[100px] flex justify-center text-[8px] sm:text-[10px]">{formatDate(envio.fecha)}</div>
-                    <div className="w-[250px] justify-center hidden md:flex md:text-[10px]">{doc.name}</div>
+                    <div className="w-[250px] justify-center hidden md:flex md:text-[10px]">{cortarTexto(doc.name)}</div>
                     <div className="w-[100px] flex justify-center text-[8px] sm:text-[10px]">
                       <button
                         onClick={() => handleDownload(doc.pathFile, doc.name)}

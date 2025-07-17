@@ -5,7 +5,7 @@ import descargar from '../../../assets/icons/Descargas.svg'
 import axios from 'axios';
 
 const EnviosCliente = ({ idAsesoramiento }) => {
-
+ 
 const [envioCliente, setEnvioCliente] = useState([]);
   const [openItems, setOpenItems] = useState({});
 
@@ -39,6 +39,15 @@ const [envioCliente, setEnvioCliente] = useState([]);
     const date = new Date(dateString)
     const options = { month: 'short', day: 'numeric', year: 'numeric' }
     return date.toLocaleDateString('en-US', options)
+  }
+
+  const cortarTexto = (texto) =>{
+    
+    const index = texto.indexOf('-');
+    if (index !== -1) {
+      return texto.substring(index + 1);     
+    }
+    return texto; // Si no se encuentra el guion, devuelve el texto original
   }
 
 
@@ -102,7 +111,7 @@ const [envioCliente, setEnvioCliente] = useState([]);
               <div className='text-white bg-[#353563] rounded px-3'>{envio.estado}</div>
               <div className="w-[150px] flex justify-center">{formatDate(envio.fecha)}</div>
               <div className="w-[250px] flex justify-center">
-                {hasDocuments ? documents[0].name : 'No hay archivos'}
+                {hasDocuments ? cortarTexto(documents[0].name)  : 'No hay archivos'}
               </div>
               <div className="w-[65px] flex justify-center">
                 {hasDocuments && (
@@ -124,7 +133,7 @@ const [envioCliente, setEnvioCliente] = useState([]);
                     <div className="w-[300px] flex">{envio.asunto}</div>
                     <div className="w-[102px]">{envio.estado}</div>
                     <div className="w-[100px] flex justify-center">{formatDate(envio.fecha)}</div>
-                    <div className="w-[250px] flex justify-center">{doc.name}</div>
+                    <div className="w-[250px] flex justify-center">{cortarTexto(doc.name)}</div>
                     <div className="w-[65px] flex justify-center">
                       <button 
                         onClick={() => handleDownload(doc.pathFile, doc.name)}
