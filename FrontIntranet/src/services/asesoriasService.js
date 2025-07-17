@@ -20,7 +20,7 @@ const asesoramientoById = async (id) => {
   } catch (error) {
     console.error("Error al obtener las asesorías del estudiante:", error);
   }
-}
+};
 
 const asesoriasPorEstudiante = async (idEstudiante) => {
   try {
@@ -34,8 +34,8 @@ const asesoriasPorEstudiante = async (idEstudiante) => {
   }
 };
 
-const obtenerDelegado = async(idAsesoria) => {
-   try {
+const obtenerDelegado = async (idAsesoria) => {
+  try {
     const { data } = await axios.get(
       `http://localhost:3001/cliente/miAsesoramiento/${idEstudiante}`
     );
@@ -44,11 +44,11 @@ const obtenerDelegado = async(idAsesoria) => {
     console.error("Error al obtener las asesorías del estudiante:", error);
     // throw error;
   }
-}
+};
 
 export const asesoriasService = {
   asesoriasPorEstudiante,
   asesorias,
   asesoramientoById,
-  obtenerDelegado
+  obtenerDelegado,
 };

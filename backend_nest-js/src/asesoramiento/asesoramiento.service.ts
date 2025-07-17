@@ -35,7 +35,7 @@ export class AsesoramientoService {
 
     @InjectDataSource()
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async create(
     createAsesoramientoDto: CreateAsesoramientoDto,
@@ -139,9 +139,9 @@ export class AsesoramientoService {
     const solo_fechas = {
       contrato: datosAsesoramiento
         ? {
-          id: datosAsesoramiento.tipoContrato.id,
-          nombre: datosAsesoramiento.tipoContrato.nombre,
-        }
+            id: datosAsesoramiento.tipoContrato.id,
+            nombre: datosAsesoramiento.tipoContrato.nombre,
+          }
         : { message: 'Por asignar' },
       fecha_inicio: datosAsesoramiento
         ? datosAsesoramiento.fecha_inicio
@@ -225,6 +225,7 @@ export class AsesoramientoService {
       SELECT 
       a.id AS id_asesoramiento,
       a.fecha_inicio AS fecha_inicio,
+      a.fecha_fin as fecha_fin,
       a.estado AS estado,
       a.profesion_asesoria AS profesion_asesoria,
       t.nombre AS tipo_trabajo,
@@ -247,7 +248,7 @@ export class AsesoramientoService {
     area_asesor as ar ON ar.id = ase.id_area 
     WHERE p.esDelegado = 1;
   `);
-      console.log(asesoramientos)
+    console.log(asesoramientos);
     //Obtenemos los estudiantes por el id asesoramiento
     const asesoramientosWithEstudiantes = await Promise.all(
       asesoramientos.map(async (asesoramiento) => {
@@ -262,38 +263,6 @@ export class AsesoramientoService {
       }),
     );
     return asesoramientosWithEstudiantes;
-
-    // 2. Obtener todos los estudiantes (que no son delegados)
-    const estudiantes = await this.asesoramientoRepo
-      .createQueryBuilder('a')
-      .innerJoin('a.procesosasesoria', 'p')
-      .innerJoin('p.cliente', 'c')
-      .select([
-        'a.id AS id_asesoramiento',
-        'c.id AS id_estudiante',
-        "CONCAT(c.nombre, ' ', c.apellido) AS estudiante",
-      ])
-      .where('p.esDelegado = 0')
-      .getRawMany();
-
-    // 3. Agrupar estudiantes por asesoramiento
-    const estudiantesPorAsesoria = estudiantes.reduce(
-      (map, est) => {
-        if (!map[est.id_asesoramiento]) map[est.id_asesoramiento] = [];
-        map[est.id_asesoramiento].push({
-          id_estudiante: est.id_estudiante,
-          estudiante: est.estudiante,
-        });
-        return map;
-      },
-      {} as Record<number, any[]>,
-    );
-
-    // 4. Unir la data
-    return asesoramientos.map((a) => ({
-      ...a,
-      estudiantes: estudiantesPorAsesoria[a.id_asesoramiento] || [],
-    }));
   }
 
   async listar_por_id(id: number) {
@@ -301,9 +270,13 @@ export class AsesoramientoService {
       SELECT 
       a.id AS id_asesoramiento,
       a.fecha_inicio AS fecha_inicio,
+      a.fecha_fin as fecha_fin,
       a.estado AS estado,
       a.profesion_asesoria AS profesion_asesoria,
       t.nombre AS tipo_trabajo,
+      a.id_tipo_trabajo as id_tipo_trabajo,
+      a.id_contrato as id_contrato,
+      a.tipo_servicio as tipo_servicio,
       ase.id AS id_asesor,
       CONCAT(ase.nombre, ' ', ase.apellido) AS asesor,
       c.id AS id_delegado,
@@ -717,8 +690,13 @@ export class AsesoramientoService {
       .innerJoin('asesoramiento.procesosasesoria', 'pro')
       .innerJoinAndSelect('asesoramiento.tipoTrabajo', 'tipoTrabajo')
       .innerJoinAndSelect('pro.asesor', 'asesor')
-      .select(['DISTINCT asesoramiento.id AS id', 'asesoramiento.profesion_asesoria AS profesion_asesoria',
-        'tipoTrabajo.nombre AS tipotrabajo', 'asesoramiento.fecha_inicio AS fecha_inicio', 'asesoramiento.fecha_fin AS fecha_fin'])
+      .select([
+        'DISTINCT asesoramiento.id AS id',
+        'asesoramiento.profesion_asesoria AS profesion_asesoria',
+        'tipoTrabajo.nombre AS tipotrabajo',
+        'asesoramiento.fecha_inicio AS fecha_inicio',
+        'asesoramiento.fecha_fin AS fecha_fin',
+      ])
       .where('asesor.id= :id', { id })
       .andWhere('asesoramiento.estado= :estado', { estado })
       .getRawMany();
@@ -726,18 +704,20 @@ export class AsesoramientoService {
     if (listAsesorias.length === 0)
       throw new NotFoundException('No presenta asesorias');
 
-    const responseAsesorias = await Promise.all(listAsesorias.map(async (asesoria) => {
-      const delegado = await this.clienteService.getDelegado(asesoria.id)
-      return ({
-        "id": asesoria.id,
-        "delegado": delegado.nombre_delegado,
-        "profesion_asesoria": asesoria.profesion_asesoria,
-        "tipo_trabajo": asesoria.tipotrabajo,
-        "fecha_inicio": asesoria.fecha_inicio,
-        "fecha_fin": asesoria.fecha_fin,
-        "especialidad": asesoria.especialidad
-      })
-    }))
+    const responseAsesorias = await Promise.all(
+      listAsesorias.map(async (asesoria) => {
+        const delegado = await this.clienteService.getDelegado(asesoria.id);
+        return {
+          id: asesoria.id,
+          delegado: delegado.nombre_delegado,
+          profesion_asesoria: asesoria.profesion_asesoria,
+          tipo_trabajo: asesoria.tipotrabajo,
+          fecha_inicio: asesoria.fecha_inicio,
+          fecha_fin: asesoria.fecha_fin,
+          especialidad: asesoria.especialidad,
+        };
+      }),
+    );
 
     return responseAsesorias;
   }
