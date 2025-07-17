@@ -29,7 +29,7 @@ const HomeEstudiante = () => {
   const [proximasReuniones, setProximasReuniones] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleItems, setVisibleItems] = useState(1);
-  // const usuario = localStorage.getItem('user');
+  const usuario = localStorage.getItem('user');
   const user = useSelector((state) => state.auth.user);
   const id = user.id;
 
@@ -149,7 +149,7 @@ const HomeEstudiante = () => {
             <p className="text-[12px] sm:text-[18px] md:text-[22px] lg:text-[35px] text-[#B5B5B5] xl:text-[20px] ">{dia} de {mes}, {año}</p>
             <div className="xl:w-[620px]">
               <h2 className="  text-[15px] sm:text-[25px] md:text-[30px] lg:text-[40px] xl:text-[30px] 1xl:text-[35px] font-semibold mt-2 md:mt-1 ">
-              Bienvenido {clienteNombre.nombre} al Intranet de asesoría de tesis
+              Bienvenido {clienteNombre?.nombre} al Intranet de asesoría de tesis
             </h2>
             </div>
             

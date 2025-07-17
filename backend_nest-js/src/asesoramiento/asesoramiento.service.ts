@@ -394,6 +394,7 @@ export class AsesoramientoService {
     // console.log("Update asesoramientoDto",updateAsesoramientoDto)
     // console.log("Clientes",clientes)
     let id_asesor;
+    console.log(clientes)
     if (updateAsesoramientoDto.id_asesor !== undefined) {
       id_asesor = updateAsesoramientoDto.id_asesor;
       delete updateAsesoramientoDto.id_asesor;
@@ -456,11 +457,15 @@ export class AsesoramientoService {
 
       const cantidadActualizar = Math.min(cantidadActual, cantidadNueva);
 
+      let esDelegado = false;
       for (let i = 0; i < cantidadActualizar; i++) {
+        esDelegado = i == 0 ? true : false;
+        console.log("clientes: ",clientes)
         await this.procesosAsesoriaService.actualizar_registros_por_Asesoramiento(
           id,
           clienteIds[i],
           id_asesor,
+          esDelegado,
           queryRunner.manager,
           procesosActuales[i].id,
         );
@@ -469,10 +474,12 @@ export class AsesoramientoService {
       // 5. Agregar nuevos si hay más clientes
       if (cantidadNueva > cantidadActualizar) {
         for (let i = cantidadActualizar; i < cantidadNueva; i++) {
+          esDelegado = i == 0 ? true : false;
           await this.procesosAsesoriaService.crear_registro_por_Asesoramiento(
             id,
             clienteIds[i],
             id_asesor,
+            esDelegado,
             queryRunner.manager,
           );
         }

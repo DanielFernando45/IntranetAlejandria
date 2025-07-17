@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProcesosAsesoriaDto } from './dto/create-procesos_asesoria.dto';
 import { UpdateProcesosAsesoriaDto } from './dto/update-procesos_asesoria.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
@@ -15,51 +19,84 @@ export class ProcesosAsesoriaService {
     private procesosAsesoriaRepo: Repository<ProcesosAsesoria>,
 
     @InjectDataSource()
-    private readonly dataSource: DataSource
-  ) { }
+    private readonly dataSource: DataSource,
+  ) {}
 
-  async addProceso_to_Asesoramiento(clientes: clientesExtraDTO, id_asesor: number, id_asesoramiento: number, manager: EntityManager) {
+  async addProceso_to_Asesoramiento(
+    clientes: clientesExtraDTO,
+    id_asesor: number,
+    id_asesoramiento: number,
+    manager: EntityManager,
+  ) {
     const esDelegado = clientes.delegado;
-    const clienteIds = Object.values(clientes).filter(id => typeof id === 'number' && id > 0);
+    const clienteIds = Object.values(clientes).filter(
+      (id) => typeof id === 'number' && id > 0,
+    );
     for (const clienteId of clienteIds) {
       const nuevoProceso = manager.create(ProcesosAsesoria, {
         cliente: { id: clienteId },
         asesor: { id: id_asesor },
         asesoramiento: { id: id_asesoramiento },
-        esDelegado: esDelegado == clienteId
+        esDelegado: esDelegado == clienteId,
       });
-      console.log(nuevoProceso)
-      await manager.insert(ProcesosAsesoria, nuevoProceso)
+      console.log(nuevoProceso);
+      await manager.insert(ProcesosAsesoria, nuevoProceso);
     }
-    return true
+    return true;
   }
 
-  async actualizar_registros_por_Asesoramiento(idAsesoramiento: number, id_cliente: number, id_asesor: number | undefined, manager: EntityManager, id_proceso: number) {
-    await manager.update(ProcesosAsesoria, { id: id_proceso }, {
-      cliente: { id: id_cliente },
-      asesor: { id: id_asesor },
-      asesoramiento: { id: idAsesoramiento }
-    })
+  async actualizar_registros_por_Asesoramiento(
+    idAsesoramiento: number,
+    id_cliente: number,
+    id_asesor: number | undefined,
+    esDelegado: boolean,
+    manager: EntityManager,
+    id_proceso: number,
+  ) {
+    await manager.update(
+      ProcesosAsesoria,
+      { id: id_proceso },
+      {
+        cliente: { id: id_cliente },
+        asesor: { id: id_asesor },
+        esDelegado,
+        asesoramiento: { id: idAsesoramiento },
+      },
+    );
   }
 
-  async crear_registro_por_Asesoramiento(idAsesoramiento: number, id_cliente: number, id_asesor: number | undefined, manager: EntityManager) {
+  async crear_registro_por_Asesoramiento(
+    idAsesoramiento: number,
+    id_cliente: number,
+    id_asesor: number | undefined,
+    esDelegado: boolean,
+    manager: EntityManager,
+  ) {
     const nuevo = manager.create(ProcesosAsesoria, {
       cliente: { id: id_cliente },
       asesor: { id: id_asesor },
-      asesoramiento: { id: idAsesoramiento }
-    })
+      esDelegado,
+      asesoramiento: { id: idAsesoramiento },
+    });
     //await manager.save(nuevo);
-    await manager.insert(ProcesosAsesoria, nuevo)
+    await manager.insert(ProcesosAsesoria, nuevo);
   }
 
   async remove_by_asesoramiento(id: number, manager: EntityManager) {
     try {
-      const deletedProcesos = await manager.delete(ProcesosAsesoria, { asesoramiento: { id: id } })
-      if (deletedProcesos.affected === 0) throw new NotFoundException(`No se encontro para eliminar con ese id:${id}`)
-      console.log(deletedProcesos.affected)
-      return true
+      const deletedProcesos = await manager.delete(ProcesosAsesoria, {
+        asesoramiento: { id: id },
+      });
+      if (deletedProcesos.affected === 0)
+        throw new NotFoundException(
+          `No se encontro para eliminar con ese id:${id}`,
+        );
+      console.log(deletedProcesos.affected);
+      return true;
     } catch (err) {
-      throw new InternalServerErrorException(`Error en la eliminacion de los procesos Asesoria ${err}`)
+      throw new InternalServerErrorException(
+        `Error en la eliminacion de los procesos Asesoria ${err}`,
+      );
     }
   }
 
@@ -68,14 +105,13 @@ export class ProcesosAsesoriaService {
       .createQueryBuilder('pr')
       .innerJoin('pr.asesoramiento', 'a')
       .innerJoinAndSelect('pr.cliente', 'c')
-      .select([
-        'c.id AS clienteId'
-      ])
+      .select(['c.id AS clienteId'])
       .where('a.id= :id', { id: asesoramientoId })
-      .getRawOne()
+      .getRawOne();
 
-    if (!delegadoprocess) throw new InternalServerErrorException("no hay un delegado")
-    return delegadoprocess
+    if (!delegadoprocess)
+      throw new InternalServerErrorException('no hay un delegado');
+    return delegadoprocess;
   }
 
   async getDelegadoByIdAsesoramiento(id_asesoramiento: number) {
@@ -87,44 +123,52 @@ export class ProcesosAsesoriaService {
         'c.id AS clienteId',
         "concat(c.nombre, ' ', c.apellido) AS delegado",
         'a.id AS asesoramientoId',
-        'pr.id AS procesoId'
+        'pr.id AS procesoId',
       ])
       .where('pr.asesoramiento.id = :id', { id: id_asesoramiento })
       .andWhere('pr.esDelegado = true')
       .getRawOne();
-    if (!delegadoByAsesoramiento) throw new InternalServerErrorException("no hay un delegado")
-    return delegadoByAsesoramiento
+    if (!delegadoByAsesoramiento)
+      throw new InternalServerErrorException('no hay un delegado');
+    return delegadoByAsesoramiento;
   }
 
-  async getDelegadoAndIdAsesoramiento(id_asesor: number, manager: EntityManager) {
-
+  async getDelegadoAndIdAsesoramiento(
+    id_asesor: number,
+    manager: EntityManager,
+  ) {
     try {
-
       const listAsesoramientoId = await manager.find(Asesoramiento, {
         where: { procesosasesoria: { asesor: { id: id_asesor } } },
-        relations: ['procesosasesoria', 'procesosasesoria.asesor']
-      })
+        relations: ['procesosasesoria', 'procesosasesoria.asesor'],
+      });
 
-      if (!listAsesoramientoId.length) throw new NotFoundException(`No se encontraron asesoramientos para el asesor con ID ${id_asesor}`);
+      if (!listAsesoramientoId.length)
+        throw new NotFoundException(
+          `No se encontraron asesoramientos para el asesor con ID ${id_asesor}`,
+        );
 
       const listAll = Promise.all(
         listAsesoramientoId.map(async (asesoramiento) => {
-          const delegado = await this.getDelegado(asesoramiento.id)
-          const getNombreDelegado = await manager.findOne(Cliente, { where: { id: delegado.clienteId } })
-          return ({
-            'id_asesoramiento': asesoramiento.id,
-            'profesion_asesoria': asesoramiento.profesion_asesoria,
-            'delegado': `${getNombreDelegado?.nombre?.split(' ')[0]} ${getNombreDelegado?.apellido?.split(' ')[0]}`
-          })
-        }))
+          const delegado = await this.getDelegado(asesoramiento.id);
+          const getNombreDelegado = await manager.findOne(Cliente, {
+            where: { id: delegado.clienteId },
+          });
+          return {
+            id_asesoramiento: asesoramiento.id,
+            profesion_asesoria: asesoramiento.profesion_asesoria,
+            delegado: `${getNombreDelegado?.nombre?.split(' ')[0]} ${getNombreDelegado?.apellido?.split(' ')[0]}`,
+          };
+        }),
+      );
       //console.log(listAll)
-      return listAll
-
+      return listAll;
     } catch (err) {
-      throw new InternalServerErrorException(`Error en conseguir los datos ${err.message}`)
+      throw new InternalServerErrorException(
+        `Error en conseguir los datos ${err.message}`,
+      );
     }
   }
-
 
   findAll() {
     return `This action returns all procesosAsesoria`;

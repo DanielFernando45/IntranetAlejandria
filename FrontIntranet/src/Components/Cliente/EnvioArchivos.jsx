@@ -28,7 +28,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
   const verifyToken = async () => {
     try {
       // Obtener el token - en tu caso está en authToken
-      const token = localStorage.getItem('authToken');
+      const token =  JSON.parse(localStorage.getItem('authToken'));
       
       // Obtener los datos del usuario - en tu caso está en 'user' pero con formato irregular
       const userDataString = localStorage.getItem('user');
@@ -173,7 +173,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
     } finally {
       setIsSubmitting(false);
     }
-    window.location.reload();
+    // window.location.reload();
   };
 
   useEffect(() => {

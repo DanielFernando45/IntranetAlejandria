@@ -25,8 +25,10 @@ const Login = () => {
       });
 
       const { access_token, datos_usuario } = res.data;
+      console.log("token:", access_token);
       console.log("Datos del usuario:", datos_usuario);
-      dispatch(loginSuccess(datos_usuario));
+      dispatch(loginSuccess({datos_usuario,access_token}));
+      // return
 
       // Guardamos en AuthContext
       // login({ ...datos_usuario, access_token });

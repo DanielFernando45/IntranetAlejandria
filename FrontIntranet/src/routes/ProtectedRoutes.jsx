@@ -8,7 +8,6 @@ const ProtectedRoutes = ({ allowedRoles }) => {
 
   const auth = useSelector((state) => state.auth);
 
-
   return auth.isAuthenticated ? (
     allowedRoles.includes(auth.user.role) ? (
       <Outlet />
