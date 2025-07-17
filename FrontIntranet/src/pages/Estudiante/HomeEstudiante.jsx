@@ -30,7 +30,7 @@ const HomeEstudiante = () => {
   const [proximasReuniones, setProximasReuniones] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleItems, setVisibleItems] = useState(1);
-  // const usuario = localStorage.getItem('user');
+  const usuario = localStorage.getItem('user');
   const user = useSelector((state) => state.auth.user);
   const id = user.id;
 

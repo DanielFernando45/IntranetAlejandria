@@ -107,6 +107,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
     } finally {
       setIsSubmitting(false);
     }
+    window.location.reload();
   };
 
   useEffect(() => {

@@ -22,6 +22,11 @@ const EditarAsignado = () => {
   const [mostrarEspecialidad, setMostrarEspecialidad] = useState(false);
   const [cargando, setCargando] = useState(true);
 
+  const [delegado, setDelegado] = useState(null);
+
+  const [asignarDelegado, setAsignarDelegado] = useState();
+  const [switchActive, setSwitchActive] = useState(null);
+
   const { data: asesoriaEditar, isLoading: loadingAsesosiaEditar } = useQuery({
     queryKey: ["asesoriaEditar"],
     queryFn: () => asesoriasService.asesoramientoById(id),
@@ -37,7 +42,16 @@ const EditarAsignado = () => {
     queryFn: () => clientesService.estudiantesPorAsignacion(id),
   });
 
-  console.log(estudiantesPorAsignacion);
+  useEffect(() => {
+    if (asesoriaEditar) {
+      setDelegado({
+        id: asesoriaEditar[0].id_delegado,
+        nombreCompleto: asesoriaEditar[0].delegado,
+      });
+      setSwitchActive(asesoriaEditar[0].id_delegado);
+    }
+  }, [asesoriaEditar]);
+
   useEffect(() => {
     if (estudiantesPorAsignacion) {
       setClientesSeleccionados(estudiantesPorAsignacion);
@@ -79,7 +93,7 @@ const EditarAsignado = () => {
       const estudiantesResponse = await axios.get(
         "http://localhost:3001/cliente/filter/all"
       );
-      console.log(estudiantesResponse);
+
       setEstudiantes(estudiantesResponse.data);
       setEstudiantesBase(estudiantesResponse.data);
 
@@ -105,7 +119,6 @@ const EditarAsignado = () => {
         data.id_tipo_trabajo === 3 || data.id_tipo_trabajo === 4
       );
 
-      console.log(data);
       // Cargar área y asesor
       const asesorResponse = await axios.get(
         `http://localhost:3001/asesor/${data.id_asesor}`
@@ -138,36 +151,7 @@ const EditarAsignado = () => {
           });
         }
       }
-      console.log(estudiantesResponse);
-      // Agregar estudiantes adicionales (estudiante2 a estudiante5)
-      // for (let i = 2; i <= 5; i++) {
-      //   const estudianteKey = `id_estudiante${i}`;
-      //   const nombreKey = `nombre_estudiante${i}`;
-      //   const apellidoKey = `apellido_estudiante${i}`;
 
-      //   if (data[estudianteKey]) {
-      //     const estudianteEncontrado = estudiantesResponse.data.find(
-      //       (e) => e.id === data[estudianteKey]
-      //     );
-      //     if (estudianteEncontrado) {
-      //       estudiantesSeleccionados.push(estudianteEncontrado);
-      //     } else {
-      //       // Si no está en la lista de estudiantes, crear un objeto con los datos básicos
-      //       estudiantesSeleccionados.push({
-      //         id: data[estudianteKey],
-      //         nombre: data[nombreKey],
-      //         apellido: data[apellidoKey],
-      //         // Datos adicionales que podrían ser necesarios
-      //         gradoAcademico: "No disponible",
-      //         carrera: "No disponible",
-      //         fecha_creacion: new Date().toISOString(),
-      //       });
-      //     }
-      //   }
-      // }
-
-      // console.log();
-      // setClientesSeleccionados(estudiantesSeleccionados);
       setCargando(false);
     } catch (error) {
       console.error("Error al cargar datos del asesoramiento:", error);
@@ -190,13 +174,33 @@ const EditarAsignado = () => {
     return date.toLocaleDateString("es-PE");
   };
 
+  const handleEliminarDelegado = () => {
+    setDelegado(null);
+    setSwitchActive(null);
+  };
+
+  const handleChangedSwitch = (cliente) => {
+    setSwitchActive(switchActive == cliente.id ? null : cliente.id);
+    setTimeout(() => {
+      setDelegado({
+        id: cliente.id,
+        nombreCompleto: `${cliente.nombre} ${cliente.apellido}`,
+      });
+    }, 200);
+  };
+
   const handleElegirCliente = (cliente) => {
-    console.log(cliente);
+    const clienteTransformado = {
+      id_estudiante: cliente.id,
+      estudiante: `${cliente.nombre} ${cliente.apellido}`,
+      // puedes agregar más campos si deseas
+    };
+
     if (
       clientesSeleccionados.length < 5 &&
-      !clientesSeleccionados.find((c) => c.id_estudiante === cliente.id)
+      !clientesSeleccionados.some((c) => c.id_estudiante === cliente.id)
     ) {
-      setClientesSeleccionados([...clientesSeleccionados, cliente]);
+      setClientesSeleccionados((prev) => [...prev, clienteTransformado]);
     }
   };
 
@@ -263,7 +267,7 @@ const EditarAsignado = () => {
       return;
     }
 
-    if (clientesSeleccionados.length === 0) {
+    if (clientesSeleccionados.length === 0 && delegado == null) {
       alert("Debe seleccionar al menos un cliente");
       return;
     }
@@ -298,16 +302,16 @@ const EditarAsignado = () => {
         fecha_fin: formData.fecha_fin,
       },
       clientes: {
-        delegado: clientesSeleccionados[0].id,
-        id_cliente2:
-          clientesSeleccionados.length > 1 ? clientesSeleccionados[1].id : null,
+        delegado: delegado?.id ? delegado.id : null,
       },
     };
 
     // Agregar estudiantes adicionales si existen (hasta 5)
-    for (let i = 1; i < clientesSeleccionados.length && i < 5; i++) {
-      payload.clientes[`id_cliente${i + 1}`] = clientesSeleccionados[i].id;
+    for (let i = 0; i < clientesSeleccionados.length && i < 5; i++) {
+      payload.clientes[`id_cliente${i + 2}`] = clientesSeleccionados[i].id_estudiante;
     }
+    console.log(clientesSeleccionados);
+    console.log(payload);
 
     try {
       console.log(payload);
@@ -349,17 +353,16 @@ const EditarAsignado = () => {
             <div className="flex flex-col gap-2">
               <div className="flex items-start gap-3">
                 <h2 className="text-[20px] font-semibold mt-1">Delegado:</h2>
-                {/* {clientesSeleccionados.length > 0 && ( */}
-                <div className="flex items-center border gap-1 rounded px-2 py-[5px] bg-white shadow-sm">
-                  <span className="text-sm">{asesoriaEditar[0].delegado}</span>
-                  <button
-                    onClick={() =>
-                      handleEliminarCliente(asesoriaEditar[0].id_delegado)
-                    }
-                  >
-                    <img src={eliminar} alt="" />
-                  </button>
-                </div>
+                {delegado && (
+                  <div className="flex items-center border gap-1 rounded px-2 py-[5px] bg-white shadow-sm">
+                    <span className="text-sm">{delegado?.nombreCompleto}</span>
+                    <button
+                      onClick={() => handleEliminarDelegado(delegado?.id)}
+                    >
+                      <img src={eliminar} alt="" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               {clientesSeleccionados.length > 0 && (
@@ -371,7 +374,13 @@ const EditarAsignado = () => {
                         key={cliente.id_estudiante}
                         className="flex items-center border rounded px-2 py-1 bg-white shadow-sm"
                       >
-                        <span className="text-sm">{cliente.estudiante}</span>
+                        <span className="text-sm">
+                          {cliente.estudiante
+                            ? cliente.estudiante
+                            : cliente.nombre
+                            ? `${cliente.nombre} ${cliente.apellido}`
+                            : "No hay dato"}
+                        </span>
                         <button
                           onClick={() =>
                             handleEliminarCliente(cliente.id_estudiante)
@@ -404,7 +413,10 @@ const EditarAsignado = () => {
 
             {estudiantes.map(
               (cliente, index) =>
-                !clientesSeleccionados.find((c) => c.id === cliente.id) && (
+                !clientesSeleccionados.find(
+                  (c) => c.id_estudiante === cliente.id
+                ) &&
+                cliente.id != delegado?.id && (
                   <div
                     key={cliente.id}
                     className={`flex justify-between text-[#2B2829] font-normal ${
@@ -426,13 +438,31 @@ const EditarAsignado = () => {
                     <div className="w-[360px] flex justify-center">
                       {cliente.carrera}
                     </div>
-                    <button
-                      onClick={() => handleElegirCliente(cliente)}
-                      className="w-[110px] rounded-md px-3 bg-[#1C1C34] flex justify-center text-white"
-                      disabled={clientesSeleccionados.length >= 5}
-                    >
-                      {clientesSeleccionados.length >= 5 ? "Límite" : "Elegir"}
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleElegirCliente(cliente)}
+                        className="w-[110px] rounded-md px-3 bg-[#1C1C34] flex justify-center text-white"
+                        disabled={clientesSeleccionados.length >= 4}
+                      >
+                        {clientesSeleccionados.length >= 4
+                          ? "Límite"
+                          : "Elegir"}
+                      </button>
+
+                      <label className="inline-flex items-center cursor-pointer">
+                        <input
+                          onChange={() => handleChangedSwitch(cliente)}
+                          type="checkbox"
+                          checked={
+                            switchActive === cliente.id && delegado?.id == null
+                          }
+                          value=""
+                          className="sr-only peer"
+                          disabled={delegado?.id}
+                        />
+                        <div className="relative w-11 h-6 bg-gray-300 peer-focus:outline-none  rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
                   </div>
                 )
             )}
@@ -521,8 +551,8 @@ const EditarAsignado = () => {
                     Seleccionar
                   </option>
 
-                  {tipoContratos.data &&
-                    tipoContratos.data.map((contrato) => (
+                  {tipoContratos?.data &&
+                    tipoContratos?.data.map((contrato) => (
                       <option key={contrato.id} value={contrato.id}>
                         {contrato.nombre}
                       </option>
