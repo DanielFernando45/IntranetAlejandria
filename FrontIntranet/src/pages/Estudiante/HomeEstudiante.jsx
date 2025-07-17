@@ -9,6 +9,7 @@ import FeclaIzqui from "../../assets/icons/arrow-left.svg"
 import FechaDerec from "../../assets/icons/arrow-right.svg"
 import Zoom from "../../assets/icons/IconEstudiante/ZoomLink.svg";
 import DocsAsesor from "../Estudiante/EntregasEnvio/EnvioAsesor"
+import videoOff from "../../assets/icons/video-off.svg";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { asesoriasService } from "../../services/asesoriasService";
@@ -34,13 +35,26 @@ const HomeEstudiante = () => {
   const id = user.id;
 
   // Obtener asesorías del usuario
-  const { data: asesorias, isLoading, isError, error, ref } = useQuery({
+  const { data: asesorias, isLoading } = useQuery({
     queryKey: ['asesorias'],
     queryFn: () => asesoriasService.asesoriasPorEstudiante(id),
     refetchOnWindowFocus: false,
   });
 
- 
+  useEffect(() => {
+    if (
+      asesorias &&
+      !asesorias.isEmpty &&
+      !selectedAsesoriaId &&
+      Array.isArray(Object.values(asesorias)) &&
+      Object.values(asesorias).length > 0
+    ) {
+      const primeraAsesoria = Object.values(asesorias)[0];
+      setSelectedAsesoriaId(primeraAsesoria.id);
+    }
+  }, [asesorias]);
+
+
 
   useEffect(() => {
     if (selectedAsesoriaId) {
@@ -125,19 +139,19 @@ const HomeEstudiante = () => {
     <span className="sr-only">Loading...</span>
   </div>;
 
-    const fecha = new Date();// Array de nombres de meses en español
-    const meses = [
-        'Enero', 'Febrero', 'Marzo', 'Abril',
-        'Mayo', 'Junio', 'Julio', 'Agosto',
-        'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];// Extraemos día, mes y año
-    const dia = fecha.getDate();
-    const mes = meses[fecha.getMonth()]; // Obtenemos el nombre del mes
-    const año = fecha.getFullYear();
+  const fecha = new Date();// Array de nombres de meses en español
+  const meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril',
+    'Mayo', 'Junio', 'Julio', 'Agosto',
+    'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];// Extraemos día, mes y año
+  const dia = fecha.getDate();
+  const mes = meses[fecha.getMonth()]; // Obtenemos el nombre del mes
+  const año = fecha.getFullYear();
 
-    const cliente = localStorage.getItem('user');
-    const clienteNombre = JSON.parse(cliente);    
-    
+  const cliente = localStorage.getItem('user');
+  const clienteNombre = JSON.parse(cliente);
+
   return (
     <LayoutApp>
       <main className="mx-1 sm:mx-8 ">
@@ -149,10 +163,10 @@ const HomeEstudiante = () => {
             <p className="text-[12px] sm:text-[18px] md:text-[22px] lg:text-[35px] text-[#B5B5B5] xl:text-[20px] ">{dia} de {mes}, {año}</p>
             <div className="xl:w-[620px]">
               <h2 className="  text-[15px] sm:text-[25px] md:text-[30px] lg:text-[40px] xl:text-[30px] 1xl:text-[35px] font-semibold mt-2 md:mt-1 ">
-              Bienvenido {clienteNombre?.nombre} al Intranet de asesoría de tesis
-            </h2>
+                Bienvenido {clienteNombre.nombre} al Intranet de asesoría de tesis
+              </h2>
             </div>
-            
+
             <div className="absolute w-[140px] h-[85px] top-[1px] sm:top-[70px] lg:top-[150px] xl:top-[50px] sm:w-[200px] md:w-[250px] lg:w-[400px] xl:w-[630px] ">
               <p className="lg:text-[29px] text-[10px] sm:text-[15px] md:text-[20px] xl:text-[17px] 1xl:text-[20px]  text-[#B5B5B5] absolute top-[110px]  md:top-[110px] lg:top-[140px] ">
                 Aquí encontraras toda la información para tu  asesoría de tesis
@@ -287,7 +301,7 @@ const HomeEstudiante = () => {
               value={selectedAsesoriaId || ''}
               className='border rounded-t-md border-[#b4a6aa] text-[10px] sm:text-[13px] lg:text-[15px] text-center '
             >
-              
+
               {
                 asesorias.isEmpty ?
                   <option value="" disabled>No hay asesorías disponibles</option>
@@ -315,7 +329,7 @@ const HomeEstudiante = () => {
               />
             </div>
 
-            <div className="flex flex-col gap-5 xl:gap-2">
+            <div className="max-xl:hidden flex flex-col gap-5 xl:gap-2">
 
               <div className=" mt-5  flex justify-between ">
                 <h2 className="text-[12px] sm:text-[18px] lg:text-[30px] xl:text-[20px] font-semibold">Reuniones</h2>
@@ -324,7 +338,7 @@ const HomeEstudiante = () => {
                   <img src={flechaAzul} alt="" className="w-4" />
                 </span>
               </div>
-              <div className="max-xl:hidden  flex flex-col gap-5 md:px-20 xl:px-0">
+              <div className="  flex flex-col gap-5 md:px-20 xl:px-0">
                 <div className="flex flex-wrap justify-start gap-6 ">
                   {proximasReuniones.map((reunion, index) => {
                     const formattedDate = formatDate(reunion.fecha_reunion);
@@ -361,6 +375,14 @@ const HomeEstudiante = () => {
                       </div>
                     );
                   })}
+                  {proximasReuniones.length === 0 && (
+                    <div className="flex justify-center mt-5">
+                      <div className="flex flex-col border rounded-[12px] text-[12px] justify-center items-center w-[280px] sm:w-[370px] mn:w-[335px]  lg:w-full xl:w-[375px]  h-[120px] sm:h-[180px] lg:h-[220px] xl:h-[150px]  5xl:h-[150px] gap-5 text-[#82777A] shadow-[0px_4px_4px_4px_rgba(0,0,0,0.25)] " >
+                        <img src={videoOff} alt="" />
+                        No hay reuniones programadas
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -378,49 +400,59 @@ const HomeEstudiante = () => {
               </span>
             </div>
 
-            <div className="flex flex-col gap-5 md:px-20">
-              <div className="flex flex-wrap justify-start gap-6">
-                {proximasReuniones.map((reunion, index) => {
-                  const formattedDate = formatDate(reunion.fecha_reunion);
-                  return (
-                    <div key={index} className="flex  flex-row w-full   items-center ">
+            <div className="flex flex-col gap-5 md:px-20 lg:px-1">
 
-                      <div className={`flex flex-col justify-between items-center rounded-l-xl text-[10px] sm:text-[15px]
-                        w-[100px] sm:w-[140px]  h-[120px] sm:h-[180px] lg:h-[220px]  bg-[#17162E] p-4 text-white`}
-                      >
-                        <span className="flex flex-col items-center">
-                          <p className="lg:text-[20px]">{formattedDate.month}</p>
-                          <h1 className="text-[16px] sm:text-[22px] lg:text-[30px]">{formattedDate.day}</h1>
-                        </span>
+              {proximasReuniones.map((reunion, index) => {
+                const formattedDate = formatDate(reunion.fecha_reunion);
+                return (
+                  <div key={index} className="flex  flex-row w-full   items-center justify-center rounded-r-xl">
 
-                        <p className="text-[10px]">{formattedDate.time}</p>
-                      </div>
+                    <div className={`flex flex-col justify-between items-center rounded-l-xl text-[10px] sm:text-[15px]
+                        w-[100px] sm:w-[140px] lg:w-[25%]  h-[120px] sm:h-[180px] lg:h-[220px]  bg-[#17162E] p-4 text-white`}
+                    >
+                      <span className="flex flex-col items-center">
+                        <p className="lg:text-[20px]">{formattedDate.month}</p>
+                        <h1 className="text-[16px] sm:text-[22px] lg:text-[30px]">{formattedDate.day}</h1>
+                      </span>
 
-                      <div className="flex flex-col justify-between w-[235px] h-full border border-[#AAA3A5] bg-[#FFFFFF] p-4 sm:p-6
+                      <p className="text-[10px] sm:text-[15px]">{formattedDate.time}</p>
+                    </div>
+
+                    <div className="flex flex-col justify-between w-[235px] lg:w-full h-[120px] sm:h-[180px] lg:h-[220px] border border-[#AAA3A5] bg-white  p-4  
                            rounded-r-xl">
-                        <span className="flex flex-col gap-[6px]">
-                          <p className="font-medium text-[10px] sm:text-[16px] lg:text-[25px]">{reunion.titulo}</p>
-                          <h1 className="text-[#666666] text-[10px] sm:text-[14px] lg:text-[20px]">Codigo: {reunion.meetingId}</h1>
-                        </span>
-                        <div className="px-10 sm:px-24">
-                          <button className="flex w-full justify-between px-1 sm:px-5 lg:p-4 py-1 items-center text-white rounded-2xl bg-[#1271ED]">
-                            <a href={reunion.enlace_zoom} target="_blank">
-                              <p className="font-medium"> Zoom</p>
-                            </a>
-                            <img src={Zoom} alt="Zoom" className="w-6 h-6" />
-                          </button>
-                        </div>
+
+                      <span className="flex flex-col gap-[6px]">
+                        <p className="font-medium text-[10px] sm:text-[16px] lg:text-[25px]">{reunion.titulo}</p>
+                        <h1 className="text-[#666666] text-[10px] sm:text-[14px] lg:text-[20px]">Codigo: {reunion.meetingId}</h1>
+                      </span>
+                      <div className="px-5 sm:px-8 ">
+                        <button className="flex w-full justify-between px-5  lg:p-4 py-1 items-center text-white rounded-2xl bg-[#1271ED]">
+                          <a href={reunion.enlace_zoom} target="_blank">
+                            <p className="font-medium"> Zoom</p>
+                          </a>
+                          <img src={Zoom} alt="Zoom" className="w-6 h-6" />
+                        </button>
                       </div>
+
 
                     </div>
-                  );
-                })}
-              </div>
+
+                  </div>
+                );
+              })}
+              {proximasReuniones.length === 0 && (
+                <div className="flex justify-center mt-5">
+                  <div className="flex flex-col border rounded-[12px] text-[12px] justify-center items-center w-[280px] sm:w-[370px] mn:w-[335px]  lg:w-full xl:w-[375px]  h-[120px] sm:h-[180px] lg:h-[220px] xl:h-[150px]  5xl:h-[150px] gap-5 text-[#82777A] shadow-[0px_4px_4px_4px_rgba(0,0,0,0.25)] " >
+                    <img src={videoOff} alt="" />
+                    No hay reuniones programadas
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>
 
-          <div className="max-xl:hidden xl:w-[67%] 1xl:w-[72%] 2xl:w-[74%] 4xl:w-[76%] 5xl:w-[78%]">
+          <div className="max-xl:hidden xl:w-[63%] 1xl:w-[72%] 2xl:w-[74%] 4xl:w-[76%] 5xl:w-[78%]">
             <div className="flex justify-between">
               <h1 className="text-[12px] sm:text-[18px] lg:text-[30px] xl:text-[20px] font-semibold">Envios Asesor</h1>
               <span className="text-[8px] sm:text-[11px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
@@ -435,6 +467,8 @@ const HomeEstudiante = () => {
           </div>
 
         </div>
+
+
 
 
 
