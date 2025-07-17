@@ -26,8 +26,9 @@ export class ProcesosAsesoriaService {
         cliente: { id: clienteId },
         asesor: { id: id_asesor },
         asesoramiento: { id: id_asesoramiento },
-        esDelegado: esDelegado === clienteId 
+        esDelegado: esDelegado == clienteId
       });
+      console.log(nuevoProceso)
       await manager.insert(ProcesosAsesoria, nuevoProceso)
     }
     return true

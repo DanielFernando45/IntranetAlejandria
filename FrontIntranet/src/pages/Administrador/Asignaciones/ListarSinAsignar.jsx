@@ -179,7 +179,7 @@ const ListarSinAsignar = () => {
         })
       }
     };
-
+console.log("qweqwe")
     try {
       const response = await axios.post(
         "http://localhost:3001/asesoramiento/asignacion",

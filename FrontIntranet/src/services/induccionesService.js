@@ -24,7 +24,16 @@ const obtenerInduccionesByIdAsesoria = async (idAsesoramiento) => {
 }
 
 
+const borrarInduccionById = async (idAsesoramiento) => {
+    try {
+        return { data } = await axios.delete(`http://localhost:3001/inducciones/${idAsesoramiento}`)
+    } catch (error) {
+        return error.message ? error.message : 'Error al intentar borrar la inducción'
+    }
+}
+
 export const induccionesService = {
     registrarInduccion,
-    obtenerInduccionesByIdAsesoria
+    obtenerInduccionesByIdAsesoria,
+    borrarInduccionById
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { InduccionesService } from "./inducciones.service";
 import { Inducciones } from "./entity/inducciones";
 import { CreateInduccionDto } from "./dto/subir-induccion.dto";
@@ -26,5 +26,10 @@ export class InduccionesController {
             throw new Error('Error al crear la inducción');
         }
         return { message: 'Inducción creada exitosamente' };
+    }
+
+    @Delete(':id')
+    async deleteInduccion(@Param('id', ParseIntPipe) id: number) {
+        return this.induccionesService.deleteInduccion(id);
     }
 }
