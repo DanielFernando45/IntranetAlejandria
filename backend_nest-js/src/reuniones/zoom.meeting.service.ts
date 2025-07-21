@@ -18,7 +18,7 @@ export class ZoomMeetingService{
                 topic,
                 type:2,
                 start_time:startTime,
-                duration:1,
+                duration:60,
                 timezone:'America/Lima',
                 password: this.generateMeetingPassword(), 
                 settings:{

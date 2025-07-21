@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { CreateReunionDto } from './dto/create-reunion.dto';
 import { UpdateReunioneDto } from './dto/update-reunione.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Estado_reunion, Reunion } from './entities/reunion.entity';
-import { Between, Repository } from 'typeorm';
+import { Between, DataSource, Repository } from 'typeorm';
 import { ZoomMeetingService } from './zoom.meeting.service';
 import { DateTime } from 'luxon';
 import { AsesorService } from 'src/asesor/asesor.service';
@@ -16,6 +16,8 @@ import { ZoomAuthService } from './zoom.auth.service';
 import axios from 'axios';
 import { ClienteService } from 'src/cliente/cliente.service';
 import { UserRole } from 'src/usuario/usuario.entity';
+import { ProcesosAsesoriaService } from 'src/procesos_asesoria/procesos_asesoria.service';
+import { ProcesosAsesoria } from 'src/procesos_asesoria/entities/procesos_asesoria.entity';
 
 @Injectable()
 export class ReunionesService {
@@ -24,6 +26,9 @@ export class ReunionesService {
     private readonly asesorService: AsesorService,
     private readonly zoomAuthService: ZoomAuthService,
     private clienteService: ClienteService,
+
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
 
     @InjectRepository(Reunion)
     private reunionRepo: Repository<Reunion>,
@@ -86,11 +91,11 @@ export class ReunionesService {
   async deleteReunion(id: number, id_asesor: number) {
     const credenciales =
       await this.asesorService.getCredentialsBySector(id_asesor);
-    console.log(credenciales);
     const reunion = await this.reunionRepo.findOne({
       where: { id },
       select: ['meetingId'],
     });
+    console.log(reunion);
     if (!reunion) throw new NotFoundException('No se encontro la reunion');
     const token = await this.zoomAuthService.getAccessToken(
       credenciales.client_id,
@@ -289,22 +294,58 @@ export class ReunionesService {
         }
       }),
     );
+
     return listReunionesWithAsesor;
   }
 
   async handleMeetingEnded(body: any) {
     const meetingId = String(body.payload.object.id);
+    console.log('payload', body.payload.object);
 
-    const reunion = await this.reunionRepo.findOne({ where: { meetingId } });
+    const reunion = await this.reunionRepo.findOne({
+      where: { meetingId },
+      relations: ['asesoramiento'],
+    });
+    const id_asesor = await this.dataSource.query(`
+        select id_asesor from procesos_asesoria p where p.id_asesoramiento = ${reunion?.asesoramiento.id} limit 1;
+     `);
 
-    if (!reunion) {
-      console.log(`⚠️ Reunión con Zoom ID ${meetingId} no encontrada.`);
-      return;
+    // Primero eliminamos en Zoom
+
+    const credenciales =
+      await this.asesorService.getCredentialsBySector(id_asesor[0].id_asesor);
+  
+    if (!reunion) throw new NotFoundException('No se encontro la reunion');
+    const token = await this.zoomAuthService.getAccessToken(
+      credenciales.client_id,
+      credenciales.client_secret,
+      credenciales.client_account_id,
+    );
+    try {
+      const response = await axios.delete(
+        `https://api.zoom.us/v2/meetings/${reunion.meetingId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    } catch (err) {
+      throw new InternalServerErrorException(
+        `No se pudo eliminar las reunion con meetingId ${reunion.meetingId}`,
+      );
     }
 
-    await this.reunionRepo.delete({ id: reunion.id });
+    const deleted = await this.reunionRepo.delete({ id: reunion?.id });
+        if (deleted.affected === 0)
+      throw new NotFoundException('No se elimino ningun registro');
+
     console.log(
-      `🧹 Reunión ${reunion.id} (Zoom ID: ${meetingId}) eliminada automáticamente.`,
+      `🧹 Reunión ${reunion?.id} (Zoom ID: ${meetingId}) eliminada local y remotamente.`,
     );
+      return 'Se elimino correctamente';
+
   }
+
+
 }
