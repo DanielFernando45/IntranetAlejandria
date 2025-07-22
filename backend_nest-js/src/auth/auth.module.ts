@@ -22,7 +22,7 @@ import { PassportModule } from '@nestjs/passport';
       signOptions: { expiresIn: '1h' },
     }),
     UsuarioModule,
-    forwardRef(() => MailModule), // 👈 Y aquí también
+    forwardRef(() => MailModule),
     PassportModule,
   ],
 
