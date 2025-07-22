@@ -1,5 +1,4 @@
-
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
@@ -17,16 +16,18 @@ import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Usuario,Admin,Asesor,Cliente]),
+    TypeOrmModule.forFeature([Usuario, Admin, Asesor, Cliente]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'superSecret',
       signOptions: { expiresIn: '1h' },
-    }),UsuarioModule,MailModule,PassportModule
+    }),
+    UsuarioModule,
+    forwardRef(() => MailModule), // 👈 Y aquí también
+    PassportModule,
   ],
 
   providers: [AuthService, JwtStrategy],
-
+  exports: [AuthService, JwtModule],
   controllers: [AuthController],
-  
 })
 export class AuthModule {}
