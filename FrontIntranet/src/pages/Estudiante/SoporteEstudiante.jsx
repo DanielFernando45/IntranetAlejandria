@@ -155,7 +155,7 @@ const SoporteEstudiante = () => {
           </form>
         </div>
 
-        <div className='flex flex-col gap-10 w-[40%] h-[850px] bg-white rounded-xl p-10'>
+        <div className='flex flex-col gap-10 w-[40%] h-[850px] overflow-auto bg-white rounded-xl p-10'>
           <h1 className='text-[30px]'>Soluciones Frecuentes</h1>
           <PreguntasFrecuentes />
         </div>

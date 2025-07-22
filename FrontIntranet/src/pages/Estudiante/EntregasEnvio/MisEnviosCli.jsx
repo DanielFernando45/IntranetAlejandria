@@ -2,20 +2,19 @@ import React from "react";
 import { useState, useEffect } from "react";
 import arrowIcon from "../../../assets/icons/IconEstudiante/arriba.svg";
 import descargar from "../../../assets/icons/Descargas.svg";
+import documentosVacios from '../../../assets/icons/documentosVacios.png'
 import axios from "axios";
 
 const MisEnviosCli = ({ idAsesoramiento }) => {
   const [misEnvios, setMisEnvios] = useState([]);
-  const [loadMisEnvios, setLoadMisEnvios] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [openItems, setOpenItems] = useState({});
 
   useEffect(() => {
     if (idAsesoramiento) {
-      setLoadMisEnvios(true);
+      setLoading(true);
       axios
-        .get(
-          `http://localhost:3001/documentos/estudiante/list/${idAsesoramiento}`
-        )
+        .get(`http://localhost:3001/documentos/estudiante/list/${idAsesoramiento}`)
         .then((response) => {
           setMisEnvios(response.data);
           // Inicializar el estado de apertura para cada item
@@ -24,11 +23,12 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
             initialOpenState[index] = false;
           });
           setOpenItems(initialOpenState);
-          setLoadMisEnvios(false);
         })
         .catch((error) => {
-          setLoadMisEnvios(false);
           console.error("Error al obtener los pendientes:", error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [idAsesoramiento]);
@@ -53,7 +53,6 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
     let i = 1;
 
     while (envio[`nombreDoc${i}`] && envio[`ruta${i}`]) {
-      // Extraer el pathFile de la URL (última parte después de /)
       const urlParts = envio[`ruta${i}`].split("/");
       const pathFile = urlParts[urlParts.length - 1];
 
@@ -73,25 +72,46 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
     if (index !== -1) {
       return texto.substring(index + 1);
     }
-    return texto; // Si no se encuentra el guion, devuelve el texto original
+    return texto;
   };
-  // Función para descargar archivos directamente desde la URL proporcionada
+
   const handleDownload = async (url, filename) => {
     try {
-      // Crear un enlace temporal para descargar el archivo
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
-
-      // Limpiar
       document.body.removeChild(link);
     } catch (error) {
       console.error("Error al descargar el archivo:", error);
       alert("Error al descargar el archivo");
     }
   };
+
+  // Componente Skeleton para filas principales
+  const SkeletonRow = () => (
+    <div className="flex justify-between bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2 animate-pulse">
+      <div className="w-[300px] h-6 bg-gray-300 rounded"></div>
+      <div className="w-[102px] h-6 bg-gray-300 rounded"></div>
+      <div className="w-[100px] h-6 bg-gray-300 rounded"></div>
+      <div className="w-[250px] h-6 bg-gray-300 rounded"></div>
+      <div className="w-[65px] h-6 bg-gray-300 rounded"></div>
+    </div>
+  );
+
+  // Componente Skeleton para filas expandidas
+  const SkeletonExpandedRow = () => (
+    <div className="bg-white shadow-md rounded-md p-4 my-2 animate-pulse">
+      <div className="flex justify-between items-center py-2 border-b">
+        <div className="w-[300px] h-6 bg-gray-300 rounded"></div>
+        <div className="w-[102px] h-6 bg-gray-300 rounded"></div>
+        <div className="w-[100px] h-6 bg-gray-300 rounded"></div>
+        <div className="w-[250px] h-6 bg-gray-300 rounded"></div>
+        <div className="w-[65px] h-6 bg-gray-300 rounded"></div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex flex-col">
@@ -105,97 +125,103 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
         </div>
       </div>
 
-      {loadMisEnvios ? (
-        <div role="status" className="flex flex-col items-center">
-          <svg
-            aria-hidden="true"
-            className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-            viewBox="0 0 100 101"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-              fill="currentColor"
-            />
-            <path
-              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-              fill="currentFill"
-            />
-          </svg>
-          <span className="block">Cargando...</span>
-        </div>
-      ) : (
-        <div>
-          {misEnvios.map((envio, index) => {
-            const documents = getDocuments(envio);
-            const hasDocuments = documents.length > 0;
+      {loading ? (
+        // Mostrar skeletons durante la carga
+        <>
+          <SkeletonRow />
+          <SkeletonExpandedRow />
+          <SkeletonRow />
+          <SkeletonRow />
+        </>
+      ) : misEnvios.length > 0 ? (
+        // Mostrar datos cuando están cargados
+        misEnvios.map((envio, index) => {
+          const documents = getDocuments(envio);
+          const hasDocuments = documents.length > 0;
 
-            return (
-              <React.Fragment key={envio.id_asunto || index}>
-                <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
-                  <div className="w-[300px] flex">{envio.asunto}</div>
-                  <div className="text-white bg-[#353563] rounded px-3">
-                    {envio.estado}
-                  </div>
-                  <div className="w-[150px] flex justify-center">
-                    {formatDate(envio.fecha)}
-                  </div>
-                  <div className="w-[250px] flex justify-center">
-                    {hasDocuments
-                      ? cortarTexto(documents[0].name)
-                      : "No hay archivos"}
-                  </div>
-                  <div className="w-[65px] flex justify-center">
-                    {hasDocuments && (
-                      <button
-                        onClick={() => toggleOpen(index)}
-                        className="transition-transform duration-300"
-                      >
-                        <img
-                          src={arrowIcon}
-                          alt="toggle"
-                          className={`transform transition-transform duration-300 ${
-                            openItems[index] ? "rotate-180" : "rotate-0"
-                          }`}
-                        />
-                      </button>
-                    )}
-                  </div>
+          return (
+            <React.Fragment key={envio.id_asunto || index}>
+              <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
+                <div className="w-[300px] flex">{envio.asunto}</div>
+                <div className="text-white bg-[#353563] rounded px-3">
+                  {envio.estado}
                 </div>
+                <div className="w-[150px] flex justify-center">
+                  {formatDate(envio.fecha)}
+                </div>
+                <div className="w-[250px] flex justify-center">
+                  {hasDocuments
+                    ? cortarTexto(documents[0].name)
+                    : "No hay archivos"}
+                </div>
+                <div className="w-[65px] flex justify-center">
+                  {hasDocuments && (
+                    <button
+                      onClick={() => toggleOpen(index)}
+                      className="transition-transform duration-300"
+                    >
+                      <img
+                        src={arrowIcon}
+                        alt="toggle"
+                        className={`transform transition-transform duration-300 ${openItems[index] ? "rotate-180" : "rotate-0"
+                          }`}
+                      />
+                    </button>
+                  )}
+                </div>
+              </div>
 
-                {openItems[index] && hasDocuments && (
-                  <div className="bg-white shadow-md rounded-md p-4 my-2">
-                    {documents.slice(0).map((doc, docIndex) => (
-                      <div
-                        key={docIndex}
-                        className="flex justify-between items-center py-2 border-b last:border-b-0"
-                      >
-                        <div className="w-[300px] flex">{envio.asunto}</div>
-                        <div className="w-[102px]">{envio.estado}</div>
-                        <div className="w-[100px] flex justify-center">
-                          {formatDate(envio.fecha)}
+              {openItems[index] && hasDocuments && (
+                <div className="bg-white p-2 mt-1 rounded-md">
+                  {/* Encabezado repetido UNA VEZ */}
+                  <div className="flex justify-between text-[#2B2829] font-normal items-center py-2 border-b">
+                    <div className="w-[300px] flex">{envio.asunto}</div>
+                    <div className="w-[102px] text-white bg-[#353563] rounded px-3 text-center">
+                      {envio.estado}
+                    </div>
+                    <div className="w-[100px] flex justify-center">
+                      {formatDate(envio.fecha)}
+                    </div>
+                    <div className="w-[350px] flex flex-col gap-1 justify-center  font-semibold text-[#495D72]">
+                      {documents.map((doc, docIndex) => (
+                        <div
+                          key={docIndex}
+                          className=" flex justify-between items-center py-[6px] border-b last:border-b-0"
+                        >
+
+                          <div className="w-[250px] flex justify-start">
+                            {cortarTexto(doc.name)}
+                          </div>
+                          <div className="w-[65px] flex justify-center">
+                            <button
+                              onClick={() => handleDownload(doc.pathFile, doc.name)}
+                              className="transition-transform duration-300 hover:scale-110"
+                            >
+                              <img src={descargar} alt="Descargar" />
+                            </button>
+                          </div>
                         </div>
-                        <div className="w-[250px] flex justify-center">
-                          {cortarTexto(doc.name)}
-                        </div>
-                        <div className="w-[65px] flex justify-center">
-                          <button
-                            onClick={() =>
-                              handleDownload(doc.pathFile, doc.name)
-                            }
-                            className="transition-transform duration-300 hover:scale-110"
-                          >
-                            <img src={descargar} alt="Descargar" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    
                   </div>
-                )}
-              </React.Fragment>
-            );
-          })}
+
+
+
+                </div>
+              )}
+
+
+            </React.Fragment>
+          );
+        })
+      ) : (
+        // Mostrar cuando no hay datos
+        <div className="flex justify-center">
+          <div className="flex flex-col border rounded-[12px] text-[12px] justify-center items-center w-[280px] sm:w-[370px] mn:w-[335px] lg:w-full h-[120px] sm:h-[190px] gap-5 text-[#82777A] shadow-[0px_4px_4px_4px_rgba(0,0,0,0.25)]">
+            <img src={documentosVacios} alt="" />
+            No hay envíos realizados
+          </div>
         </div>
       )}
     </div>

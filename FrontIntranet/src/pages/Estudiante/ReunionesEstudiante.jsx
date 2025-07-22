@@ -40,17 +40,15 @@ const ReunionesEstudiante = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (selectedAsesoriaId) {
-      // Obtener reuniones en espera
-      fetch(`http://localhost:3001/reuniones/espera/${selectedAsesoriaId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setProximasReuniones(data);
-        })
-        .catch((error) =>
-          console.error("Error al obtener reuniones próximas:", error)
-        );
+    useEffect(() => {
+        if (selectedAsesoriaId) {
+            // Obtener reuniones en espera
+            fetch(`http://localhost:3001/reuniones/espera/${selectedAsesoriaId}`)
+                .then(res => res.json())
+                .then(data => {
+                    setProximasReuniones(data);
+                })
+                .catch(error => console.error('Error al obtener reuniones próximas:', error));
 
       // Obtener reuniones terminadas
       fetch(

@@ -27,7 +27,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
   const getAuthData = () => {
     const token = JSON.parse(localStorage.getItem('authToken') || '');
     const userDataString = localStorage.getItem('user');
-    
+    console.log(token);
     let user = { role: 'estudiante' }; // Valor por defecto
     
     try {
@@ -107,7 +107,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
     } finally {
       setIsSubmitting(false);
     }
-    window.location.reload();
+    
   };
 
   useEffect(() => {

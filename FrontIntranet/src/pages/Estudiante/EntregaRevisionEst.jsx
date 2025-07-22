@@ -132,7 +132,7 @@ const EntregaRevisionEst = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-[10px] ml-8 p-[20px] w-full  bg-white rounded-[10px]">
+        <div className="flex flex-col gap-[10px] ml-8 px-[40px] py-5 w-full  bg-white rounded-[10px]">
 
           <div className="flex justify-between  ">
             <h2 className="text-2xl font-bold">Documentos</h2>
