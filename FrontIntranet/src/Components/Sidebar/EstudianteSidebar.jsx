@@ -15,7 +15,7 @@ import Soporte from "../../assets/icons/IconEstudiante/SoporteEstudiante.svg";
 
 const LINKS = [
   { icono: HomeEstu, path: "/estudiante/home", title: "Home" },
-  { icono: Reuniones, path: "/estudiante/reuniones", title: "Reuniones" },
+  { icono: Reuniones, path: "/estudiante/reuniones", title: "Zoom / Inducciones" },
   {
     icono: EntreRev,
     path: "/estudiante/entrega",
@@ -70,7 +70,7 @@ const EstudianteSidebar = () => {
       )}
 
       <nav
-        className={`fixed left-0 top-0  
+        className={`fixed left-0 top-0
             ${isMobile
             ? (isExpanded ? "w-[266px] h-full" : "w-[50px] h-[56px] md:w-[80px] sm:h-[65px] md:h-[85px] shadow-md")
             : (isExpanded ? "w-[266px] h-full" : "w-[100px] h-full")
@@ -106,7 +106,7 @@ const EstudianteSidebar = () => {
                       <div className="flex items-center gap-4 w-full transition-all duration-300 ease-in-out">
                         <img src={link.icono} className="w-6 h-6 transition-all duration-300 ease-in-out" />
                         <span
-                          className={`text-[17px] font-medium text-gray-800 transition-opacity duration-300 ease-in-out ${isExpanded ? "opacity-100 ml-1" : "opacity-0 ml-[-10px]"
+                          className={`text-[17px] font-normal text-black transition-opacity duration-300 ease-in-out ${isExpanded ? "opacity-100 ml-1" : "opacity-0 ml-[-10px]"
                             }`}
                         >
                           {link.title}

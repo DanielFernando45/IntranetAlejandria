@@ -89,32 +89,36 @@ const DocPendientes = () => {
       });
   };
 
-  const formatDate = (dateString) => {
+  const formatHora = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
 
     // Obtener hora y minutos en UTC
-    const horas = date.getUTCHours().toString().padStart(2, "0");
+    let horas = date.getUTCHours();
     const minutos = date.getUTCMinutes().toString().padStart(2, "0");
 
     // Determinar AM/PM
-    const ampm = date.getUTCHours() >= 12 ? "PM" : "AM";
+    const ampm = horas >= 12 ? "PM" : "AM";
+    
+    // Convertir a formato de 12 horas con dos dígitos
+    horas = horas % 12;
+    horas = horas ? horas.toString().padStart(2, "0") : "12"; // La hora 0 se convierte en 12
 
     // Concatenar
-    const hora24ConAmPm = `${horas}:${minutos} ${ampm}`;
+    const hora12ConAmPm = `${horas}:${minutos} ${ampm}`;
 
-    return hora24ConAmPm;
-  };
+    return hora12ConAmPm;
+};
 
-  const formatTime = (dateString) => {
-    if (!dateString) return ''
-    const date = new Date(dateString)
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    })
-  }
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleDateString('es-PE', { month: 'long' });
+    const year = date.getFullYear();
+    return `${day} ${month} de ${year}`;
+};
+
 
   const handleSubmitAvance = async (id, titulo, files) => {
     try {
@@ -154,7 +158,7 @@ const DocPendientes = () => {
   );
 
   return (
-    <div className="flex flex-col gap-3 relative">
+    <div className="flex flex-col gap-3 relative text-[14px]">
       {loading ? (
         // Mostrar skeletons mientras carga
         <>
@@ -197,11 +201,11 @@ const DocPendientes = () => {
               <>
                 <div className='flex flex-col transition-all duration-300 ease-in-out mt-5'>
                   <div className='flex justify-between'>
-                    <div>{pendiente.documento_0}</div>
-                    <div className='flex w-[450px] gap-4'>
+                    <div className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[15ch]">{pendiente.documento_0}</div>
+                    <div className='flex w-[450px] justify-center gap-4'>
                       <p>Enviado: {formatDate(pendiente.fecha_entrega)}</p>
                     </div>
-                    <div>{formatTime(pendiente.fecha_entrega)}</div>
+                    <div>{formatHora(pendiente.fecha_entrega)}</div>
                     <div className="flex gap-5">
                       <div className="text-white bg-[#054755] rounded-md px-6">
                         Entregado
@@ -218,11 +222,12 @@ const DocPendientes = () => {
 
                   {checkedItems[pendiente.id_asunto] && pendiente.fecha_terminado && (
                     <div className='flex justify-between mt-3'>
-                      <div>{pendiente.documento_0}</div>
+                      <div className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[15ch]">{pendiente.documento_0}</div>
                       <div className='flex w-[450px] gap-4'>
+                        <p>Revisado: {formatDate(pendiente.fecha_revision)}</p>
                         <p>Estimado: {formatDate(pendiente.fecha_terminado)}</p>
                       </div>
-                      <div>{formatTime(pendiente.fecha_terminado)}</div>
+                      <div>{formatHora(pendiente.fecha_terminado)}</div>
                       <div className='flex gap-5'>
                         <div className='text-white bg-[#0CB2D5] rounded-md px-8'>
                           {pendiente.estado}

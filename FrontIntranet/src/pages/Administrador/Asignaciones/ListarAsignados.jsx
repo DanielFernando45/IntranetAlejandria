@@ -184,11 +184,7 @@ const ListarAsignados = () => {
             (item.estudiantes.length > 1 && !mostrarTodos ? `${item.estudiantes[0].estudiante}...` : item.delegado)
             : "----------------------";
           const estadoActual = estadoLocal[item.id_asesoramiento] ?? (item.estado === "activo");
-          {
-            item.estudiantes.map((estudiante, i) => {
-              console.log(estudiante.estudiante);
-            })
-          }
+          
           return (
             <div key={item.id_asesoramiento} className={`flex justify-between items-center text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-[#E9E7E7]' : ''} p-[6px] rounded-md`}>
               <div className="w-[80px] flex justify-center mx-2">{item.id_asesoramiento}</div>

@@ -43,7 +43,7 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
     if (!dateString) return ''
     const date = new Date(dateString)
     const options = { month: 'short', day: 'numeric', year: 'numeric' }
-    return date.toLocaleDateString('en-US', options)
+    return date.toLocaleDateString('es-PE', options)
   }
 
   // Función para extraer todos los documentos de un envio

@@ -38,8 +38,7 @@ const PagosEstudiante = () => {
       // Obtener pagos de asesoría
       fetch(`http://localhost:3001/pagos/misAsesorias/${selectedAsesoriaId}`)
         .then(res => res.json())
-        .then(data => {
-          console.log('Datos de asesorías recibidos:', data); // Para depuración
+        .then(data => { // Para depuración
           setPagosAsesoria(data);
         })
         .catch(error => console.error('Error al obtener pagos de asesoría:', error));
