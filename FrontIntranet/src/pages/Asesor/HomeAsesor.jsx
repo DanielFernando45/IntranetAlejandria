@@ -52,7 +52,7 @@ const HomeAsesor = () => {
                     const response = await fetch(`http://localhost:3001/reuniones/allReunionesProximas/${selectedAsesoriaId}`);
                     const data = await response.json();
                     setReuniones(data);
-                    
+
                 }
             } catch (error) {
                 console.error('Error al obtener las reuniones recientes:', error);
@@ -92,37 +92,52 @@ const HomeAsesor = () => {
         <LayoutApp>
             <main className="ml-8 mr-8">
 
-                {/*Portada */}
-                <div className=" flex items-center justify-between bg-[#17162E] text-white rounded-2xl  w-full   shadow-lg   ">
+                {/* Portada Asesor */}
+                <div className="xl:relative xl:justify-end flex items-center relative flex-col xl:flex-row bg-[#17162E] text-white rounded-2xl w-full shadow-lg">
 
-                    <div className="flex flex-col w-2/3 pl-14 ">
-                        <p className="text-[22px] text-[#B5B5B5] "> {dia} de {mes}, {año}</p>
-                        <h2 className="text-[38px] font-semibold mt-2">
-                            Bienvenido {NombreAsesor} al
-                            Intranet de asesoría de tesis
-                        </h2>
-                        <p className="text-[22px] text-[#B5B5B5] ">Aquí encontraras toda las herramientas que vas a utilizar</p>
+                    <div className="xl:absolute flex flex-col p-4 sm:p-9 md:p-12 lg:p-14 xl:p-10 xl:px-[55px] w-full md:h-full md:pt-7 lg:pt-14">
+                        <p className="text-[12px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[20px] text-[#B5B5B5]">
+                            {dia} de {mes}, {año}
+                        </p>
+
+                        <div className="xl:w-[620px]">
+                            <h2 className="text-[15px] sm:text-[25px] md:text-[30px] lg:text-[40px] xl:text-[30px] 1xl:text-[35px] font-semibold mt-2 md:mt-1">
+                                Bienvenido {NombreAsesor} al Intranet de asesoría de tesis
+                            </h2>
+                        </div>
+
+                        <p className="text-[10px] sm:text-[15px] md:text-[20px] lg:text-[25px] xl:text-[17px] 1xl:text-[20px] text-[#B5B5B5] mt-4 xl:mt-3">
+                            Aquí encontraras todas las herramientas que vas a utilizar
+                        </p>
                     </div>
 
-                    <div className="h-[280px]">
+                    {/* Imagen móvil */}
+                    <img
+                        src={portada}
+                        alt="Graduación"
+                        className="rounded-b-xl w-full h-full object-cover xl:hidden"
+                    />
+
+                    {/* Imagen escritorio */}
+                    <div className="max-xl:hidden">
                         <img
                             src={portada}
                             alt="Graduación"
-                            className="rounded-r-xl w-full h-full object-cover"
+                            className="rounded-xl w-full h-full object-cover"
                         />
                     </div>
-
                 </div>
+
 
                 <div className="flex  justify-between">
 
                     {/*Envio Asesor*/}
-                    <div className="w-full" >
+                    <div className="w-[800px] 1xl:w-[863px] 2xl:w-[1050px] 3xl:w-[1150px] 4xl:w-[1250px] 6xl:w-[1450px]" >
 
                         <div className=" mt-5 flex justify-between">
                             <h2 className="text-2xl font-semibold">Ultimos Envios del Cliente</h2>
                             <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
-                                <a href="">Ver todo</a>
+                                <a href=""></a>
                                 <img src={flechaAzul} alt="" />
                             </span>
                         </div>
@@ -157,7 +172,7 @@ const HomeAsesor = () => {
 
                             {reuniones.map((reunion) => (
 
-                                <div key={reunion.id}  className="flex  items-center ">
+                                <div key={reunion.id} className="flex  items-center ">
                                     <div className="flex flex-col justify-between gap-[45px] items-center rounded-l-xl h-full w-[104px] bg-[#17162E] p-4 text-white">
                                         <div className="flex flex-col justify-center items-center">
                                             <p className="text-[14px] uppercase">{formatFecha(reunion.fecha_reunion).mes}</p>

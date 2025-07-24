@@ -14,7 +14,7 @@ import Gestion from "../../assets/icons/IconAsesor/gestionAlum.svg";
 
 const LINKS = [
   { icono: HomeEstu, path: "/asesor/home", title: "Home" },
-  { icono: Reuniones, path: "/asesor/reuniones", title: "Reuniones" },
+  { icono: Reuniones, path: "/asesor/reuniones", title: "Zoom / Inducciones" },
   { 
     icono: EntreRev, 
     path: "/asesor/entrega", 

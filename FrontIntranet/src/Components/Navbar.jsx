@@ -73,12 +73,9 @@ const Navbar = ({ user }) => {
             )}
             {user?.role === 'asesor' && (
               <>
-                <button className="flex justify-between text-left px-2 py-1 hover:bg-gray-100">
-                  Mi perfil <img src={miperfil} alt="Icono" />
-                </button>
-                <button className="flex justify-between text-left px-2 py-1 hover:bg-gray-100">
-                  Cambiar Contraseña <img src={candadoblack} alt="Icono" />
-                </button>
+                <div className="flex justify-between text-left px-2 py-1 ">
+                  Intranet Asesor 
+                </div>
               </>
             )}
             {user?.role === 'admin' && (

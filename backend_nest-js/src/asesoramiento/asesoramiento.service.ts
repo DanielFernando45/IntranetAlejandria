@@ -582,6 +582,7 @@ export class AsesoramientoService {
         .innerJoinAndSelect('ase.gradoAcademico', 'grad')
         .innerJoinAndSelect('ase.areaAsesor', 'area')
         .select([
+          'ase.id AS id',
           'ase.nombre AS nombre',
           'ase.apellido AS apellido',
           'ase.universidad AS universidad',

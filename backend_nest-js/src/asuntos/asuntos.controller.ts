@@ -49,10 +49,8 @@ export class AsuntosController {
 
   @Patch("finished/:id")
   @UseInterceptors(FilesInterceptor('files',10,{
-    fileFilter,
-    limits:{
-      fileSize:1024*1025*30,
-    }
+    fileFilter
+    
   }))
   async finishAsunto(@Param('id',ParseIntPipe) id:number,@Body() cambioAsunto:UpdateAsuntoDto,@UploadedFiles() files:Express.Multer.File[]){
 

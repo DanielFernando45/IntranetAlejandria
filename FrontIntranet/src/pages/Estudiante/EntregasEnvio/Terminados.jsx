@@ -15,7 +15,6 @@ const Terminados = () => {
         .get(`http://localhost:3001/asuntos/terminados/${idAsesoramiento}`)
         .then((response) => {
           setTerminado(() => {
-            console.log("Terminados:", response.data);
             return response.data.map((item) => ({
               titulo: item.titulo,
               fecha_entregado: item.fecha_entregado,
@@ -37,21 +36,33 @@ const Terminados = () => {
   }, [idAsesoramiento]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const options = { month: "short", day: "numeric", year: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    const options = { month: 'short', day: 'numeric', year: 'numeric' }
+    return date.toLocaleDateString('es-PE', options)
+  }
+
 
   const formatTime = (dateString) => {
-    if (!dateString) return "";
+    if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+
+    // Obtener hora y minutos en UTC
+    let horas = date.getUTCHours();
+    const minutos = date.getUTCMinutes().toString().padStart(2, "0");
+
+    // Determinar AM/PM
+    const ampm = horas >= 12 ? "PM" : "AM";
+    
+    // Convertir a formato de 12 horas con dos dígitos
+    horas = horas % 12;
+    horas = horas ? horas.toString().padStart(2, "0") : "12"; // La hora 0 se convierte en 12
+
+    // Concatenar
+    const hora12ConAmPm = `${horas}:${minutos} ${ampm}`;
+
+    return hora12ConAmPm;
+};
 
   // Componente Skeleton para filas
   const SkeletonRow = () => (
@@ -66,6 +77,15 @@ const Terminados = () => {
   );
 
   return (
+    <>
+    <div className="flex justify-between text-[#2B2829] font-normal  p-[6px] rounded-md">
+        <div className="w-[300px] flex">Nombre Entregas</div>
+        <div className="w-[300px] flex justify-center">Envio Tesista</div>
+        <div className="w-[300px] flex justify-center">En Desarrollo Asesor</div>
+        <div className="w-[300px] flex justify-center">Actividad Finalizada</div>
+        <div className="w-[102px] flex justify-center">Hora</div>
+        <div className=" px-3  flex justify-center ">Estado</div>
+      </div>
     <div className="flex flex-col gap-2">
       {loading ? (
         // Mostrar skeletons mientras carga
@@ -109,6 +129,8 @@ const Terminados = () => {
         </div>
       )}
     </div>
+    </>
+    
   );
 };
 

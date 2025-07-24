@@ -45,7 +45,7 @@ const EnviosCliente = ({ idAsesoramiento }) => {
     if (!dateString) return ''
     const date = new Date(dateString)
     const options = { month: 'short', day: 'numeric', year: 'numeric' }
-    return date.toLocaleDateString('en-US', options)
+    return date.toLocaleDateString('es-PE', options)
   }
 
   const cortarTexto = (texto) => {
@@ -107,7 +107,7 @@ const EnviosCliente = ({ idAsesoramiento }) => {
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col text-[14px]">
       <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
         <div className="w-[300px] flex">Titulo</div>
         <div className="w-[102px] flex justify-center">Estado</div>
@@ -133,11 +133,12 @@ const EnviosCliente = ({ idAsesoramiento }) => {
             <React.Fragment key={envio.id_asunto || index} >
               <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
                 <div className="w-[300px] flex">{envio.asunto}</div>
-                <div className='text-white bg-[#353563] rounded px-3'>{envio.estado}</div>
+                <div className='flex w-[100px] text-white bg-[#353563] rounded px-3 justify-center'>{envio.estado}</div>
                 <div className="w-[150px] flex justify-center">{formatDate(envio.fecha)}</div>
-                <div className="w-[250px] flex justify-center">
-                  {hasDocuments ? cortarTexto(documents[0].name) : 'No hay archivos'}
+                <div className="w-[250px] flex justify-start overflow-hidden text-ellipsis whitespace-nowrap max-w-[15ch]">
+                  {hasDocuments ? documents[0].name : 'No hay archivos'}
                 </div>
+
                 <div className="w-[65px] flex justify-center">
                   {hasDocuments && (
                     <button onClick={() => toggleOpen(index)} className="transition-transform duration-300">
@@ -152,23 +153,34 @@ const EnviosCliente = ({ idAsesoramiento }) => {
               </div>
 
               {openItems[index] && hasDocuments && (
-                <div className="bg-white shadow-md rounded-md p-4 my-2">
-                  {documents.slice(0).map((doc, docIndex) => (
-                    <div key={docIndex} className="flex justify-between items-center py-2 border-b last:border-b-0">
-                      <div className="w-[300px] flex">{envio.asunto}</div>
-                      <div className="w-[102px]">{envio.estado}</div>
-                      <div className="w-[100px] flex justify-center">{formatDate(envio.fecha)}</div>
-                      <div className="w-[250px] flex justify-center">{cortarTexto(doc.name)}</div>
-                      <div className="w-[65px] flex justify-center">
-                        <button
-                          onClick={() => handleDownload(doc.pathFile, doc.name)}
-                          className="transition-transform duration-300 hover:scale-110"
+                <div className="bg-white shadow-md  rounded-md  px-[6px] my-2">
+                  <div className="flex justify-between items-center  border-b last:border-b-0">
+                    <div className="w-[300px] flex">{envio.asunto}</div>
+                    <div className="flex w-[100px] justify-center">{envio.estado}</div>
+                    <div className="w-[150px] flex justify-center">{formatDate(envio.fecha)}</div>
+                    <div className="w-[265px] flex flex-col gap-1 justify-center  font-semibold text-[#495D72]">
+                      {documents.map((doc, docIndex) => (
+                        <div
+                          key={docIndex}
+                          className=" flex justify-between items-center py-[6px] border-b last:border-b-0"
                         >
-                          <img src={descargar} alt="Descargar" />
-                        </button>
-                      </div>
+
+                          <div className=" w-[150px] flex justify-start overflow-hidden text-ellipsis whitespace-nowrap max-w-[15ch]">
+                            {cortarTexto(doc.name)}
+                          </div>
+                          <div className="w-[65px] flex justify-center">
+                            <button
+                              onClick={() => handleDownload(doc.pathFile, doc.name)}
+                              className="transition-transform duration-300 hover:scale-110"
+                            >
+                              <img src={descargar} alt="Descargar" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+
                 </div>
               )}
             </React.Fragment>

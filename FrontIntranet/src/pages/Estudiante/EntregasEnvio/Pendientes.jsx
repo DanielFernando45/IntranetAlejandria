@@ -41,13 +41,6 @@ const Pendientes = () => {
     }))
   }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return ''
-    const date = new Date(dateString)
-    const options = { month: 'short', day: 'numeric', year: 'numeric' }
-    return date.toLocaleDateString('es-PE', options)
-  }
-
   const formatDateExpan = (dateString) => {
     if (!dateString) return ''
     const date = new Date(dateString)
@@ -55,16 +48,35 @@ const Pendientes = () => {
     return date.toLocaleDateString('es-PE', options)
   }
 
-  const formatTime = (dateString) => {
+
+  const formatDate = (dateString) => {
     if (!dateString) return ''
     const date = new Date(dateString)
-    return date.toLocaleTimeString('es-PE', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-      timeZone: 'America/Lima'
-    })
+    const options = { month: 'short', day: 'numeric', year: 'numeric' }
+    return date.toLocaleDateString('es-PE', options)
   }
+
+
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+
+    // Obtener hora y minutos en UTC
+    let horas = date.getUTCHours();
+    const minutos = date.getUTCMinutes().toString().padStart(2, "0");
+
+    // Determinar AM/PM
+    const ampm = horas >= 12 ? "PM" : "AM";
+    
+    // Convertir a formato de 12 horas con dos dígitos
+    horas = horas % 12;
+    horas = horas ? horas.toString().padStart(2, "0") : "12"; // La hora 0 se convierte en 12
+
+    // Concatenar
+    const hora12ConAmPm = `${horas}:${minutos} ${ampm}`;
+
+    return hora12ConAmPm;
+};
 
   const cortarTexto = (texto) => {
     const index = texto.indexOf('-')
@@ -170,17 +182,17 @@ const Pendientes = () => {
                       </div>
                       <div>{formatTime(pendiente.fecha_entrega)}</div>
                       <div className='text-white bg-[#054755]  rounded-md px-4'>
-                          <p>Entregado</p>
+                        <p>Entregado</p>
                       </div>
                     </div>
                     <div className='flex flex-col lg:flex-row justify-between text-xs md:text-sm xl:text-base gap-y-4 border border-gray-300 lg:border-none rounded-lg p-3 lg:p-0'>
                       <div>{cortarTexto(pendiente.documento_0)}</div>
-                      <div className='flex xl:w-[450px] gap-4'>
+                      <div className='flex w-[450px] gap-4'>
                         <p>Enviado: {formatDateExpan(pendiente.fecha_revision)}</p>  
                         <p>Estimado: {formatDateExpan(pendiente.fecha_terminado)}</p>
                       </div>
                       <div>
-                          {formatTime(pendiente.fecha_revision)}
+                        {formatTime(pendiente.fecha_revision)}
                       </div>
                        <div className="text-white bg-[#353563]  rounded-md px-4">
                         {pendiente.estado === 'entregado' ? 'Entregado' : 'En Proceso'}
