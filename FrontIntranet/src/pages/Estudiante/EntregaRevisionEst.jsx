@@ -74,9 +74,9 @@ const EntregaRevisionEst = () => {
 
   return (
     <LayoutApp>
-      <main className="flex flex-col gap-3 mx-5 items-start p-5">
+      <main className="flex flex-col gap-3 lg:mx-5 items-start ">
 
-        <div className="flex ml-8 justify-between w-full">
+        <div className="flex flex-col md:flex-row justify-between w-full gap-y-4">
           {showNewAdvanceButton && (
             <button className="flex justify-between px-3 rounded-lg bg-white w-[180px] items-center font-medium" 
               onClick={() => setShowModal(true)}>
@@ -87,7 +87,7 @@ const EntregaRevisionEst = () => {
           {!showNewAdvanceButton && <div className="w-[180px]"></div>} {/* Espacio reservado para mantener el layout */}
           
           <select
-            className='border-2 rounded-md px-2 border-black'
+            className='border-2 rounded-md px-2'
             onChange={handleChange}
             value={selectedAsesoriaId || ''}
           >
@@ -97,12 +97,12 @@ const EntregaRevisionEst = () => {
           </select>
         </div>
 
-        <div className="flex flex-col gap-[10px] ml-8 px-[40px] py-5 w-full  bg-white rounded-[10px]">
+        <div className="flex flex-col gap-[10px] px-[20px] sm:px-[40px] py-5 w-full  bg-white rounded-[10px]">
           <div className="flex flex-col gap-[12px]">
 
             <div className=" mt-5 flex justify-between">
-              <h2 className="text-2xl font-bold">Asuntos</h2>
-              <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+              <h2 className="text-base md:text-2xl font-bold">Asuntos</h2>
+              <span className="flex  justify-end gap-1 items-center font-medium text-[#2F80ED]">
                 <a href="">Ver todo</a>
                 <img src={flechaAzul} alt="" />
               </span>
@@ -110,14 +110,14 @@ const EntregaRevisionEst = () => {
 
             <div className="flex w-full border-b-2 gap-3 border-black font-normal">
               <button
-                className={`px-3 rounded-t-[5px] w-[115px] ${isTerminados ? "bg-[#17162E] text-white" : ""
+                className={`px-3 text-xs md:text-base rounded-t-[5px] w-[115px] ${isTerminados ? "bg-[#17162E] text-white" : ""
                   }`}
                 onClick={() => navigate("terminados")}
               >
                 Terminados
               </button>
               <button
-                className={`px-3 rounded-t-[5px] w-[105px] ${isPendientes ? "bg-[#17162E] text-white" : ""
+                className={`px-3 text-xs md:text-base rounded-t-[5px] w-[105px] ${isPendientes ? "bg-[#17162E] text-white" : ""
                   }`}
                 onClick={() => navigate("pendientes")}
               >
@@ -132,25 +132,25 @@ const EntregaRevisionEst = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-[10px] ml-8 px-[40px] py-5 w-full  bg-white rounded-[10px]">
+        <div className="flex flex-col gap-[10px] px-[40px] py-5 w-full  bg-white rounded-[10px]">
 
-          <div className="flex justify-between  ">
-            <h2 className="text-2xl font-bold">Documentos</h2>
-            <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+          <div className="flex justify-between flex-col md:flex-row">
+            <h2 className="text-base md:text-2xl font-bold">Documentos</h2>
+            <span className="flex md:justify-end gap-1 items-center font-medium text-[#2F80ED]">
               <a href="">Ver todo</a>
               <img src={flechaAzul} alt="" />
             </span>
           </div>
           <div className="flex w-full border-b-2 gap-3 border-black font-normal">
             <button
-              className={`px-3 rounded-t-[5px] w-[115px] ${docEnvio === "MisEnvios" ? "bg-[#17162E] text-white" : ""
+              className={`px-3 text-xs md:text-base rounded-t-[5px] w-[115px] ${docEnvio === "MisEnvios" ? "bg-[#17162E] text-white" : ""
                 }`}
               onClick={() => setEnvio("MisEnvios")}
             >
               Mis envíos
             </button>
             <button
-              className={`px-3 rounded-t-[5px] w-[135px] ${docEnvio === "EnviosAsesor" ? "bg-[#17162E] text-white" : ""
+              className={`px-3 text-xs md:text-base rounded-t-[5px] w-[135px] ${docEnvio === "EnviosAsesor" ? "bg-[#17162E] text-white" : ""
                 }`}
               onClick={() => setEnvio("EnviosAsesor")}
             >
