@@ -158,6 +158,7 @@ export class AsesorService {
     }
 
     async getAsesoramientoyDelegado(id_asesor:number){
+        console.log(id_asesor)
         const queryRunner=this.dataSource.createQueryRunner()
         await queryRunner.connect()
         await queryRunner.startTransaction()

@@ -574,7 +574,7 @@ export class AsesoramientoService {
   }
 
   async getInfoAsesorbyAsesoramiento(id: number) {
-    try {
+    try {      
       const datosAsesor = await this.asesoramientoRepo
         .createQueryBuilder('a')
         .innerJoin('a.procesosasesoria', 'p')

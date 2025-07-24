@@ -107,7 +107,7 @@ export class AuthService {
       { email },
       { expiresIn: '15min' },
     );
-    const url = `http://localhost:5173/reset-password/${url_codified}`;
+    const url = `http://localhost:5174/cambiarContraseña/${url_codified}`;
 
     await this.mailService.sendResetPasswordEmail(email, url);
 
