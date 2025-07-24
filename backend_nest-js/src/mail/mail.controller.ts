@@ -14,4 +14,12 @@ export class MailController {
     await this.authService.sendMailPassword(email);
     return { message: 'Si el correo está registrado, se ha enviado un enlace' };
   }
+
+  @Post('new-password')
+  async setNewPassword(
+    @Body('token') token: string,
+    @Body('newPassword') newPassword: string,
+  ) {
+    return await this.mailService.setNewPassword(token, newPassword);
+  }
 }

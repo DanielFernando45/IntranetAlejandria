@@ -574,7 +574,7 @@ export class AsesoramientoService {
   }
 
   async getInfoAsesorbyAsesoramiento(id: number) {
-    try {
+    try {      
       const datosAsesor = await this.asesoramientoRepo
         .createQueryBuilder('a')
         .innerJoin('a.procesosasesoria', 'p')
@@ -585,6 +585,7 @@ export class AsesoramientoService {
           'ase.nombre AS nombre',
           'ase.apellido AS apellido',
           'ase.universidad AS universidad',
+          'ase.url_imagen AS url_imagen',
           'grad.nombre AS gradoAcademico',
           'area.nombre AS areaNombre',
         ])

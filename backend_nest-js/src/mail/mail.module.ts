@@ -6,9 +6,13 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 
 import { join } from 'path';
 import { AuthModule } from 'src/auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Usuario } from 'src/usuario/usuario.entity';
+import { ClienteModule } from 'src/cliente/cliente.module';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Usuario]),
     MailerModule.forRoot({
       transport: {
         host: 'sandbox.smtp.mailtrap.io',
@@ -30,6 +34,7 @@ import { AuthModule } from 'src/auth/auth.module';
       },
     }),
     forwardRef(() => AuthModule),
+    ClienteModule
   ],
   controllers: [MailController],
   providers: [MailService],

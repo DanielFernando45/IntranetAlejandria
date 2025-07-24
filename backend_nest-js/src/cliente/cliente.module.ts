@@ -9,7 +9,7 @@ import { UsuarioModule } from 'src/usuario/usuario.module';
 import { AsesoramientoModule } from 'src/asesoramiento/asesoramiento.module';
 
 @Module({
-  exports:[ClienteService],
+  exports:[ClienteService,TypeOrmModule],
   imports:[TypeOrmModule.forFeature([Cliente,Usuario,GradoAcademico]),UsuarioModule,forwardRef(()=>AsesoramientoModule)],
   controllers: [ClienteController],
   providers: [ClienteService]

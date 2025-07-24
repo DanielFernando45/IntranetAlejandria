@@ -35,20 +35,21 @@ export class InduccionesController {
 
   @Get('downloadVideo/:nombre')
   async download(@Param('nombre') nombre: string, @Res() res: Response) {
-    console.log('[Controller] Solicitando archivo:', nombre); // solo el nombre limpio
+    // console.log('[Controller] Solicitando archivo:', nombre); // solo el nombre limpio
 
-    try {
-      const { buffer, mimeType } =
-        await this.induccionesService.downloadFileByName(nombre);
+    // try {
+    //   const { buffer, mimeType } =
+    //     await this.induccionesService.downloadFileByName(nombre);
 
-      res.setHeader('Content-Type', mimeType);
-      res.setHeader('Content-Disposition', `attachment; filename="${nombre}"`);
-      res.setHeader('Content-Length', buffer.length);
-      res.send(buffer);
-    } catch (error) {
-      console.error('[Controller] Error:', error.message);
-      res.status(404).json({ message: error.message });
-    }
+    //   res.setHeader('Content-Type', mimeType);
+    //   res.setHeader('Content-Disposition', `attachment; filename="${nombre}"`);
+    //   res.setHeader('Content-Length', buffer.length);
+    //   res.send(buffer);
+    // } catch (error) {
+    //   console.error('[Controller] Error:', error.message);
+    //   res.status(404).json({ message: error.message });
+    // }
+    return 
   }
 
   @Post('')
