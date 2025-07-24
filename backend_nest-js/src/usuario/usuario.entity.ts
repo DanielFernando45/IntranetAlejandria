@@ -3,9 +3,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 export enum UserRole {
   ADMIN = 'admin',
   ASESOR = 'asesor',
-  CLIENTE = 'cliente',
+  ESTUDIANTE = 'estudiante',
 }
-
 
 @Entity('usuarios')
 export class Usuario {

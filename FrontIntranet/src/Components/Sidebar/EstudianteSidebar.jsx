@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import Menu from "../../assets/icons/IconEstudiante/BotonMenu.svg";
 import LogoAleja from "../../assets/icons/IconEstudiante/LogoOscuro.svg";
 import MenuRetraido from "../../assets/icons/menuRetra.svg";
+//Logos
 import HomeEstu from "../../assets/icons/IconEstudiante/HomeEstudent.svg";
 import Reuniones from "../../assets/icons/IconEstudiante/ReunionEstudiante.svg";
 import EntreRev from "../../assets/icons/IconEstudiante/EnvioEstudiante.svg";
@@ -14,8 +15,16 @@ import Soporte from "../../assets/icons/IconEstudiante/SoporteEstudiante.svg";
 
 const LINKS = [
   { icono: HomeEstu, path: "/estudiante/home", title: "Home" },
-  { icono: Reuniones, path: "/estudiante/reuniones", title: "Reuniones" },
-  { icono: EntreRev, path: "/estudiante/entrega", title: "Entrega/Revisión" },
+  { icono: Reuniones, path: "/estudiante/reuniones", title: "Zoom / Inducciones" },
+  {
+    icono: EntreRev,
+    path: "/estudiante/entrega",
+    title: "Entrega/Revisión",
+    subLinks: [
+      { path: "/estudiante/entrega/terminados" },
+      { path: "/estudiante/entrega/pendientes" },
+    ]
+  },
   { icono: Calendario, path: "/estudiante/calendario", title: "Calendario" },
   { icono: Recursos, path: "/estudiante/recursos", title: "Recursos" },
   { icono: Pagos, path: "/estudiante/pagos", title: "Pagos" },
@@ -24,67 +33,93 @@ const LINKS = [
 
 const EstudianteSidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1280);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1280);
+      if (window.innerWidth >= 1280) {
+        setIsExpanded(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleMenu = () => {
     setIsExpanded(!isExpanded);
   };
 
   const handleItemClick = () => {
-    setIsExpanded(false);
+    if (isMobile) {
+      setIsExpanded(false);
+    }
   };
+
+  const isActive = (path) => location.pathname.startsWith(path);
 
   return (
     <>
-
-      {isExpanded && (
+      {isExpanded && isMobile && (
         <div
-          className="fixed inset-0 bg-black/30 z-20"
+          className="fixed inset-0 bg-black/30 z-20 "
           onClick={() => setIsExpanded(false)}
         />
       )}
 
       <nav
-        className={`fixed left-0 top-0 h-full ${
-          isExpanded ? "w-[266px]" : "w-[100px]"
-        } flex-shrink-0 bg-white z-30 transition-all duration-300`}
+        className={`fixed left-0 top-0
+            ${isMobile
+            ? (isExpanded ? "w-[266px] h-full" : "w-[50px] h-[56px] md:w-[80px] sm:h-[65px] md:h-[85px] shadow-md")
+            : (isExpanded ? "w-[266px] h-full" : "w-[100px] h-full")
+          } flex-shrink-0 bg-white z-30 transition-[width] duration-500 ease-in-out overflow-hidden`}
       >
-        <div className="flex flex-col items-center gap-[30px] py-5 px-5">
-          <img src={LogoAleja} alt="Logo" />
-          <button onClick={toggleMenu}>
-            <img src={isExpanded ? Menu : MenuRetraido} alt="Toggle Menu" />
-          </button>
-        </div>
+        {!isMobile || isExpanded ? (
+          <div className="flex flex-col items-center  gap-[30px] py-5 px-5">
+            <img src={LogoAleja} alt="Logo" />
+            <button onClick={toggleMenu}  >
+              <img src={isExpanded ? Menu : MenuRetraido} alt="Toggle Menu"  />
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center pt-2 sm:pt-3 md:pt-[20px]">
+            <button onClick={toggleMenu} className="p-2">
+              <img src={MenuRetraido} alt="Toggle Menu" className="w-5 md:w-6" />
+            </button>
+          </div>
+        )}
 
-        <ul className="flex flex-col gap-1 items-start">
-          {LINKS.map((link) => {
-            const isActive = location.pathname === link.path;
-            return (
-                <Link to={link.path}>
-                <li
-                key={link.title}
-                className={`flex items-center ${
-                  isExpanded ? "w-[266px]" : "w-[100px]"
-                } h-[77px] px-[20px] py-[25px] cursor-pointer flex-shrink-0 bg-white z-30 transition-all duration-300 
-                hover:bg-[#F0EFEF] ${
-                  isActive ? "bg-[#EFEFEE] border-l-[5px] border-[#000]" : ""
-                }`}
-                onClick={handleItemClick}
-              >
-                <Link to={link.path} className="flex items-center gap-4 w-full">
-                  <img src={link.icono} className="w-6 h-6" />
-                  {isExpanded && (
-                    <span className="text-sm font-medium text-gray-800">
-                      {link.title}
-                    </span>
-                  )}
-                </Link>
-              </li>
-                </Link>
-              
-            );
-          })}
-        </ul>
+        {(!isMobile || isExpanded) && (
+          <ul className="flex flex-col gap-1 items-start ">
+            {LINKS.map((link) => {
+              const active = isActive(link.path);
+              return (
+                <div key={link.title}>
+                  <Link to={link.path}>
+                    <li
+                      className={`flex items-center ${isExpanded ? "w-[266px]" : "w-[100px]"} h-[77px] px-[20px] py-[25px] cursor-pointer flex-shrink-0
+                                  z-30 transition-all duration-300 ease-in-out hover:bg-[#F0EFEE] ${active ? "bg-[#F0EFEE] border-l-[5px] border-[#000]" : ""}`}
+                      onClick={handleItemClick}
+                    >
+                      <div className="flex items-center gap-4 w-full transition-all duration-300 ease-in-out">
+                        <img src={link.icono} className="w-6 h-6 transition-all duration-300 ease-in-out" />
+                        <span
+                          className={`text-[17px] font-normal text-black transition-opacity duration-300 ease-in-out ${isExpanded ? "opacity-100 ml-1" : "opacity-0 ml-[-10px]"
+                            }`}
+                        >
+                          {link.title}
+                        </span>
+                      </div>
+                    </li>
+
+                  </Link>
+                </div>
+              );
+            })}
+          </ul>
+        )}
       </nav>
     </>
   );

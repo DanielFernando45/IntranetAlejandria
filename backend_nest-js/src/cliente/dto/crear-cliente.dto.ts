@@ -1,41 +1,54 @@
-import { IsString, IsEmail, IsNotEmpty ,IsNumber} from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, IsNumber, IsUrl, IsInt, IsOptional } from 'class-validator';
 
-export class CreateClienteDto {//actualizar dtos
+export class CreateClienteDto {
     @IsString()
     @IsNotEmpty()
-    dni: string;
-
-    @IsString()
-    @IsNotEmpty()
-    nombre: string;
+    readonly dni: string;
 
     @IsString()
     @IsNotEmpty()
-    apellido: string;
+    readonly nombre: string;
+
+    @IsString()
+    @IsNotEmpty()
+    readonly apellido: string;
 
     @IsNumber()
-    telefono: number;
+    @IsNotEmpty()
+    readonly telefono: number;
 
     @IsEmail()
     @IsNotEmpty()
-    email: string;
+    readonly email: string;
 
     @IsString()
-    url_imagen:string;
+    @IsOptional()
+    readonly url_imagen: string;
+
+    // @IsInt()
+    // @IsNotEmpty()
+    // readonly tipoTrabajo: number;
 
     @IsString()
-    tipo_trabajo:string;
+    @IsNotEmpty()
+    readonly pais: string;
+
+    @IsInt()
+    @IsNotEmpty()
+    readonly gradoAcademico: number;
 
     @IsString()
-    pais:string;
+    @IsNotEmpty()
+    readonly universidad: string;
 
     @IsString()
-    id_grado_academico:string;
+    @IsNotEmpty()
+    readonly carrera:string;
 
-    @IsString()
-    universidad:string;
+    // @IsInt()
+    // @IsNotEmpty()
+    // readonly tipoContrato: number;
 
-    @IsString()
-    id_contrato:string;
-
+  // Puedes agregar también un usuario anidado si lo estás creando al mismo tiempo
+  // readonly usuario: CreateUsuarioDto;
 }

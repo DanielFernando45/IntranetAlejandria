@@ -8,11 +8,13 @@ export default {
       sm:"600px",
       md:"768px",
       lg:"900px",
+      
       xl:"1280px",
       "1xl":"1440px",
       "2xl":"1536px",
       "3xl":"1636px",
       "4xl":"1728px",
+      "6xl":"1912px",
       "5xl":"1920px"
     },
   },

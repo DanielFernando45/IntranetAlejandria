@@ -1,12 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne,JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne,JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Usuario } from "src/usuario/usuario.entity";
+import { GradoAcademico } from "src/common/entidades/gradoAcademico.entity";
+import { AreaAsesor } from "src/common/entidades/areaAsesor.entity";
+import { ProcesosAsesoria } from "src/procesos_asesoria/entities/procesos_asesoria.entity";
 
 @Entity()
 export class Asesor{
     @PrimaryGeneratedColumn()
     id:number;
     
-    @Column()Is
+    @Column()
     dni:string;
     
     @Column()
@@ -24,14 +27,17 @@ export class Asesor{
     @Column()
     url_imagen:string;
 
-    @Column()
-    area:string;
+    @ManyToOne(() => AreaAsesor)
+    @JoinColumn({ name: 'id_area' }) // nombre de la columna en la tabla Cliente
+    areaAsesor: AreaAsesor;
 
     @Column()
     especialidad:string;
 
-    @Column()
-    id_grado_academico:string;
+    @ManyToOne(() => GradoAcademico)
+    @JoinColumn({ name: 'id_grado_academico' }) // nombre de la columna en la tabla Cliente
+    gradoAcademico: GradoAcademico;
+    
 
     @Column()
     universidad:string;
@@ -39,4 +45,7 @@ export class Asesor{
     @OneToOne(()=>Usuario,{cascade:true})
     @JoinColumn()
     usuario:Usuario;
+
+    @OneToMany(()=>ProcesosAsesoria,procesosAsesoria=>procesosAsesoria.asesor)
+    procesosAsesoria:ProcesosAsesoria[]
 }
