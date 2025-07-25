@@ -77,7 +77,7 @@ const EditarAsignado = () => {
   const obtenerAsesores = async (areaId) => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/asesor/filter/${areaId}`
+        `${import.meta.env.VITE_API_PORT_ENV}/asesor/filter/${areaId}`
       );
       setAsesores(response.data);
     } catch (error) {
@@ -91,7 +91,7 @@ const EditarAsignado = () => {
       setCargando(true);
       // Obtener todos los estudiantes primero para el buscador
       const estudiantesResponse = await axios.get(
-        "http://localhost:3001/cliente/filter/all"
+        `${import.meta.env.VITE_API_PORT_ENV}/cliente/filter/all`
       );
 
       setEstudiantes(estudiantesResponse.data);
@@ -99,7 +99,7 @@ const EditarAsignado = () => {
 
       // Obtener datos del asesoramiento
       const response = await axios.get(
-        `http://localhost:3001/asesoramiento/listar/${id}`
+        `${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/listar/${id}`
       );
       const data = response.data.shift();
 
@@ -121,7 +121,7 @@ const EditarAsignado = () => {
 
       // Cargar área y asesor
       const asesorResponse = await axios.get(
-        `http://localhost:3001/asesor/${data.id_asesor}`
+        `${import.meta.env.VITE_API_PORT_ENV}/asesor/${data.id_asesor}`
       );
       const asesorData = asesorResponse.data;
       setAreaSeleccionada(asesorData.id_area);
@@ -316,7 +316,7 @@ const EditarAsignado = () => {
     try {
       console.log(payload);
       await axios.patch(
-        `http://localhost:3001/asesoramiento/update/${id}`,
+        `${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/update/${id}`,
         payload,
         {
           headers: {

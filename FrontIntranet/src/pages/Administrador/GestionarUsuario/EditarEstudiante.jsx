@@ -22,7 +22,7 @@ const EditarEstudiante = () => {
     useEffect(() => {
         const fetchEstudiante = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/cliente/${id}`)
+                const response = await axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente/${id}`)
                 const estudiante = response.data;
                 setEstudianteData({
                     ...estudiante,
@@ -64,7 +64,7 @@ const EditarEstudiante = () => {
         };
 
         try {
-            await axios.patch(`http://localhost:3001/cliente/update/${id}`, payload);
+            await axios.patch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/update/${id}`, payload);
             alert("Asesor actualizado correctamente");
             navigate('/admin/gestionar-usuarios');
         } catch (error) {

@@ -9,7 +9,7 @@ const ListarEstudiante = () => {
   const [estudiantesBase, setEstudiantesBase] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/cliente")
+    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente`)
       .then((res) => {
         setEstudiantes(res.data);
         setEstudiantesBase(res.data);
@@ -59,7 +59,7 @@ const ListarEstudiante = () => {
       if(!window.confirm("¿Estas Seguro de Eliminar?")) return;
 
       try {
-          await axios.delete(`http://localhost:3001/cliente/delete/${id}`);
+          await axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/cliente/delete/${id}`);
           const nuevosEstudiantes = estudiantes.filter(estudiante => estudiante.id !== id); 
           setEstudiantes(nuevosEstudiantes);
           setEstudiantesBase(nuevosEstudiantes);

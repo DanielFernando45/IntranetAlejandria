@@ -16,9 +16,9 @@ const Asignaciones = () => {
 
   return (
     <LayoutApp>
-      <main className="flex flex-col mx-32  items-start">
+      <main className="flex flex-col xl:mx-32  items-start overflow-auto">
 
-        <div className="ml-8 flex w-full border-b-2 gap-3 border-black font-normal">
+        <div className="xl:ml-8 flex w-full border-b-2 gap-3 border-black font-normal">
           <button
             className={`px-3 rounded-t-[5px] w-[115px] ${isSinAsignar  ? "bg-[#17162E] text-white" : ""}`}
             onClick={() => navigate("listar-asignar")}
@@ -33,7 +33,7 @@ const Asignaciones = () => {
           </button>
         </div>
 
-        <div className="flex flex-col gap-[10px] ml-8 pt-3 p-[30px] w-full bg-white rounded-b-[10px] drop-shadow-lg">
+        <div className="flex flex-col gap-[10px] xl:ml-8 pt-3 p-[30px] w-[1200px]  xl:w-full bg-white rounded-b-[10px] drop-shadow-lg border-3 ">
            
            <Outlet />
 

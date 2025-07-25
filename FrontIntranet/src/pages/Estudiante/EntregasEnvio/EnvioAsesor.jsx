@@ -13,7 +13,7 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
   useEffect(() => {
     if (idAsesoramiento) {
       setLoading(true);
-      axios.get(`http://localhost:3001/documentos/asesor/list/${idAsesoramiento}`)
+      axios.get(`${import.meta.env.VITE_API_PORT_ENV}/documentos/asesor/list/${idAsesoramiento}`)
         .then(response => {
           setMisEnvios(response.data);
           // Inicializar el estado de apertura para cada item

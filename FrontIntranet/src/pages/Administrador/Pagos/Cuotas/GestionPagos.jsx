@@ -14,7 +14,7 @@ const GestionPagos = () => {
     useEffect(() => {
         const fetchPagos = async () => {
             try {
-                const response = await fetch('http://localhost:3001/pagos/cuotas');
+                const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/pagos/cuotas`);
                 if (!response.ok) {
                     throw new Error('Error al obtener los datos de pagos');
                 }
@@ -60,7 +60,7 @@ const GestionPagos = () => {
 
     const confirmarEliminar = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/pagos/delete/${pagoToDelete}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/pagos/delete/${pagoToDelete}`, {
                 method: 'DELETE'
             });
             

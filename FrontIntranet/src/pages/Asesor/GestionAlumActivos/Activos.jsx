@@ -14,7 +14,7 @@ const Activos = () => {
         const id = user.id;
 
         // Hacer la petición a la API
-        const response = await fetch(`http://localhost:3001/asesoramiento/misAsesoriasActivas/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/misAsesoriasActivas/${id}`);
         
         if (!response.ok) {
           throw new Error('Error al obtener las asesorías');

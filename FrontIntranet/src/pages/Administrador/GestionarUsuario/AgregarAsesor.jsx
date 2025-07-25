@@ -35,7 +35,7 @@ const AgregarAsesor = () => {
 
     const handleSubmit = async () => {
         try {
-            await axios.post('http://localhost:3001/asesor/add', formData);
+            await axios.post(`${import.meta.env.VITE_API_PORT_ENV}/asesor/add`, formData);
             alert("Asesor añadido exitosamente");
             navigate('/admin/gestionar-usuarios/listar-asesores');
         } catch (error) {

@@ -26,7 +26,7 @@ const DocPendientes = () => {
   const fetchPendientes = () => {
     setLoading(true);
     axios
-      .get(`http://localhost:3001/asuntos/all/${idAsesoramiento}`)
+      .get(`${import.meta.env.VITE_API_PORT_ENV}/asuntos/all/${idAsesoramiento}`)
       .then((response) => {
         setPendientes(response.data);
         const initialChecked = {};
@@ -73,7 +73,7 @@ const DocPendientes = () => {
     const fechaCompleta = `${fecha} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
 
     axios
-      .patch(`http://localhost:3001/asuntos/en_proceso/${id}`, {
+      .patch(`${import.meta.env.VITE_API_PORT_ENV}/asuntos/en_proceso/${id}`, {
         fecha_terminado: fechaCompleta,
       })
       .then((response) => {
@@ -129,7 +129,7 @@ const DocPendientes = () => {
       });
 
       await axios.patch(
-        `http://localhost:3001/asuntos/finished/${id}`,
+        `${import.meta.env.VITE_API_PORT_ENV}/asuntos/finished/${id}`,
         formData,
         {
           headers: {

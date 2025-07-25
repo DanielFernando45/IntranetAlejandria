@@ -14,7 +14,7 @@ const Desactivados = () => {
         const id = user.id;
 
         // Hacer la petición a la API
-        const response = await fetch(`http://localhost:3001/asesoramiento/misAsesoriasInactivas/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/misAsesoriasInactivas/${id}`);
         
         if (!response.ok) {
           throw new Error('No tienes  asesorías inactivas');

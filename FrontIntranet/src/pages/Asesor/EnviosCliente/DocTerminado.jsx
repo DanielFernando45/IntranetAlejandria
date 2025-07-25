@@ -12,7 +12,7 @@ const DocTerminado = () => {
   useEffect(() => {
     if (idAsesoramiento) {
       setLoading(true);
-      axios.get(`http://localhost:3001/asuntos/terminados/${idAsesoramiento}`)
+      axios.get(`${import.meta.env.VITE_API_PORT_ENV}/asuntos/terminados/${idAsesoramiento}`)
         .then(response => {
           setTerminado(response.data)
         })

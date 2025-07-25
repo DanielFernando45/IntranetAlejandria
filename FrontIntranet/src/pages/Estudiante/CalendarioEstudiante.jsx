@@ -19,7 +19,7 @@ const CalendarioEstudiante = () => {
       const user = JSON.parse(usuario);
       const id = user.id;
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/miAsesoramiento/${id}`)
         .then(res => res.json())
         .then(data => {
           const asesoriasArray = Object.values(data).map(item => ({
@@ -45,7 +45,7 @@ const CalendarioEstudiante = () => {
 
   const fetchEventosDia = () => {
     const fechaSeleccionada = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
-    fetch(`http://localhost:3001/common/calendario_estudiante/${selectedAsesoriaId}/${fechaSeleccionada}`)
+    fetch(`${import.meta.env.VITE_API_PORT_ENV}/common/calendario_estudiante/${selectedAsesoriaId}/${fechaSeleccionada}`)
       .then(res => res.json())
       .then(data => {
         setEventosDia(data);

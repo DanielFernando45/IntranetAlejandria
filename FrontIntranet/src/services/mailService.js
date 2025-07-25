@@ -1,9 +1,10 @@
 import axios from "axios";
+import api from "./api";
 
 
 const sendResetPasswordEmail = async (email) => {
     try {
-        const response = await axios.post('http://localhost:3001/mail/reset-password', { email });
+        const response = await api.post('/mail/reset-password', { email });
         console.log(response);
         return response.data;
     } catch (error) {
@@ -15,7 +16,7 @@ const sendResetPasswordEmail = async (email) => {
 const changePassword = async ({newPassword,token}) => {
     try {
         console.log("Enviando nueva contraseña para:", newPassword, "con token:", token);
-        const response = await axios.post('http://localhost:3001/mail/new-password', { newPassword, token });
+        const response = await api.post('/mail/new-password', { newPassword, token });
         console.log(response);
         return response.data;
     } catch (error) {

@@ -5,6 +5,8 @@ import download_icon from "../../assets/icons/download.png";
 import play_icon from "../../assets/icons/play-white.png";
 import { useQuery } from "@tanstack/react-query";
 import { induccionesService } from "../../services/induccionesService";
+import ReactPlayer from 'react-player';
+import VideoPlayer from "../../Components/VideoPlayer";
 
 const ReunionesEstudiante = () => {
   const [asesorias, setAsesorias] = useState([]);
@@ -23,13 +25,15 @@ const ReunionesEstudiante = () => {
     enabled: !!selectedAsesoriaId,
   });
 
+  console.log(inducciones);
+
   useEffect(() => {
     const usuario = localStorage.getItem("user");
     if (usuario) {
       const user = JSON.parse(usuario);
       const id = user.id;
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/miAsesoramiento/${id}`)
         .then((res) => res.json())
         .then((data) => {
           const asesoriasArray = Object.values(data).map((item) => ({
@@ -50,7 +54,7 @@ const ReunionesEstudiante = () => {
   useEffect(() => {
     if (selectedAsesoriaId) {
       // Obtener reuniones en espera
-      fetch(`http://localhost:3001/reuniones/espera/${selectedAsesoriaId}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/reuniones/espera/${selectedAsesoriaId}`)
         .then((res) => res.json())
         .then((data) => {
           setProximasReuniones(data);
@@ -61,7 +65,7 @@ const ReunionesEstudiante = () => {
         .finally(() => setLoading(false));
       // Obtener reuniones terminadas
       // fetch(
-      //   `http://localhost:3001/inducciones/induccionesByAsesoria/${selectedAsesoriaId}`
+      //   `${import.meta.env.VITE_API_PORT_ENV}/inducciones/induccionesByAsesoria/${selectedAsesoriaId}`
       // )
       //   .then((res) => res.json())
       //   .then((data) => {
@@ -187,7 +191,7 @@ const ReunionesEstudiante = () => {
 
               {/* Contenido para reuniones terminadas */}
               <div className="flex flex-col gap-5">
-                <div className="flex flex-wrap justify-start gap-6">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6">
                   {induccionesLoading ? (
                     <p>Cargando inducciones...</p>
                   ) : inducciones && inducciones.length > 0 ? (
@@ -196,7 +200,7 @@ const ReunionesEstudiante = () => {
                         return (
                           <div
                             key={index}
-                            className="flex flex-col sm:flex-row w-full sm:w-[310px] h-auto sm:h-[170px] items-center relative"
+                            className="flex flex-col sm:flex-row items-center relative"
                           >
                             <img
                               src="/wp-induccion.jpg"
@@ -246,13 +250,14 @@ const ReunionesEstudiante = () => {
         </div>
 
         {showModalVideo && (
-          <div onClick={ () => setShowModalVideo(false) } className="fixed bg-black/50 top-0 left-0 w-full h-full flex items-center justify-center z-50">
-            <div onClick={ (event) => event.stopPropagation() } className="bg-white p-6 rounded-lg shadow-lg w-[400px] h-auto">
-              <video
+          <div onClick={ () => setShowModalVideo(false) } className="fixed bg-black/50 top-0 left-0 w-full h-full flex items-center justify-center z-50 px-4">
+            <div onClick={ (event) => event.stopPropagation() } className="bg-white p-6 rounded-lg w-full shadow-lg lg:w-[500px] lg:h-[500px] max-w-[800px] max-h-[500px]">
+              <VideoPlayer urlVideo={urlVideo} />
+              {/* <video
                 src={urlVideo}
                 controls
                 className="w-full h-full"
-              ></video>
+              ></video> */}
             </div>
           </div>
         )}

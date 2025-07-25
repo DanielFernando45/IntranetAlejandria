@@ -25,7 +25,7 @@ const Induccion = () => {
     // <div className="bg-red-400 absolute top-0 left-0 z-[99]">
     <LayoutApp>
 
-      <main className="flex flex-col mx-32  items-start">
+      <main className="flex flex-col xl:mx-32  items-start">
         <h2 className="text-3xl font-bold mb-5">
           Agregar Inducciones a asesorias
         </h2>
@@ -52,32 +52,32 @@ const Induccion = () => {
               ? "cargando..."
               : asesoramientos.map((asesoria, index) => (
                 <div
-                  key={asesoria.id_asesoramiento}
+                  key={asesoria?.id_asesoramiento}
                   className={`flex w-full overflow-auto text-[#2B2829] font-normal p-[30px] rounded-md ${index % 2 === 0 ? "bg-white" : "bg-[#E9E7E7]"
                     }`}
                 >
                   <div className="w-[40px] flex justify-center">
-                    {asesoria.id_asesoramiento}
+                    {asesoria?.id_asesoramiento}
                   </div>
                   <div className="flex-1 flex justify-start max-w-[150px]">
-                    {asesoria.delegado}
+                    {asesoria?.delegado}
                   </div>
                   <div className="flex-1 flex text-center max-w-[200px]">
-                    {asesoria.profesion_asesoria}
+                    {asesoria?.profesion_asesoria}
                   </div>
                   <div className="flex-1 flex justify-center items-center">
-                    {asesoria.fecha_inicio}
+                    {asesoria?.fecha_inicio}
                   </div>
-                  <div className="flex-1 flex justify-center items-center max-w-[150px]">{asesoria.area}</div>
+                  <div className="flex-1 flex justify-center items-center max-w-[150px]">{asesoria?.area}</div>
                   <div className="flex-1 flex items-center gap-2">
                     <button
-                      onClick={() => navigateInduccion(asesoria.id_asesoramiento)}
+                      onClick={() => navigateInduccion(asesoria?.id_asesoramiento)}
                       className="rounded-sm px-3 py-1 bg-[#1C1C34] flex justify-center text-white flex-1"
                     >
                       Ver inducciones
                     </button>
                     <button
-                      onClick={() => { setOpenModal(true), setIdSeleccionado(asesoria.id_asesoramiento) }}
+                      onClick={() => { setOpenModal(true), setIdSeleccionado(asesoria?.id_asesoramiento) }}
                       className=" rounded-sm px-3 py-1 bg-[#1B1B33] flex justify-center text-white flex-1"
                     >
                       Subir Video

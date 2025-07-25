@@ -20,7 +20,7 @@ const HomeAsesor = () => {
             const user = JSON.parse(userString);
             const id = user.id;
 
-            fetch(`http://localhost:3001/asesor/asesoramientosYDelegado/${id}`)
+            fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesor/asesoramientosYDelegado/${id}`)
                 .then(res => res.json())
                 .then(data => {
                     const asesoriasArray = Object.values(data).map(item => ({
@@ -49,7 +49,7 @@ const HomeAsesor = () => {
         const ReunionReciente = async () => {
             try {
                 if (selectedAsesoriaId) {
-                    const response = await fetch(`http://localhost:3001/reuniones/allReunionesProximas/${selectedAsesoriaId}`);
+                    const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/reuniones/allReunionesProximas/${selectedAsesoriaId}`);
                     const data = await response.json();
                     setReuniones(data);
 
@@ -90,7 +90,7 @@ const HomeAsesor = () => {
 
     return (
         <LayoutApp>
-            <main className="ml-8 mr-8">
+            <main className="md:mx-8">
 
                 {/* Portada Asesor */}
                 <div className="xl:relative xl:justify-end flex items-center relative flex-col xl:flex-row bg-[#17162E] text-white rounded-2xl w-full shadow-lg">
@@ -129,10 +129,10 @@ const HomeAsesor = () => {
                 </div>
 
 
-                <div className="flex  justify-between">
+                <div className="flex flex-col xl:flex-row justify-between">
 
                     {/*Envio Asesor*/}
-                    <div className="w-[800px] 1xl:w-[863px] 2xl:w-[1050px] 3xl:w-[1150px] 4xl:w-[1250px] 6xl:w-[1450px]" >
+                    <div className="w-full xl:w-[863px] 2xl:w-[1050px] 3xl:w-[1150px] 4xl:w-[1250px] 6xl:w-[1450px]" >
 
                         <div className=" mt-5 flex justify-between">
                             <h2 className="text-2xl font-semibold">Ultimos Envios del Cliente</h2>
@@ -149,7 +149,7 @@ const HomeAsesor = () => {
                     </div>
 
                     {/*Reuniones */}
-                    <div className="ml-[45px] flex flex-col gap-5 w-96 mt-5">
+                    <div className="xl:ml-[45px] w-full flex flex-col gap-5 mt-5">
 
                         <select
                             className="border-2 rounded-md px-2 border-black "
@@ -172,21 +172,21 @@ const HomeAsesor = () => {
 
                             {reuniones.map((reunion) => (
 
-                                <div key={reunion.id} className="flex  items-center ">
-                                    <div className="flex flex-col justify-between gap-[45px] items-center rounded-l-xl h-full w-[104px] bg-[#17162E] p-4 text-white">
+                                <div key={reunion.id} className="flex w-auto h-[120px] mn:w-[300px] mn:h-[150px] md:h-[200px] md:w-[400px] mx-auto lg:w-auto items-center">
+                                    <div className="flex flex-col h-full justify-between gap-[45px] items-center rounded-l-xl w-[80px] mn:w-[104px] bg-[#17162E] p-4 text-white">
                                         <div className="flex flex-col justify-center items-center">
-                                            <p className="text-[14px] uppercase">{formatFecha(reunion.fecha_reunion).mes}</p>
-                                            <p className="text-[20px]">{formatFecha(reunion.fecha_reunion).dia}</p>
+                                            <p className="text-xs md:text-[14px] uppercase">{formatFecha(reunion.fecha_reunion).mes}</p>
+                                            <p className="text-xs md:text-[20px]">{formatFecha(reunion.fecha_reunion).dia}</p>
                                         </div>
-                                        <p className="text-[12px] ">{formatFecha(reunion.fecha_reunion).hora}</p>
+                                        <p className="text-xs md:text-[12px] ">{formatFecha(reunion.fecha_reunion).hora}</p>
                                     </div>
-                                    <div className="flex flex-col gap-5 bg-white p-4 justify-between rounded-r-xl">
+                                    <div className="flex flex-col h-full flex-1 gap-5 bg-white p-4 justify-between rounded-r-xl">
 
-                                        <p className="font-medium">{reunion.delegado}</p>
+                                        <p className="text-xs md:text-basefont-medium">{reunion.delegado}</p>
 
-                                        <button className="flex gap-4 justify-between px-1 h-12 items-center text-white rounded-2xl bg-[#1271ED]">
+                                        <button className="flex gap-4 justify-between px-1 h-8 md:h-12 items-center text-white rounded-2xl bg-[#1271ED]">
                                             <a href={reunion.enlace} target="_blank" rel="noopener noreferrer" className="w-full flex justify-between items-center px-2">
-                                                <p className="font-medium text-[13px]">Enlace Zoom</p>
+                                                <p className="font-medium text-xs md:text-[13px]">Enlace Zoom</p>
                                                 <img src={Zoom} alt="Zoom" className="w-6 h-6" />
                                             </a>
                                         </button>

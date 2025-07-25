@@ -26,7 +26,7 @@ const EntregaRevisionEst = () => {
       const user = JSON.parse(userString);
       const userId = user.id;
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${userId}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/miAsesoramiento/${userId}`)
         .then(res => res.json())
         .then(data => {
           const asesoriasArray = Object.values(data).map(item => ({
@@ -48,7 +48,7 @@ const EntregaRevisionEst = () => {
   }, []);
 
   const checkIfUserIsAdvisor = (asesoriaId, userId) => {
-    fetch(`http://localhost:3001/cliente/idClienteByAsesoramiento/${asesoriaId}`)
+    fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/idClienteByAsesoramiento/${asesoriaId}`)
       .then(res => res.json())
       .then(data => {
         // Comparar el ID del asesor con el ID del usuario
@@ -87,7 +87,7 @@ const EntregaRevisionEst = () => {
           {!showNewAdvanceButton && <div className="w-[180px]"></div>} {/* Espacio reservado para mantener el layout */}
           
           <select
-            className='border-2 rounded-md px-2'
+            className='text-xs mn:text-sm sm:text-base border-2 rounded-md px-2'
             onChange={handleChange}
             value={selectedAsesoriaId || ''}
           >
@@ -132,7 +132,7 @@ const EntregaRevisionEst = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-[10px] px-[40px] py-5 w-full  bg-white rounded-[10px]">
+        <div className="flex flex-col gap-[10px] px-[20px] sm:px-[40px] py-5 w-full  bg-white rounded-[10px]">
 
           <div className="flex justify-between flex-col md:flex-row">
             <h2 className="text-base md:text-2xl font-bold">Documentos</h2>

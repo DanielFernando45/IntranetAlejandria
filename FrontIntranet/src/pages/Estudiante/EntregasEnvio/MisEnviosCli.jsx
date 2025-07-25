@@ -14,7 +14,7 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
     if (idAsesoramiento) {
       setLoading(true);
       axios
-        .get(`http://localhost:3001/documentos/estudiante/list/${idAsesoramiento}`)
+        .get(`${import.meta.env.VITE_API_PORT_ENV}/documentos/estudiante/list/${idAsesoramiento}`)
         .then((response) => {
           setMisEnvios(response.data);
           // Inicializar el estado de apertura para cada item
@@ -142,7 +142,7 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
           return (
             <React.Fragment key={envio.id_asunto || index}>
               <div className="flex justify-between text-[#2B2829] text-xs md:text-base font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
-                <div className="w-[300px] flex">{envio.asunto}</div>
+                <div className="sm:w-[300px] flex">{envio.asunto}</div>
                 <div className="hidden lg:block text-white bg-[#353563] rounded px-3">
                   {envio.estado}
                 </div>
@@ -154,7 +154,7 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
                     ? cortarTexto(documents[0].name)
                     : "No hay archivos"}
                 </div>
-                <div className="w-[65px] flex justify-center">
+                <div className="mn:w-[65px] flex justify-center">
                   {hasDocuments && (
                     <button
                       onClick={() => toggleOpen(index)}

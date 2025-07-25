@@ -14,9 +14,9 @@ const Pagos = () => {
 
     return (
         <LayoutApp>
-            <main className="flex flex-col  mx-32 my-24 items-start">
+            <main className="flex flex-col xl:mx-32 my-24 items-start">
 
-                <div className='ml-8 mb-1 px-5 flex w-[390px] h-[30px] bg-[#E9E7E7] rounded-3xl font-medium items-center'>
+                <div className='xl:ml-8 mb-1 px-5 flex w-[390px] h-[30px] bg-[#E9E7E7] rounded-3xl font-medium items-center'>
                     <button
                         className={`mr-[18px] text-[#AAA3A5] ${isCuotas? "text-black" : ""} `}
                         onClick={() => navigate("cuotas")}

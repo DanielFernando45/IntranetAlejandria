@@ -16,7 +16,7 @@ const MiPerfil = () => {
             const id = user.id;
 
             // Llamada a la API
-            axios.get(`http://localhost:3001/cliente/${id}`)
+            axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente/${id}`)
                 .then(response => {
                     setPerfilData(response.data);
                 })

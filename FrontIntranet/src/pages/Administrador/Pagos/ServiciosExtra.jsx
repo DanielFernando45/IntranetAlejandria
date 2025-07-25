@@ -17,7 +17,7 @@ const ServiciosExtra = () => {
     }, []);
 
     const cargarServicios = () => {
-        axios.get('http://localhost:3001/pagos/listServicios')
+        axios.get(`${import.meta.env.VITE_API_PORT_ENV}/pagos/listServicios`)
             .then((res) => {
                 setServicios(res.data)
             })
@@ -45,7 +45,7 @@ const ServiciosExtra = () => {
     const confirmDelete = () => {
         if (!servicioToDelete) return;
         
-        axios.delete(`http://localhost:3001/pagos/delete/${servicioToDelete.id}`)
+        axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/pagos/delete/${servicioToDelete.id}`)
             .then(() => {
                 // Actualizar la lista de servicios después de eliminar
                 cargarServicios();

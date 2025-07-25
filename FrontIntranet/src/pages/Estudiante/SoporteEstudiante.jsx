@@ -49,7 +49,7 @@ const SoporteEstudiante = () => {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch('http://localhost:3001/soporte/add', {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/soporte/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

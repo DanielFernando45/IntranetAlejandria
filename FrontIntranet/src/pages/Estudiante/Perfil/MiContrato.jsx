@@ -13,7 +13,7 @@ const MiContrato = () => {
             const user = JSON.parse(userString);
             const id = user.id;
 
-            fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+            fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/miAsesoramiento/${id}`)
                 .then(res => res.json())
                 .then(data => {
                     const asesoriasArray = Object.values(data).map(item => ({
@@ -33,7 +33,7 @@ const MiContrato = () => {
     }, []);
 
     const obtenerDatosContrato = (asesoriaId) => {
-        fetch(`http://localhost:3001/cliente/misContratos/${asesoriaId}`)
+        fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/misContratos/${asesoriaId}`)
             .then(res => res.json())
             .then(data => {
                 setContrato(data);

@@ -19,7 +19,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:3001/auth/login", {
+      const res = await axios.post(`${import.meta.env.VITE_API_PORT_ENV}/auth/login`, {
         username,
         password,
       });

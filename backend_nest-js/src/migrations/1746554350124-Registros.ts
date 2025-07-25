@@ -16,7 +16,6 @@ export class Registros1746554350124 implements MigrationInterface {
             { id: 8, dni: 77889900, correo: "florenciaavila21@gmail.com", role: "estudiante", nombre: "Florencia Isabel", apellido: "Ávila Mendoza", telefono: 98712345, universidad: "UNMSM", grado: 1, carrera: "Psicología" },
             { id: 9, dni: 88990011, correo: "andresmora23@gmail.com", role: "estudiante", nombre: "Andrés Felipe", apellido: "Mora Castillo", telefono: 93456782, universidad: "UTP", grado: 2, carrera: "Ingeniería Industrial" },
             { id: 10, dni: 99001122, correo: "melissaruiz18@gmail.com", role: "estudiante", nombre: "Melissa Andrea", apellido: "Ruiz Delgado", telefono: 94821345, universidad: "UNMSM", grado: 3, carrera: "Medicina Humana" },
-            { id: 24, dni: 99001122, correo: "jackjmezah@gmail.com", role: "estudiante", nombre: "Gregorio", apellido: "Pobretosky", telefono: 94821345, universidad: "De la Calle", grado: 3, carrera: "Medicina Humana" }
           ];
       
           const asesores = [

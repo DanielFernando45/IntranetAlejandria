@@ -18,7 +18,7 @@ const PagosEstudiante = () => {
       const user = JSON.parse(usuario);
       const id = user.id;
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/miAsesoramiento/${id}`)
         .then((res) => res.json())
         .then((data) => {
           const asesoriasArray = Object.values(data).map((item) => ({
@@ -40,7 +40,7 @@ const PagosEstudiante = () => {
   useEffect(() => {
     if (selectedAsesoriaId) {
       // Obtener pagos de asesoría
-      fetch(`http://localhost:3001/pagos/misAsesorias/${selectedAsesoriaId}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/pagos/misAsesorias/${selectedAsesoriaId}`)
         .then((res) => res.json())
         .then((data) => {
           setPagosAsesoria(data);
@@ -50,7 +50,7 @@ const PagosEstudiante = () => {
         );
 
       // Obtener pagos de servicios (solo visualización)
-      fetch(`http://localhost:3001/pagos/misServicios/${selectedAsesoriaId}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/pagos/misServicios/${selectedAsesoriaId}`)
         .then((res) => res.json())
         .then((data) => {
           setPagosServicios(data);
@@ -218,10 +218,10 @@ const PagosEstudiante = () => {
                       {formatDate(pago.fecha_pago)}
                     </div>
                     <div
-                      className={`flex justify-center flex-1 md:flex-none w-auto ${
+                      className={`flex justify-center flex-1 md:flex-none w-auto px-1 ${
                         pago.estado_pago &&
                         pago.estado_pago.toLowerCase() === "pagado"
-                          ? "text-[#1DEE43] border-[#1DEE43]"
+                          ? "text-[#347433] border-[#347433]"
                           : "text-[#EE1D1D] border-[#EE1D1D]"
                       } border rounded-lg`}
                     >
@@ -260,7 +260,7 @@ const PagosEstudiante = () => {
               </div>
               <div className="flex justify-between">
                 <h2>Total pagado:</h2>
-                <h2 className="text-[#1DEE43]">S/.{calcularTotalPagado()}</h2>
+                <h2 className="text-[#16610E]">S/.{calcularTotalPagado()}</h2>
               </div>
               <div className="flex justify-between">
                 <h2>Por pagar:</h2>
@@ -309,10 +309,10 @@ const PagosEstudiante = () => {
                     {formatDate(pago.fecha_pago)}
                   </div>
                   <div
-                    className={`text-sm md:text-base flex justify-center flex-1 md:flex-none w-auto  ${
+                    className={`text-sm md:text-base flex justify-center flex-1 md:flex-none w-auto md:px-2 ${
                       pago.estado_pago &&
                       pago.estado_pago.toLowerCase() === "pagado"
-                        ? "text-[#1DEE43] border-[#1DEE43]"
+                        ? "text-[#16610E] border-[#16610E]"
                         : "text-[#EE1D1D] border-[#EE1D1D]"
                     } border rounded-lg`}
                   >

@@ -13,7 +13,7 @@ const EnviosCliente = ({ idAsesoramiento }) => {
   useEffect(() => {
     if (idAsesoramiento) {
       setLoading(true);
-      axios.get(`http://localhost:3001/documentos/estudiante/list/${idAsesoramiento}`)
+      axios.get(`${import.meta.env.VITE_API_PORT_ENV}/documentos/estudiante/list/${idAsesoramiento}`)
         .then(response => {
           setEnvioCliente(response.data);
           // Inicializar el estado de apertura para cada item
@@ -109,10 +109,10 @@ const EnviosCliente = ({ idAsesoramiento }) => {
   return (
     <div className="flex flex-col text-[14px]">
       <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
-        <div className="w-[300px] flex">Titulo</div>
-        <div className="w-[102px] flex justify-center">Estado</div>
-        <div className="w-[100px] flex justify-center">Fecha</div>
-        <div className="w-[250px] flex justify-center">Archivo</div>
+        <div className="flex-1 md:w-[300px] flex">Titulo</div>
+        <div className="w-[102px] hidden md:flex justify-center">Estado</div>
+        <div className="flex-1 md:w-[100px] flex justify-center">Fecha</div>
+        <div className="flex-1 md:w-[250px] flex justify-center">Archivo</div>
         <div className="w-[65px] rounded-md px-3 flex justify-center">Descargas</div>
       </div>
 
@@ -131,11 +131,11 @@ const EnviosCliente = ({ idAsesoramiento }) => {
 
           return (
             <React.Fragment key={envio.id_asunto || index} >
-              <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
-                <div className="w-[300px] flex">{envio.asunto}</div>
-                <div className='flex w-[100px] text-white bg-[#353563] rounded px-3 justify-center'>{envio.estado}</div>
-                <div className="w-[150px] flex justify-center">{formatDate(envio.fecha)}</div>
-                <div className="w-[250px] flex justify-start overflow-hidden text-ellipsis whitespace-nowrap max-w-[15ch]">
+              <div className="flex justify-between text-[#2B2829] text-xs md:text-base font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
+                <div className="flex-1 lg:w-[300px] flex">{envio.asunto}</div>
+                <div className='hidden md:flex w-[100px] text-white bg-[#353563] rounded px-3 justify-center'>{envio.estado}</div>
+                <div className="flex-1 md:w-[150px] flex justify-center">{formatDate(envio.fecha)}</div>
+                <div className="flex-1 md:w-[250px] flex justify-start overflow-hidden text-ellipsis whitespace-nowrap max-w-[15ch]">
                   {hasDocuments ? documents[0].name : 'No hay archivos'}
                 </div>
 
@@ -156,7 +156,7 @@ const EnviosCliente = ({ idAsesoramiento }) => {
                 <div className="bg-white shadow-md  rounded-md  px-[6px] my-2">
                   <div className="flex justify-between items-center  border-b last:border-b-0">
                     <div className="w-[300px] flex">{envio.asunto}</div>
-                    <div className="flex w-[100px] justify-center">{envio.estado}</div>
+                    <div className="hidden md:flex w-[100px] justify-center">{envio.estado}</div>
                     <div className="w-[150px] flex justify-center">{formatDate(envio.fecha)}</div>
                     <div className="w-[265px] flex flex-col gap-1 justify-center  font-semibold text-[#495D72]">
                       {documents.map((doc, docIndex) => (

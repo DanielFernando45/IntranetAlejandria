@@ -11,7 +11,7 @@ const ListarAsesor = () => {
     useEffect(() => {
         const fetchAsesores = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/asesor');
+                const response = await axios.get('${import.meta.env.VITE_API_PORT_ENV}/asesor');
                 setAsesores(response.data);
                 setTodosLosAsesores(response.data);
             } catch (error) {
@@ -51,7 +51,7 @@ const ListarAsesor = () => {
         if (!window.confirm("¿Estás seguro que deseas eliminar este asesor?")) return;
 
         try {
-            await axios.delete(`http://localhost:3001/asesor/delete/${id}`);
+            await axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/asesor/delete/${id}`);
             const nuevosAsesores = asesores.filter(asesor => asesor.id !== id);
             setAsesores(nuevosAsesores);
             setTodosLosAsesores(nuevosAsesores);

@@ -13,7 +13,7 @@ const Pendientes = () => {
   useEffect(() => {
     if (idAsesoramiento) {
       setLoading(true)
-      axios.get(`http://localhost:3001/asuntos/all/${idAsesoramiento}`)
+      axios.get(`${import.meta.env.VITE_API_PORT_ENV}/asuntos/all/${idAsesoramiento}`)
         .then(response => {
           setPendientes(response.data)
           // Inicializar estado de apertura
@@ -130,7 +130,7 @@ const Pendientes = () => {
         pendientes.map((pendiente) => (
           <div key={pendiente.id_asunto} className="flex flex-col text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md md:px-6 transition-all duration-300">
             <div className='flex justify-between items-center py-1'>
-              <div className="w-[300px] text-xs md:text-base flex">{pendiente.titulo}</div>
+              <div className="mn:w-[300px] text-xs md:text-base flex">{pendiente.titulo}</div>
               <div className="w-[250px] text-xs md:text-base flex justify-center">
                 {formatDate(pendiente.fecha_entrega)}
               </div>
@@ -139,7 +139,7 @@ const Pendientes = () => {
               </div>
               <button
                 onClick={() => toggleOpen(pendiente.id_asunto)}
-                className="transition-transform duration-300"
+                className="transition-transform duration-300 mn:w-[65px] flex justify-center"
               >
                 <img
                   src={arrowIcon}

@@ -12,7 +12,7 @@ const Terminados = () => {
     if (idAsesoramiento) {
       setLoading(true);
       axios
-        .get(`http://localhost:3001/asuntos/terminados/${idAsesoramiento}`)
+        .get(`${import.meta.env.VITE_API_PORT_ENV}/asuntos/terminados/${idAsesoramiento}`)
         .then((response) => {
           setTerminado(() => {
             return response.data.map((item) => ({
@@ -79,12 +79,12 @@ const Terminados = () => {
   return (
     <>
     <div className="flex justify-between text-[#2B2829] font-normal  p-[6px] rounded-md">
-        <div className="w-[300px] flex">Nombre Entregas</div>
-        <div className="w-[300px] flex justify-center">Envio Tesista</div>
-        <div className="w-[300px] flex justify-center">En Desarrollo Asesor</div>
-        <div className="w-[300px] flex justify-center">Actividad Finalizada</div>
-        <div className="w-[102px] flex justify-center">Hora</div>
-        <div className=" px-3  flex justify-center ">Estado</div>
+        <div className="mn:w-[300px] text-xs md:text-base flex">Nombre Entregas</div>
+        <div className="w-[300px] text-xs md:text-base hidden md:flex justify-center">Envio Tesista</div>
+        <div className="w-[300px] text-xs md:text-base hidden md:flex justify-center">En Desarrollo Asesor</div>
+        <div className="w-[300px] text-xs md:text-base hidden md:flex justify-center">Actividad Finalizada</div>
+        <div className="w-[100px] mn:w-[102px] text-xs md:text-base flex ">Hora</div>
+        <div className="w-[102px] px-3  flex text-xs md:text-base justify-center ">Estado</div>
       </div>
     <div className="flex flex-col gap-2">
       {loading ? (
@@ -101,7 +101,7 @@ const Terminados = () => {
             key={index}
             className="flex items-center justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md text-xs lg:text-base"
           >
-            <div className="w-[300px] flex">{terminado.titulo}</div>
+            <div className="mn:w-[300px] flex">{terminado.titulo}</div>
             <div className="w-[300px] hidden md:flex justify-center">
               Entregado: {formatDate(terminado.fecha_entregado)}
             </div>
