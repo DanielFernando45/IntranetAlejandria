@@ -54,8 +54,8 @@ const Activos = () => {
   return (
     <div className="flex flex-col bg-white rounded-xl p-2">
       <div className="flex justify-between text-[#495D72] font-medium p-[6px] rounded-md">
-        <div className="w-[50px] flex">IDAsesoria</div>
-        <div className="w-[300px] flex">Delegado</div>
+        <div className="w-[100px] flex justify-center">IDAsesoria</div>
+        <div className="w-[300px] flex justify-center">Delegado</div>
         <div className="w-[250px] flex justify-center">Contrato Asesoria</div>
         <div className="w-[250px] flex justify-center">F.inicio</div>
         <div className="w-[250px] flex justify-center">F.vencimiento</div>
@@ -64,10 +64,10 @@ const Activos = () => {
       {asesorias.map((asesoria, index) => (
         <div 
           key={asesoria.id} 
-          className={`flex justify-between text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-white' : 'bg-[#E9E7E7]'} p-[6px] rounded-md`}
+          className={`flex justify-between text-[#2B2829] font-normal ${index % 2 === 0 ? 'bg-white' : 'bg-[#E9E7E7]'} p-[6px] rounded-md text-[14px]`}
         >
-          <div className="w-[50px] flex">{asesoria.id}</div>
-          <div className="w-[300px] flex">{asesoria.delegado}</div>
+          <div className="w-[100px] flex justify-center">{asesoria.id}</div>
+          <div className="w-[300px] flex justify-center">{asesoria.delegado}</div>
           <div className="w-[250px] flex justify-center">{asesoria.profesion_asesoria}</div>
           <div className="w-[250px] flex justify-center">{formatDate(asesoria.fecha_inicio)}</div>
           <div className="w-[250px] flex justify-center">{formatDate(asesoria.fecha_fin)}</div> {/* No hay fecha de vencimiento en la API */}

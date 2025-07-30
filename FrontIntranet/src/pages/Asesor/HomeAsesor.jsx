@@ -93,7 +93,7 @@ const HomeAsesor = () => {
             <main className="md:mx-8">
 
                 {/* Portada Asesor */}
-                <div className="xl:relative xl:justify-end flex items-center relative flex-col xl:flex-row bg-[#17162E] text-white rounded-2xl w-full shadow-lg">
+                <div className="xl:relative xl:justify-end flex items-center relative flex-col xl:flex-row bg-[#17162E] text-white rounded-2xl w-full xl:h-[410px] shadow-lg">
 
                     <div className="xl:absolute flex flex-col p-4 sm:p-9 md:p-12 lg:p-14 xl:p-10 xl:px-[55px] w-full md:h-full md:pt-7 lg:pt-14">
                         <p className="text-[12px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[20px] text-[#B5B5B5]">
@@ -123,18 +123,17 @@ const HomeAsesor = () => {
                         <img
                             src={portada}
                             alt="Graduación"
-                            className="rounded-xl w-full h-full object-cover"
+                            className="rounded-xl w-full h-full xl:h-[410px]   1xl:h-[410px]  2xl:h-[410px] object-cover"
                         />
                     </div>
                 </div>
 
-
                 <div className="flex flex-col xl:flex-row justify-between">
 
                     {/*Envio Asesor*/}
-                    <div className="w-full xl:w-[863px] 2xl:w-[1050px] 3xl:w-[1150px] 4xl:w-[1250px] 6xl:w-[1450px]" >
+                    <div className="bg-[#F5F5F5] rounded-xl p-4 mt-5 w-full xl:w-[863px] 2xl:w-[1050px] 3xl:w-[1150px] 4xl:w-[1250px] 6xl:w-[1450px]" >
 
-                        <div className=" mt-5 flex justify-between">
+                        <div className="flex justify-between">
                             <h2 className="text-2xl font-semibold">Ultimos Envios del Cliente</h2>
                             <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
                                 <a href=""></a>
@@ -149,7 +148,7 @@ const HomeAsesor = () => {
                     </div>
 
                     {/*Reuniones */}
-                    <div className="xl:ml-[45px] w-full flex flex-col gap-5 mt-5">
+                    <div className="xl:ml-[45px] w-full flex flex-col gap-5 mt-5 2xl:w-[500px]">
 
                         <select
                             className="border-2 rounded-md px-2 border-black "
@@ -161,8 +160,8 @@ const HomeAsesor = () => {
                             ))}
                         </select>
 
-                        <div>
-                            <div className=" mt-4 flex justify-between ">
+                        <div className=" bg-[#F5F5F5] rounded-xl p-4 ">
+                            <div className="  flex justify-between ">
                                 <h2 className="text-2xl font-semibold">Reuniones</h2>
                                 <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
                                     <a href="">Ver todo</a>
@@ -172,18 +171,16 @@ const HomeAsesor = () => {
 
                             {reuniones.map((reunion) => (
 
-                                <div key={reunion.id} className="flex w-auto h-[120px] mn:w-[300px] mn:h-[150px] md:h-[200px] md:w-[400px] mx-auto lg:w-auto items-center">
+                                <div key={reunion.id} className="flex w-auto mt-4 h-[120px] mn:w-[300px] mn:h-[150px] md:h-[200px] xl:h-[130px] 1xl:h-[150px]  md:w-[400px] mx-auto lg:w-auto items-center">
                                     <div className="flex flex-col h-full justify-between gap-[45px] items-center rounded-l-xl w-[80px] mn:w-[104px] bg-[#17162E] p-4 text-white">
-                                        <div className="flex flex-col justify-center items-center">
-                                            <p className="text-xs md:text-[14px] uppercase">{formatFecha(reunion.fecha_reunion).mes}</p>
-                                            <p className="text-xs md:text-[20px]">{formatFecha(reunion.fecha_reunion).dia}</p>
+                                        <div className="flex flex-col justify-center items-center gap-5">
+                                            <p className="text-xs md:text-[14px] uppercase 1xl:text-[16px] 2xl:text-[18px]">{formatFecha(reunion.fecha_reunion).mes}</p>
+                                            <p className="text-xs md:text-[20px] 1xl:text-[21px] 2xl:text-[24px]">{formatFecha(reunion.fecha_reunion).dia}</p>
                                         </div>
-                                        <p className="text-xs md:text-[12px] ">{formatFecha(reunion.fecha_reunion).hora}</p>
+                                        <p className="text-xs md:text-[12px] 1xl:text-[16px]">{formatFecha(reunion.fecha_reunion).hora}</p>
                                     </div>
                                     <div className="flex flex-col h-full flex-1 gap-5 bg-white p-4 justify-between rounded-r-xl">
-
-                                        <p className="text-xs md:text-basefont-medium">{reunion.delegado}</p>
-
+                                        <p className="text-xs md:text-basefont-medium 1xl:text-[15px] 2xl:text-[17px] text-center w-full">{reunion.delegado}</p>
                                         <button className="flex gap-4 justify-between px-1 h-8 md:h-12 items-center text-white rounded-2xl bg-[#1271ED]">
                                             <a href={reunion.enlace} target="_blank" rel="noopener noreferrer" className="w-full flex justify-between items-center px-2">
                                                 <p className="font-medium text-xs md:text-[13px]">Enlace Zoom</p>

@@ -248,7 +248,7 @@ const CalendarioEstudiante = () => {
   return (
     <LayoutApp>
       <main className='sm:m-5 flex flex-col lg:flex-row gap-10 xl:gap-[60px]'>
-        <div className='flex flex-col flex-1 lg:w-[60%] justify-center items-center'>
+        <div className='bg-white rounded-xl p-4 flex flex-col flex-1 lg:w-[60%] justify-center items-center'>
           <div className='flex flex-col  w-full justify-between mb-10 gap-3'>
             <p className='font-semibold text-[20px] text-[#575051]'>Calendario de actividades</p>
             <div className='flex flex-col sm:flex-row gap-3'>

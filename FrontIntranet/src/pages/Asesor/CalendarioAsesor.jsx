@@ -335,7 +335,7 @@ const CalendarioAsesor = () => {
   return (
     <LayoutApp>
       <main className="sm:m-5 flex flex-col lg:flex-row gap-10 xl:gap-[60px]">
-        <div className="flex flex-col flex-1 lg:w-[60%] justify-center items-center">
+        <div className=" flex flex-col flex-1 lg:w-[60%] justify-center items-center ">
           <div className="flex flex-col md:flex-row w-full justify-between mb-10 items-center">
             <p className="font-semibold text-[20px] text-[#575051]">
               Calendario de actividades
@@ -370,7 +370,6 @@ const CalendarioAsesor = () => {
                 onChange={handleChange}
                 value={selectedAsesoriaId || ""}
               >
-                <option value="">Todos tus Clientes</option>
                 {asesorias.map((asesoria, index) => (
                   <option key={index} value={asesoria.id}>
                     {asesoria.delegado}
