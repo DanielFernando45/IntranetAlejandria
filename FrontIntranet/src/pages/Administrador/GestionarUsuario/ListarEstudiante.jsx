@@ -7,9 +7,14 @@ const ListarEstudiante = () => {
   const navigate = useNavigate();
   const [estudiantes, setEstudiantes] = useState([]);
   const [estudiantesBase, setEstudiantesBase] = useState([]);
+  const token = JSON.parse(localStorage.getItem('authToken'));
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente`)
+    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then((res) => {
         setEstudiantes(res.data);
         setEstudiantesBase(res.data);
@@ -70,7 +75,7 @@ const ListarEstudiante = () => {
   };
 
   return (
-    <>
+    <div className='min-w-[1200px] w-full'>
       <div className="flex flex-col gap-[12px]">
         <div className="flex justify-start">
           <h2 className="text-2xl font-bold">CRUD</h2>
@@ -123,7 +128,7 @@ const ListarEstudiante = () => {
       >
         <p>Agregar Estudiante</p>
       </button>
-    </>
+    </div>
   );
 };
 

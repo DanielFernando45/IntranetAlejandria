@@ -114,7 +114,7 @@ const Pendientes = () => {
   )
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 border max-h-[280px] overflow-auto">
       {loading ? (
         // Mostrar skeletons durante la carga
         <>

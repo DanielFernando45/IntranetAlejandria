@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import arrowIcon from "../../../assets/icons/IconEstudiante/arriba.svg";
 import descargar from "../../../assets/icons/Descargas.svg";
-import documentosVacios from '../../../assets/icons/documentosVacios.png'
+import documentosVacios from "../../../assets/icons/documentosVacios.png";
 import axios from "axios";
 
 const MisEnviosCli = ({ idAsesoramiento }) => {
@@ -14,7 +14,11 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
     if (idAsesoramiento) {
       setLoading(true);
       axios
-        .get(`${import.meta.env.VITE_API_PORT_ENV}/documentos/estudiante/list/${idAsesoramiento}`)
+        .get(
+          `${
+            import.meta.env.VITE_API_PORT_ENV
+          }/documentos/estudiante/list/${idAsesoramiento}`
+        )
         .then((response) => {
           setMisEnvios(response.data);
           // Inicializar el estado de apertura para cada item
@@ -135,86 +139,84 @@ const MisEnviosCli = ({ idAsesoramiento }) => {
         </>
       ) : misEnvios.length > 0 ? (
         // Mostrar datos cuando están cargados
-        misEnvios.map((envio, index) => {
-          const documents = getDocuments(envio);
-          const hasDocuments = documents.length > 0;
+        <div className="max-h-[280px] overflow-auto">
+          {misEnvios.map((envio, index) => {
+            const documents = getDocuments(envio);
+            const hasDocuments = documents.length > 0;
 
-          return (
-            <React.Fragment key={envio.id_asunto || index}>
-              <div className="flex justify-between text-[#2B2829] text-xs md:text-base font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
-                <div className="sm:w-[300px] flex">{envio.asunto}</div>
-                <div className="hidden lg:block text-white bg-[#353563] rounded px-3">
-                  {envio.estado}
-                </div>
-                <div className="w-[150px] flex justify-center">
-                  {formatDate(envio.fecha)}
-                </div>
-                <div className="w-[250px] hidden md:flex justify-center">
-                  {hasDocuments
-                    ? cortarTexto(documents[0].name)
-                    : "No hay archivos"}
-                </div>
-                <div className="mn:w-[65px] flex justify-center">
-                  {hasDocuments && (
-                    <button
-                      onClick={() => toggleOpen(index)}
-                      className="transition-transform duration-300"
-                    >
-                      <img
-                        src={arrowIcon}
-                        alt="toggle"
-                        className={`transform transition-transform duration-300 ${openItems[index] ? "rotate-180" : "rotate-0"
-                          }`}
-                      />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {openItems[index] && hasDocuments && (
-                <div className="bg-white p-2 mt-1 rounded-md">
-                  {/* Encabezado repetido UNA VEZ */}
-                  <div className="flex flex-col md:flex-row justify-between text-[#2B2829] font-normal items-center py-2 border-b text-xs md:text-base">
-                    <div className="flex-1 flex">{envio.asunto}</div>
-                    <div className="flex-1  text-white bg-[#353563] rounded px-3 text-center my-2 md:my-0">
-                      {envio.estado}
-                    </div>
-                    <div className="flex-1 flex justify-center">
-                      {formatDate(envio.fecha)}
-                    </div>
-                    <div className="flex-1 flex flex-col gap-1 justify-center  font-semibold text-[#495D72]">
-                      {documents.map((doc, docIndex) => (
-                        <div
-                          key={docIndex}
-                          className=" flex justify-between items-center py-[6px] border-b last:border-b-0"
-                        >
-
-                          <div className="flex justify-start">
-                            {cortarTexto(doc.name)}
-                          </div>
-                          <div className="w-[65px] flex justify-center">
-                            <button
-                              onClick={() => handleDownload(doc.pathFile, doc.name)}
-                              className="transition-transform duration-300 hover:scale-110"
-                            >
-                              <img src={descargar} alt="Descargar" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
+            return (
+              <React.Fragment key={envio.id_asunto || index}>
+                <div className="flex justify-between text-[#2B2829] text-xs md:text-base font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2">
+                  <div className="sm:w-[300px] flex">{envio.asunto}</div>
+                  <div className="hidden lg:block text-white bg-[#353563] rounded px-3">
+                    {envio.estado}
                   </div>
-
-
-
+                  <div className="w-[150px] flex justify-center">
+                    {formatDate(envio.fecha)}
+                  </div>
+                  <div className="w-[250px] hidden md:flex justify-center">
+                    {hasDocuments
+                      ? cortarTexto(documents[0].name)
+                      : "No hay archivos"}
+                  </div>
+                  <div className="mn:w-[65px] flex justify-center">
+                    {hasDocuments && (
+                      <button
+                        onClick={() => toggleOpen(index)}
+                        className="transition-transform duration-300"
+                      >
+                        <img
+                          src={arrowIcon}
+                          alt="toggle"
+                          className={`transform transition-transform duration-300 ${
+                            openItems[index] ? "rotate-180" : "rotate-0"
+                          }`}
+                        />
+                      </button>
+                    )}
+                  </div>
                 </div>
-              )}
 
-
-            </React.Fragment>
-          );
-        })
+                {openItems[index] && hasDocuments && (
+                  <div className="bg-white p-2 mt-1 rounded-md">
+                    {/* Encabezado repetido UNA VEZ */}
+                    <div className="flex flex-col md:flex-row justify-between text-[#2B2829] font-normal items-center py-2 border-b text-xs md:text-base">
+                      <div className="flex-1 flex">{envio.asunto}</div>
+                      <div className="flex-1  text-white bg-[#353563] rounded px-3 text-center my-2 md:my-0">
+                        {envio.estado}
+                      </div>
+                      <div className="flex-1 flex justify-center">
+                        {formatDate(envio.fecha)}
+                      </div>
+                      <div className="flex-1 flex flex-col gap-1 justify-center  font-semibold text-[#495D72]">
+                        {documents.map((doc, docIndex) => (
+                          <div
+                            key={docIndex}
+                            className=" flex justify-between items-center py-[6px] border-b last:border-b-0"
+                          >
+                            <div className="flex justify-start">
+                              {cortarTexto(doc.name)}
+                            </div>
+                            <div className="w-[65px] flex justify-center">
+                              <button
+                                onClick={() =>
+                                  handleDownload(doc.pathFile, doc.name)
+                                }
+                                className="transition-transform duration-300 hover:scale-110"
+                              >
+                                <img src={descargar} alt="Descargar" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
       ) : (
         // Mostrar cuando no hay datos
         <div className="flex justify-center">

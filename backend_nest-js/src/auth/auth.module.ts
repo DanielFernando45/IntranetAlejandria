@@ -19,7 +19,7 @@ import { PassportModule } from '@nestjs/passport';
     TypeOrmModule.forFeature([Usuario, Admin, Asesor, Cliente]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'superSecret',
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '1y' },
     }),
     UsuarioModule,
     forwardRef(() => MailModule),
