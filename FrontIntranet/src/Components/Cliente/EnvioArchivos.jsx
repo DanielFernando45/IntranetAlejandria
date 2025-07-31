@@ -86,7 +86,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
         formData.append('files', file);
       });
 
-      const response = await fetch(`http://localhost:3001/asuntos/addWithDocument/${asesoriaId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/asuntos/addWithDocument/${asesoriaId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

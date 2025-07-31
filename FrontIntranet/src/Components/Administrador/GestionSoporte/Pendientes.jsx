@@ -13,7 +13,7 @@ const Pendientes = () => {
     useEffect(() => {
         const fetchTickets = async () => {
             try {
-                const response = await fetch('http://localhost:3001/soporte/espera');
+                const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/soporte/espera`);
                 if (!response.ok) throw new Error('Error al obtener tickets');
                 setTickets(await response.json());
             } catch (err) {
@@ -38,7 +38,7 @@ const Pendientes = () => {
 
     const confirmResolution = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/soporte/finish/${currentTicketId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/soporte/finish/${currentTicketId}`, {
                 method: 'PATCH'
             });
 

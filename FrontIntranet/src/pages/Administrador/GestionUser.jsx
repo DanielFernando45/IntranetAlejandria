@@ -32,7 +32,7 @@ const GestionarUsuarios = () => {
           </button>
         </div>
 
-        <div className="flex-col gap-[10px] pt-3 p-[30px] overflow-auto  bg-white  rounded-b-[10px] drop-shadow-lg  w-full">
+        <div className="shadow-lg flex-col gap-[10px] pt-3 p-[30px] overflow-auto  bg-white  rounded-b-[10px] drop-shadow-lg  w-full">
           <Outlet />
         </div>
       </main>

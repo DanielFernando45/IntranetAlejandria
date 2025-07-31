@@ -26,7 +26,7 @@ const ReunionProximo = () => {
     const fetchReuniones = async () => {
       try {
         if (selectedAsesoriaId) {
-          const response = await axios.get(`http://localhost:3001/reuniones/allReunionesProximas/${selectedAsesoriaId}`);
+          const response = await axios.get(`${import.meta.env.VITE_API_PORT_ENV}/reuniones/allReunionesProximas/${selectedAsesoriaId}`);
           setReuniones(response.data);
           setLoading(false);
         }

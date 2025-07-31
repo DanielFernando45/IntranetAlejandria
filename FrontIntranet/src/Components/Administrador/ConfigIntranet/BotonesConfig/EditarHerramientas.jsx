@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const EditarHerramientas = ({ close, herramientaId }) => {
   const [formData, setFormData] = useState({
-    nombre: '',
-    descripcion: '',
+    nombre: "",
+    descripcion: "",
     url_imagen: null,
-    enlace: ''
+    enlace: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -16,26 +16,31 @@ const EditarHerramientas = ({ close, herramientaId }) => {
   useEffect(() => {
     const fetchHerramienta = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/recursos/herramientas/list/${herramientaId}`);
-        
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_PORT_ENV
+          }1/recursos/herramientas/list/${herramientaId}`
+        );
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(
-            errorData.message || `Error ${response.status}: ${response.statusText}`
+            errorData.message ||
+              `Error ${response.status}: ${response.statusText}`
           );
         }
 
         const data = await response.json();
-        
-        if (!data || typeof data !== 'object') {
-          throw new Error('Formato de datos inválido recibido del servidor');
+
+        if (!data || typeof data !== "object") {
+          throw new Error("Formato de datos inválido recibido del servidor");
         }
 
         setFormData({
-          nombre: data.nombre || '',
-          descripcion: data.descripcion || '',
+          nombre: data.nombre || "",
+          descripcion: data.descripcion || "",
           url_imagen: data.url_imagen || null,
-          enlace: data.enlace || ''
+          enlace: data.enlace || "",
         });
 
         // Establecer previsualizaciones iniciales
@@ -47,14 +52,14 @@ const EditarHerramientas = ({ close, herramientaId }) => {
             const url = new URL(data.enlace);
             setWebsitePreview({
               domain: url.hostname,
-              favicon: `https://www.google.com/s2/favicons?domain=${url.hostname}`
+              favicon: `https://www.google.com/s2/favicons?domain=${url.hostname}`,
             });
           } catch {
             setWebsitePreview(null);
           }
         }
       } catch (err) {
-        console.error('Error al cargar la herramienta:', err);
+        console.error("Error al cargar la herramienta:", err);
         setError(`Error al cargar la herramienta: ${err.message}`);
       } finally {
         setIsLoading(false);
@@ -66,20 +71,20 @@ const EditarHerramientas = ({ close, herramientaId }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name === 'enlace') {
-      setFormData(prev => ({
+
+    if (name === "enlace") {
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
-      
+
       // Generar previsualización del enlace
       if (value) {
         try {
           const url = new URL(value);
           setWebsitePreview({
             domain: url.hostname,
-            favicon: `https://www.google.com/s2/favicons?domain=${url.hostname}`
+            favicon: `https://www.google.com/s2/favicons?domain=${url.hostname}`,
           });
         } catch {
           setWebsitePreview(null);
@@ -89,11 +94,11 @@ const EditarHerramientas = ({ close, herramientaId }) => {
       }
       return;
     }
-    
+
     // Manejo normal para otros campos de texto
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -102,8 +107,10 @@ const EditarHerramientas = ({ close, herramientaId }) => {
     if (!file) return;
 
     // Validar que sea una imagen
-    if (!file.type.match('image.*')) {
-      setError('Por favor, selecciona un archivo de imagen válido (JPEG, PNG, GIF)');
+    if (!file.type.match("image.*")) {
+      setError(
+        "Por favor, selecciona un archivo de imagen válido (JPEG, PNG, GIF)"
+      );
       return;
     }
 
@@ -115,9 +122,9 @@ const EditarHerramientas = ({ close, herramientaId }) => {
     reader.readAsDataURL(file);
 
     // Actualizar el estado con el archivo
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      url_imagen: file
+      url_imagen: file,
     }));
     setError(null);
   };
@@ -129,31 +136,37 @@ const EditarHerramientas = ({ close, herramientaId }) => {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append('nombre', formData.nombre);
-      formDataToSend.append('descripcion', formData.descripcion);
-      formDataToSend.append('enlace', formData.enlace);
-      
+      formDataToSend.append("nombre", formData.nombre);
+      formDataToSend.append("descripcion", formData.descripcion);
+      formDataToSend.append("enlace", formData.enlace);
+
       // Adjuntar la imagen si es un archivo nuevo o la URL existente
       if (formData.url_imagen instanceof File) {
-        formDataToSend.append('url_imagen', formData.url_imagen);
+        formDataToSend.append("url_imagen", formData.url_imagen);
       }
 
-      const response = await fetch(`http://localhost:3001/recursos/herramientas/update/${herramientaId}`, {
-        method: 'PATCH',
-        body: formDataToSend
-      });
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_PORT_ENV
+        }1/recursos/herramientas/update/${herramientaId}`,
+        {
+          method: "PATCH",
+          body: formDataToSend,
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.message || `Error ${response.status}: ${response.statusText}`
+          errorData.message ||
+            `Error ${response.status}: ${response.statusText}`
         );
       }
 
       location.reload();
       close();
     } catch (err) {
-      console.error('Error al actualizar la herramienta:', err);
+      console.error("Error al actualizar la herramienta:", err);
       setError(`Error al actualizar la herramienta: ${err.message}`);
     } finally {
       setIsSubmitting(false);
@@ -192,8 +205,10 @@ const EditarHerramientas = ({ close, herramientaId }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-[#F0EFEF] p-6 rounded-lg w-1/3">
-        <h2 className="text-xl font-medium mb-4 text-[#2B2829]">Editar Herramienta</h2>
-        
+        <h2 className="text-xl font-medium mb-4 text-[#2B2829]">
+          Editar Herramienta
+        </h2>
+
         {error && (
           <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
             {error}
@@ -202,7 +217,9 @@ const EditarHerramientas = ({ close, herramientaId }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nombre
+            </label>
             <input
               type="text"
               name="nombre"
@@ -213,7 +230,9 @@ const EditarHerramientas = ({ close, herramientaId }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Descripción
+            </label>
             <textarea
               name="descripcion"
               value={formData.descripcion}
@@ -223,10 +242,12 @@ const EditarHerramientas = ({ close, herramientaId }) => {
               required
             />
           </div>
-          
+
           {/* Campo para subir imagen */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Imagen
+            </label>
             <input
               type="file"
               name="url_imagen"
@@ -236,20 +257,26 @@ const EditarHerramientas = ({ close, herramientaId }) => {
             />
             {imagePreview && (
               <div className="mt-2">
-                <h3 className="text-sm font-medium text-gray-700 mb-1">Vista previa:</h3>
-                <img 
-                  src={imagePreview} 
-                  alt="Vista previa de la imagen" 
+                <h3 className="text-sm font-medium text-gray-700 mb-1">
+                  Vista previa:
+                </h3>
+                <img
+                  src={imagePreview}
+                  alt="Vista previa de la imagen"
                   className="max-h-40 rounded object-contain"
                 />
-                <p className="text-xs text-gray-500 mt-1">Formatos aceptados: JPEG, PNG, GIF</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Formatos aceptados: JPEG, PNG, GIF
+                </p>
               </div>
             )}
           </div>
-          
+
           {/* Campo para enlace web */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Enlace a la herramienta</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Enlace a la herramienta
+            </label>
             <input
               type="url"
               name="enlace"
@@ -260,12 +287,14 @@ const EditarHerramientas = ({ close, herramientaId }) => {
             />
             {websitePreview && (
               <div className="mt-2 flex items-center p-2 border rounded bg-gray-50">
-                <img 
-                  src={websitePreview.favicon} 
-                  alt="Favicon" 
+                <img
+                  src={websitePreview.favicon}
+                  alt="Favicon"
                   className="w-4 h-4 mr-2"
                 />
-                <span className="text-sm text-gray-700">{websitePreview.domain}</span>
+                <span className="text-sm text-gray-700">
+                  {websitePreview.domain}
+                </span>
               </div>
             )}
           </div>
@@ -276,7 +305,7 @@ const EditarHerramientas = ({ close, herramientaId }) => {
               disabled={isSubmitting}
               className="px-16 py-2 bg-[#1C1C34] text-white rounded hover:bg-[#2a2a4a] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Editando...' : 'Editar'}
+              {isSubmitting ? "Editando..." : "Editar"}
             </button>
             <button
               onClick={close}

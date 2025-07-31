@@ -62,7 +62,7 @@ const AsignarAlContado = ({ close, asesoramiento }) => {
                 id_asesoramiento: formData.id_asesoramiento
             };
 
-            const response = await fetch('http://localhost:3001/pagos/alContado', {
+            const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/pagos/alContado`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

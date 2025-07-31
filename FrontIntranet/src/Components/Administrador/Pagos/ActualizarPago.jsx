@@ -51,7 +51,7 @@ const ActualizarPago = ({ onClose, pagoData }) => {
                     : null;
             });
 
-            const response = await fetch(`http://localhost:3001/pagos/updateCuotas/${pagoData.id_infoPago}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/pagos/updateCuotas/${pagoData.id_infoPago}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

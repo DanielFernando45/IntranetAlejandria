@@ -27,7 +27,7 @@ const Guias = () => {
     };
 
     const fetchGuias = () => {
-        axios.get("http://localhost:3001/recursos/guias/all")
+        axios.get(`${import.meta.env.VITE_API_PORT_ENV}/recursos/guias/all`)
             .then((res) => {
                 // Modificar las guías para incluir nombres de archivo
                 const guiasModificadas = res.data.map(guia => ({
@@ -47,7 +47,7 @@ const Guias = () => {
 
     const handleEliminar = (id) => {
         if (window.confirm("¿Estás seguro de que deseas eliminar esta guía?")) {
-            axios.delete(`http://localhost:3001/recursos/guias/delete/${id}`)
+            axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/recursos/guias/delete/${id}`)
                 .then(() => {
                     setGuias(guias.filter(guia => guia.id !== id));
                     alert("Guía eliminada correctamente");

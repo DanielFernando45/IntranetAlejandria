@@ -90,7 +90,7 @@ const AgregarGuias = ({ close }) => {
         formDataToSend.append('doc_url', formData.doc_url);
       }
 
-      const response = await fetch('http://localhost:3001/recursos/guias/add', {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/guias/add`, {
         method: 'POST',
         body: formDataToSend
       });

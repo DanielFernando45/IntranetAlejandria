@@ -14,7 +14,7 @@ const Noticias = () => {
     }, []);
 
     const fetchNoticias = () => {
-        axios.get("http://localhost:3001/recursos/noticias/all")
+        axios.get(`${import.meta.env.VITE_API_PORT_ENV}/recursos/noticias/all`)
             .then((res) => {
                 // Modificar las noticias para extraer solo el nombre del archivo
                 const noticiasModificadas = res.data.map(noticia => ({
@@ -50,7 +50,7 @@ const Noticias = () => {
 
     const handleEliminar = (id) => {
         if (window.confirm("¿Estás seguro de que deseas eliminar esta noticia?")) {
-            axios.delete(`http://localhost:3001/recursos/noticias/delete/${id}`)
+            axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/recursos/noticias/delete/${id}`)
                 .then(() => {
                     // Actualizar el estado eliminando la noticia
                     setNoticias(noticias.filter(noticia => noticia.id !== id));

@@ -126,7 +126,9 @@ const SidebarResponsive = ({ showResponsive, setShowResponsive }) => {
 
   return (
     <div
-      className={`${ showResponsive ? 'translate-x-0' : '-translate-x-full' } w-full sm:w-[300px] transition-all duration-100 ease-linear h-full bg-white absolute top-0 z-[60]`}
+      className={`${
+        showResponsive ? "translate-x-0" : "-translate-x-full"
+      } w-full sm:w-[300px] transition-all duration-100 ease-linear h-full bg-white absolute top-0 z-[60]`}
     >
       <div
         className={`border flex flex-col items-center h-full py-6 transition-all`}
@@ -147,16 +149,8 @@ const SidebarResponsive = ({ showResponsive, setShowResponsive }) => {
               key={index}
               onClick={() => setExpand(!expand)}
             >
-              <img
-                className={`w-[30px] `}
-                src={ruta.icono}
-                alt="icono-ruta"
-              />
-              <p
-                className={``}
-              >
-                {ruta.title}
-              </p>
+              <img className={`w-[30px]`} src={ruta.icono} alt="icono-ruta" />
+              <p>{ruta.title}</p>
             </Link>
           ))}
         </div>

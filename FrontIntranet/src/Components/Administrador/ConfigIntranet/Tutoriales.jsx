@@ -14,7 +14,7 @@ const Tutoriales = () => {
     }, []);
 
     const fetchTutoriales = () => {
-        axios.get("http://localhost:3001/recursos/tutoriales/all")
+        axios.get(`${import.meta.env.VITE_API_PORT_ENV}/recursos/tutoriales/all`)
             .then((res) => {
                 setTutoriales(res.data);
             })
@@ -28,7 +28,7 @@ const Tutoriales = () => {
 
     const handleEliminar = (id) => {
         if (window.confirm("¿Estás seguro de que deseas eliminar este tutorial?")) {
-            axios.delete(`http://localhost:3001/recursos/tutoriales/delete/${id}`)
+            axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/recursos/tutoriales/delete/${id}`)
                 .then(() => {
                     // Actualizar el estado eliminando el tutorial
                     setTutoriales(tutoriales.filter(tutorial => tutorial.id !== id));
