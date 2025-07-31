@@ -23,7 +23,7 @@ const EntregaRevisionAse = () => {
       const user = JSON.parse(userString);
       const id = user.id;
 
-      fetch(`http://localhost:3001/asesor/asesoramientosYDelegado/${id}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesor/asesoramientosYDelegado/${id}`)
         .then(res => res.json())
         .then(data => {
           const asesoriasArray = Object.values(data).map(item => ({

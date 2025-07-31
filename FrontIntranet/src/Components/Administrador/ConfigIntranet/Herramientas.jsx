@@ -27,7 +27,7 @@ const Herramientas = () => {
     };
 
     const fetchHerramientas = () => {
-        axios.get("http://localhost:3001/recursos/herramientas/all")
+        axios.get(`${import.meta.env.VITE_API_PORT_ENV}/recursos/herramientas/all`)
             .then((res) => {
                 // Modificar las herramientas para incluir nombre de archivo
                 const herramientasModificadas = res.data.map(herramienta => ({
@@ -46,7 +46,7 @@ const Herramientas = () => {
 
     const handleEliminar = (id) => {
         if (window.confirm("¿Estás seguro de que deseas eliminar esta herramienta?")) {
-            axios.delete(`http://localhost:3001/recursos/herramientas/delete/${id}`)
+            axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/recursos/herramientas/delete/${id}`)
                 .then(() => {
                     setHerramientas(herramientas.filter(herramienta => herramienta.id !== id));
                     alert("Herramienta eliminada correctamente");

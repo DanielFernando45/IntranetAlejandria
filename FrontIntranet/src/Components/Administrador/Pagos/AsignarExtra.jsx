@@ -22,7 +22,7 @@ const AsignarExtra = ({ close }) => {
 
     // Cargar todos los alumnos al montar el componente
     useEffect(() => {
-        fetch('http://localhost:3001/asesoramiento/delegadosToServicios')
+        fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/delegadosToServicios`)
             .then(response => response.json())
             .then(data => {
                 setAllAlumnos(data);

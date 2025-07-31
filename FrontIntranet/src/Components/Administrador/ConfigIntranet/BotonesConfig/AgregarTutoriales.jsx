@@ -42,7 +42,7 @@ const AgregarTutoriales = ({ close }) => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/recursos/tutoriales/add', {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/tutoriales/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

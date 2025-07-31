@@ -7,7 +7,7 @@ const Cuotas = () => {
   const [vista,setVista]=useState("ClientesNuevo");
 
   return (
-    <div className="flex flex-col gap-[10px] p-[30px]  bg-white  rounded-b-[10px] shadow-lg">
+    <div className="flex flex-col gap-[10px] p-[30px]  bg-white  rounded-b-[10px] min-w-[1100px]">
       <h1 className='text-[20px] font-semibold'>Cuotas</h1>
       <div className=" flex xl:w-full border-b-2 gap-3 border-black font-normal">
         <button

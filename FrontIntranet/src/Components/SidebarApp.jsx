@@ -17,8 +17,8 @@ import Gestion from "../assets/icons/IconAsesor/gestionAlum.svg";
 import Recursos from "../assets/icons/IconEstudiante/RecursosEstudiante.svg";
 import { Link } from "react-router-dom";
 
-const SidebarApp = ({ expand,setExpand }) => {
-//   const [expand, setExpand] = useState(false);
+const SidebarApp = ({ expand, setExpand }) => {
+  //   const [expand, setExpand] = useState(false);
 
   const rol = JSON.parse(localStorage.getItem("user"))?.role || "estudiante";
 
@@ -121,7 +121,6 @@ const SidebarApp = ({ expand,setExpand }) => {
     ],
   };
 
-
   const toggleMenu = () => {
     setExpand(!expand);
   };
@@ -129,12 +128,10 @@ const SidebarApp = ({ expand,setExpand }) => {
   return (
     <div
       className={` ${
-        expand ? "w-[300px] " : "w-[100px]"
-      } transition-all duration-100 ease-linear h-full bg-white absolute xl:translate-x-0 -translate-x-full top-0 z-50`}
+        expand ? "w-[300px]" : "w-[100px]"
+      } transition-all duration-200 ease-linear h-full bg-white absolute  xl:translate-x-0 -translate-x-full top-0 z-50`}
     >
-      <div
-        className={`border flex flex-col items-center h-full py-6 transition-all`}
-      >
+      <div className={`flex flex-col items-center h-full py-6 transition-all`}>
         <div className="flex flex-col items-center mb-10 gap-y-4">
           <img className="w-[60px] h-[60px]" src={LogoAleja} alt="Logo" />
           <button onClick={toggleMenu}>
@@ -143,30 +140,28 @@ const SidebarApp = ({ expand,setExpand }) => {
         </div>
 
         {/* PATHS */}
-        <div className="space-y-10">
+        <div className="space-y-10 w-full flex flex-col items-center px-4">
           {rutasPorRoles[rol].map((ruta, index) => (
             <Link
-              className="flex items-center gap-2 relative overflow-hidden"
+              className="flex justify-center items-center  relative overflow-hidden w-full"
               to={ruta.path}
               key={index}
-              onClick={() => setExpand(!expand)}
+              onClick={() => setExpand(false)}
             >
               <img
-                className={`w-[30px] ${
-                  expand ? "-translate-x-0" : "translate-x-0"
-                } transition-all duration-300`}
+                className={`w-[30px] transition-all `}
                 src={ruta.icono}
                 alt="icono-ruta"
               />
-              <p
-                className={`${
+              <div
+                className={`transition-all duration-300 ease-in-out overflow-hidden transform ${
                   expand
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-0 translate-x-28 absolute"
-                } transform transition-all duration-300 w-[200px]`}
+                    ? "w-[160px] opacity-100 translate-x-0 ml-2"
+                    : "w-0 opacity-0 translate-x-10 ml-0"
+                } ease-linear`}
               >
-                {ruta.title}
-              </p>
+                <p className="w-[160px]">{ruta.title}</p>
+              </div>
             </Link>
           ))}
         </div>

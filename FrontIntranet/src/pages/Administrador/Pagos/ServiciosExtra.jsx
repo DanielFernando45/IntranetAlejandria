@@ -65,7 +65,7 @@ const ServiciosExtra = () => {
 
     return (
         <>
-            <div className="flex flex-col bg-white rounded-b-lg ml-8 p-5">
+            <div className="flex flex-col bg-white rounded-b-lg p-5 min-w-[1100px]">
                 <div className='flex w-full justify-between items-center'>
                     <h1 className='text-[20px] font-medium'>Servicos Extra</h1>
                     <button onClick={() => setOpen(true)} className='flex justify-between items-center bg-[#1C1C34] rounded-3xl px-2 text-white text-[16px] w-48 h-10 '>

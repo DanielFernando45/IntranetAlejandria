@@ -3,6 +3,7 @@ import LayoutApp from '../../layout/LayoutApp';
 
 
 import { useNavigate,Outlet, useLocation  } from "react-router-dom";
+import LayoutAppV2 from '../../layout/LayoutAppV2';
 
 
 const Asignaciones = () => {
@@ -15,8 +16,8 @@ const Asignaciones = () => {
 
 
   return (
-    <LayoutApp>
-      <main className="flex flex-col xl:mx-32  items-start overflow-auto">
+    <LayoutAppV2>
+      <main className="flex flex-col items-start overflow-auto">
 
         <div className="flex w-full border-b-2 gap-3 border-black font-normal">
           <button
@@ -42,7 +43,7 @@ const Asignaciones = () => {
 
 
       </main>
-    </LayoutApp>
+    </LayoutAppV2>
   );
 };
 

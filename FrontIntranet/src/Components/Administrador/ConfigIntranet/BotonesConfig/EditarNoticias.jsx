@@ -14,7 +14,7 @@ const EditarNoticias = ({ close, noticiaId }) => {
   useEffect(() => {
     const fetchNoticia = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/recursos/noticias/list/${noticiaId}`);
+        const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/noticias/list/${noticiaId}`);
         
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -92,7 +92,7 @@ const EditarNoticias = ({ close, noticiaId }) => {
         formDataToSend.append('url_imagen', formData.url_imagen);
       }
 
-      const response = await fetch(`http://localhost:3001/recursos/noticias/update/${noticiaId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/noticias/update/${noticiaId}`, {
         method: 'PATCH',
         body: formDataToSend
       });

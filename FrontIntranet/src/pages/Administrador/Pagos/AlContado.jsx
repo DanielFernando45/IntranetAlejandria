@@ -6,7 +6,7 @@ const AlContado = () => {
   const [contado, setContado] = useState("nuevo");  
 
   return (
-    <div className="flex flex-col gap-[10px] ml-8 pt-3  p-[30px]   w-full  bg-white  rounded-b-[10px] shadow-lg">
+    <div className="flex flex-col gap-[10px] min-w-[1100px]  p-[30px]   w-full  bg-white  rounded-b-[10px] shadow-lg">
       <h1 className='text-[20px] font-semibold'>Al Contado</h1>
       <div className=" flex w-full border-b-2 gap-3 border-black font-normal">
         <button

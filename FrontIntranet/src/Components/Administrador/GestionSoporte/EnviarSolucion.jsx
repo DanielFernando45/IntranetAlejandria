@@ -8,7 +8,7 @@ const EnviarSolucion = ({ close, idSoporte }) => {
     useEffect(() => {
         const fetchSoporte = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/soporte/list/${idSoporte}`);
+                const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/soporte/list/${idSoporte}`);
                 if (!response.ok) {
                     throw new Error('No se pudo obtener los datos del soporte');
                 }

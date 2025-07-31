@@ -3,7 +3,7 @@ import api from "./api";
 const registrarInduccion = async (body) => {
 
     try {
-        const { data } = await api.post('/inducciones', body, {
+        await api.post('/inducciones', body, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
@@ -18,7 +18,7 @@ const obtenerInduccionesByIdAsesoria = async (idAsesoramiento) => {
     try {
         const { data } = await api.get(`/inducciones/induccionesByAsesoria/${idAsesoramiento}`)
         console.log(data);
-        
+
         return data;
     } catch (error) {
         return error.message ? error.message : 'Error al intentar registrar la inducción'

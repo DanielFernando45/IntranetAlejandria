@@ -86,7 +86,7 @@ const AgregarHerramientas = ({ close }) => {
         formDataToSend.append('url_imagen', formData.url_imagen);
       }
 
-      const response = await fetch('http://localhost:3001/recursos/herramientas/add', {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/herramientas/add`, {
         method: 'POST',
         body: formDataToSend
       });

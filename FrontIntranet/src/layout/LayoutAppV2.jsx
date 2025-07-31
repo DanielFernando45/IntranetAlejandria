@@ -36,20 +36,20 @@ const LayoutAppV2 = ({ children }) => {
         }}
         className={`bg-black/50 ${
           expand || showResponsive ? "opacity-100 z-50" : "opacity-0 z-0"
-        } w-full absolute  left-0 top-0 h-full`}
+        } w-full absolute  left-0 top-0 h-full duration-200 delay-100`}
       ></div>
       <SidebarResponsive
         showResponsive={showResponsive}
         setShowResponsive={setShowResponsive}
       />
       <SidebarApp expand={expand} setExpand={setExpand} />
-      <div className="flex-1 flex flex-col overflow-hidden pl-0 xl:pl-[100px] transition-all duration-300 relative z-10">
+      <div className="flex-1 flex flex-col overflow-hidden pl-0 xl:pl-[100px] relative z-10">
         <NavbarV2
           user={user}
           showResponsive={showResponsive}
           setShowResponsive={setShowResponsive}
         />
-        <div className="p-8 overflow-auto flex-1">{children}</div>
+        <div className="p-8 overflow-auto flex-1 bg-[#F0F0F0]">{children}</div>
       </div>
     </div>
   );

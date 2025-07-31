@@ -40,7 +40,7 @@ const Pagos = () => {
                     </button>
                 </div>
 
-                <div className='w-full'>
+                <div className='w-full overflow-auto shadow-lg '>
                     <Outlet/>
                     
                 </div>

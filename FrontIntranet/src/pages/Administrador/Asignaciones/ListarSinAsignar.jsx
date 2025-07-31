@@ -38,7 +38,7 @@ const ListarSinAsignar = () => {
 
   // useEffect para cargar estudiantes y asesores
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente/filter/sin_asigna`)
+    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente/filter/sin_asignar`)
       .then((res) => {
         setEstudiantes(res.data);
         setEstudiantesBase(res.data);
