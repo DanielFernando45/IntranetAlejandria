@@ -18,6 +18,13 @@ const Induccion = () => {
     refetchOnWindowFocus: false
   });
 
+  const formatDate = (dateString) => {
+        if (!dateString) return 'No resuelto';
+        
+        const date = new Date(dateString);
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        return date.toLocaleDateString('es-ES', options);
+    }
 
   const navigateInduccion = (id) => { navigate(`/admin/induccion/${id}`) };
 
@@ -66,7 +73,7 @@ const Induccion = () => {
                     {asesoria?.profesion_asesoria}
                   </div>
                   <div className="flex-1 flex justify-center items-center">
-                    {asesoria?.fecha_inicio}
+                    {formatDate(asesoria?.fecha_inicio) }
                   </div>
                   <div className="flex-1 flex justify-center items-center max-w-[150px]">{asesoria?.area}</div>
                   <div className="flex-1 flex items-center gap-2">
