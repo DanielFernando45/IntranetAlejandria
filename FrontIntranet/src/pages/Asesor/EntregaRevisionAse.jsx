@@ -50,9 +50,9 @@ const EntregaRevisionAse = () => {
 
   return (
     <LayoutApp>
-      <main className="flex flex-col gap-11 items-start mr-14">
-        <div className="flex ml-8 justify-end w-full">
+      <main className="flex flex-col gap-11 items-start mr-14 mb-5">
 
+        <div className="flex ml-8 justify-end w-full">
           <select
             className="border-2 rounded-md px-2 border-black "
             onChange={handleChange}
@@ -139,16 +139,7 @@ const EntregaRevisionAse = () => {
             }
           </div>
 
-
-
-
-
         </div>
-
-
-
-
-
 
       </main>
     </LayoutApp>

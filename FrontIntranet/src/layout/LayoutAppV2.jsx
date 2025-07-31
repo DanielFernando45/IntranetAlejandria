@@ -49,7 +49,7 @@ const LayoutAppV2 = ({ children }) => {
           showResponsive={showResponsive}
           setShowResponsive={setShowResponsive}
         />
-        <div className="p-8 overflow-auto flex-1 bg-[#F0F0F0]">{children}</div>
+        <div className="p-8 overflow-auto bg-[#F0F0F0]">{children}</div>
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ const Activos = () => {
         const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/misAsesoriasActivas/${id}`);
         
         if (!response.ok) {
-          throw new Error('Error al obtener las asesorías');
+          throw new Error('No tienes  asesorías Activas');
         }
 
         const data = await response.json();
@@ -43,8 +43,8 @@ const Activos = () => {
     return <div className="flex justify-center items-center h-64">Cargando...</div>;
   }
 
-  if (error) {
-    return <div className="flex justify-center items-center h-64 text-red-500">Error: {error}</div>;
+   if (error) {
+    return <div className="flex justify-center items-center h-64">{error}</div>;
   }
 
   if (asesorias.length === 0) {
