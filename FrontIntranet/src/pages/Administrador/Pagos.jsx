@@ -2,6 +2,7 @@ import React from 'react'
 import LayoutApp from '../../layout/LayoutApp'
 
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import LayoutAppV2 from '../../layout/LayoutAppV2';
 
 const Pagos = () => {
     //Menus
@@ -13,10 +14,10 @@ const Pagos = () => {
     const isServicioExtra = location.pathname.includes("servicio-extra");
 
     return (
-        <LayoutApp>
-            <main className="flex flex-col  mx-32 my-24 items-start">
+        <LayoutAppV2>
+            <main className="flex flex-col items-start">
 
-                <div className='ml-8 mb-1 px-5 flex w-[390px] h-[30px] bg-[#E9E7E7] rounded-3xl font-medium items-center'>
+                <div className='mb-1 px-5 flex w-[390px] h-[30px] bg-[#E9E7E7] rounded-3xl font-medium items-center'>
                     <button
                         className={`mr-[18px] text-[#AAA3A5] ${isCuotas? "text-black" : ""} `}
                         onClick={() => navigate("cuotas")}
@@ -39,7 +40,7 @@ const Pagos = () => {
                     </button>
                 </div>
 
-                <div>
+                <div className='w-full overflow-auto shadow-lg '>
                     <Outlet/>
                     
                 </div>
@@ -47,7 +48,7 @@ const Pagos = () => {
 
 
             </main>
-        </LayoutApp>
+        </LayoutAppV2>
 
     )
 

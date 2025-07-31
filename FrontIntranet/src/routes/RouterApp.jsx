@@ -168,7 +168,7 @@ const RouterApp = () => {
 
       {/* RECUPERAR CONTRASEÑA */}
       <Route path="/recuperarContraseña" element={<ResetPassword />} />
-      <Route path='/cambiarContraseña' element={<NuevaContraseña />} />
+      <Route path='/cambiarContraseña/:token' element={<NuevaContraseña />} />
     </Routes>
   );
 };

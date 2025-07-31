@@ -83,7 +83,7 @@ const InduccionById = () => {
                                     <div className="grid gap-4 w-full grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))]">
                                         {induccionesByIdAsesoramiento.map(item => (
                                             <div className="relative rounded-2xl bg-[#F8F7F7] ">
-                                                <video src={item.url} poster="/poster.jpg" controls className="rounded-t-2xl min-w-[250px] w-full max-h-[100px]">
+                                                <video src={item.url} controls className="rounded-t-2xl min-w-[250px] w-full max-h-[100px]">
                                                 </video>
                                                 <div className="px-3 py-1 shadow-video rounded-b-2xl">
                                                     <p className="text-xl font-semibold">{item.titulo}</p>

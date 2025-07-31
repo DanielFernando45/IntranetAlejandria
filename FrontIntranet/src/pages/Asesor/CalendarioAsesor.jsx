@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import LayoutApp from '../../layout/LayoutApp';
+import React, { useState, useEffect } from "react";
+import LayoutApp from "../../layout/LayoutApp";
 import Zoom from "../../assets/images/zoom.svg";
 
 const CalendarioAsesor = () => {
@@ -7,26 +7,26 @@ const CalendarioAsesor = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedDay, setSelectedDay] = useState(new Date().getDate());
   const [calendarDays, setCalendarDays] = useState([]);
-  const [monthName, setMonthName] = useState('');
-  const [dayName, setDayName] = useState('');
+  const [monthName, setMonthName] = useState("");
+  const [dayName, setDayName] = useState("");
   const [asesorias, setAsesorias] = useState([]);
   const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
   const [eventosDia, setEventosDia] = useState([]);
   const [fechaVencimiento, setFechaVencimiento] = useState(null);
 
   useEffect(() => {
-    const userString = localStorage.getItem('user');
+    const userString = localStorage.getItem("user");
     if (userString) {
       const user = JSON.parse(userString);
       const id = user.id;
 
-      fetch(`http://localhost:3001/asesor/asesoramientosYDelegado/${id}`)
-        .then(res => res.json())
-        .then(data => {
-          const asesoriasArray = Object.values(data).map(item => ({
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesor/asesoramientosYDelegado/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const asesoriasArray = Object.values(data).map((item) => ({
             id: item.id_asesoramiento,
             profesion: item.profesion_asesoria,
-            delegado: item.delegado
+            delegado: item.delegado,
           }));
           setAsesorias(asesoriasArray);
 
@@ -35,7 +35,7 @@ const CalendarioAsesor = () => {
             setSelectedAsesoriaId(primeraAsesoriaId);
           }
         })
-        .catch(error => console.error('Error al obtener asesorías:', error));
+        .catch((error) => console.error("Error al obtener asesorías:", error));
     }
   }, []);
 
@@ -47,29 +47,39 @@ const CalendarioAsesor = () => {
   }, [selectedAsesoriaId, selectedYear, selectedMonth, selectedDay]);
 
   const fetchFechaVencimiento = () => {
-    fetch(`http://localhost:3001/asesoramiento/vencimiento/${selectedAsesoriaId}`)
-      .then(res => res.json())
-      .then(data => {
+    fetch(
+      `${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/vencimiento/${selectedAsesoriaId}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
         if (data.fecha_fin) {
           const fecha = new Date(data.fecha_fin);
           setFechaVencimiento({
             day: fecha.getUTCDate(),
             month: fecha.getUTCMonth(),
-            year: fecha.getUTCFullYear()
+            year: fecha.getUTCFullYear(),
           });
         }
       })
-      .catch(error => console.error('Error al obtener fecha de vencimiento:', error));
+      .catch((error) =>
+        console.error("Error al obtener fecha de vencimiento:", error)
+      );
   };
 
   const fetchEventosDia = () => {
-    const fechaSeleccionada = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
-    fetch(`http://localhost:3001/common/calendario_asesor/${selectedAsesoriaId}/${fechaSeleccionada}`)
-      .then(res => res.json())
-      .then(data => {
+    const fechaSeleccionada = `${selectedYear}-${String(
+      selectedMonth + 1
+    ).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`;
+    fetch(
+      `${import.meta.env.VITE_API_PORT_ENV}/common/calendario_asesor/${selectedAsesoriaId}/${fechaSeleccionada}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
         setEventosDia(data);
       })
-      .catch(error => console.error('Error al obtener eventos del día:', error));
+      .catch((error) =>
+        console.error("Error al obtener eventos del día:", error)
+      );
   };
 
   const handleChange = (e) => {
@@ -78,8 +88,18 @@ const CalendarioAsesor = () => {
   };
 
   const months = [
-    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
   ];
 
   const daysOfWeek = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"];
@@ -104,26 +124,28 @@ const CalendarioAsesor = () => {
       days.push({
         day: prevMonthDays - i,
         currentMonth: false,
-        date: new Date(selectedYear, selectedMonth - 1, prevMonthDays - i)
+        date: new Date(selectedYear, selectedMonth - 1, prevMonthDays - i),
       });
     }
 
     // Días del mes actual
     for (let i = 1; i <= totalDays; i++) {
       const date = new Date(selectedYear, selectedMonth, i);
-      const isVencimiento = fechaVencimiento && 
-                           i === fechaVencimiento.day && 
-                           selectedMonth === fechaVencimiento.month && 
-                           selectedYear === fechaVencimiento.year;
-      
+      const isVencimiento =
+        fechaVencimiento &&
+        i === fechaVencimiento.day &&
+        selectedMonth === fechaVencimiento.month &&
+        selectedYear === fechaVencimiento.year;
+
       days.push({
         day: i,
         currentMonth: true,
         date: date,
-        isToday: i === new Date().getDate() &&
+        isToday:
+          i === new Date().getDate() &&
           selectedMonth === new Date().getMonth() &&
           selectedYear === new Date().getFullYear(),
-        isVencimiento: isVencimiento
+        isVencimiento: isVencimiento,
       });
     }
 
@@ -133,7 +155,7 @@ const CalendarioAsesor = () => {
       days.push({
         day: i,
         currentMonth: false,
-        date: new Date(selectedYear, selectedMonth + 1, i)
+        date: new Date(selectedYear, selectedMonth + 1, i),
       });
     }
 
@@ -144,8 +166,8 @@ const CalendarioAsesor = () => {
 
   const updateSelectedDayInfo = (day) => {
     const date = new Date(selectedYear, selectedMonth, day);
-    const options = { weekday: 'long' };
-    const dayName = new Intl.DateTimeFormat('es-ES', options).format(date);
+    const options = { weekday: "long" };
+    const dayName = new Intl.DateTimeFormat("es-ES", options).format(date);
     setDayName(dayName.charAt(0).toUpperCase() + dayName.slice(1));
   };
 
@@ -162,8 +184,8 @@ const CalendarioAsesor = () => {
     const hours = date.getUTCHours();
     const minutes = date.getUTCMinutes();
     // Formateamos a 2 dígitos cada componente
-    const formattedHours = String(hours).padStart(2, '0');
-    const formattedMinutes = String(minutes).padStart(2, '0');
+    const formattedHours = String(hours).padStart(2, "0");
+    const formattedMinutes = String(minutes).padStart(2, "0");
     return `${formattedHours}:${formattedMinutes}`;
   };
 
@@ -176,9 +198,11 @@ const CalendarioAsesor = () => {
   const renderEventos = () => {
     if (eventosDia.length === 0) {
       return (
-        <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-          <div className='flex flex-col gap-1'>
-            <h2 className='text-[25px] font-bold text-[#575051]'>No hay eventos programados</h2>
+        <div className="bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-center sm:text-[25px] font-bold text-[#575051]">
+              No hay eventos programados
+            </h2>
           </div>
         </div>
       );
@@ -188,22 +212,32 @@ const CalendarioAsesor = () => {
       if (evento.fecha) {
         // Evento de reunión
         return (
-          <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-            <div className='flex items-start pt-1'>
-              <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
+          <div
+            key={index}
+            className="bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg"
+          >
+            <div className="flex items-start pt-1">
+              <div className="w-[15px] h-[15px] rounded-full bg-[#4E4E91]"></div>
             </div>
-            <div className='flex flex-col gap-1'>
-              <p className='text-[#575051] font-medium'>
-                {formatTime(evento.fecha)} - {formatTime(addOneHour(evento.fecha))}
+            <div className="flex flex-col gap-1">
+              <p className="text-[#575051] font-medium">
+                {formatTime(evento.fecha)} -{" "}
+                {formatTime(addOneHour(evento.fecha))}
               </p>
-              <h2 className='text-[25px] font-bold text-[#575051]'>{evento.delegado}</h2>
-              <div className='flex gap-2 items-center'>
+              <h2 className="text-[25px] font-bold text-[#575051]">
+                {evento.delegado}
+              </h2>
+              <div className="flex gap-2 items-center">
                 {evento.enlace && (
-                  <a href={evento.enlace} target="_blank" rel="noopener noreferrer">
-                    <img src={Zoom} alt="Zoom" className='w-4 h-4' />
+                  <a
+                    href={evento.enlace}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={Zoom} alt="Zoom" className="w-4 h-4" />
                   </a>
                 )}
-                <p className='text-[#82777A]'>{evento.titulo}</p>
+                <p className="text-[#82777A]">{evento.titulo}</p>
               </div>
             </div>
           </div>
@@ -211,27 +245,39 @@ const CalendarioAsesor = () => {
       } else if (evento.fecha_terminado) {
         // Evento de mensaje con fecha
         return (
-          <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-            <div className='flex items-start pt-1'>
-              <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
+          <div
+            key={index}
+            className="bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg"
+          >
+            <div className="flex items-start pt-1">
+              <div className="w-[15px] h-[15px] rounded-full bg-[#4E4E91]"></div>
             </div>
-            <div className='flex flex-col gap-1'>
-              <h2 className='text-[25px] font-bold text-[#575051]'>{evento.titulo}</h2>
-              <p className='text-[#82777A]'>{evento.message}</p>
-              <p className='text-[#575051] font-medium'>{formatTime(evento.fecha_terminado)}</p>
+            <div className="flex flex-col gap-1">
+              <h2 className="text-[25px] font-bold text-[#575051]">
+                {evento.titulo}
+              </h2>
+              <p className="text-[#82777A]">{evento.message}</p>
+              <p className="text-[#575051] font-medium">
+                {formatTime(evento.fecha_terminado)}
+              </p>
             </div>
           </div>
         );
       } else {
         // Evento de mensaje sin fecha
         return (
-          <div key={index} className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-            <div className='flex items-start pt-1'>
-              <div className='w-[15px] h-[15px] rounded-full bg-[#4E4E91]'></div>
+          <div
+            key={index}
+            className="bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg"
+          >
+            <div className="flex items-start pt-1">
+              <div className="w-[15px] h-[15px] rounded-full bg-[#4E4E91]"></div>
             </div>
-            <div className='flex flex-col gap-1'>
-              <h2 className='text-[25px] font-bold text-[#575051]'>{evento.titulo}</h2>
-              <p className='text-[#82777A]'>{evento.message}</p>
+            <div className="flex flex-col gap-1">
+              <h2 className="text-[25px] font-bold text-[#575051]">
+                {evento.titulo}
+              </h2>
+              <p className="text-[#82777A]">{evento.message}</p>
             </div>
           </div>
         );
@@ -246,9 +292,10 @@ const CalendarioAsesor = () => {
     }
 
     return weeks.map((week, weekIndex) => (
-      <div key={weekIndex} className="flex gap-2">
+      <div key={weekIndex} className="flex gap-2 w-full">
         {week.map((dayData, dayIndex) => {
-          const isSelected = dayData.currentMonth && dayData.day === selectedDay;
+          const isSelected =
+            dayData.currentMonth && dayData.day === selectedDay;
           const isToday = dayData.isToday;
           const isVencimiento = dayData.isVencimiento;
 
@@ -257,20 +304,26 @@ const CalendarioAsesor = () => {
               key={dayIndex}
               onClick={() => handleDayClick(dayData.day, dayData.currentMonth)}
               className={`
-                flex justify-center items-center rounded-full w-[85px] h-[85px] text-[25px] 
-                cursor-pointer transition-colors duration-200 relative
-                ${dayData.currentMonth ?
-                  isSelected ? 'bg-[#4BD7F5] text-white' :
-                    isToday ? 'border-2 border-[#4BD7F5] text-[#4BD7F5]' :
-                      'text-[#575051] hover:bg-[#E9E7E7] hover:text-[#4BD7F5]' :
-                  'text-[#D2CECF] hover:bg-[#E9E7E7]'}
+                flex justify-center items-center rounded-full flex-1 lg:w-[60px] lg:h-[60px] xl:w-[85px] xl:h-[85px] xl:text-[25px] 
+                cursor-pointer transition-colors duration-200
+                ${
+                  dayData.currentMonth
+                    ? isSelected
+                      ? "bg-[#4BD7F5] text-white"
+                      : isToday
+                      ? "border-2 border-[#4BD7F5] text-[#4BD7F5]"
+                      : "text-[#575051] hover:bg-[#E9E7E7] hover:text-[#4BD7F5]"
+                    : "text-[#D2CECF] hover:bg-[#E9E7E7]"
+                }
               `}
             >
               {dayData.day}
               {isVencimiento && (
                 <div className="relative bottom-1 w-2 h-2 rounded-full  text-[10px] font-semibold text-red-500">
-                  <p className='absolute  top-7 right-[-10px]'>Contrato Finalizado</p>
-                  </div>
+                  <p className="absolute  top-7 right-[-10px]">
+                    Contrato Finalizado
+                  </p>
+                </div>
               )}
             </div>
           );
@@ -281,50 +334,57 @@ const CalendarioAsesor = () => {
 
   return (
     <LayoutApp>
-      <main className='m-5 flex gap-[60px]'>
-        <div className='flex flex-col w-[60%] justify-center items-center'>
-          <div className='flex w-full justify-between mb-10 items-center'>
-            <p className='font-semibold text-[20px] text-[#575051]'>Calendario de actividades</p>
-            <div className='flex gap-3'>
+      <main className="sm:m-5 flex flex-col lg:flex-row gap-10 xl:gap-[60px]">
+        <div className=" flex flex-col flex-1 lg:w-[60%] justify-center items-center ">
+          <div className="bg-white rounded-xl p-4 flex flex-col md:flex-row w-full justify-between mb-10 items-center">
+            <p className="font-semibold text-[20px] text-[#575051]">
+              Calendario de actividades
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
               <select
-                className='bg-[#1C1C34] p-[5px] rounded-lg text-white w-[120px] h-[35px] font-semibold'
+                className="bg-[#1C1C34] w-full p-[5px] rounded-lg text-white sm:w-[120px] h-[35px] font-semibold"
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
               >
                 {months.map((month, index) => (
-                  <option key={month} value={index}>{month}</option>
+                  <option key={month} value={index}>
+                    {month}
+                  </option>
                 ))}
               </select>
 
               <select
-                className='bg-[#1C1C34] p-[5px] rounded-lg text-white w-[100px] h-[35px] font-semibold'
+                className="bg-[#1C1C34] p-[5px] w-full rounded-lg text-white sm:w-[120px] h-[35px] font-semibold"
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
               >
-                {Array.from({ length: 6 }, (_, i) => 2030 - i).map(year => (
-                  <option key={year} value={year}>{year}</option>
+                {Array.from({ length: 6 }, (_, i) => 2030 - i).map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
                 ))}
               </select>
 
               <select
                 className="border-2 rounded-md px-2 border-black"
                 onChange={handleChange}
-                value={selectedAsesoriaId || ''}
+                value={selectedAsesoriaId || ""}
               >
-                <option value="">Todos tus Clientes</option>
                 {asesorias.map((asesoria, index) => (
-                  <option key={index} value={asesoria.id}>{asesoria.delegado}</option>
+                  <option key={index} value={asesoria.id}>
+                    {asesoria.delegado}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
 
-          <div className='flex flex-col gap-4'>
-            <div className='flex gap-2'>
+          <div className="bg-white rounded-xl p-4 flex flex-col gap-4 w-full">
+            <div className="flex gap-2">
               {daysOfWeek.map((day, index) => (
                 <div
                   key={index}
-                  className='flex justify-center items-center rounded-full w-[85px] h-[35px] text-[18px] font-semibold text-[#575051]'
+                  className="flex justify-center items-center rounded-full flex-1 lg:w-[60px] xl:w-[85px] xl:h-[35px] xl:text-[18px] font-semibold text-[#575051]"
                 >
                   {day}
                 </div>
@@ -335,14 +395,18 @@ const CalendarioAsesor = () => {
           </div>
         </div>
 
-        <div className='flex flex-col h-full justify-center p-5 gap-8 w-[40%] bg-white rounded-xl shadow-md'>
-          <div className='text-center'>
-            <p className='text-[#b1afb0] font-medium text-[20px]'>{dayName}</p>
-            <h2 className='text-[50px] font-semibold text-[#575051]'>{selectedDay}</h2>
-            <h1 className='text-[#575051] text-[25px] font-semibold'>{monthName}</h1>
+        <div className="flex flex-col h-full justify-center p-5 gap-8 flex-1 xl:w-[40%] bg-white rounded-xl shadow-md">
+          <div className="text-center">
+            <p className="text-[#b1afb0] font-medium text-[20px]">{dayName}</p>
+            <h2 className="text-[50px] font-semibold text-[#575051]">
+              {selectedDay}
+            </h2>
+            <h1 className="text-[#575051] text-[25px] font-semibold">
+              {monthName}
+            </h1>
           </div>
 
-          <div className='flex flex-col gap-4 overflow-y-auto max-h-[500px]'>
+          <div className="flex flex-col gap-4 overflow-y-auto max-h-[500px]">
             {renderEventos()}
           </div>
         </div>

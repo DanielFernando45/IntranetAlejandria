@@ -13,7 +13,7 @@ const Pendientes = () => {
   useEffect(() => {
     if (idAsesoramiento) {
       setLoading(true)
-      axios.get(`http://localhost:3001/asuntos/all/${idAsesoramiento}`)
+      axios.get(`${import.meta.env.VITE_API_PORT_ENV}/asuntos/all/${idAsesoramiento}`)
         .then(response => {
           setPendientes(response.data)
           // Inicializar estado de apertura
@@ -114,7 +114,7 @@ const Pendientes = () => {
   )
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 border max-h-[280px] overflow-auto">
       {loading ? (
         // Mostrar skeletons durante la carga
         <>
@@ -128,18 +128,18 @@ const Pendientes = () => {
       ) : pendientes.length > 0 ? (
         // Mostrar datos reales cuando están cargados
         pendientes.map((pendiente) => (
-          <div key={pendiente.id_asunto} className="flex flex-col text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md px-6 transition-all duration-300">
+          <div key={pendiente.id_asunto} className="flex flex-col text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md md:px-6 transition-all duration-300">
             <div className='flex justify-between items-center py-1'>
-              <div className="w-[300px] flex">{pendiente.titulo}</div>
-              <div className="w-[250px] flex justify-center">
+              <div className="mn:w-[300px] text-xs md:text-base flex">{pendiente.titulo}</div>
+              <div className="w-[250px] text-xs md:text-base flex justify-center">
                 {formatDate(pendiente.fecha_entrega)}
               </div>
-              <div className={`text-white ${pendiente.estado === 'entregado' ? "bg-[#054755] " : "bg-[#353563] "} bg-[#054755] rounded-md px-6`}>
+              <div className={`hidden md:block text-white ${pendiente.estado === 'entregado' ? "bg-[#054755] " : "bg-[#353563] "} bg-[#054755] rounded-md px-4 min-w-[150px] text-center`}>
                 {pendiente.estado === 'entregado' ? 'Entregado' : 'En Proceso'}
               </div>
               <button
                 onClick={() => toggleOpen(pendiente.id_asunto)}
-                className="transition-transform duration-300"
+                className="transition-transform duration-300 mn:w-[65px] flex justify-center"
               >
                 <img
                   src={arrowIcon}
@@ -153,9 +153,9 @@ const Pendientes = () => {
               <>
                 {pendiente.estado === 'entregado' ? (
                   <div className='flex flex-col gap-2 transition-all duration-300 ease-in-out mt-5'>
-                    <div className='flex justify-between'>
+                    <div className='flex flex-col lg:flex-row justify-between text-xs md:text-sm xl:text-base gap-y-4 border border-gray-300 lg:border-none rounded-lg p-3 lg:p-0'>
                       <div>{cortarTexto(pendiente.documento_0)}</div>
-                      <div className='flex w-[450px] gap-4'>
+                      <div className='flex xl:w-[450px] gap-4'>
                         <p>Enviado: {formatDateExpan(pendiente.fecha_entrega)}</p>
                         {pendiente.estado === 'proceso' && (
                           <p>Estimado: {formatDateExpan(pendiente.fecha_terminado)}</p>
@@ -175,9 +175,9 @@ const Pendientes = () => {
                   </div>
                 ) : (
                   <div className='flex flex-col gap-2 transition-all duration-300 ease-in-out mt-5'>
-                    <div className='flex justify-between'>
+                    <div className='flex flex-col lg:flex-row justify-between text-xs md:text-sm xl:text-base gap-y-4 border border-gray-300 lg:border-none rounded-lg p-3 lg:p-0'>
                       <div>{cortarTexto(pendiente.documento_0)}</div>
-                      <div className='flex w-[450px] gap-4 justify-center'>
+                      <div className='flex  gap-4'>
                         <p>Enviado: {formatDateExpan(pendiente.fecha_entrega)}</p>
                       </div>
                       <div>{formatTime(pendiente.fecha_entrega)}</div>
@@ -185,19 +185,20 @@ const Pendientes = () => {
                         <p>Entregado</p>
                       </div>
                     </div>
-                    <div className='flex justify-between'>
+                    <div className='flex flex-col lg:flex-row justify-between text-xs md:text-sm xl:text-base gap-y-4 border border-gray-300 lg:border-none rounded-lg p-3 lg:p-0'>
                       <div>{cortarTexto(pendiente.documento_0)}</div>
-                      <div className='flex w-[450px] gap-4 justify-center'>
-                        <p>Enviado: {formatDateExpan(pendiente.fecha_revision)}</p>
+                      <div className='flex w-[450px] gap-4'>
+                        <p>Enviado: {formatDateExpan(pendiente.fecha_revision)}</p>  
                         <p>Estimado: {formatDateExpan(pendiente.fecha_terminado)}</p>
                       </div>
                       <div>
                         {formatTime(pendiente.fecha_revision)}
                       </div>
-                      <div className="text-white bg-[#353563]  rounded-md px-4">
+                       <div className="text-white bg-[#353563]  rounded-md px-4">
                         {pendiente.estado === 'entregado' ? 'Entregado' : 'En Proceso'}
                       </div>
                     </div>
+                     
                   </div>
                 )}
 

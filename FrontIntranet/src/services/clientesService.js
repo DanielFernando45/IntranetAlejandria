@@ -1,8 +1,8 @@
-import axios from "axios";
+import api from "./api";
 
 const estudiantesPorAsignacion = async (idAsesoramiento) => {
-  const { data } = await axios.get(
-    `http://localhost:3001/cliente/listar/${idAsesoramiento}`
+  const { data } = await api.get(
+    `/cliente/listar/${idAsesoramiento}`
   );
   return data;
 };

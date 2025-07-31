@@ -64,7 +64,7 @@ const AsignarPago = ({ Cerrar, asesoramiento }) => {
             cuotas: cuotasData
         };
 
-        const response = await fetch('http://localhost:3001/pagos/porCuotas', {
+        const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/pagos/porCuotas`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -19,7 +19,7 @@ const ReunionesAsesor = () => {
       const user = JSON.parse(userString);
       const id = user.id;
 
-      fetch(`http://localhost:3001/asesor/asesoramientosYDelegado/${id}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesor/asesoramientosYDelegado/${id}`)
         .then(res => res.json())
         .then(data => {
           const asesoriasArray = Object.values(data).map(item => ({
@@ -46,8 +46,8 @@ const ReunionesAsesor = () => {
 
   return (
     <LayoutApp>
-      <main className="m-2">
-        <div className="flex flex-col gap-[40px] ml-8   p-[40px] h-[767px] bg-white rounded-[20px]">
+      <main className="m-2 ">
+        <div className="flex flex-col gap-[40px] xl:ml-8 p-[40px] h-[767px] bg-white rounded-[20px] ">
 
           <div className="flex flex-col gap-[12px]">
 
@@ -74,13 +74,13 @@ const ReunionesAsesor = () => {
               >
                 Próximos
               </button>
-              <button
+              {/* <button
                 className={`px-3 rounded-t-[5px] w-[105px] ${isAnteriores ? "bg-[#17162E] text-white" : ""
                   }`}
                 onClick={() => navigate("anteriores")}
               >
                 Anteriores
-              </button>
+              </button> */}
             </div>
           </div>
 

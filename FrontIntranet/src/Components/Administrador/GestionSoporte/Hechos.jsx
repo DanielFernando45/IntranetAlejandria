@@ -9,7 +9,7 @@ const Hechos = () => {
     useEffect(() => {
         const fetchResolver = async () => {
             try {
-                const response = await fetch('http://localhost:3001/soporte/finalizado')
+                const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/soporte/finalizado`)
                 if (!response.ok) {
                     throw new Error('Error al obtener los datos')
                 }
@@ -26,7 +26,7 @@ const Hechos = () => {
 
     const handlerEliminar = (id)=>{
         if(window.confirm("Estas Seguro de Eliminar")) {
-            axios.delete(`http://localhost:3001/soporte/delete/${id}`)
+            axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/soporte/delete/${id}`)
                 .then(()=>{
                     setResuelto(resuelto.filter(item => item.id !== id));
                     alert("Datos Eliminados Correctamente");

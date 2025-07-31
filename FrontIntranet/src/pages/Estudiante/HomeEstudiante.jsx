@@ -52,7 +52,7 @@ const HomeEstudiante = () => {
     const fetchNoticias = async () => {
       try {
         setLoadingNoticias(true);
-        const res = await fetch('http://localhost:3001/recursos/noticias/all');
+        const res = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/noticias/all`);
         if (!res.ok) throw new Error('Error al obtener noticias');
         const data = await res.json();
         setNoticiasRecientes(Array.isArray(data) ? data : []);
@@ -68,7 +68,7 @@ const HomeEstudiante = () => {
 
   useEffect(() => {
     if (selectedAsesoriaId) {
-      fetch(`http://localhost:3001/reuniones/espera/${selectedAsesoriaId}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/reuniones/espera/${selectedAsesoriaId}`)
         .then(res => res.json())
         .then(data => {
           setProximasReuniones(data);
@@ -145,15 +145,7 @@ const HomeEstudiante = () => {
     };
   };
 
-  if (isLoading || loadingNoticias) return <div role="status" className="max-w-sm animate-pulse">
-    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
-    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
-    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
-    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
-    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
-    <span className="sr-only">Loading...</span>
-  </div>;
+  if (isLoading || loadingNoticias) return "";
 
   const fecha = new Date();
   const meses = [
@@ -208,8 +200,8 @@ const HomeEstudiante = () => {
         </div>
 
         {/*Noticias, Envios Asesor*/}
-        <section className="max-xl:hidden xl:mt-5">
-          <h2 className="mb-2 text-[12px] sm:text-[18px] lg:text-[30px] xl:text-[25px] font-semibold">Noticias Recientes</h2>
+        <section className="max-xl:hidden xl:mt-5  bg-white py-2 rounded-lg shadow-md">
+          <h2 className="mb-2 text-[12px] sm:text-[18px] lg:text-[30px] xl:text-[25px] font-semibold pl-4">Noticias Recientes</h2>
 
           <div className="flex justify-between w-full items-center">
             <button
@@ -265,11 +257,11 @@ const HomeEstudiante = () => {
           </div>
         </section>
 
-        <div className="flex justify-between  flex-col mt-2 xl:flex-row ">
+        <div className="flex justify-between  flex-col mt-2 xl:flex-row md">
 
           <div className="w-full xl:w-auto flex flex-col gap-6 xl:pt-2 ">
 
-            <section className="xl:hidden">
+            <section className="xl:hidden  bg-white p-4 rounded-lg shadow-md">
               <h2 className="mb-2 text-[12px] sm:text-[18px] lg:text-[30px] font-semibold">Noticias Recientes</h2>
 
               <div className="flex justify-between w-full items-center">
@@ -342,7 +334,7 @@ const HomeEstudiante = () => {
               }
             </select>
 
-            <div className="xl:hidden">
+            <div className="xl:hidden  bg-white p-4 rounded-lg shadow-md">
               <div className="flex justify-between ">
                 <h1 className="text-[12px] sm:text-[18px] lg:text-[30px] font-semibold">Envios Asesor</h1>
                 <span className="text-[8px] sm:text-[11px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
@@ -356,7 +348,7 @@ const HomeEstudiante = () => {
               />
             </div>
 
-            <div className="max-xl:hidden flex flex-col gap-5 xl:gap-2">
+            <div className="max-xl:hidden flex flex-col gap-5 xl:gap-2  bg-white p-4 rounded-lg shadow-md">
               <div className="flex justify-between ">
                 <h2 className="text-[12px] sm:text-[18px] lg:text-[30px] xl:text-[20px] font-semibold">Reuniones</h2>
                 <span className="text-[8px] sm:text-[11px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
@@ -409,7 +401,7 @@ const HomeEstudiante = () => {
             </div>
           </div>
 
-          <div className="xl:hidden flex flex-col gap-5">
+          <div className="xl:hidden flex flex-col gap-5  bg-white p-4 rounded-lg shadow-md">
             <div className="mt-5 flex justify-between">
               <h2 className="text-[12px] sm:text-[18px] lg:text-[30px] font-semibold">Reuniones</h2>
               <span className="text-[8px] sm:text-[11px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
@@ -460,7 +452,7 @@ const HomeEstudiante = () => {
             </div>
           </div>
 
-          <div className="max-xl:hidden xl:w-[62%] 1xl:w-[68%] 2xl:w-[70%] 3xl:w-[72%] 4xl:w-[73%] 6xl:w-[75%]">
+          <div className=" bg-white p-4 rounded-lg shadow-md max-xl:hidden xl:w-[62%] 1xl:w-[68%] 2xl:w-[70%] 3xl:w-[72%] 4xl:w-[73%] 6xl:w-[75%]">
             <div className="flex justify-between">
               <h1 className="text-[12px] sm:text-[18px] lg:text-[30px] xl:text-[20px] font-semibold">Envios Asesor</h1>
               <span className="text-[8px] sm:text-[11px] flex justify-end gap-1 items-center font-medium text-[#2F80ED]">

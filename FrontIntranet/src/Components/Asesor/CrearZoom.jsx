@@ -53,7 +53,7 @@ const CrearZoom = ({ Close, idAsesoramiento, delegado }) => {
         id_asesor: idAsesor
       };
 
-      const response = await fetch('http://localhost:3001/reuniones/crear-reunion', {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/reuniones/crear-reunion`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

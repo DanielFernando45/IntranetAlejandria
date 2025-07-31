@@ -3,18 +3,29 @@ import LayoutApp from "../../layout/LayoutApp";
 import Zoom from "../../assets/icons/IconEstudiante/ZoomLink.svg";
 import download_icon from "../../assets/icons/download.png";
 import play_icon from "../../assets/icons/play-white.png";
+import { useQuery } from "@tanstack/react-query";
+import { induccionesService } from "../../services/induccionesService";
+import ReactPlayer from 'react-player';
+import VideoPlayer from "../../Components/VideoPlayer";
 
 const ReunionesEstudiante = () => {
   const [asesorias, setAsesorias] = useState([]);
   const [selectedAsesoriaId, setSelectedAsesoriaId] = useState(null);
   const [proximasReuniones, setProximasReuniones] = useState([]);
-  const [inducciones, setInducciones] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // const { data: inducciones } = useQuery({
-  //     queryKey: ['inducciones'],
-  //     queryFn: induccionesService.obtenerInduccionesByIdAsesoria
-  // })
+  const [showModalVideo, setShowModalVideo] = useState(false);
+  const [urlVideo, setUrlVideo] = useState(null);
+  
+
+  const { data: inducciones, isLoading: induccionesLoading } = useQuery({
+    queryKey: ["inducciones", selectedAsesoriaId],
+    queryFn: () =>
+      induccionesService.obtenerInduccionesByIdAsesoria(selectedAsesoriaId),
+    enabled: !!selectedAsesoriaId,
+  });
+
+  console.log(inducciones);
 
   useEffect(() => {
     const usuario = localStorage.getItem("user");
@@ -22,7 +33,7 @@ const ReunionesEstudiante = () => {
       const user = JSON.parse(usuario);
       const id = user.id;
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/miAsesoramiento/${id}`)
         .then((res) => res.json())
         .then((data) => {
           const asesoriasArray = Object.values(data).map((item) => ({
@@ -40,28 +51,31 @@ const ReunionesEstudiante = () => {
     }
   }, []);
 
-    useEffect(() => {
-        if (selectedAsesoriaId) {
-            // Obtener reuniones en espera
-            fetch(`http://localhost:3001/reuniones/espera/${selectedAsesoriaId}`)
-                .then(res => res.json())
-                .then(data => {
-                    setProximasReuniones(data);
-                })
-                .catch(error => console.error('Error al obtener reuniones próximas:', error));
-
-      // Obtener reuniones terminadas
-      fetch(
-        `http://localhost:3001/inducciones/induccionesByAsesoria/${selectedAsesoriaId}`
-      )
+  useEffect(() => {
+    if (selectedAsesoriaId) {
+      // Obtener reuniones en espera
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/reuniones/espera/${selectedAsesoriaId}`)
         .then((res) => res.json())
         .then((data) => {
-          setInducciones(data);
+          setProximasReuniones(data);
         })
         .catch((error) =>
-          console.error("Error al obtener reuniones terminadas:", error)
+          console.error("Error al obtener reuniones próximas:", error)
         )
         .finally(() => setLoading(false));
+      // Obtener reuniones terminadas
+      // fetch(
+      //   `${import.meta.env.VITE_API_PORT_ENV}/inducciones/induccionesByAsesoria/${selectedAsesoriaId}`
+      // )
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      //     console.log(data);
+      //     setInducciones(data);
+      //   })
+      //   .catch((error) =>
+      //     console.error("Error al obtener reuniones terminadas:", error)
+      //   )
+      //   .finally(() => setLoading(false));
     }
   }, [selectedAsesoriaId]);
 
@@ -177,51 +191,76 @@ const ReunionesEstudiante = () => {
 
               {/* Contenido para reuniones terminadas */}
               <div className="flex flex-col gap-5">
-                <div className="flex flex-wrap justify-start gap-6">
-                  {inducciones.map((induccion, index) => {
-                    console.log(induccion);
-                    return (
-                      <div
-                        key={index}
-                        className="flex flex-col sm:flex-row w-full sm:w-[310px] h-auto sm:h-[170px] items-center relative"
-                      >
-                        <img
-                          src="/wp-induccion.jpg"
-                          className="block w-full rounded-md"
-                          alt="back_image-induccion"
-                        />
-                        <div className="absolute w-full h-full top-0 flex flex-col justify-between p-2">
-                          <p className="text-white">{induccion?.titulo}</p>
-                          <div className="flex justify-between text-white">
-                            <button
-                              onClick={downloadFile}
-                              className="text-sm border border-white rounded-md  p-2 flex gap-1"
-                            >
-                              Descargar
-                              <span>
-                                <img src={download_icon} alt="download-icon" />
-                              </span>
-                            </button>
-                            <a
-                              href={induccion?.url}
-                              target="_blank"
-                              className="text-sm border border-white rounded-md  p-2 flex gap-1 items-center"
-                            >
-                              Ver
-                              <span>
-                                <img src={play_icon} alt="play-icon" />
-                              </span>
-                            </a>
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6">
+                  {induccionesLoading ? (
+                    <p>Cargando inducciones...</p>
+                  ) : inducciones && inducciones.length > 0 ? (
+                    <>
+                      {inducciones.map((induccion, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="flex flex-col sm:flex-row items-center relative"
+                          >
+                            <img
+                              src="/wp-induccion.jpg"
+                              className="block w-full rounded-md"
+                              alt="back_image-induccion"
+                            />
+                            <div className="absolute w-full h-full top-0 flex flex-col justify-between p-2">
+                              <p className="text-white">{induccion?.titulo}</p>
+                              <div className="flex justify-between text-white">
+                                {/* <button
+                                  onClick={() => downloadFile(induccion)}
+                                  className="text-sm border border-white rounded-md  p-2 flex gap-1"
+                                >
+                                  Descargar
+                                  <span>
+                                    <img
+                                      src={download_icon}
+                                      alt="download-icon"
+                                    />
+                                  </span>
+                                </button> */}
+                                <button
+                                  onClick={() => {
+                                    setUrlVideo(induccion.url);
+                                    setShowModalVideo(true);
+                                  }}
+                                  className="ml-auto text-sm border border-white rounded-md  p-2 flex gap-1 items-center"
+                                >
+                                  Ver
+                                  <span>
+                                    <img src={play_icon} alt="play-icon" />
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <p>No hay inducciones disponibles</p>
+                  )}
                 </div>
               </div>
             </>
           )}
         </div>
+
+        {showModalVideo && (
+          <div onClick={ () => setShowModalVideo(false) } className="fixed bg-black/50 top-0 left-0 w-full h-full flex items-center justify-center z-50 px-4">
+            <div onClick={ (event) => event.stopPropagation() } className="bg-white p-6 rounded-lg w-full shadow-lg lg:w-[500px] lg:h-[500px] max-w-[800px] max-h-[500px]">
+              <VideoPlayer urlVideo={urlVideo} />
+              {/* <video
+                src={urlVideo}
+                controls
+                className="w-full h-full"
+              ></video> */}
+            </div>
+          </div>
+        )}
       </main>
     </LayoutApp>
   );

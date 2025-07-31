@@ -36,7 +36,7 @@ const AsesoriaNueva = () => {
   // Función para obtener los asesores desde el endpoint filtrado por área
   const obtenerAsesores = async (areaId) => {
     try {
-      const response = await axios.get(`http://localhost:3001/asesor/filter/${areaId}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_PORT_ENV}/asesor/filter/${areaId}`);
       setAsesores(response.data);
     } catch (error) {
       console.error('Error al obtener los asesores:', error);
@@ -45,7 +45,7 @@ const AsesoriaNueva = () => {
 
   // useEffect para cargar estudiantes y asesores
   useEffect(() => {
-    axios.get("http://localhost:3001/cliente/filter/all")
+    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente/filter/all`)
       .then((res) => {
         setEstudiantes(res.data);
         setEstudiantesBase(res.data);
@@ -189,13 +189,13 @@ const AsesoriaNueva = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/asesoramiento/asignacion",
+        "${import.meta.env}/asesoramiento/asignacion",
         payload
       );
       alert('Asesoría asignada correctamente');
       Atras();
       // Recargar estudiantes sin asignar
-      const res = await axios.get("http://localhost:3001/cliente/filter/all");
+      const res = await axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente/filter/all`);
       setEstudiantes(res.data);
       setEstudiantesBase(res.data);
     } catch (error) {

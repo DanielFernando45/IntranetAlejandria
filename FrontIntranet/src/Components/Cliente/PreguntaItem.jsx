@@ -32,7 +32,7 @@ export default function PreguntaItem({ pregunta, respuesta }) {
             alt="icono"
           />
         </button>
-        <h1 className='font-semibold'>{pregunta}</h1>
+        <h1 className='font-semibold text-sm lg:text-base'>{pregunta}</h1>
       </div>
 
       <div

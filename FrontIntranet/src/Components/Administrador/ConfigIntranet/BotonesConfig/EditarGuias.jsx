@@ -16,7 +16,7 @@ const EditarGuias = ({ close, guiaId }) => {
   useEffect(() => {
     const fetchGuia = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/recursos/guias/list/${guiaId}`);
+        const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/guias/list/${guiaId}`);
         
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -129,7 +129,7 @@ const EditarGuias = ({ close, guiaId }) => {
         formDataToSend.append('doc_url', formData.doc_url);
       } 
 
-      const response = await fetch(`http://localhost:3001/recursos/guias/update/${guiaId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/guias/update/${guiaId}`, {
         method: 'PATCH',
         body: formDataToSend
       });

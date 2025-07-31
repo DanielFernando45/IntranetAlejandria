@@ -1,12 +1,13 @@
 import axios from "axios"
+import api from "./api";
 
 const tiposContratos = async () => {
-    const response = axios.get(`http://localhost:3001/common/listar-tipoContratos`);
+    const response = api.get(`/common/listar-tipoContratos`);
     return response;
 }
 
 const tiposTrabajos = async () => {
-    const response = axios.get(`http://localhost:3001/common/listar-trabajos`);
+    const response = api.get(`/common/listar-trabajos`);
     return response;
 }
 

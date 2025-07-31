@@ -19,7 +19,7 @@ const ReunionAnteriores = () => {
   useEffect(() => {
     const fetchReuniones = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/reuniones/allReunionesAnteriores/${selectedAsesoriaId}`);
+        const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/reuniones/allReunionesAnteriores/${selectedAsesoriaId}`);
         if (!response.ok) {
           throw new Error('Error al obtener las reuniones');
         }

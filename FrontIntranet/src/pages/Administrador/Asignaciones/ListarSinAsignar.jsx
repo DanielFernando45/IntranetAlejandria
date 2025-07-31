@@ -29,7 +29,7 @@ const ListarSinAsignar = () => {
   // Función para obtener los asesores desde el endpoint filtrado por área
   const obtenerAsesores = async (areaId) => {
     try {
-      const response = await axios.get(`http://localhost:3001/asesor/filter/${areaId}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_PORT_ENV}/asesor/filter/${areaId}`);
       setAsesores(response.data);
     } catch (error) {
       console.error('Error al obtener los asesores:', error);
@@ -38,7 +38,7 @@ const ListarSinAsignar = () => {
 
   // useEffect para cargar estudiantes y asesores
   useEffect(() => {
-    axios.get("http://localhost:3001/cliente/filter/sin_asignar")
+    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente/filter/sin_asignar`)
       .then((res) => {
         setEstudiantes(res.data);
         setEstudiantesBase(res.data);
@@ -182,13 +182,13 @@ const ListarSinAsignar = () => {
     
     try {
       const response = await axios.post(
-        "http://localhost:3001/asesoramiento/asignacion",
+        `${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/asignacio`,
         payload
       );
       alert('Asesoría asignada correctamente');
       handleResetForm();
       // Recargar estudiantes sin asignar
-      const res = await axios.get("http://localhost:3001/cliente/filter/sin_asignar");
+      const res = await axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente/filter/sin_asignar`);
       setEstudiantes(res.data);
       setEstudiantesBase(res.data);
     } catch (error) {
@@ -257,7 +257,7 @@ const ListarSinAsignar = () => {
       <div className='flex flex-col gap-4 mt-6'>
         <h2 className='text-[20px] font-medium'>Asesor</h2>
         {!asesorSeleccionado ? (
-          <div className='flex justify-between'>
+          <div className='flex justify-between xl:flex-row flex-col gap-4'>
             <select
               value={areaSeleccionada}
               onChange={(e) => {
@@ -265,7 +265,7 @@ const ListarSinAsignar = () => {
                 setAsesorSeleccionado("");
                 setAsesorSeleccionadoId(0);
               }}
-              className='border border-black rounded-md px-[14px] w-[275px] h-9'
+              className='border border-black rounded-md px-[14px] xl:w-[275px] h-9'
             >
               <option value="" disabled>Áreas</option>
               <option value={1}>Negocios</option>
@@ -278,7 +278,7 @@ const ListarSinAsignar = () => {
             <select
               value={asesorSeleccionado}
               onChange={handleAsesorChange}
-              className='border border-black rounded-md px-[14px] w-[555px] h-9'
+              className='border border-black rounded-md px-[14px] xl:w-[555px] h-9'
             >
               <option value="" disabled>Asesor</option>
               {asesores.map(asesor => (
@@ -307,7 +307,7 @@ const ListarSinAsignar = () => {
       <div className='flex flex-col gap-8 mt-5'>
         <h2 className='text-[20px] font-medium'>Datos de Trabajo</h2>
 
-        <div className='flex gap-9 text-[#575051]'>
+        <div className='flex gap-9 text-[#575051] xl:flex-row flex-col'>
           <div className='flex gap-4 items-center'>
             <p>Profesión Asesoría:</p>
             <input
@@ -339,7 +339,7 @@ const ListarSinAsignar = () => {
           </div>
         </div>
 
-        <div className='flex gap-9 text-[#575051] '>
+        <div className='flex gap-9 text-[#575051] xl:flex-row flex-col'>
           <div className='flex gap-9 items-center'>
             <p>Tipo de servicio:</p>
             <select
@@ -391,9 +391,9 @@ const ListarSinAsignar = () => {
         )}
       </div>
 
-      <div className='flex flex-col gap-8 mt-4 '>
+      <div className='flex flex-col gap-8 mt-4'>
         <h2 className='text-[20px] font-medium'>Fechas</h2>
-        <div className='flex justify-start gap-28'>
+        <div className='flex justify-start gap-16 xl:gap-28 xl:flex-row flex-col'>
           <div className='flex gap-4 text-[#575051] items-center'>
             <p>Fecha inicio:</p>
             <input

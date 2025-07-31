@@ -49,7 +49,7 @@ const SoporteEstudiante = () => {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch('http://localhost:3001/soporte/add', {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/soporte/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,13 +107,13 @@ const SoporteEstudiante = () => {
 
   return (
     <LayoutApp>
-      <main className='flex mx-20 justify-between'>
-        <div className='flex flex-col w-[50%]  bg-white rounded-xl p-5 gap-24'>
-          <div className='flex w-full justify-center text-[30px] font-semibold'>
+      <main className='flex xl:mx-5 gap-8 justify-center lg:flex-row flex-col'>
+        <div className='flex flex-col flex-1 bg-white rounded-xl p-5 gap-10 lg:gap-24'>
+          <div className='flex w-full justify-center text-[20px] lg:text-[30px] font-semibold'>
             <h1>Formulario de soporte</h1>
           </div>
           <form onSubmit={handleSubmit} className='flex flex-col gap-[31px]'>
-            <h2 className='text-[20px]'>Asunto</h2>
+            <h2 className='lg:text-[20px]'>Asunto</h2>
             <select 
               name="asunto"
               value={formData.asunto}
@@ -129,19 +129,19 @@ const SoporteEstudiante = () => {
               <option value="Otro">Otro</option>
             </select>
             
-            <h2 className='text-[20px]'>Descripción</h2>
+            <h2 className='lg:text-[20px]'>Descripción</h2>
             <textarea 
               name="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
-              className='border rounded-xl w-full h-[318px] p-6' 
+              className='border rounded-xl w-full h-[150px] lg:h-[318px] p-6 outline-none' 
               placeholder='Ingrese una descripción'
               required
             ></textarea>
             
             <button 
               type="submit"
-              className='w-full h-[79px] bg-[#1C1C34] text-white text-[20px] font-semibold rounded-lg hover:bg-[#2d2d4a] transition-colors'
+              className='w-full h-[50px] lg:h-[79px] bg-[#1C1C34] text-white lg:text-[20px] font-semibold rounded-sm hover:bg-[#2d2d4a] transition-colors'
               disabled={isSubmitting || !formData.id_cliente}
             >
               {isSubmitting ? 'Enviando...' : 'Enviar'}
@@ -155,8 +155,8 @@ const SoporteEstudiante = () => {
           </form>
         </div>
 
-        <div className='flex flex-col gap-10 w-[40%] h-[850px] overflow-auto bg-white rounded-xl p-10'>
-          <h1 className='text-[30px]'>Soluciones Frecuentes</h1>
+        <div className='flex flex-col gap-10 flex-1 h-[850px] overflow-auto bg-white rounded-xl p-10'>
+          <h1 className='text-[20px] lg:text-[30px]'>Soluciones Frecuentes</h1>
           <PreguntasFrecuentes />
         </div>
       </main>

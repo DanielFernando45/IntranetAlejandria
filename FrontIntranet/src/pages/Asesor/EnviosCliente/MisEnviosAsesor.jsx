@@ -13,7 +13,7 @@ const MisEnvios = ({ idAsesoramiento }) => {
   useEffect(() => {
     if (idAsesoramiento) {
       setLoading(true);
-      axios.get(`http://localhost:3001/documentos/asesor/list/${idAsesoramiento}`)
+      axios.get(`${import.meta.env.VITE_API_PORT_ENV}/documentos/asesor/list/${idAsesoramiento}`)
         .then(response => {
           setMisEnvios(response.data);
           // Inicializar el estado de apertura para cada item
@@ -125,13 +125,14 @@ const MisEnvios = ({ idAsesoramiento }) => {
         </>
       ) : misEnvios.length > 0 ? (
         // Mostrar datos cuando ya están cargados
-        misEnvios.map((envio, index) => {
+        <div className='h-[300px] overflow-auto'>
+          {misEnvios.map((envio, index) => {
           const documents = getDocuments(envio);
           const hasDocuments = documents.length > 0;
 
           return (
             <React.Fragment key={envio.id_asunto || index}>
-              <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2 ">
+              <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-1  ">
                 <div className="w-[300px] flex">{envio.asunto}</div>
                 <div className='text-white bg-[#353563] rounded px-3'>{envio.estado}</div>
                 <div className="w-[100px] flex justify-center">{formatDate(envio.fecha)}</div>
@@ -186,7 +187,10 @@ const MisEnvios = ({ idAsesoramiento }) => {
               )}
             </React.Fragment>
           );
-        })
+        })}
+          
+        </div>
+        
       ) : (
         // Mostrar cuando no hay datos
         <div className="flex justify-center ">

@@ -22,7 +22,7 @@ const MiAsesor = () => {
       const user = JSON.parse(userString);
       const id = user.id;
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/miAsesoramiento/${id}`)
         .then(res => res.json())
         .then(data => {
           const asesoriasArray = Object.values(data).map(item => ({
@@ -44,7 +44,7 @@ const MiAsesor = () => {
 
   // Función para obtener los datos del asesor
   const obtenerDatosAsesor = (asesoriaId) => {
-    fetch(`http://localhost:3001/asesor/datosbyAsesoramiento/${asesoriaId}`)
+    fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesor/datosbyAsesoramiento/${asesoriaId}`)
       .then(res => res.json())
       .then(data => {
         console.log('Datos del asesor:', data);

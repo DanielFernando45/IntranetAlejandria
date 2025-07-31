@@ -32,7 +32,7 @@ const EditarTutoriales = ({ close, tutorialId }) => {
   useEffect(() => {
     const fetchTutorial = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/recursos/tutoriales/list/${tutorialId}`);
+        const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/tutoriales/list/${tutorialId}`);
         
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -84,7 +84,7 @@ const EditarTutoriales = ({ close, tutorialId }) => {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:3001/recursos/tutoriales/update/${tutorialId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/tutoriales/update/${tutorialId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

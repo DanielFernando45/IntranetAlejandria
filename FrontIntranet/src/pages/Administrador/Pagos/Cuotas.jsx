@@ -7,9 +7,9 @@ const Cuotas = () => {
   const [vista,setVista]=useState("ClientesNuevo");
 
   return (
-    <div className="flex flex-col gap-[10px] ml-8 pt-3  p-[30px]   w-full  bg-white  rounded-b-[10px] shadow-lg">
+    <div className="flex flex-col gap-[10px] p-[30px]  bg-white  rounded-b-[10px] min-w-[1100px]">
       <h1 className='text-[20px] font-semibold'>Cuotas</h1>
-      <div className=" flex w-full border-b-2 gap-3 border-black font-normal">
+      <div className=" flex xl:w-full border-b-2 gap-3 border-black font-normal">
         <button
           className={`px-3 rounded-t-[5px] w-[150px] ${vista === "ClientesNuevo" ? "bg-[#17162E] text-white" : ""}`}
           onClick={() => setVista("ClientesNuevo")}

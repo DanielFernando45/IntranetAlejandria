@@ -1,10 +1,11 @@
-import axios from "axios";
+import api from "./api";
 
 const asesorias = async () => {
+
+  console.log(api.getUri())
+
   try {
-    const { data } = await axios.get(
-      `http://localhost:3001/asesoramiento/listar/`
-    );
+    const { data } = await api.get(`/asesoramiento/listar/`);
     return data;
   } catch (error) {
     console.error("Error al obtener las asesorías del estudiante:", error);
@@ -13,8 +14,8 @@ const asesorias = async () => {
 
 const asesoramientoById = async (id) => {
   try {
-    const { data } = await axios.get(
-      `http://localhost:3001/asesoramiento/listar/${id}`
+    const { data } = await api.get(
+      `/asesoramiento/listar/${id}`
     );
     return data;
   } catch (error) {
@@ -24,8 +25,8 @@ const asesoramientoById = async (id) => {
 
 const asesoriasPorEstudiante = async (idEstudiante) => {
   try {
-    const { data } = await axios.get(
-      `http://localhost:3001/cliente/miAsesoramiento/${idEstudiante}`
+    const { data } = await api(
+      `/cliente/miAsesoramiento/${idEstudiante}`
     );
     return data;
   } catch (error) {
@@ -36,8 +37,8 @@ const asesoriasPorEstudiante = async (idEstudiante) => {
 
 const obtenerDelegado = async (idAsesoria) => {
   try {
-    const { data } = await axios.get(
-      `http://localhost:3001/cliente/miAsesoramiento/${idEstudiante}`
+    const { data } = await api.get(
+      `/cliente/miAsesoramiento/${idAsesoria}`
     );
     return data;
   } catch (error) {

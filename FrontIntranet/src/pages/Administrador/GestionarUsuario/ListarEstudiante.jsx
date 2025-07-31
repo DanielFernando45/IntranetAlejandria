@@ -7,9 +7,14 @@ const ListarEstudiante = () => {
   const navigate = useNavigate();
   const [estudiantes, setEstudiantes] = useState([]);
   const [estudiantesBase, setEstudiantesBase] = useState([]);
+  const token = JSON.parse(localStorage.getItem('authToken'));
 
   useEffect(() => {
-    axios.get("http://localhost:3001/cliente")
+    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/cliente`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then((res) => {
         setEstudiantes(res.data);
         setEstudiantesBase(res.data);
@@ -59,7 +64,7 @@ const ListarEstudiante = () => {
       if(!window.confirm("¿Estas Seguro de Eliminar?")) return;
 
       try {
-          await axios.delete(`http://localhost:3001/cliente/delete/${id}`);
+          await axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/cliente/delete/${id}`);
           const nuevosEstudiantes = estudiantes.filter(estudiante => estudiante.id !== id); 
           setEstudiantes(nuevosEstudiantes);
           setEstudiantesBase(nuevosEstudiantes);
@@ -70,7 +75,7 @@ const ListarEstudiante = () => {
   };
 
   return (
-    <>
+    <div className='min-w-[1200px] w-full'>
       <div className="flex flex-col gap-[12px]">
         <div className="flex justify-start">
           <h2 className="text-2xl font-bold">CRUD</h2>
@@ -99,7 +104,7 @@ const ListarEstudiante = () => {
             <div className="w-[300px] flex justify-start">{estudiante.nombre} {estudiante.apellido}</div>
             <div className="w-[100px] flex justify-center">{formatearFecha(estudiante.datos_asesoramiento.fecha_inicio)}</div>
             <div className="w-[110px] flex justify-center">{formatearFecha(estudiante.datos_asesoramiento.fecha_fin)}</div>
-            <div className="w-[360px] flex justify-start">{estudiante.carrera}</div>
+            <div className="w-[360px] flex justify-center">{estudiante.carrera}</div>
             <div className="w-[250px] flex justify-start">{estudiante.datos_asesoramiento.contrato.nombre}{estudiante.datos_asesoramiento.contrato.message}</div>
             <button
                onClick={() => handlerEditarEstudiante(estudiante.id)}
@@ -123,7 +128,7 @@ const ListarEstudiante = () => {
       >
         <p>Agregar Estudiante</p>
       </button>
-    </>
+    </div>
   );
 };
 

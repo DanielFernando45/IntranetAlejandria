@@ -15,7 +15,7 @@ const EnActividad = () => {
     useEffect(() => {
         const fetchClientes = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/pagos/contado')
+                const response = await axios.get(`${import.meta.env.VITE_API_PORT_ENV}/pagos/contado`)
                 setClientes(response.data)
                 setLoading(false)
             } catch (err) {
@@ -53,7 +53,7 @@ const EnActividad = () => {
  
     const confirmarEliminar = async () => {
         try {
-            await axios.delete(`http://localhost:3001/pagos/delete/${clienteAEliminar}`)
+            await axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/pagos/delete/${clienteAEliminar}`)
             
             // Actualizar el estado local eliminando el cliente
             setClientes(clientes.filter(cliente => cliente.id_infoPago !== clienteAEliminar))
@@ -69,7 +69,7 @@ const EnActividad = () => {
 
     const handleActualizarPago = async (id, datosActualizados) => {
         try {
-            await axios.patch(`http://localhost:3001/pagos/updateContado/${id}`, datosActualizados)
+            await axios.patch(`${import.meta.env.VITE_API_PORT_ENV}/pagos/updateContado/${id}`, datosActualizados)
             
             // Actualizar el estado local
             setClientes(clientes.map(cliente => 

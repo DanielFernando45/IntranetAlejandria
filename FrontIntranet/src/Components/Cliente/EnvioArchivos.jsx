@@ -86,7 +86,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
         formData.append('files', file);
       });
 
-      const response = await fetch(`http://localhost:3001/asuntos/addWithDocument/${asesoriaId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/asuntos/addWithDocument/${asesoriaId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -125,7 +125,7 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
     <div
       id="modal-background"
       onClick={handleClickOutside}
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto"
+      className="px-4 fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto"
     >
       <div className="bg-[#F8F7F7] flex flex-col gap-4 rounded-2xl shadow-2xl w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto transition-all duration-300">
         <button
@@ -149,14 +149,14 @@ const EnvioArchivo = ({ show, onClose, asesoriaId }) => {
           </div>
         )}
 
-        <div className="flex mb-4 gap-10 items-center">
+        <div className="flex mb-4 gap-5 items-center">
           <label className="block text-sm mb-1">Asunto</label>
           <input
             type="text"
             value={asunto}
             onChange={e => setAsunto(e.target.value)}
             placeholder='Inserte el asunto'
-            className="w-full rounded px-3 py-[2px] focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="border border-gray-400 shadow-sm w-full rounded px-3 py-[2px] focus:outline-none focus:ring-2 focus:ring-blue-400"
             disabled={isSubmitting}
           />
         </div>

@@ -21,6 +21,7 @@ export class ClienteController {
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard)
     async listAll(){
         return this.clienteService.listClients();
     }

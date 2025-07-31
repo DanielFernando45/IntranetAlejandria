@@ -50,7 +50,7 @@ const AgregarNoticias = ({ close }) => {
       formDataToSend.append('descripcion', formData.descripcion);
       formDataToSend.append('url_imagen', formData.url_imagen);
 
-      const response = await fetch('http://localhost:3001/recursos/noticias/add', {
+      const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/recursos/noticias/add`, {
         method: 'POST',
         body: formDataToSend
         // No establezcas el header 'Content-Type', fetch lo hará automáticamente con el boundary correcto

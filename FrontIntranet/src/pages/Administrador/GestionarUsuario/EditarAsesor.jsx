@@ -24,7 +24,7 @@ const EditarAsesor = () => {
   useEffect(() => {
     const fetchAsesor = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/asesor/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_PORT_ENV}/asesor/${id}`);
         const asesor = response.data;
         setFormData({
           ...asesor,
@@ -64,7 +64,7 @@ const EditarAsesor = () => {
     };
   
     try {
-      await axios.patch(`http://localhost:3001/asesor/update/${id}`, payload);
+      await axios.patch(`${import.meta.env.VITE_API_PORT_ENV}/asesor/update/${id}`, payload);
       alert("Asesor actualizado correctamente");
       navigate('/admin/gestionar-usuarios/listar-asesores');
     } catch (error) {

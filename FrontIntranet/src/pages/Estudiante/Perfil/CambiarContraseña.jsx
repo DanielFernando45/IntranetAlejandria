@@ -42,7 +42,7 @@ const CambiarContraseña = () => {
 
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:3001/auth/change-password/${userId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/auth/change-password/${userId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

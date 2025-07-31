@@ -30,7 +30,7 @@ const ListarAsignados = () => {
   }, []);
 
   const fetchAsesoramientos = () => {
-    axios.get("http://localhost:3001/asesoramiento/listar")
+    axios.get(`${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/listar`)
       .then((res) => {
         setAsesoramientos(res.data);
         // Inicializar estados locales
@@ -55,7 +55,7 @@ const ListarAsignados = () => {
 
     const nuevoEstado = newEstado ? "activo" : "inactivo";
 
-    axios.patch(`http://localhost:3001/asesoramiento/estado/${asesoramientoToChange}`, { estado: nuevoEstado })
+    axios.patch(`${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/estado/${asesoramientoToChange}`, { estado: nuevoEstado })
       .then(() => {
         // Actualizar el estado local después de la confirmación del servidor
         setEstadoLocal(prev => ({ ...prev, [asesoramientoToChange]: newEstado }));
@@ -93,7 +93,7 @@ const ListarAsignados = () => {
   const confirmDelete = () => {
     if (!asesoramientoToDelete) return;
 
-    axios.delete(`http://localhost:3001/asesoramiento/delete/${asesoramientoToDelete}`)
+    axios.delete(`${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/delete/${asesoramientoToDelete}`)
       .then(() => {
         fetchAsesoramientos();
         setShowDeleteModal(false);
@@ -122,7 +122,7 @@ const ListarAsignados = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4">Confirmar Cambio de Estado</h3>
             <p>¿Estás seguro que deseas cambiar el estado a {newEstado ? "Activado" : "Desactivado"}?</p>
-            <div className="flex justify-end gap-4 mt-6">
+            <div className="flex justify-env gap-4 mt-6">
               <button
                 onClick={cancelEstadoChange}
                 className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
@@ -146,7 +146,7 @@ const ListarAsignados = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4">Confirmar Eliminación</h3>
             <p>¿Estás seguro que deseas eliminar este asesoramiento? Esta acción no se puede deshacer.</p>
-            <div className="flex justify-end gap-4 mt-6">
+            <div className="flex justify-env gap-4 mt-6">
               <button
                 onClick={cancelDelete}
                 className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
@@ -211,7 +211,7 @@ const ListarAsignados = () => {
               <div className="w-[310px] flex justify-center">{item.asesor}</div>
               <div className="w-[60px] text-[8px] flex flex-col items-center">
                 <button onClick={() => toggleEstadoVisual(item.id_asesoramiento)}
-                  className={`w-[60px] h-[25px] font-semibold rounded-3xl border border-black flex items-center transition-all duration-[700ms] ease-in-out ${estadoActual ? 'justify-end pr-1' : 'justify-start pl-1'}`}>
+                  className={`w-[60px] h-[25px] font-semibold rounded-3xl border border-black flex items-center transition-all duration-[700ms] ease-in-out ${estadoActual ? 'justify-env pr-1' : 'justify-start pl-1'}`}>
                   <img
                     className='h-[20px] w-[20px] transition-transform duration-[700ms] ease-in-out'
                     src={estadoActual ? activado : desactivado}
@@ -243,7 +243,7 @@ const ListarAsignados = () => {
         })}
       </div>
 
-      <div className='flex justify-end mt-4'>
+      <div className='flex justify-env mt-4'>
         <button onClick={handleNuevaAsesoria} className='border-green-950 border-[3px] rounded-lg w-[180px] text-white bg-black'>Agregar Asesoría</button>
       </div>
     </div>

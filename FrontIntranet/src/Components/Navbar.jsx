@@ -37,7 +37,7 @@ const Navbar = ({ user }) => {
   return (
     <nav className="bg-white fixed top-0 left-[20px]  w-full flex h-[56px] sm:h-[65px] md:h-[85px] px-7 md:px-10 md:pl-[65px] justify-between items-center shadow-md z-10">
     
-      <img src={logoaleja} alt="Logo Aleja" className="w-24 sm:w-[170px]" />
+      <img src={logoaleja} alt="Logo Aleja" className="w-24 h-16 mn:h-auto sm:w-[170px]" />
 
       <div className="inline-flex items-center gap-2 relative">
         <img src={perfil} alt="Icono de perfil" className="w-6 sm:w-9 " />

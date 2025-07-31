@@ -38,7 +38,7 @@ const AgregarEstudiante = () => {
     // Función que maneja el envío del formulario para agregar el nuevo cliente
     const handleSubmit = async () => {
             try {
-                await axios.post('http://localhost:3001/cliente/add', clienteData);
+                await axios.post(`${import.meta.env.VITE_API_PORT_ENV}/cliente/add`, clienteData);
                 alert("Cliente añadido exitosamente");
                 navigate('/admin/gestionar-usuarios/listar-estudiantes');
             } catch (error) {

@@ -26,8 +26,8 @@ const ConfigIntra = () => {
 
   return (
     <LayoutApp>
-      <main className="flex flex-col mx-32 items-start">
-        <div className="flex flex-col gap-[10px] ml-8 px-[40px] py-5 w-full h-auto bg-white rounded-[10px]">
+      <main className="flex flex-col xl:mx-32 items-start overflow-auto">
+        <div className="flex flex-col gap-[10px]  px-[40px] xl:w-full py-5 w-[1200px] h-auto bg-white rounded-[10px]">
           <div className="flex flex-col gap-[12px]">
             <div className="mt-5 flex justify-between">
               <h2 className="text-2xl font-bold">Configuración Intranet</h2>

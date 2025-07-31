@@ -19,7 +19,7 @@ const CalendarioEstudiante = () => {
       const user = JSON.parse(usuario);
       const id = user.id;
 
-      fetch(`http://localhost:3001/cliente/miAsesoramiento/${id}`)
+      fetch(`${import.meta.env.VITE_API_PORT_ENV}/cliente/miAsesoramiento/${id}`)
         .then(res => res.json())
         .then(data => {
           const asesoriasArray = Object.values(data).map(item => ({
@@ -45,7 +45,7 @@ const CalendarioEstudiante = () => {
 
   const fetchEventosDia = () => {
     const fechaSeleccionada = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
-    fetch(`http://localhost:3001/common/calendario_estudiante/${selectedAsesoriaId}/${fechaSeleccionada}`)
+    fetch(`${import.meta.env.VITE_API_PORT_ENV}/common/calendario_estudiante/${selectedAsesoriaId}/${fechaSeleccionada}`)
       .then(res => res.json())
       .then(data => {
         setEventosDia(data);
@@ -156,8 +156,8 @@ const CalendarioEstudiante = () => {
     if (eventosDia.length === 0) {
       return (
         <div className='bg-white flex w-full min-h-[121px] gap-2 p-4 border-2 border-[#E9E7E7] rounded-lg'>
-          <div className='flex flex-col gap-1'>
-            <h2 className='text-[25px] font-bold text-[#575051]'>No hay eventos programados</h2>
+          <div className='flex flex-col gap-1 w-full'>
+            <h2 className='text-center sm:text-[25px] font-bold text-[#575051]'>No hay eventos programados</h2>
           </div>
         </div>
       );
@@ -218,7 +218,7 @@ const CalendarioEstudiante = () => {
     }
 
     return weeks.map((week, weekIndex) => (
-      <div key={weekIndex} className="flex gap-2">
+      <div key={weekIndex} className="flex gap-2 w-full">
         {week.map((dayData, dayIndex) => {
           const isSelected = dayData.currentMonth && dayData.day === selectedDay;
           const isToday = dayData.isToday;
@@ -228,7 +228,7 @@ const CalendarioEstudiante = () => {
               key={dayIndex}
               onClick={() => handleDayClick(dayData.day, dayData.currentMonth)}
               className={`
-                flex justify-center items-center rounded-full w-[85px] h-[85px] text-[25px] 
+                flex justify-center items-center rounded-full flex-1 lg:w-[60px] lg:h-[60px] xl:w-[85px] xl:h-[85px] xl:text-[25px] 
                 cursor-pointer transition-colors duration-200
                 ${dayData.currentMonth ?
                   isSelected ? 'bg-[#4BD7F5] text-white' :
@@ -247,13 +247,13 @@ const CalendarioEstudiante = () => {
 
   return (
     <LayoutApp>
-      <main className='m-5 flex gap-[60px]'>
-        <div className='flex flex-col w-[60%] justify-center items-center'>
-          <div className='flex w-full justify-between mb-10 items-center'>
+      <main className='sm:m-5 flex flex-col lg:flex-row gap-10 xl:gap-[60px]'>
+        <div className='bg-white rounded-xl p-4 flex flex-col flex-1 lg:w-[60%] justify-center items-center'>
+          <div className='flex flex-col  w-full justify-between mb-10 gap-3'>
             <p className='font-semibold text-[20px] text-[#575051]'>Calendario de actividades</p>
-            <div className='flex gap-3'>
+            <div className='flex flex-col sm:flex-row gap-3'>
               <select
-                className='bg-[#1C1C34] p-[5px] rounded-lg text-white w-[120px] h-[35px] font-semibold'
+                className='bg-[#1C1C34] w-full p-[5px] rounded-lg text-white sm:w-[120px] h-[35px] font-semibold'
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
               >
@@ -263,7 +263,7 @@ const CalendarioEstudiante = () => {
               </select>
 
               <select
-                className='bg-[#1C1C34] p-[5px] rounded-lg text-white w-[100px] h-[35px] font-semibold'
+                className='bg-[#1C1C34] p-[5px] w-full rounded-lg text-white sm:w-[120px] h-[35px] font-semibold'
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
               >
@@ -285,12 +285,12 @@ const CalendarioEstudiante = () => {
             </div>
           </div>
 
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 w-full'>
             <div className='flex gap-2'>
               {daysOfWeek.map((day, index) => (
                 <div
                   key={index}
-                  className='flex justify-center items-center rounded-full w-[85px] h-[35px] text-[18px] font-semibold text-[#575051]'
+                  className='flex justify-center items-center rounded-full flex-1 lg:w-[60px] xl:w-[85px] xl:h-[35px] xl:text-[18px] font-semibold text-[#575051]'
                 >
                   {day}
                 </div>
@@ -301,14 +301,14 @@ const CalendarioEstudiante = () => {
           </div>
         </div>
 
-        <div className='flex flex-col h-full justify-center p-5 gap-8 w-[40%] bg-white rounded-xl shadow-md'>
+        <div className='flex flex-col h-full justify-center p-5 gap-8 flex-1 xl:w-[40%] bg-white rounded-xl shadow-md'>
           <div className='text-center'>
             <p className='text-[#b1afb0] font-medium text-[20px]'>{dayName}</p>
             <h2 className='text-[50px] font-semibold text-[#575051]'>{selectedDay}</h2>
             <h1 className='text-[#575051] text-[25px] font-semibold'>{monthName}</h1>
           </div>
 
-          <div className='flex flex-col gap-4 overflow-y-auto max-h-[500px]'>
+          <div className='flex flex-1 flex-col gap-4 overflow-y-auto max-h-[500px]'>
             {renderEventos()}
           </div>
         </div>
