@@ -69,10 +69,10 @@ const EntregaRevisionAse = () => {
             <div className="  flex justify-between">
 
               <h2 className="text-2xl font-bold">Asuntos</h2>
-              <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+              {/* <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
                 <a href="">Ver todo</a>
                 <img src={flechaAzul} alt="" />
-              </span>
+              </span> */}
             </div>
 
             <div className="flex w-full border-b-2 gap-3 border-black font-normal">
@@ -106,10 +106,10 @@ const EntregaRevisionAse = () => {
 
           <div className="flex justify-between  ">
             <h2 className="text-2xl font-bold">Documentos</h2>
-            <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+            {/* <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
               <a href="">Ver todo</a>
               <img src={flechaAzul} alt="" />
-            </span>
+            </span> */}
           </div>
 
           <div className="flex w-full border-b-2 gap-3 border-black font-normal">

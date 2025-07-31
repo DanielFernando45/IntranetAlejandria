@@ -167,8 +167,9 @@ const DocPendientes = () => {
           <SkeletonItem />
         </>
       ) : pendientes.length > 0 ? (
-        // Mostrar datos cuando ya están cargados
-        pendientes.map((pendiente) => (
+        <div className="h-[200px] overflow-auto ">
+          {
+            pendientes.map((pendiente) => (
           <div
             key={pendiente.id_asunto}
             className="flex flex-col text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md px-6 transition-all duration-300"
@@ -246,6 +247,10 @@ const DocPendientes = () => {
             )}
           </div>
         ))
+          }
+        </div>
+        // Mostrar datos cuando ya están cargados
+        
       ) : (
         // Mostrar cuando no hay datos
         <div className="flex justify-center ">

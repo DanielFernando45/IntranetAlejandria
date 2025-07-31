@@ -17,15 +17,16 @@ const Induccion = () => {
     refetchOnWindowFocus: false,
   });
 
-  const formatDate = (dateString) => {
-        if (!dateString) return 'No resuelto';
-        
-        const date = new Date(dateString);
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        return date.toLocaleDateString('es-ES', options);
-    }
+  const navigateInduccion = (id) => {
+    navigate(`/admin/induccion/${id}`);
+  };
 
-  const navigateInduccion = (id) => { navigate(`/admin/induccion/${id}`) };
+const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const options = { month: "short", day: "numeric", year: "numeric" };
+    return date.toLocaleDateString("es-PE", options);
+  };
 
   return (
     // <div className="bg-red-400 absolute top-0 left-0 z-[99]">
@@ -35,9 +36,6 @@ const Induccion = () => {
           Agregar Inducciones a asesorias
         </h2>
 
-        {/*  */}
-        
-        {/*  */}
 
         <div className="w-full overflow-auto">
           <div className="min-w-[1200px] w-full table-auto ">
@@ -80,7 +78,7 @@ const Induccion = () => {
                       {asesoria?.profesion_asesoria}
                     </div>
                     <div className="flex-1 flex justify-center items-center">
-                      {asesoria?.fecha_inicio}
+                      {formatDate(asesoria?.fecha_inicio)}
                     </div>
                     <div className="flex-1 flex justify-center items-center max-w-[150px]">
                       {asesoria?.area}
@@ -105,32 +103,7 @@ const Induccion = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="flex-1 flex justify-start max-w-[150px]">
-                    {asesoria?.delegado}
-                  </div>
-                  <div className="flex-1 flex text-center max-w-[200px]">
-                    {asesoria?.profesion_asesoria}
-                  </div>
-                  <div className="flex-1 flex justify-center items-center">
-                    {formatDate(asesoria?.fecha_inicio) }
-                  </div>
-                  <div className="flex-1 flex justify-center items-center max-w-[150px]">{asesoria?.area}</div>
-                  <div className="flex-1 flex items-center gap-2">
-                    <button
-                      onClick={() => navigateInduccion(asesoria?.id_asesoramiento)}
-                      className="rounded-sm px-3 py-1 bg-[#1C1C34] flex justify-center text-white flex-1"
-                    >
-                      Ver inducciones
-                    </button>
-                    <button
-                      onClick={() => { setOpenModal(true), setIdSeleccionado(asesoria?.id_asesoramiento) }}
-                      className=" rounded-sm px-3 py-1 bg-[#1B1B33] flex justify-center text-white flex-1"
-                    >
-                      Subir Video
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
           </div>
         </div>
       </main>

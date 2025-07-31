@@ -125,7 +125,8 @@ const EnviosCliente = ({ idAsesoramiento }) => {
         </>
       ) : envioCliente.length > 0 ? (
         // Mostrar datos cuando ya están cargados
-        envioCliente.map((envio, index) => {
+        <div className='h-[300px] overflow-auto'>{
+          envioCliente.map((envio, index) => {
           const documents = getDocuments(envio);
           const hasDocuments = documents.length > 0;
 
@@ -185,7 +186,9 @@ const EnviosCliente = ({ idAsesoramiento }) => {
               )}
             </React.Fragment>
           );
-        })
+        })}
+        </div>
+        
       ) : (
         // Mostrar cuando no hay datos
         <div className="flex justify-center ">

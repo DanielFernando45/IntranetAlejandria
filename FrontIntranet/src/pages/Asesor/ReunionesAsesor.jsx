@@ -46,8 +46,8 @@ const ReunionesAsesor = () => {
 
   return (
     <LayoutApp>
-      <main className="m-2">
-        <div className="flex flex-col gap-[40px] xl:ml-8 p-[40px] h-[767px] bg-white rounded-[20px]">
+      <main className="m-2 ">
+        <div className="flex flex-col gap-[40px] xl:ml-8 p-[40px] h-[767px] bg-white rounded-[20px] ">
 
           <div className="flex flex-col gap-[12px]">
 
@@ -74,13 +74,13 @@ const ReunionesAsesor = () => {
               >
                 Próximos
               </button>
-              <button
+              {/* <button
                 className={`px-3 rounded-t-[5px] w-[105px] ${isAnteriores ? "bg-[#17162E] text-white" : ""
                   }`}
                 onClick={() => navigate("anteriores")}
               >
                 Anteriores
-              </button>
+              </button> */}
             </div>
           </div>
 

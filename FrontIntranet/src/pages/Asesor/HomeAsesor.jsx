@@ -160,7 +160,7 @@ const HomeAsesor = () => {
                             ))}
                         </select>
 
-                        <div className=" bg-[#F5F5F5] rounded-xl p-4 ">
+                        <div className=" bg-[#F5F5F5] rounded-xl p-4 h-[230px] overflow-auto ">
                             <div className="  flex justify-between ">
                                 <h2 className="text-2xl font-semibold ">Reuniones</h2>
                                 <span className="flex  justify-end gap-1 items-center font-medium text-[#2F80ED]">
