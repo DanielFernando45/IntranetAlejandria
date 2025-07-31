@@ -51,10 +51,10 @@ const Login = () => {
   };
 
   return (
-    <main className="min-h-screen w-screen flex items-center justify-center fondo_login">
+    <main className="h-screen w-screen flex items-center justify-center fondo_login">
       <div className="w-full flex justify-center">
         <form
-          className="flex w-[410px] py-[150px] px-[60px] flex-col justify-center items-center gap-[47px] bg-transparent"
+          className="flex w-[410px] px-[60px] flex-col justify-center items-center gap-[47px] bg-transparent"
           onSubmit={handleSubmit}
         >
           <img src={LogoBlanco} alt="Logo Alejandría" />

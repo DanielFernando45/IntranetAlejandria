@@ -37,7 +37,7 @@ const NavbarV2 = ({ user, showResponsive, setShowResponsive }) => {
   };
 
   return (
-    <nav className="bg-white flex justify-between items-center px-5 h-[80px]">
+    <nav className="bg-white flex justify-between items-center px-5 min-h-[80px]">
       <div className="flex gap-3">
         <button onClick={ () => setShowResponsive(!showResponsive) } className="flex items-center">
           <img

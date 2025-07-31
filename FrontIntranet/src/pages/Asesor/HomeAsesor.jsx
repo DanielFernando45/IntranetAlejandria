@@ -4,6 +4,7 @@ import flechaAzul from "../../assets/icons/arrowAzul.svg"
 import Zoom from "../../assets/icons/IconEstudiante/ZoomLink.svg"
 import { useState, useEffect } from "react";
 import EnviosClientes from "../Asesor/EnviosCliente/EnviosCliente";
+import LayoutAppV2 from "../../layout/LayoutAppV2";
 
 const HomeAsesor = () => {
     const [asesorias, setAsesorias] = useState([]);
@@ -89,7 +90,7 @@ const HomeAsesor = () => {
     const año = fecha.getFullYear();
 
     return (
-        <LayoutApp>
+        <LayoutAppV2>
             <main className="md:mx-8">
 
                 {/* Portada Asesor */}
@@ -208,7 +209,7 @@ const HomeAsesor = () => {
 
             </main>
 
-        </LayoutApp>
+        </LayoutAppV2>
     );
 
 };
