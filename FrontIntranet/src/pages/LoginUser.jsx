@@ -20,16 +20,13 @@ const Login = () => {
 
 
     console.log('API URL:', import.meta.env.VITE_API_PORT_ENV);
-const res = await axios.post(`${import.meta.env.VITE_API_PORT_ENV}/auth/login`, {
-  username,
-  password,
-});
+
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_PORT_ENV}/auth/login`, {
         username,
         password,
-      });
+      },{withCredentials: true});
 
       const { access_token, datos_usuario } = res.data;
       dispatch(loginSuccess({datos_usuario, access_token}));
