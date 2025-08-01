@@ -18,6 +18,13 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+
+    console.log('API URL:', import.meta.env.VITE_API_PORT_ENV);
+const res = await axios.post(`${import.meta.env.VITE_API_PORT_ENV}/auth/login`, {
+  username,
+  password,
+});
+
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_PORT_ENV}/auth/login`, {
         username,
