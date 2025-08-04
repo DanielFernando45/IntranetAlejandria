@@ -17,8 +17,9 @@ const Desactivados = () => {
         const response = await fetch(`${import.meta.env.VITE_API_PORT_ENV}/asesoramiento/misAsesoriasInactivas/${id}`);
         
         if (!response.ok) {
-          throw new Error('No tienes  asesorías inactivas');
+          throw new Error('No tienes  asesorías inactivas'); 
         }
+
 
         const data = await response.json();
         setAsesorias(data);
@@ -44,7 +45,7 @@ const Desactivados = () => {
   }
 
   if (error) {
-    return <div className="flex justify-center items-center h-64 text-red-500">Error: {error}</div>;
+    return <div className="flex justify-center items-center h-64">{error}</div>;
   }
 
   if (asesorias.length === 0) {

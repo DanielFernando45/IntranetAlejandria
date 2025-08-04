@@ -50,9 +50,9 @@ const EntregaRevisionAse = () => {
 
   return (
     <LayoutApp>
-      <main className="flex flex-col gap-11 items-start mr-14">
-        <div className="flex ml-8 justify-end w-full">
+      <main className="flex flex-col gap-11 items-start mr-14 mb-5">
 
+        <div className="flex ml-8 justify-end w-full">
           <select
             className="border-2 rounded-md px-2 border-black "
             onChange={handleChange}
@@ -69,10 +69,10 @@ const EntregaRevisionAse = () => {
             <div className="  flex justify-between">
 
               <h2 className="text-2xl font-bold">Asuntos</h2>
-              <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+              {/* <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
                 <a href="">Ver todo</a>
                 <img src={flechaAzul} alt="" />
-              </span>
+              </span> */}
             </div>
 
             <div className="flex w-full border-b-2 gap-3 border-black font-normal">
@@ -106,10 +106,10 @@ const EntregaRevisionAse = () => {
 
           <div className="flex justify-between  ">
             <h2 className="text-2xl font-bold">Documentos</h2>
-            <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+            {/* <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
               <a href="">Ver todo</a>
               <img src={flechaAzul} alt="" />
-            </span>
+            </span> */}
           </div>
 
           <div className="flex w-full border-b-2 gap-3 border-black font-normal">
@@ -139,16 +139,7 @@ const EntregaRevisionAse = () => {
             }
           </div>
 
-
-
-
-
         </div>
-
-
-
-
-
 
       </main>
     </LayoutApp>

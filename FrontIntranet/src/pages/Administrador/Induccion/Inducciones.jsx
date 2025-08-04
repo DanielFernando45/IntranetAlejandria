@@ -21,6 +21,13 @@ const Induccion = () => {
     navigate(`/admin/induccion/${id}`);
   };
 
+const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const options = { month: "short", day: "numeric", year: "numeric" };
+    return date.toLocaleDateString("es-PE", options);
+  };
+
   return (
     // <div className="bg-red-400 absolute top-0 left-0 z-[99]">
     <LayoutApp>
@@ -29,9 +36,6 @@ const Induccion = () => {
           Agregar Inducciones a asesorias
         </h2>
 
-        {/*  */}
-        
-        {/*  */}
 
         <div className="w-full overflow-auto">
           <div className="min-w-[1200px] w-full table-auto ">
@@ -74,7 +78,7 @@ const Induccion = () => {
                       {asesoria?.profesion_asesoria}
                     </div>
                     <div className="flex-1 flex justify-center items-center">
-                      {asesoria?.fecha_inicio}
+                      {formatDate(asesoria?.fecha_inicio)}
                     </div>
                     <div className="flex-1 flex justify-center items-center max-w-[150px]">
                       {asesoria?.area}

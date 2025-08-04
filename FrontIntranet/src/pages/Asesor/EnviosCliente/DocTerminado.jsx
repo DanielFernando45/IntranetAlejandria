@@ -78,7 +78,7 @@ const DocTerminado = () => {
         <div className="w-[102px] flex justify-center">Hora</div>
         <div className="w-[138px] px-3  flex justify-center ">Estado</div>
       </div>
-      <div className="flex flex-col gap-2 text-[14px]">
+      <div className="flex flex-col gap-2 text-[14px] h-[180px] overflow-auto">
         {loading ? (
           // Mostrar skeletons mientras carga
           <>
@@ -89,6 +89,7 @@ const DocTerminado = () => {
         ) : terminados.length > 0 ? (
           // Mostrar datos cuando ya están cargados
           terminados.map((terminado, index) => (
+            <>
             <div key={index} className="flex justify-between text-[#2B2829] gap-4 font-normal bg-[#E9E7E7] p-[6px] rounded-md">
               <div className="w-[300px] flex">{terminado.titulo}</div>
               <div className="w-[300px] flex justify-center">Entrega: {formatDate(terminado.fecha_entregado)}</div>
@@ -97,7 +98,12 @@ const DocTerminado = () => {
               <div className="w-[102px] flex justify-center">{formatTime(terminado.fecha_terminado)}</div>
               <div className="rounded-md px-3 bg-[#353563] flex justify-center text-white">{terminado.estado}</div>
             </div>
+            
+            </>
+            
+            
           ))
+          
         ) : (
           // Mostrar cuando no hay datos
           <div className="flex justify-center">
@@ -108,6 +114,7 @@ const DocTerminado = () => {
           </div>
         )}
       </div>
+
     </>
 
   )

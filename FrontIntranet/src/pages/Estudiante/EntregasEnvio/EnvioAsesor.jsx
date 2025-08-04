@@ -154,7 +154,8 @@ const EnvioAsesor = ({ idAsesoramiento }) => {
 
             return (
               <React.Fragment key={envio.id_asunto || index}>
-                <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center">
+                <div className="flex justify-between text-[#2B2829] font-normal bg-[#E9E7E7] p-[6px] rounded-md items-center mt-2
+                ">
                   <div className="w-[160px] flex text-[8px] sm:text-[12px] lg:text-[14px]">
                     {envio.asunto}
                   </div>

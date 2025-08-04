@@ -90,18 +90,18 @@ const HomeAsesor = () => {
     const año = fecha.getFullYear();
 
     return (
-        <LayoutAppV2>
+        <LayoutApp>
             <main className="md:mx-8">
 
                 {/* Portada Asesor */}
                 <div className="xl:relative xl:justify-end flex items-center relative flex-col xl:flex-row bg-[#17162E] text-white rounded-2xl w-full xl:h-[410px] shadow-lg">
 
-                    <div className="xl:absolute flex flex-col p-4 sm:p-9 md:p-12 lg:p-14 xl:p-10 xl:px-[55px] w-full md:h-full md:pt-7 lg:pt-14">
+                    <div className="xl:absolute flex flex-col 5xl:justify-center  p-4 sm:p-9 md:p-12 lg:p-14 xl:p-10 xl:px-[55px] w-full md:h-full md:pt-7 lg:pt-14">
                         <p className="text-[12px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[20px] text-[#B5B5B5]">
                             {dia} de {mes}, {año}
                         </p>
 
-                        <div className="xl:w-[620px]">
+                        <div className="xl:w-[620px] 5xl:pt-20">
                             <h2 className="text-[15px] sm:text-[25px] md:text-[30px] lg:text-[40px] xl:text-[30px] 1xl:text-[35px] font-semibold mt-2 md:mt-1">
                                 Bienvenido {NombreAsesor} al Intranet de asesoría de tesis
                             </h2>
@@ -132,7 +132,7 @@ const HomeAsesor = () => {
                 <div className="flex flex-col xl:flex-row justify-between">
 
                     {/*Envio Asesor*/}
-                    <div className="bg-[#F5F5F5] rounded-xl p-4 mt-5 w-full xl:w-[863px] 2xl:w-[1050px] 3xl:w-[1150px] 4xl:w-[1250px] 6xl:w-[1450px]" >
+                    <div className="bg-[#F5F5F5] rounded-xl p-4 mt-5 w-full xl:w-[780px] 1xl:w-[863px] 2xl:w-[1050px] 3xl:w-[1150px] 4xl:w-[1250px] 6xl:w-[1450px]" >
 
                         <div className="flex justify-between">
                             <h2 className="text-2xl font-semibold">Ultimos Envios del Cliente</h2>
@@ -161,10 +161,10 @@ const HomeAsesor = () => {
                             ))}
                         </select>
 
-                        <div className=" bg-[#F5F5F5] rounded-xl p-4 ">
+                        <div className=" bg-[#F5F5F5] rounded-xl p-4 h-[230px] overflow-auto ">
                             <div className="  flex justify-between ">
-                                <h2 className="text-2xl font-semibold">Reuniones</h2>
-                                <span className="flex justify-end gap-1 items-center font-medium text-[#2F80ED]">
+                                <h2 className="text-2xl font-semibold ">Reuniones</h2>
+                                <span className="flex  justify-end gap-1 items-center font-medium text-[#2F80ED]">
                                     <a href="">Ver todo</a>
                                     <img src={flechaAzul} alt="" />
                                 </span>
@@ -195,12 +195,6 @@ const HomeAsesor = () => {
                             ))}
                         </div>
 
-
-
-
-
-
-
                     </div>
 
                 </div>
@@ -209,7 +203,7 @@ const HomeAsesor = () => {
 
             </main>
 
-        </LayoutAppV2>
+        </LayoutApp>
     );
 
 };
