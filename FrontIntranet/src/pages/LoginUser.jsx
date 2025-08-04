@@ -51,7 +51,7 @@ const Login = () => {
   };
 
   return (
-    <main className="h-screen w-screen flex items-center justify-center fondo_login">
+    <main className="h-screen w-screen flex items-center justify-center fondo_login overflow-hidden">
       <div className="w-full flex justify-center">
         <form
           className="flex w-[410px] px-[60px] flex-col justify-center items-center gap-[47px] bg-transparent"

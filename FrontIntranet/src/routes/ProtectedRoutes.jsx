@@ -1,32 +1,25 @@
-// src/routes/ProtectedRoutes.jsx
-import React, { useContext } from 'react';
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { AuthContext } from '../context/authContext';
 import { useSelector } from 'react-redux';
+import { isTokenValid } from '../utils/validateToken';
 
 const ProtectedRoutes = ({ allowedRoles }) => {
-
   const auth = useSelector((state) => state.auth);
 
-  return auth.isAuthenticated ? (
-    allowedRoles.includes(auth.user.role) ? (
-      <Outlet />
-    ) : (
-      <Navigate to="/unauthorized" />
-    )
-  ) : (
-    <Navigate to="/" />
-  );
-  // const { state } = useContext(AuthContext);
-  // const user = state.user;
+  const isAuthenticatedAndValid = auth.isAuthenticated && isTokenValid();
 
-  // if (!user) return <Navigate to="/" />;
+  if (!isAuthenticatedAndValid) {
+    // Limpieza opcional
+    localStorage.removeItem('token');
+    // Aquí podrías también resetear el estado en Redux con un logout si tienes action
+    return <Navigate to="/" />;
+  }
 
-  // if (!allowedRoles.includes(user.role)) {
-  //   return <Navigate to="/unauthorized" />;
-  // }
+  if (!allowedRoles.includes(auth.user.role)) {
+    return <Navigate to="/unauthorized" />;
+  }
 
-  // return <Outlet />;
+  return <Outlet />;
 };
 
 export default ProtectedRoutes;

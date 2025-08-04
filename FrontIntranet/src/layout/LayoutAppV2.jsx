@@ -20,7 +20,6 @@ const LayoutAppV2 = ({ children }) => {
         setExpand(false);
       }
 
-      console.log(expand);
     });
     return () => {
       window.removeEventListener("resize", () => {});

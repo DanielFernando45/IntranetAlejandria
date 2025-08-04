@@ -3,6 +3,11 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  //  resolve: {
+  //   alias: {
+  //     '@': path.resolve(__dirname, 'src'),
+  //   },
+  // },
   server: {
     host: '0.0.0.0',
     port: 5174,
@@ -11,6 +16,5 @@ export default defineConfig({
       interval: 100,
     },
     strictPort: true,
-    allowedHosts: ['a57ef87e98be.ngrok-free.app'], // 👈 Aquí está el fix
   },
 })
